@@ -15,6 +15,7 @@ require "rug_record/config"
 # Concerns
 require "rug_record/concerns/localization"
 require "rug_record/concerns/enum"
+require "rug_record/concerns/address"
 require "rug_record/concerns/ordering"
 require "rug_record/concerns/hierarchical_ordering"
 require "rug_record/concerns/config"
