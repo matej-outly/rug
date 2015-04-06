@@ -2,22 +2,20 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug support
+# * Date utility functions 
 # *
 # * Author: Matěj Outlý
-# * Date  : 10. 11. 2014
+# * Date  : 5. 4. 2015
 # *
 # *****************************************************************************
 
-# Active support
-require "active_support"
-require "active_support/core_ext"
+class Date
 
-# Core extensions
-require "rug_support/util/object"
-require "rug_support/util/string"
-require "rug_support/util/hash"
-require "rug_support/util/date"
+	#
+	# Get monday of current week
+	#
+	def week_monday
+		return self - (self.cwday - 1).days
+	end
 
-module RugSupport
 end
