@@ -18,7 +18,12 @@ output_dir="$root_dir/build"
 # Make output directory
 mkdir -p "$output_dir"
 
-# Jug Record
+# Rug Support
+cd "$root_dir/rug_support"
+gem build rug_support.gemspec
+mv *.gem "$output_dir"
+
+# Rug Record
 cd "$root_dir/rug_record"
 gem build rug_record.gemspec
 mv *.gem "$output_dir"
