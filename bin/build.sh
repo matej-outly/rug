@@ -28,6 +28,11 @@ cd "$root_dir/rug_record"
 gem build rug_record.gemspec
 mv *.gem "$output_dir"
 
+# Rug Builder
+cd "$root_dir/rug_builder"
+gem build rug_builder.gemspec
+mv *.gem "$output_dir"
+
 # Rug
 cd "$root_dir"
 gem build rug.gemspec

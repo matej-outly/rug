@@ -18,4 +18,5 @@ build_dir="$root_dir/build"
 # Install gems 
 gem install "$build_dir"/rug_support-*
 gem install "$build_dir"/rug_record-*
+gem install "$build_dir"/rug_builder-*
 gem install "$build_dir"/rug-*
