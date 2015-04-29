@@ -1,0 +1,5 @@
+Description:
+    Create common model.
+
+Example:
+    rails generate rug:model path/to/model column1:type1 column2:type2
