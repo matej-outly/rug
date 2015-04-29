@@ -1,4 +1,4 @@
-<%%= rug_menu_for(@project, name: "actions", path_base: "<%= controller_path.to_snake.gsub("/", "_").singularize %>") do |m| %>
+<%%= rug_menu_for(@<%= model_name.to_snake.singularize %>, name: "actions", path_base: "<%= controller_path.to_snake.gsub("/", "_").singularize %>") do |m| %>
 	<%%= m.index_item %>
 	<%%= m.new_item %>
 	<%%= m.show_item %>
