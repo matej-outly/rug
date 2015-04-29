@@ -21,7 +21,7 @@ module Rug
 		argument :columns, :optional => :true, :type => :array
 
 		def create_controller
-			template("controller.rb", "app/controllers/#{controller_path.to_snake}.rb")
+			template("controller.rb", "app/controllers/#{controller_path.to_snake}_controller.rb")
 		end
 
 		def create_action_views
