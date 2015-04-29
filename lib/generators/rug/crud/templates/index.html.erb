@@ -1,0 +1,9 @@
+<%%= render layout: "ric_admin/layouts/with_right_side" do %>
+	<%%= rug_index_table_for(@<%= model_name.to_snake.pluralize %>, { 
+		id: :integer
+	}, {
+		show: :<%= controller_path.to_snake.gsub("/", "_").singularize %>_path, 
+		edit: :edit_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path, 
+		destroy: :<%= controller_path.to_snake.gsub("/", "_").singularize %>_path
+	} ) %>
+<%% end %>

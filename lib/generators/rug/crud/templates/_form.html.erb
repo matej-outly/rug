@@ -1,0 +1,6 @@
+<%%= rug_form_for(@<%= model_name.to_snake.singularize %>, url: (@<%= model_name.to_snake.singularize %>.id.nil? ? <%= controller_path.to_snake.gsub("/", "_").pluralize %>_path : <%= controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_name.to_snake.singularize %>))) do |f| %>
+	
+	<% columns.each_with_index do |column, idx| %><%%= f.<%= form_field(column.split(":").first, (column.split(":").size > 1 ? column.split(":").at(1) : "string" )) %> %><%= (idx != columns.size-1 ? "\n\t" : "") %><% end %>
+	
+	<%%= f.primary_button_row :submit %>
+<%% end %>
