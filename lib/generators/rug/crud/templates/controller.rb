@@ -27,7 +27,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	end
 
 	#
-	# New Action
+	# New action
 	#
 	def new
 		@<%= model_name.to_snake.singularize %> = <%= model_path.to_camel.singularize %>.new
@@ -73,7 +73,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 private
 
 	#
-	# Set project model
+	# Set model
 	#
 	def set_<%= model_name.to_snake.singularize %>
 		@<%= model_name.to_snake.singularize %> = <%= model_path.to_camel.singularize %>.find_by_id(params[:id])
