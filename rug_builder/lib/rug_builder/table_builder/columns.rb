@@ -141,7 +141,7 @@ module RugBuilder
 			end
 
 			def validate_belongs_to_options(column_spec)
-				return column_spec.key?(:label) && column_spec.key?(:path)
+				return column_spec.key?(:label)
 			end
 
 			def validate_address_options(column_spec)
@@ -227,7 +227,11 @@ module RugBuilder
 			def render_belongs_to(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				return "<a href=\"#{@template.method(@columns[column][:path]).call(value)}\">#{value.send(@columns[column][:label])}</a>"
+				if @columns[column][:path]
+					return "<a href=\"#{@template.method(@columns[column][:path]).call(value)}\">#{value.send(@columns[column][:label])}</a>"
+				else
+					return value.send(@columns[column][:label])
+				end
 			end
 
 			def render_address(column, object)

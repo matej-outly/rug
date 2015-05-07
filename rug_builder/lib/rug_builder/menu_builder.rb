@@ -54,7 +54,7 @@ module RugBuilder
 		def index_item(label = nil, path = nil, options = {})
 			
 			# Label
-			label = I18n.t("general.action.index").capitalize if label.nil?
+			label = I18n.t("general.action.index").upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -81,7 +81,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.show").capitalize if label.nil?
+			label = I18n.t("general.action.show").upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -104,7 +104,7 @@ module RugBuilder
 		def new_item(label = nil, path = nil, options = {})
 			
 			# Label
-			label = I18n.t("general.action.new").capitalize if label.nil?
+			label = I18n.t("general.action.new").upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -132,7 +132,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.edit").capitalize if label.nil?
+			label = I18n.t("general.action.edit").upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -160,7 +160,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.destroy").capitalize if label.nil?
+			label = I18n.t("general.action.destroy").upcase_first if label.nil?
 			
 			# Path
 			if path.nil?

@@ -37,6 +37,20 @@ class String
 	end
 
 	#
+	# Upper-case only first letter, rest of the string is kept
+	#
+	def upcase_first
+		return self[0].upcase + self[1..-1]
+	end
+
+	#
+	# Lower-case only first letter, rest of the string is kept
+	#
+	def downcase_first
+		return self[0].downcase + self[1..-1]
+	end
+
+	#
 	# Remove characters from string on the left and right side
 	#
 	def trim(chars)

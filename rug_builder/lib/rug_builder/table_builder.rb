@@ -44,7 +44,7 @@ module RugBuilder
 			result += "<thead>"
 			result += "<tr>"
 			columns_headers.each do |column|
-				result += "<th>#{objects.human_attribute_name(column.to_s).capitalize}</th>"
+				result += "<th>#{objects.human_attribute_name(column.to_s).upcase_first}</th>"
 			end
 			result += "<th></th>" if paths[:edit]
 			result += "<th></th>" if paths[:destroy]	
@@ -97,7 +97,7 @@ module RugBuilder
 			result += "<tbody>"
 			columns_headers.each do |column|
 				result += "<tr>"
-				result += "<td>#{object.class.human_attribute_name(column.to_s).capitalize}</td>"
+				result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
 				result += "<td>#{columns.render(column, object)}</td>"
 				result += "</tr>"
 			end
