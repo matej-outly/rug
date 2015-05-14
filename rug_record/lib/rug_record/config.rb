@@ -74,8 +74,8 @@ module RugRecord
 		def load_paths
 			result = []
 			$LOAD_PATH.each do |load_path|
-				if load_path.end_with?("models")
-					result << load_path
+				if load_path.to_s.end_with?("models")
+					result << load_path.to_s
 				end
 			end
 			return result
