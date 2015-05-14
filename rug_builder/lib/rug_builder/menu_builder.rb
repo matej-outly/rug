@@ -29,7 +29,7 @@ module RugBuilder
 			@options = options
 
 			# Render
-			return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} menu\">" + @template.capture(self, &block) + "</ul>").html_safe
+			return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
 		end
 
 		#
