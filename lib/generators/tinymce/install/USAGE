@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of TinyMCE into the application.
+
+Example:
+    rails generate tinymce:install
