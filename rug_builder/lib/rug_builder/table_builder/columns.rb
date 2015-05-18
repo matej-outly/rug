@@ -86,7 +86,7 @@ module RugBuilder
 				if @columns[column.to_sym][:type]
 					return method("render_#{@columns[column.to_sym][:type].to_s}".to_sym).call(column.to_sym, object)
 				elsif @columns[column.to_sym][:block]
-					# Call block
+					return @columns[column.to_sym][:block].call(object)
 				else
 					raise "Don't know how to render column '#{column.to_s}'..."
 				end
@@ -98,7 +98,7 @@ module RugBuilder
 			# Known types
 			# *********************************************************************
 			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :image, :enum, :belongs_to, :address, :currency ]
+			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :image, :enum, :belongs_to, :has_many, :address, :currency ]
 
 			def validate_string_options(column_spec)
 				return true
@@ -141,6 +141,10 @@ module RugBuilder
 			end
 
 			def validate_belongs_to_options(column_spec)
+				return column_spec.key?(:label)
+			end
+
+			def validate_has_many_options(column_spec)
 				return column_spec.key?(:label)
 			end
 
@@ -231,6 +235,15 @@ module RugBuilder
 					return "<a href=\"#{@template.method(@columns[column][:path]).call(value)}\">#{value.send(@columns[column][:label])}</a>"
 				else
 					return value.send(@columns[column][:label])
+				end
+			end
+
+			def render_has_many(column, object)
+				collection = object.send(column)
+				if @columns[column][:path]
+					return collection.map { |item| "<a href=\"#{@template.method(@columns[column][:path]).call(item)}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
+				else
+					return collection.map { |item| item.send(@columns[column][:label]) }.join(", ")
 				end
 			end
 
