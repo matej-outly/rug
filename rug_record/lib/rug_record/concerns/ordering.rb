@@ -89,6 +89,24 @@ module RugRecord
 				move_to_position(position)
 			end
 
+			#
+			# Get next in order
+			#
+			def next_in_order
+				next_model = self.class.where("position > ?", self.position).order(position: :asc).limit(1).first
+				next_model ||= self.class.order(position: :asc).first
+				return next_model
+			end
+
+			#
+			# Get previous in order
+			#
+			def prev_in_order
+				prev_model = self.class.where("position < ?", self.position).order(position: :desc).limit(1).first
+				prev_model ||= self.class.order(position: :asc).last
+				return prev_model
+			end
+
 		end
 	end
 end
