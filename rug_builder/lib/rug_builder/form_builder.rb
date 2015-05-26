@@ -100,6 +100,11 @@ module RugBuilder
 				result += label(name)
 			end
 
+			# Collection
+			if collection.nil?
+				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
+			end
+
 			# Enable null option
 			if !options.nil? && options[:enable_null] == true
 				collection = [OpenStruct.new({value_attr => nil, label_attr => I18n.t("general.null_option")})].concat(collection)
@@ -108,9 +113,6 @@ module RugBuilder
 			# Field
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			result += "<div class=\"picker\">"
-			if collection.nil?
-				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
-			end
 			result += collection_select(name, collection, value_attr, label_attr)
 			result += "</div>"
 			result += "</div>"
@@ -133,6 +135,11 @@ module RugBuilder
 				result += label(name)
 			end
 
+			# Collection
+			if collection.nil?
+				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
+			end
+
 			# Enable null option
 			if !options.nil? && options[:enable_null] == true
 				collection = [OpenStruct.new({value_attr => nil, label_attr => I18n.t("general.null_option")})].concat(collection)
@@ -150,9 +157,6 @@ module RugBuilder
 				result += "<div class=\"#{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			else
 				result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			end		 
-			if collection.nil?
-				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
 			end
 			result += collection_radio_buttons(name, collection, value_attr, label_attr) do |b|
 				b.label(class: (disable_gumby ? "" : "radio")) do
