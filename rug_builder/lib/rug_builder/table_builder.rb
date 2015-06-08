@@ -38,7 +38,7 @@ module RugBuilder
 			columns_headers = columns.headers
 
 			# Table
-			result += "<table>"
+			result += "<table class=\"index_table\">"
 
 			# Table head
 			result += "<thead>"
@@ -91,7 +91,7 @@ module RugBuilder
 			columns_headers = columns.headers
 
 			# Table
-			result += "<table>"
+			result += "<table class=\"show_table\">"
 
 			# Table body
 			result += "<tbody>"
