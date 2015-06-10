@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Build all rug gems
+# Build all RUG gems
 #
 
 # Number of arguments
@@ -18,27 +18,14 @@ output_dir="$root_dir/build"
 # Make output directory
 mkdir -p "$output_dir"
 
-# Rug Support
-cd "$root_dir/rug_support"
-gem build rug_support.gemspec
-mv *.gem "$output_dir"
+# All rug_* gems
+for gem in rug_support rug_record rug_controller rug_builder; do
+	cd "$root_dir/$gem"
+	gem build $gem.gemspec
+	mv *.gem "$output_dir"
+done
 
-# Rug Record
-cd "$root_dir/rug_record"
-gem build rug_record.gemspec
-mv *.gem "$output_dir"
-
-# Rug Controller
-cd "$root_dir/rug_controller"
-gem build rug_controller.gemspec
-mv *.gem "$output_dir"
-
-# Rug Builder
-cd "$root_dir/rug_builder"
-gem build rug_builder.gemspec
-mv *.gem "$output_dir"
-
-# Rug
+# Root rug gem
 cd "$root_dir"
 gem build rug.gemspec
 mv *.gem "$output_dir"

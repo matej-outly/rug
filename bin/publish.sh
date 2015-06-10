@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Install all RUG gems
+# Publish all RUG gems
 #
 
 # Number of arguments
@@ -17,8 +17,8 @@ build_dir="$root_dir/build"
 
 # All rug_* gems
 for gem in rug_support rug_record rug_controller rug_builder; do
-	gem install "$build_dir"/"$gem"-*
+	gem inabox "$build_dir"/"$gem"-*
 done
 
 # Root rug gem
-gem install "$build_dir"/rug-*
+gem inabox "$build_dir"/rug-*
