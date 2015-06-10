@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["matej@clockstar.cz"]
   spec.summary       = %q{Component support}
   spec.description   = %q{Extensions of Rails Action Controller.}
-  spec.homepage      = ""
+  spec.homepage      = "http://www.clockstar.cz"
   spec.license       = "MIT"
 
   spec.files         = Dir["README.md", "LICENSE.txt", "lib/**/*"]

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["matej@clockstar.cz"]
   spec.summary       = %q{Rails framewirk extension}
   spec.description   = %q{This gem is only configurable wrapper for other gems which Rug framework consists of.}
-  spec.homepage      = ""
+  spec.homepage      = "http://www.clockstar.cz"
   spec.license       = "MIT"
 
   spec.files         = Dir["README.md", "LICENSE.txt", "lib/**/*", "bin/**/*"]

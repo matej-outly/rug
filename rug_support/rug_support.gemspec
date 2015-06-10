@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["matej@clockstar.cz"]
   spec.summary       = %q{A collection of support libraries for Rug}
   spec.description   = %q{String, hash and array functions.}
-  spec.homepage      = ""
+  spec.homepage      = "http://www.clockstar.cz"
   spec.license       = "MIT"
 
   spec.files         = Dir["README.md", "LICENSE.txt", "lib/**/*"]
