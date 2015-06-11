@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Cycle2 library.
+
+Example:
+    rails generate cycle2:install
