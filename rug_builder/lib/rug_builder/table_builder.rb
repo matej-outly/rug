@@ -38,7 +38,7 @@ module RugBuilder
 			columns_headers = columns.headers
 
 			# Table
-			result += "<table class=\"index_table\">"
+			result += "<table class=\"index_table striped\">"
 
 			# Table head
 			result += "<thead>"
@@ -70,6 +70,17 @@ module RugBuilder
 
 			# Table
 			result += "</table>"
+
+			# Model class
+			model_class = objects.class.to_s.deconstantize
+			if !model_class.blank?
+				model_class = model_class.constantize
+			else
+				model_class = nil
+			end
+
+			# Shown items
+			result += "<div class=\"shown_items\">#{I18n.t("general.shown").upcase_first}: #{objects.length}#{((model_class && model_class.respond_to?(:count)) ? ("/" + model_class.count.to_s) : "")}</div>"
 
 			return result.html_safe
 		end
