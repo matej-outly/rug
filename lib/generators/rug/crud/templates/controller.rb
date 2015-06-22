@@ -17,7 +17,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	# Index action
 	#
 	def index
-		@<%= model_name.to_snake.pluralize %> = <%= model_path.to_camel.singularize %>.all.order(id: :asc)
+		@<%= model_name.to_snake.pluralize %> = <%= model_path.to_camel.singularize %>.all.sorting(params[:sort]).page(params[:page]).per(50)
 	end
 
 	#

@@ -18,4 +18,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "actionview", "~> 4.2"
   spec.add_dependency "truncate_html", "~> 0.9"
+  spec.add_dependency "kaminari", "~> 0.16"
 end
