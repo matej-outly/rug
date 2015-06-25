@@ -30,7 +30,7 @@ module RugRecord
 					@hierarchically_ordered = true
 
 					# Set privilege checker
-					around_move :check_update_event
+					#around_move :check_update_event
 
 				end
 
