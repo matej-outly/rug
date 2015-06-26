@@ -84,9 +84,9 @@ module RugBuilder
 				end
 
 				if @columns[column.to_sym][:type]
-					return method("render_#{@columns[column.to_sym][:type].to_s}".to_sym).call(column.to_sym, object)
+					return method("render_#{@columns[column.to_sym][:type].to_s}".to_sym).call(column.to_sym, object).to_s
 				elsif @columns[column.to_sym][:block]
-					return @columns[column.to_sym][:block].call(object)
+					return @columns[column.to_sym][:block].call(object).to_s
 				else
 					raise "Don't know how to render column '#{column.to_s}'..."
 				end

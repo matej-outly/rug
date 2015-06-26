@@ -35,11 +35,10 @@ module RugBuilder
 			result = ""
 
 			# Model class
-			model_class = collection_model_class(objects, options)
+			model_class = get_model_class(objects, options)
 
-			# Normalize columns to Columns object
-			columns = Columns.new(columns) if !columns.is_a? Columns
-			columns.template = @template
+			# Normalize columns
+			columns = normalize_columns(columns)
 
 			# Headers
 			columns_headers = columns.headers
@@ -53,38 +52,44 @@ module RugBuilder
 			columns_headers.each do |column|
 				result += "<th>"
 				result += model_class.human_attribute_name(column.to_s).upcase_first
-				
-				# Sorting
-				# --------
-				if options[:sorting] 
-					if options[:sorting] == true
-						result += " <span class=\"sorting\">" + @template.link_to(I18n.t("general.action.sort"), sort: column.to_s, page: @template.params[:page]) + "</span>"
-					elsif options[:sorting][column.to_sym]
-						result += " <span class=\"sorting\">" + @template.link_to(I18n.t("general.action.sort"), sort: (options[:sorting][column.to_sym] == true ? column.to_s : options[:sorting][column.to_sym].to_s), page: @template.params[:page]) + "</span>"
-					end
-				end
-				
+				result += resolve_sorting(column, options)
 				result += "</th>"
 			end
-			result += "<th></th>" if options[:paths] && options[:paths][:edit]
-			result += "<th></th>" if options[:paths] && options[:paths][:destroy]	
+			result += "<th></th>" if check_inline_edit(options)
+			result += "<th></th>" if check_edit_link(options)
+			result += "<th></th>" if check_destroy_link(options)
 			result += "</tr>"
 			result += "</thead>"
 
 			# Table body
 			result += "<tbody>"
 			objects.each do |object|
+				
 				result += "<tr>"
 				columns_headers.each_with_index do |column, idx|
-					if idx == 0 && options[:paths] && options[:paths][:show]
-						result += "<td>#{@template.link_to columns.render(column, object), @template.method(options[:paths][:show]).call(object)}</td>"
-					else
-						result += "<td>#{columns.render(column, object)}</td>"
+					result += "<td>"
+					if check_inline_edit(options, column)
+						result += "<div class=\"inline_edit value\">"
 					end
+
+					# Standard read only value
+					if idx == 0 && check_show_link(options)
+						result += get_show_link(object, columns.render(column, object), options)
+					else
+						result += columns.render(column, object)
+					end
+					
+					if check_inline_edit(options, column)
+						result += "</div>"
+						result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+					end
+					result += "</td>"
 				end
-				result += "<td>#{@template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), @template.method(options[:paths][:edit]).call(object)}</td>" if options[:paths] && options[:paths][:edit]
-				result += "<td>#{@template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), @template.method(options[:paths][:destroy]).call(object), method: :delete, data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }}</td>" if options[:paths] && options[:paths][:destroy]
+				result += "<td>#{get_inline_edit_links(object, options)}</td>" if check_inline_edit(options)
+				result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
+				result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
 				result += "</tr>"
+
 			end
 			result += "</tbody>"
 
@@ -92,17 +97,65 @@ module RugBuilder
 			result += "</table>"
 
 			# Pagination
-			# ----------
+			result += resolve_pagination(objects, options)
 			
-			if options[:pagination] == true
-				result += @template.paginate(objects)
-			end
-
 			# Summary
-			# -------
+			result += resolve_summary(objects, model_class, options)
 
-			if options[:summary] == true
-				result += "<div class=\"summary\">#{I18n.t("general.shown").upcase_first}: #{objects.length}#{(model_class.respond_to?(:count) ? ("/" + model_class.count.to_s) : "")}</div>"
+			# Inline edit JS
+			if check_inline_edit(options)
+
+				js = ''
+				js += 'function index_table_inline_edit_ready()'
+				js += '{'
+				js += '	$(".index_table a.inline_edit.edit").on("click", function(e) {'
+				js += '		e.preventDefault();'
+				js += '		var row = $(this).closest("tr");'
+				js += '		row.find("a.inline_edit.edit").hide();'
+				js += '		row.find(".inline_edit.value").hide();'
+				js += '		row.find("a.inline_edit.save").show();'
+				js += '		row.find(".inline_edit.field").show();'
+				js += '	});'
+
+				js += '	$(".index_table a.inline_edit.save").on("click", function(e) {'
+				js += '		e.preventDefault();'
+				js += '		var _this = $(this);'
+				js += '		var row = _this.closest("tr");'
+				js += '		var url = _this.attr("href");'
+				js += '		$.ajax({'
+				js += '			url: url,'
+				js += '			dataType: "json",'
+				js += '			type: "PUT",'
+				js += '			data: row.find("input").serialize(),'
+				js += '			success: function(callback) '
+				js += '			{'
+				js += '				row.find(".inline_edit.field").removeClass("danger");'
+				js += '				if (callback === true) {'
+				js += '					row.find(".inline_edit.value").each(function () {'
+				js += '						$(this).html($(this).next().find("input").val());'
+				js += '					});'
+				js += '					row.find("a.inline_edit.save").hide();'
+				js += '					row.find(".inline_edit.field").hide();'
+				js += '					row.find("a.inline_edit.edit").show();'
+				js += '					row.find(".inline_edit.value").show();'
+				js += '				} else {'
+				js += '					for (var column in callback) {'
+				js += '						form.find(".field." + column).addClass("danger");'
+				js += '					}'
+				js += '				}'
+				js += '			},'
+				js += '			error: function(callback) '
+				js += '			{'
+				js += '				console.log("error");'
+				js += '			}'
+				js += '		});'
+				js += '	});'
+				js += '}'
+
+				js += '$(document).ready(index_table_inline_edit_ready);'
+				js += '$(document).on("page:load", index_table_inline_edit_ready);'
+
+				result += @template.javascript_tag(js)
 			end
 
 			return result.html_safe
@@ -120,11 +173,10 @@ module RugBuilder
 			result = ""
 
 			# Model class
-			model_class = collection_model_class(objects, options)
+			model_class = get_model_class(objects, options)
 
 			# Normalize columns to Columns object
-			columns = Columns.new(columns) if !columns.is_a? Columns
-			columns.template = @template
+			columns = normalize_columns(columns)
 
 			# Headers
 			columns_headers = columns.headers
@@ -148,8 +200,8 @@ module RugBuilder
 					result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
 				end
 			end
-			result += "<th></th>" if options[:paths] && options[:paths][:edit]
-			result += "<th></th>" if options[:paths] && options[:paths][:destroy]	
+			result += "<th></th>" if check_edit_link(options)
+			result += "<th></th>" if check_destroy_link(options)
 			result += "</tr>"
 			result += "</thead>"
 
@@ -189,8 +241,8 @@ module RugBuilder
 					# Columns
 					columns_headers.each_with_index do |column, column_idx|
 						if column_idx == 0
-							if options[:paths] && options[:paths][:show]
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{@template.link_to columns.render(column, object), @template.method(options[:paths][:show]).call(object)}</td>"
+							if check_show_link(options)
+								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
 							else
 								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
 							end
@@ -200,8 +252,8 @@ module RugBuilder
 					end
 
 					# Actions
-					result += "<td>#{@template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), @template.method(options[:paths][:edit]).call(object)}</td>" if options[:paths] && options[:paths][:edit]
-					result += "<td>#{@template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), @template.method(options[:paths][:destroy]).call(object), method: :delete, data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }}</td>" if options[:paths] && options[:paths][:destroy]
+					result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
+					result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
 					result += "</tr>"
 
 				end
@@ -213,11 +265,7 @@ module RugBuilder
 			result += "</table>"
 
 			# Summary
-			# -------
-
-			if options[:summary] == true
-				result += "<div class=\"summary\">#{I18n.t("general.shown").upcase_first}: #{objects.length}#{(model_class.respond_to?(:count) ? ("/" + model_class.count.to_s) : "")}</div>"
-			end
+			result += resolve_summary(objects, model_class, options)
 
 			return result.html_safe
 		end
@@ -230,8 +278,7 @@ module RugBuilder
 			result = ""
 
 			# Normalize columns to Columns object
-			columns = Columns.new(columns) if !columns.is_a? Columns
-			columns.template = @template
+			columns = normalize_columns(columns)
 
 			# Headers
 			columns_headers = columns.headers
@@ -266,11 +313,10 @@ module RugBuilder
 			result = ""
 
 			# Model class
-			model_class = collection_model_class(objects, options)
+			model_class = get_model_class(objects, options)
 			
 			# Normalize columns to Columns object
-			columns = Columns.new(columns) if !columns.is_a? Columns
-			columns.template = @template
+			columns = normalize_columns(columns)
 
 			# Headers
 			columns_headers = columns.headers
@@ -295,17 +341,17 @@ module RugBuilder
 			objects.each do |object|
 				result += "<tr class=\"#{object.new_record? ? "possibility" : ""}\">"
 				columns_headers.each_with_index do |column, idx|
-					if idx == 0 && options[:paths] && options[:paths][:show]
-						result += "<td>#{@template.link_to columns.render(column, object), @template.method(options[:paths][:show]).call(object)}</td>"
+					if idx == 0 && check_show_link(options)
+						result += "<td>#{get_show_link(object, columns.render(column, object), options)}</td>"
 					else
 						result += "<td>#{columns.render(column, object)}</td>"
 					end
 				end
 				result += "<td>"
 				if object.new_record? 
-					result += @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.create"), @template.method(options[:paths][:create]).call, class: "create") if options[:paths] && options[:paths][:create]
+					result += get_create_link(object, options) if check_create_link(options)
 				else
-					result += @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), @template.method(options[:paths][:destroy]).call(object), class: "delete", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) if options[:paths] && options[:paths][:destroy]
+					result += get_destroy_link(object, options) if check_destroy_link(options)
 				end
 				result += "</td>"
 				result += "</tr>"
@@ -329,11 +375,10 @@ module RugBuilder
 			result = ""
 
 			# Model class
-			model_class = collection_model_class(objects, options)
+			model_class = get_model_class(objects, options)
 
 			# Normalize columns to Columns object
-			columns = Columns.new(columns) if !columns.is_a? Columns
-			columns.template = @template
+			columns = normalize_columns(columns)
 
 			# Headers
 			columns_headers = columns.headers
@@ -397,8 +442,8 @@ module RugBuilder
 					# Columns
 					columns_headers.each_with_index do |column, column_idx|
 						if column_idx == 0
-							if options[:paths] && options[:paths][:show]
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{@template.link_to columns.render(column, object), @template.method(options[:paths][:show]).call(object)}</td>"
+							if check_show_link(options)
+								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
 							else
 								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
 							end
@@ -410,9 +455,9 @@ module RugBuilder
 					# Actions
 					result += "<td>"
 					if object.new_record? 
-						result += @template.link_to "<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.create"), @template.method(options[:paths][:create]).call, method: :post if options[:paths] && options[:paths][:create]
+						result += get_create_link(object, options) if check_create_link(options)
 					else
-						result += @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), @template.method(options[:paths][:destroy]).call(object), method: :delete, data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } if options[:paths] && options[:paths][:destroy]
+						result += get_destroy_link(object, options) if check_destroy_link(options)
 					end
 					result += "</td>"
 					result += "</tr>"
@@ -430,7 +475,7 @@ module RugBuilder
 
 	private
 
-		def collection_model_class(objects, options)
+		def get_model_class(objects, options)
 			
 			# Model class
 			if options[:model_class]
@@ -446,6 +491,91 @@ module RugBuilder
 			end
 
 			return model_class
+		end
+
+		def normalize_columns(columns)
+			columns = Columns.new(columns) if !columns.is_a? Columns
+			columns.template = @template
+			return columns
+		end
+
+		def resolve_pagination(objects, options)
+			if options[:pagination] == true
+				return @template.paginate(objects)
+			else
+				return ""
+			end
+		end
+
+		def resolve_summary(objects, model_class, options)
+			if options[:summary] == true
+				return "<div class=\"summary\">#{I18n.t("general.shown").upcase_first}: #{objects.length}#{(model_class.respond_to?(:count) ? ("/" + model_class.count.to_s) : "")}</div>"
+			else
+				return ""
+			end
+		end
+
+		def resolve_sorting(column, options)
+			result = ""
+			if options[:sorting] 
+				if options[:sorting] == true
+					result = " <span class=\"sorting\">" + @template.link_to(I18n.t("general.action.sort"), sort: column.to_s, page: @template.params[:page]) + "</span>"
+				elsif options[:sorting][column.to_sym]
+					result = " <span class=\"sorting\">" + @template.link_to(I18n.t("general.action.sort"), sort: (options[:sorting][column.to_sym] == true ? column.to_s : options[:sorting][column.to_sym].to_s), page: @template.params[:page]) + "</span>"
+				end
+			end
+			return result
+		end
+
+		def check_destroy_link(options)
+			return options[:paths] && options[:paths][:destroy]
+		end
+
+		def get_destroy_link(object, options)
+			return @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object)), method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+		end
+		
+		def check_edit_link(options)
+			return options[:paths] && options[:paths][:edit]
+		end
+
+		def get_edit_link(object, options)
+			return @template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), (options[:paths][:edit].is_a?(Proc) ? options[:paths][:edit].call(object) : @template.method(options[:paths][:edit]).call(object)), class: "edit"
+		end
+
+		def check_show_link(options)
+			return options[:paths] && options[:paths][:show]
+		end
+
+		def get_show_link(object, label, options)
+			return @template.link_to label, (options[:paths][:show].is_a?(Proc) ? options[:paths][:show].call(object) : @template.method(options[:paths][:show]).call(object))
+		end
+
+		def check_create_link(options)
+			return options[:paths] && options[:paths][:create]
+		end
+
+		def get_create_link(object, options)
+			return @template.link_to "<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.create"), (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call), class: "create"
+		end
+
+		def check_inline_edit(options, column = nil)
+			if column.nil?
+				return options[:paths] && options[:paths][:update] && options[:inline_edit]
+			else
+				return options[:paths] && options[:paths][:update] && options[:inline_edit] && (options[:inline_edit] == true || options[:inline_edit].include?(column.to_sym))
+			end
+		end
+
+		def get_inline_edit_links(object, options)
+			result = ""
+			result += @template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit"
+			result += @template.link_to "<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), (options[:paths][:update].is_a?(Proc) ? options[:paths][:update].call(object) : @template.method(options[:paths][:update]).call(object)), class: "inline_edit save", style: "display: none;"
+			return result
+		end
+
+		def get_inline_edit_field(object, column, value, model_class)
+			return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"text\" class=\"text input\" value=\"#{value}\"/>"
 		end
 
 	end
