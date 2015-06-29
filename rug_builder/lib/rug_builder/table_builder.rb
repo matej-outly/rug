@@ -22,6 +22,43 @@ module RugBuilder
 		end
 
 		#
+		# Render show table
+		#
+		def show(object, columns)
+
+			# Check
+			if object.nil?
+				raise "Given object is nil."
+			end
+
+			result = ""
+
+			# Normalize columns to Columns object
+			columns = normalize_columns(columns)
+
+			# Headers
+			columns_headers = columns.headers
+
+			# Table
+			result += "<table class=\"show_table\">"
+
+			# Table body
+			result += "<tbody>"
+			columns_headers.each do |column|
+				result += "<tr>"
+				result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
+				result += "<td>#{columns.render(column, object)}</td>"
+				result += "</tr>"
+			end
+			result += "</tbody>"
+
+			# Table
+			result += "</table>"
+
+			return result.html_safe
+		end
+
+		#
 		# Render index table
 		#
 		# Options:
@@ -266,38 +303,6 @@ module RugBuilder
 
 			# Summary
 			result += resolve_summary(objects, model_class, options)
-
-			return result.html_safe
-		end
-
-		#
-		# Render show table
-		#
-		def show(object, columns)
-
-			result = ""
-
-			# Normalize columns to Columns object
-			columns = normalize_columns(columns)
-
-			# Headers
-			columns_headers = columns.headers
-
-			# Table
-			result += "<table class=\"show_table\">"
-
-			# Table body
-			result += "<tbody>"
-			columns_headers.each do |column|
-				result += "<tr>"
-				result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
-				result += "<td>#{columns.render(column, object)}</td>"
-				result += "</tr>"
-			end
-			result += "</tbody>"
-
-			# Table
-			result += "</table>"
 
 			return result.html_safe
 		end
