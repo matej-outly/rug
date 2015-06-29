@@ -2,20 +2,22 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug builder
+# * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 27. 4. 2015
+# * Date  : 28. 6. 2015
 # *
 # *****************************************************************************
 
-# Builders
-require "rug_builder/form_builder"
-require "rug_builder/table_builder"
-require "rug_builder/menu_builder"
-
-# Railtie
-require 'rug_builder/railtie' if defined?(Rails)
-
 module RugBuilder
+	module Helpers
+		module FormHelper
+
+			def rug_form_for(object, options = {}, &block)
+				options[:builder] = RugBuilder::FormBuilder
+				form_for(object, options, &block)
+			end
+
+		end
+	end
 end
