@@ -2,18 +2,19 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug controller
+# * Railtie for view helpers integration
 # *
 # * Author: Matěj Outlý
-# * Date  : 2. 6. 2015
+# * Date  : 28. 6. 2015
 # *
 # *****************************************************************************
 
-# Basic
-require "rug_controller/component"
+require 'rug_controller/helpers/render_helper'
 
-# Concerns
-require "rug_controller/concerns/component_binding"
-
-# Railtie
-require 'rug_controller/railtie' if defined?(Rails)
+module RugController
+	class Railtie < Rails::Railtie
+		initializer "rug_controller.helpers" do
+			ActionView::Base.send :include, Helpers::RenderHelper
+		end
+	end
+end

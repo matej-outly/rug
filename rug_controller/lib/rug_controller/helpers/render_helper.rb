@@ -2,18 +2,21 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug controller
+# * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 2. 6. 2015
+# * Date  : 29. 6. 2015
 # *
 # *****************************************************************************
 
-# Basic
-require "rug_controller/component"
+module RugController
+	module Helpers
+		module RenderHelper
 
-# Concerns
-require "rug_controller/concerns/component_binding"
+			def render_component(component)
+				return render(partial: component.to_partial_path, object: component)
+			end
 
-# Railtie
-require 'rug_controller/railtie' if defined?(Rails)
+		end
+	end
+end

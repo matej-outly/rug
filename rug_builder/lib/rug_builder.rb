@@ -16,6 +16,3 @@ require "rug_builder/menu_builder"
 
 # Railtie
 require 'rug_builder/railtie' if defined?(Rails)
-
-module RugBuilder
-end
