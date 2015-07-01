@@ -16,7 +16,7 @@ root_dir="$script_dir/.."
 build_dir="$root_dir/build"
 
 # All rug_* gems
-for gem in rug_support rug_record rug_controller rug_builder; do
+for gem in rug_support rug_record rug_controller rug_builder rug_view; do
 	gem install "$build_dir"/"$gem"-*
 done
 

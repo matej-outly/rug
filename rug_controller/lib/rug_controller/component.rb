@@ -13,6 +13,20 @@ module RugController
 	class Component
 
 		#
+		# Controller setter
+		#
+		def controller=(controller)
+			@controller = controller
+		end
+
+		#
+		# Controller getter
+		#
+		def controller
+			return @controller
+		end
+
+		#
 		# Component reset method
 		#
 		def reset

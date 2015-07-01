@@ -36,6 +36,7 @@ module RugController
 					before_action do
 						component = self.class.component_pool[component_class.path]
 						self.instance_variable_set("@#{component_class.name.to_snake}", component)
+						component.controller = self
 						component.reset
 						component.control
 					end

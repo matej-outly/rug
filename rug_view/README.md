@@ -1,4 +1,4 @@
-# RugController
+# RugView
 
 TODO: Write a gem description
 
@@ -6,7 +6,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'rug_controller'
+    gem 'rug_view'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install rug_controller
+    $ gem install rug_view
 
 ## Usage
 
