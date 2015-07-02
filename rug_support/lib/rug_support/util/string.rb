@@ -37,6 +37,20 @@ class String
 	end
 
 	#
+	# Upper-case with multibyte support
+	#
+	def mb_upcase
+		return self.mb_chars.upcase.to_s
+	end
+
+	#
+	# Lower-case with multibyte support
+	#
+	def mb_downcase
+		return self.mb_chars.downcase.to_s
+	end
+
+	#
 	# Upper-case only first letter, rest of the string is kept
 	#
 	def upcase_first
@@ -48,6 +62,20 @@ class String
 	#
 	def downcase_first
 		return self[0].downcase + self[1..-1]
+	end
+
+	#
+	# Upper-case only first letter, rest of the string is kept, multibyte support
+	#
+	def mb_upcase_first
+		return self[0].mb_upcase + self[1..-1]
+	end
+
+	#
+	# Lower-case only first letter, rest of the string is kept, multibyte support
+	#
+	def mb_downcase_first
+		return self[0].mb_downcase + self[1..-1]
 	end
 
 	#

@@ -24,7 +24,7 @@ module RugBuilder
 		#
 		# Render show table
 		#
-		def show(object, columns)
+		def show(object, columns, options = {})
 
 			# Check
 			if object.nil?
@@ -36,15 +36,12 @@ module RugBuilder
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
-			# Headers
-			columns_headers = columns.headers
-
 			# Table
-			result += "<table class=\"show_table\">"
+			result += "<table class=\"show_table #{options[:class].to_s}%>\">"
 
 			# Table body
 			result += "<tbody>"
-			columns_headers.each do |column|
+			columns.headers.each do |column|
 				result += "<tr>"
 				result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
 				result += "<td>#{columns.render(column, object)}</td>"
@@ -62,10 +59,12 @@ module RugBuilder
 		# Render index table
 		#
 		# Options:
-		# - paths (hash) - Define paths to show, edit and destroy actions
+		# - paths (hash) - Define paths to show, edit, inline_edit (update) and destroy actions
 		# - pagination (boolean) - Turn on pagination
 		# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 		# - summary (boolean) - Turn on summary
+		# - inline_edit (array) - array of columns suitable for inline edit
+		# - page_break (integer) - Break table (and page) after given number of rows
 		#
 		def index(objects, columns, options = {})
 
@@ -77,61 +76,14 @@ module RugBuilder
 			# Normalize columns
 			columns = normalize_columns(columns)
 
-			# Headers
-			columns_headers = columns.headers
-
 			# Table
-			result += "<table class=\"index_table striped\">"
-
-			# Table head
-			result += "<thead>"
-			result += "<tr>"
-			columns_headers.each do |column|
-				result += "<th>"
-				result += model_class.human_attribute_name(column.to_s).upcase_first
-				result += resolve_sorting(column, options)
-				result += "</th>"
-			end
-			result += "<th></th>" if check_inline_edit(options)
-			result += "<th></th>" if check_edit_link(options)
-			result += "<th></th>" if check_destroy_link(options)
-			result += "</tr>"
-			result += "</thead>"
-
-			# Table body
-			result += "<tbody>"
-			objects.each do |object|
-				
-				result += "<tr>"
-				columns_headers.each_with_index do |column, idx|
-					result += "<td>"
-					if check_inline_edit(options, column)
-						result += "<div class=\"inline_edit value\">"
-					end
-
-					# Standard read only value
-					if idx == 0 && check_show_link(options)
-						result += get_show_link(object, columns.render(column, object), options)
-					else
-						result += columns.render(column, object)
-					end
-					
-					if check_inline_edit(options, column)
-						result += "</div>"
-						result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
-					end
-					result += "</td>"
+			if options[:page_break] && options[:page_break] > 0 # Sliced
+				objects.each_slice(options[:page_break]) do |slice|
+					result += index_body(slice, columns, model_class, options)
 				end
-				result += "<td>#{get_inline_edit_links(object, options)}</td>" if check_inline_edit(options)
-				result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
-				result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
-				result += "</tr>"
-
+			else # Not slices
+				result += index_body(objects, columns, model_class, options)
 			end
-			result += "</tbody>"
-
-			# Table
-			result += "</table>"
 
 			# Pagination
 			result += resolve_pagination(objects, options)
@@ -140,60 +92,7 @@ module RugBuilder
 			result += resolve_summary(objects, model_class, options)
 
 			# Inline edit JS
-			if check_inline_edit(options)
-
-				js = ''
-				js += 'function index_table_inline_edit_ready()'
-				js += '{'
-				js += '	$(".index_table a.inline_edit.edit").on("click", function(e) {'
-				js += '		e.preventDefault();'
-				js += '		var row = $(this).closest("tr");'
-				js += '		row.find("a.inline_edit.edit").hide();'
-				js += '		row.find(".inline_edit.value").hide();'
-				js += '		row.find("a.inline_edit.save").show();'
-				js += '		row.find(".inline_edit.field").show();'
-				js += '	});'
-
-				js += '	$(".index_table a.inline_edit.save").on("click", function(e) {'
-				js += '		e.preventDefault();'
-				js += '		var _this = $(this);'
-				js += '		var row = _this.closest("tr");'
-				js += '		var url = _this.attr("href");'
-				js += '		$.ajax({'
-				js += '			url: url,'
-				js += '			dataType: "json",'
-				js += '			type: "PUT",'
-				js += '			data: row.find("input").serialize(),'
-				js += '			success: function(callback) '
-				js += '			{'
-				js += '				row.find(".inline_edit.field").removeClass("danger");'
-				js += '				if (callback === true) {'
-				js += '					row.find(".inline_edit.value").each(function () {'
-				js += '						$(this).html($(this).next().find("input").val());'
-				js += '					});'
-				js += '					row.find("a.inline_edit.save").hide();'
-				js += '					row.find(".inline_edit.field").hide();'
-				js += '					row.find("a.inline_edit.edit").show();'
-				js += '					row.find(".inline_edit.value").show();'
-				js += '				} else {'
-				js += '					for (var column in callback) {'
-				js += '						form.find(".field." + column).addClass("danger");'
-				js += '					}'
-				js += '				}'
-				js += '			},'
-				js += '			error: function(callback) '
-				js += '			{'
-				js += '				console.log("error");'
-				js += '			}'
-				js += '		});'
-				js += '	});'
-				js += '}'
-
-				js += '$(document).ready(index_table_inline_edit_ready);'
-				js += '$(document).on("page:load", index_table_inline_edit_ready);'
-
-				result += @template.javascript_tag(js)
-			end
+			result += resolve_inline_edit_js(options)			
 
 			return result.html_safe
 		end
@@ -215,22 +114,19 @@ module RugBuilder
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
-			# Headers
-			columns_headers = columns.headers
-
 			# Hierarchical
 			maximal_level = model_class.maximal_level 
 			open_siblings = {}
 			open_levels = {}
 
 			# Table
-			result += "<table class=\"hierarchical index_table striped\">"
+			result += "<table class=\"hierarchical index_table striped #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
 			result += "<tr>"
 			result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
-			columns_headers.each_with_index do |column, idx|
+			columns.headers.each_with_index do |column, idx|
 				if idx == 0
 					result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
 				else
@@ -276,7 +172,7 @@ module RugBuilder
 					end
 
 					# Columns
-					columns_headers.each_with_index do |column, column_idx|
+					columns.headers.each_with_index do |column, column_idx|
 						if column_idx == 0
 							if check_show_link(options)
 								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
@@ -323,16 +219,13 @@ module RugBuilder
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
-			# Headers
-			columns_headers = columns.headers
-
 			# Table
-			result += "<table class=\"editor_table striped\">"
+			result += "<table class=\"editor_table striped #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
 			result += "<tr>"
-			columns_headers.each do |column|
+			columns.headers.each do |column|
 				result += "<th>"
 				result += model_class.human_attribute_name(column.to_s).upcase_first
 				result += "</th>"
@@ -345,7 +238,7 @@ module RugBuilder
 			result += "<tbody>"
 			objects.each do |object|
 				result += "<tr class=\"#{object.new_record? ? "possibility" : ""}\">"
-				columns_headers.each_with_index do |column, idx|
+				columns.headers.each_with_index do |column, idx|
 					if idx == 0 && check_show_link(options)
 						result += "<td>#{get_show_link(object, columns.render(column, object), options)}</td>"
 					else
@@ -385,22 +278,19 @@ module RugBuilder
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
-			# Headers
-			columns_headers = columns.headers
-
 			# Hierarchical
 			maximal_level = model_class.maximal_level 
 			open_siblings = {}
 			open_levels = {}
 
 			# Table
-			result += "<table class=\"hierarchical editor_table striped\">"
+			result += "<table class=\"hierarchical editor_table striped #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
 			result += "<tr>"
 			result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
-			columns_headers.each_with_index do |column, idx|
+			columns.headers.each_with_index do |column, idx|
 				if idx == 0
 					result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
 				else
@@ -445,7 +335,7 @@ module RugBuilder
 					end
 
 					# Columns
-					columns_headers.each_with_index do |column, column_idx|
+					columns.headers.each_with_index do |column, column_idx|
 						if column_idx == 0
 							if check_show_link(options)
 								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
@@ -532,6 +422,65 @@ module RugBuilder
 			return result
 		end
 
+		def resolve_inline_edit_js(options)
+			if check_inline_edit(options)
+
+				js = ''
+				js += 'function index_table_inline_edit_ready()'
+				js += '{'
+				js += '	$(".index_table a.inline_edit.edit").on("click", function(e) {'
+				js += '		e.preventDefault();'
+				js += '		var row = $(this).closest("tr");'
+				js += '		row.find("a.inline_edit.edit").hide();'
+				js += '		row.find(".inline_edit.value").hide();'
+				js += '		row.find("a.inline_edit.save").show();'
+				js += '		row.find(".inline_edit.field").show();'
+				js += '	});'
+
+				js += '	$(".index_table a.inline_edit.save").on("click", function(e) {'
+				js += '		e.preventDefault();'
+				js += '		var _this = $(this);'
+				js += '		var row = _this.closest("tr");'
+				js += '		var url = _this.attr("href");'
+				js += '		$.ajax({'
+				js += '			url: url,'
+				js += '			dataType: "json",'
+				js += '			type: "PUT",'
+				js += '			data: row.find("input").serialize(),'
+				js += '			success: function(callback) '
+				js += '			{'
+				js += '				row.find(".inline_edit.field").removeClass("danger");'
+				js += '				if (callback === true) {'
+				js += '					row.find(".inline_edit.value").each(function () {'
+				js += '						$(this).html($(this).next().find("input").val());'
+				js += '					});'
+				js += '					row.find("a.inline_edit.save").hide();'
+				js += '					row.find(".inline_edit.field").hide();'
+				js += '					row.find("a.inline_edit.edit").show();'
+				js += '					row.find(".inline_edit.value").show();'
+				js += '				} else {'
+				js += '					for (var column in callback) {'
+				js += '						form.find(".field." + column).addClass("danger");'
+				js += '					}'
+				js += '				}'
+				js += '			},'
+				js += '			error: function(callback) '
+				js += '			{'
+				js += '				console.log("error");'
+				js += '			}'
+				js += '		});'
+				js += '	});'
+				js += '}'
+
+				js += '$(document).ready(index_table_inline_edit_ready);'
+				js += '$(document).on("page:load", index_table_inline_edit_ready);'
+
+				return @template.javascript_tag(js)
+			else
+				return ""
+			end
+		end
+
 		def check_destroy_link(options)
 			return options[:paths] && options[:paths][:destroy]
 		end
@@ -581,6 +530,65 @@ module RugBuilder
 
 		def get_inline_edit_field(object, column, value, model_class)
 			return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"text\" class=\"text input\" value=\"#{value}\"/>"
+		end
+
+		def index_body(objects, columns, model_class, options)
+			result = ""
+
+			# Table
+			result += "<table class=\"index_table striped #{options[:class].to_s}\">"
+
+			# Table head
+			result += "<thead>"
+			result += "<tr>"
+			columns.headers.each do |column|
+				result += "<th>"
+				result += model_class.human_attribute_name(column.to_s).upcase_first
+				result += resolve_sorting(column, options)
+				result += "</th>"
+			end
+			result += "<th></th>" if check_inline_edit(options)
+			result += "<th></th>" if check_edit_link(options)
+			result += "<th></th>" if check_destroy_link(options)
+			result += "</tr>"
+			result += "</thead>"
+
+			# Table body
+			result += "<tbody>"
+			objects.each do |object|
+				
+				result += "<tr>"
+				columns.headers.each_with_index do |column, idx|
+					result += "<td>"
+					if check_inline_edit(options, column)
+						result += "<div class=\"inline_edit value\">"
+					end
+
+					# Standard read only value
+					if idx == 0 && check_show_link(options)
+						result += get_show_link(object, columns.render(column, object), options)
+					else
+						result += columns.render(column, object)
+					end
+					
+					if check_inline_edit(options, column)
+						result += "</div>"
+						result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+					end
+					result += "</td>"
+				end
+				result += "<td>#{get_inline_edit_links(object, options)}</td>" if check_inline_edit(options)
+				result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
+				result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
+				result += "</tr>"
+
+			end
+			result += "</tbody>"
+
+			# Table
+			result += "</table>"
+
+			return result
 		end
 
 	end

@@ -13,8 +13,8 @@ module RugBuilder
 	module Helpers
 		module TableHelper
 
-			def rug_show_table_for(object, columns)
-				RugBuilder::TableBuilder.new(self).show(object, columns)
+			def rug_show_table_for(object, columns, options = {})
+				RugBuilder::TableBuilder.new(self).show(object, columns, options)
 			end
 
 			def rug_index_table_for(objects, columns, options = {})
