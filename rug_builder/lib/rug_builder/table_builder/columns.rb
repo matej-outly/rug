@@ -232,7 +232,7 @@ module RugBuilder
 				value = object.send(column)
 				return "" if value.blank?
 				if @columns[column][:path]
-					return "<a href=\"#{@template.method(@columns[column][:path]).call(value)}\">#{value.send(@columns[column][:label])}</a>"
+					return "<a href=\"#{(@columns[column][:path].is_a?(Proc) ? @columns[column][:path].call(object) : @template.method(@columns[column][:path]).call(value))}\">#{value.send(@columns[column][:label])}</a>"
 				else
 					return value.send(@columns[column][:label])
 				end
@@ -241,7 +241,7 @@ module RugBuilder
 			def render_has_many(column, object)
 				collection = object.send(column)
 				if @columns[column][:path]
-					return collection.map { |item| "<a href=\"#{@template.method(@columns[column][:path]).call(item)}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
+					return collection.map { |item| "<a href=\"#{(@columns[column][:path].is_a?(Proc) ? @columns[column][:path].call(object) : @template.method(@columns[column][:path]).call(item))}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
 				else
 					return collection.map { |item| item.send(@columns[column][:label]) }.join(", ")
 				end

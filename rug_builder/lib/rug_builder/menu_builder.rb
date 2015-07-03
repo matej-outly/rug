@@ -116,7 +116,7 @@ module RugBuilder
 
 			# Options
 			options[:icon] = "plus" if options[:icon].nil?
-			options[:active] = (@template.action_name == "new") if options[:active].nil?
+			options[:active] = (@template.action_name == "new" || @template.action_name == "create") if options[:active].nil?
 			options["data-no-turbolink"] = true
 
 			return self.item(label, path, options)
@@ -144,7 +144,7 @@ module RugBuilder
 
 			# Options
 			options[:icon] = "pencil" if options[:icon].nil?
-			options[:active] = (@template.action_name == "edit") if options[:active].nil?
+			options[:active] = (@template.action_name == "edit" || @template.action_name == "update") if options[:active].nil?
 			options["data-no-turbolink"] = true
 
 			return self.item(label, path, options)
