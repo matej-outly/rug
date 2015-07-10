@@ -564,11 +564,13 @@ module RugBuilder
 		end
 
 		def get_destroy_link(object, options)
-			return @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object)), method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+			path = (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object))
+			return (path ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), path, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) : "")
 		end
 
 		def get_destroy_link_raw(object, options)
-			return @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object)), class: "destroy"
+			path = (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object))
+			return (path ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), path, class: "destroy") : "")
 		end
 		
 		def check_edit_link(options)
@@ -576,7 +578,8 @@ module RugBuilder
 		end
 
 		def get_edit_link(object, options)
-			return @template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), (options[:paths][:edit].is_a?(Proc) ? options[:paths][:edit].call(object) : @template.method(options[:paths][:edit]).call(object)), class: "edit"
+			path = (options[:paths][:edit].is_a?(Proc) ? options[:paths][:edit].call(object) : @template.method(options[:paths][:edit]).call(object))
+			return (path ? @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), path, class: "edit"): "")
 		end
 
 		def check_show_link(options)
@@ -584,7 +587,8 @@ module RugBuilder
 		end
 
 		def get_show_link(object, label, options)
-			return @template.link_to label, (options[:paths][:show].is_a?(Proc) ? options[:paths][:show].call(object) : @template.method(options[:paths][:show]).call(object))
+			path = (options[:paths][:show].is_a?(Proc) ? options[:paths][:show].call(object) : @template.method(options[:paths][:show]).call(object))
+			return (path ? @template.link_to(label, path) : label)
 		end
 
 		def check_create_link(options)
@@ -592,7 +596,8 @@ module RugBuilder
 		end
 
 		def get_create_link(object, options)
-			return @template.link_to "<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call), class: "create"
+			path = (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call)
+			return (path ? @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), path, class: "create") : "")
 		end
 
 		def check_inline_edit(options, column = nil)
@@ -605,8 +610,8 @@ module RugBuilder
 
 		def get_inline_edit_links(object, options)
 			result = ""
-			result += @template.link_to "<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit"
-			result += @template.link_to "<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), (options[:paths][:update].is_a?(Proc) ? options[:paths][:update].call(object) : @template.method(options[:paths][:update]).call(object)), class: "inline_edit save", style: "display: none;"
+			result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit")
+			result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), (options[:paths][:update].is_a?(Proc) ? options[:paths][:update].call(object) : @template.method(options[:paths][:update]).call(object)), class: "inline_edit save", style: "display: none;")
 			return result
 		end
 
