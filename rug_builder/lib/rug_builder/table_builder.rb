@@ -92,7 +92,7 @@ module RugBuilder
 			result += resolve_summary(objects, model_class, options)
 
 			# Inline edit JS
-			result += resolve_inline_edit_js(options)			
+			result += resolve_inline_edit_js(options)
 
 			return result.html_safe
 		end
@@ -230,6 +230,7 @@ module RugBuilder
 				result += model_class.human_attribute_name(column.to_s).upcase_first
 				result += "</th>"
 			end
+			result += "<th></th>" if check_edit_link(options)
 			result += "<th></th>"
 			result += "</tr>"
 			result += "</thead>"
@@ -245,11 +246,18 @@ module RugBuilder
 						result += "<td>#{columns.render(column, object)}</td>"
 					end
 				end
+				result += "<td>#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
 				result += "<td>"
 				if object.new_record? 
+
+					# Create hidden fields containing create data
+					data.each do |data_column|
+						result += get_editor_create_field(object, data_column, object.send(data_column), model_class)
+					end
+
 					result += get_create_link(object, options) if check_create_link(options)
 				else
-					result += get_destroy_link(object, options) if check_destroy_link(options)
+					result += get_destroy_link_raw(object, options) if check_destroy_link(options)
 				end
 				result += "</td>"
 				result += "</tr>"
@@ -258,6 +266,9 @@ module RugBuilder
 
 			# Table
 			result += "</table>"
+
+			# JS
+			result += resolve_editor_js
 
 			return result.html_safe
 		end
@@ -297,6 +308,7 @@ module RugBuilder
 					result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
 				end
 			end
+			result += "<th></th>" if check_edit_link(options)
 			result += "<th></th>"
 			result += "</tr>"
 			result += "</thead>"
@@ -348,11 +360,18 @@ module RugBuilder
 					end
 
 					# Actions
+					result += "<td>#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
 					result += "<td>"
 					if object.new_record? 
+
+						# Create hidden fields containing create data
+						data.each do |data_column|
+							result += get_editor_create_field(object, data_column, object.send(data_column), model_class)
+						end
+
 						result += get_create_link(object, options) if check_create_link(options)
 					else
-						result += get_destroy_link(object, options) if check_destroy_link(options)
+						result += get_destroy_link_raw(object, options) if check_destroy_link(options)
 					end
 					result += "</td>"
 					result += "</tr>"
@@ -364,6 +383,9 @@ module RugBuilder
 
 			# Table
 			result += "</table>"
+
+			# JS
+			result += resolve_editor_js
 
 			return result.html_safe
 		end
@@ -481,12 +503,72 @@ module RugBuilder
 			end
 		end
 
+		def resolve_editor_js
+			js = ''
+
+			js += 'function editor_table_ready()'
+			js += '{'
+			js += '	$(".editor_table a.create").on("click", function(e) {'
+			js += '		e.preventDefault();'
+			js += '		var _this = $(this);'
+			js += '		var row = _this.closest("tr");'
+			js += '		var url = _this.attr("href");'
+			js += '		$.ajax({'
+			js += '			url: url,'
+			js += '			dataType: "html",'
+			js += '			type: "POST",'
+			js += '			data: row.find("input").serialize(),'
+			js += '			success: function(callback) '
+			js += '			{'
+			js += '				var new_html = $(callback).find(".editor_table").html();'
+			js += '				$(".editor_table").html(new_html);'
+			js += '				editor_table_ready();'
+			js += '			},'
+			js += '			error: function(callback) '
+			js += '			{'
+			js += '				console.log("error");'
+			js += '			}'
+			js += '		});'
+			js += '	});'
+
+			js += '	$(".editor_table a.destroy").on("click", function(e) {'
+			js += '		e.preventDefault();'
+			js += '		var _this = $(this);'
+			js += '		var url = _this.attr("href");'
+			js += '		$.ajax({'
+			js += '			url: url,'
+			js += '			dataType: "html",'
+			js += '			type: "DELETE",'
+			js += '			success: function(callback) '
+			js += '			{'
+			js += '				var new_html = $(callback).find(".editor_table").html();'
+			js += '				$(".editor_table").html(new_html);'
+			js += '				editor_table_ready();'
+			js += '			},'
+			js += '			error: function(callback) '
+			js += '			{'
+			js += '				console.log("error");'
+			js += '			}'
+			js += '		});'
+			js += '	});'
+			js += '}'
+
+			js += '$(document).ready(editor_table_ready);'
+			js += '$(document).on("page:load", editor_table_ready);'
+
+			return @template.javascript_tag(js)
+		end
+
 		def check_destroy_link(options)
 			return options[:paths] && options[:paths][:destroy]
 		end
 
 		def get_destroy_link(object, options)
 			return @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object)), method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+		end
+
+		def get_destroy_link_raw(object, options)
+			return @template.link_to "<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object)), class: "destroy"
 		end
 		
 		def check_edit_link(options)
@@ -510,7 +592,7 @@ module RugBuilder
 		end
 
 		def get_create_link(object, options)
-			return @template.link_to "<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.create"), (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call), class: "create"
+			return @template.link_to "<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call), class: "create"
 		end
 
 		def check_inline_edit(options, column = nil)
@@ -530,6 +612,10 @@ module RugBuilder
 
 		def get_inline_edit_field(object, column, value, model_class)
 			return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"text\" class=\"text input\" value=\"#{value}\"/>"
+		end
+
+		def get_editor_create_field(object, column, value, model_class)
+			return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"hidden\" value=\"#{value}\"/>"
 		end
 
 		def index_body(objects, columns, model_class, options)
