@@ -392,6 +392,22 @@ module RugBuilder
 
 	private
 
+		def resolve_path(path, object = nil)
+			if path.is_a?(Proc)
+				if object.nil?
+					return path.call
+				else
+					return path.call(object)
+				end
+			else
+				if object.nil?
+					return @template.method(path.to_sym).call
+				else
+					return @template.method(path.to_sym).call(object)
+				end
+			end
+		end
+
 		def get_model_class(objects, options)
 			
 			# Model class
@@ -564,12 +580,12 @@ module RugBuilder
 		end
 
 		def get_destroy_link(object, options)
-			path = (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object))
+			path = resolve_path(options[:paths][:destroy], object)
 			return (path ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), path, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) : "")
 		end
 
 		def get_destroy_link_raw(object, options)
-			path = (options[:paths][:destroy].is_a?(Proc) ? options[:paths][:destroy].call(object) : @template.method(options[:paths][:destroy]).call(object))
+			path = resolve_path(options[:paths][:destroy], object)
 			return (path ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), path, class: "destroy") : "")
 		end
 		
@@ -578,7 +594,7 @@ module RugBuilder
 		end
 
 		def get_edit_link(object, options)
-			path = (options[:paths][:edit].is_a?(Proc) ? options[:paths][:edit].call(object) : @template.method(options[:paths][:edit]).call(object))
+			path = resolve_path(options[:paths][:edit], object)
 			return (path ? @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), path, class: "edit"): "")
 		end
 
@@ -587,7 +603,7 @@ module RugBuilder
 		end
 
 		def get_show_link(object, label, options)
-			path = (options[:paths][:show].is_a?(Proc) ? options[:paths][:show].call(object) : @template.method(options[:paths][:show]).call(object))
+			path = resolve_path(options[:paths][:show], object)
 			return (path ? @template.link_to(label, path) : label)
 		end
 
@@ -596,7 +612,7 @@ module RugBuilder
 		end
 
 		def get_create_link(object, options)
-			path = (options[:paths][:create].is_a?(Proc) ? options[:paths][:create].call : @template.method(options[:paths][:create]).call)
+			path = resolve_path(options[:paths][:create])
 			return (path ? @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), path, class: "create") : "")
 		end
 
@@ -611,7 +627,7 @@ module RugBuilder
 		def get_inline_edit_links(object, options)
 			result = ""
 			result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit")
-			result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), (options[:paths][:update].is_a?(Proc) ? options[:paths][:update].call(object) : @template.method(options[:paths][:update]).call(object)), class: "inline_edit save", style: "display: none;")
+			result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), resolve_path(options[:paths][:update], object), class: "inline_edit save", style: "display: none;")
 			return result
 		end
 

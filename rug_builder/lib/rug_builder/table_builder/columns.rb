@@ -94,6 +94,22 @@ module RugBuilder
 
 		protected
 
+			def resolve_path(path, object = nil)
+				if path.is_a?(Proc)
+					if object.nil?
+						return path.call
+					else
+						return path.call(object)
+					end
+				else
+					if object.nil?
+						return @template.method(path.to_sym).call
+					else
+						return @template.method(path.to_sym).call(object)
+					end
+				end
+			end
+
 			# *********************************************************************
 			# Known types
 			# *********************************************************************
@@ -232,7 +248,7 @@ module RugBuilder
 				value = object.send(column)
 				return "" if value.blank?
 				if @columns[column][:path]
-					return "<a href=\"#{(@columns[column][:path].is_a?(Proc) ? @columns[column][:path].call(object) : @template.method(@columns[column][:path]).call(value))}\">#{value.send(@columns[column][:label])}</a>"
+					return "<a href=\"#{resolve_path(@columns[column][:path], value)}\">#{value.send(@columns[column][:label])}</a>"
 				else
 					return value.send(@columns[column][:label])
 				end
@@ -241,7 +257,7 @@ module RugBuilder
 			def render_has_many(column, object)
 				collection = object.send(column)
 				if @columns[column][:path]
-					return collection.map { |item| "<a href=\"#{(@columns[column][:path].is_a?(Proc) ? @columns[column][:path].call(object) : @template.method(@columns[column][:path]).call(item))}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
+					return collection.map { |item| "<a href=\"#{resolve_path(@columns[column][:path], item)}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
 				else
 					return collection.map { |item| item.send(@columns[column][:label]) }.join(", ")
 				end

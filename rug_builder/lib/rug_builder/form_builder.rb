@@ -14,9 +14,25 @@ require 'action_view'
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 		
-		delegate :content_tag, to: :@template
-		delegate :text_field_tag, to: :@template
-		delegate :javascript_tag, to: :@template
+		def self.resolve_path(template, path, object = nil)
+			if path.is_a?(Proc)
+				if object.nil?
+					return path.call
+				else
+					return path.call(object)
+				end
+			else
+				if object.nil?
+					return template.method(path.to_sym).call
+				else
+					return template.method(path.to_sym).call(object)
+				end
+			end
+		end
+
+		def resolve_path(path, object = nil)
+			return self.class.resolve_path(@template, path, object)
+		end
 
 		def read_only_row(name, content, options = nil)
 			result = "<p>"
@@ -59,7 +75,7 @@ module RugBuilder
 			
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -83,7 +99,7 @@ module RugBuilder
 			
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -119,7 +135,7 @@ module RugBuilder
 			
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 			result += "</p>"
 			return result.html_safe
@@ -167,7 +183,7 @@ module RugBuilder
 			
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -198,7 +214,7 @@ module RugBuilder
 			# Errors
 			result += "</div>"
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -223,7 +239,7 @@ module RugBuilder
 			
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -255,19 +271,19 @@ module RugBuilder
 
 			# Field (first row)
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: "text input xwide", placeholder: label_street)
-			result += text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: "text input xnarrow", placeholder: label_number)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: "text input xwide", placeholder: label_street)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: "text input xnarrow", placeholder: label_number)
 			result += "</div>"
 
 			# Field (second row)
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: "text input xwide", placeholder: label_city)
-			result += text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: "text input xnarrow", placeholder: label_postcode)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: "text input xwide", placeholder: label_city)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: "text input xnarrow", placeholder: label_postcode)
 			result += "</div>"
 
 			# Errors
 			if object.errors[name].size > 0
-				result += content_tag(:span, object.errors[name][0], :class => "danger label")
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
 			result += "</p>"
@@ -296,6 +312,7 @@ module RugBuilder
 			js += "	});"
 			js += "}"
 			js += "$(document).ready(datepicker_#{hash}_ready);"
+			js += "$(document).on('page:load', datepicker_#{hash}_ready);"
 			
 			# CSS
 			css = ""
@@ -308,11 +325,93 @@ module RugBuilder
 			options = {} if options.nil?
 			options[:id] = "datepicker_#{hash}"
 
-			# Section
+			# Datepicker
 			result = ""
-			result += javascript_tag(js)
+			result += @template.javascript_tag(js)
 			result += "<style>" + css + "</style>"
 			result += text_input_row(name, :text_field, options)
+
+			return result.html_safe
+		end
+
+		def dropzone_row(name, options = nil)
+			
+			if !self.options[:update_url] || (object.new_record? && !self.options[:create_url])
+				raise "Please define update and create URL."
+			end
+
+			# Preset
+			result = ""
+
+			# Label
+			if !options.nil? && !options[:label].nil?
+				result += label(name, options[:label])
+			else
+				result += label(name)
+			end
+
+			# Default URL and method
+			default_url = (object.new_record? ? resolve_path(self.options[:create_url]) : resolve_path(self.options[:update_url], object))
+			default_method = (object.new_record? ? "post" : "put")
+
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			js = ""
+			js += "function dropzone_#{hash}_ready()"
+			js += "{"
+			js += "	Dropzone.autoDiscover = false;"
+			js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {"
+			js += "		url: '#{default_url}',"
+			js += "		method: '#{default_method}', /* method given by function not working, that's why we do it by changing static options in success event */"
+			js += "		paramName: '#{object.class.model_name.param_key}[#{name.to_s}]',"
+			js += "		maxFiles: 1"
+			js += "	});"
+			js += "	dropzone.on('sending', function(file, xhr, data) {"
+			js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');"
+			if options[:append_columns]
+				options[:append_columns].each do |append_column|
+					js += "		data.append('#{object.class.model_name.param_key}[#{append_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());"
+				end
+			end
+			js += "	});"
+			js += "	dropzone.on('maxfilesexceeded', function(file) {"
+			js += "		this.options.maxFiles = 1;"
+			js += "		this.removeAllFiles(true);"
+			js += "		this.addFile(file);"
+			js += "	});"
+			js += "	dropzone.on('success', function(file, response) {"
+			js += "		var response_id = parseInt(response);"
+			js += "		if (!isNaN(response_id)) {"
+			js += "			var form = $('##{self.options[:html][:id]}');"
+			js += "			var update_url = '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', response_id);"
+			js += "			if (form.attr('action') != update_url) {"
+			js += "				form.attr('action', update_url); /* Form */"
+			js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');"
+			js += "			}"
+			js += "			this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */"
+			js += "			this.options.method = 'put';"
+			js += "		} else { /* Error saving image */ "
+			js += "		}"
+			js += "	});"
+
+			value = object.send(name)
+			if value && value.exists?
+				js += "	var mock_file = { name: '#{object.send(name.to_s + "_file_name")}', size: #{object.send(name.to_s + "_file_size")} };"
+				js += "	dropzone.emit('addedfile', mock_file);"
+				js += "	dropzone.emit('thumbnail', mock_file, '#{value.url}');"
+				js += "	dropzone.files.push(mock_file);"
+				js += "	dropzone.emit('complete', mock_file);"
+				js += "	dropzone.options.maxFiles = dropzone.options.maxFiles - 1;"
+			end
+
+			js += "}"
+			js += "$(document).ready(dropzone_#{hash}_ready);"
+			js += "$(document).on('page:load', dropzone_#{hash}_ready);"
+
+			# Dropzone
+			result += @template.javascript_tag(js)
+			result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"><div class=\"dz-message\">#{I18n.t("general.drop_file_here")}</div></div>"
 
 			return result.html_safe
 		end
@@ -371,8 +470,8 @@ module RugBuilder
 			
 			# Section
 			result = ""
-			result += javascript_tag(js)
-			result += content_tag(:div, { :id => "conditional_section_#{hash}" }, &block)
+			result += @template.javascript_tag(js)
+			result += @template.content_tag(:div, { :id => "conditional_section_#{hash}" }, &block)
 			
 			return result.html_safe
 		end

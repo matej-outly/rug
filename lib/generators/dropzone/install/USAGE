@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Dropzone.js library.
+
+Example:
+    rails generate dropzone:install
