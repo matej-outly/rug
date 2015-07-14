@@ -39,7 +39,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -58,7 +60,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -87,7 +91,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -111,7 +117,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -146,7 +154,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -195,7 +205,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -251,7 +263,9 @@ module RugBuilder
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -297,29 +311,29 @@ module RugBuilder
 
 			# JavaScript
 			js = ""
-			js += "function datepicker_#{hash}_ready()"
-			js += "{"
-			js += "	$('#datepicker_#{hash}').pikaday({ "
-			js += "		firstDay: 1,"
-			js += "		format: 'YYYY-MM-DD',"
-			js += "		i18n: {"
-			js += "			previousMonth : 'Předchozí měsíc',"
-			js += "			nextMonth     : 'Následující měsíc',"
-			js += "			months        : ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'],"
-			js += "			weekdays      : ['Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota'],"
-			js += "			weekdaysShort : ['Ne','Po','Út','St','Čt','Pá','So']"
-			js += "		}"
-			js += "	});"
-			js += "}"
-			js += "$(document).ready(datepicker_#{hash}_ready);"
-			js += "$(document).on('page:load', datepicker_#{hash}_ready);"
+			js += "function datepicker_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	$('#datepicker_#{hash}').pikaday({ \n"
+			js += "		firstDay: 1,\n"
+			js += "		format: 'YYYY-MM-DD',\n"
+			js += "		i18n: {\n"
+			js += "			previousMonth : '#{I18n.t("views.calendar.prev_month")}',\n"
+			js += "			nextMonth     : '#{I18n.t("views.calendar.next_month")}',\n"
+			js += "			months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],\n"
+			js += "			weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],\n"
+			js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
+			js += "		}\n"
+			js += "	});\n"
+			js += "}\n"
+			js += "$(document).ready(datepicker_#{hash}_ready);\n"
+			js += "$(document).on('page:load', datepicker_#{hash}_ready);\n"
 			
 			# CSS
 			css = ""
-			css += ".pika-single table thead { background: none; }"
-			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }"
-			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }"
-			css += ".pika-button:hover { background: #616161 !important; border-radius: 0 !important; }"
+			css += ".pika-single table thead { background: none; }\n"
+			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }\n"
+			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }\n"
+			css += ".pika-button:hover { background: #616161 !important; border-radius: 0 !important; }\n"
 
 			# Options
 			options = {} if options.nil?
@@ -345,7 +359,9 @@ module RugBuilder
 
 			# Label
 			if !options.nil? && !options[:label].nil?
-				result += label(name, options[:label])
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
 			else
 				result += label(name)
 			end
@@ -358,60 +374,163 @@ module RugBuilder
 			hash = Digest::SHA1.hexdigest(name.to_s)
 
 			js = ""
-			js += "function dropzone_#{hash}_ready()"
-			js += "{"
-			js += "	Dropzone.autoDiscover = false;"
-			js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {"
-			js += "		url: '#{default_url}',"
-			js += "		method: '#{default_method}', /* method given by function not working, that's why we do it by changing static options in success event */"
-			js += "		paramName: '#{object.class.model_name.param_key}[#{name.to_s}]',"
-			js += "		maxFiles: 1"
-			js += "	});"
-			js += "	dropzone.on('sending', function(file, xhr, data) {"
-			js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');"
-			if options[:append_columns]
-				options[:append_columns].each do |append_column|
-					js += "		data.append('#{object.class.model_name.param_key}[#{append_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());"
+			js += "function dropzone_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	Dropzone.autoDiscover = false;\n"
+			js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {\n"
+			js += "		url: '#{default_url}',\n"
+			js += "		method: '#{default_method}', /* method given by function not working, that's why we do it by changing static options in success event */\n"
+			js += "		paramName: '#{object.class.model_name.param_key}[#{name.to_s}]',\n"
+			js += "		maxFiles: 1,\n"
+			js += "		dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',\n"
+			js += "	});\n"
+			js += "	dropzone.on('sending', function(file, xhr, data) {\n"
+			js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');\n"
+			if !options.nil? && options[:append_columns]
+				options[:append_columns].each do |append_column, as_column|
+					as_column = append_column if as_column == true
+					js += "		data.append('#{object.class.model_name.param_key}[#{as_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());\n"
 				end
 			end
-			js += "	});"
-			js += "	dropzone.on('maxfilesexceeded', function(file) {"
-			js += "		this.options.maxFiles = 1;"
-			js += "		this.removeAllFiles(true);"
-			js += "		this.addFile(file);"
-			js += "	});"
-			js += "	dropzone.on('success', function(file, response) {"
-			js += "		var response_id = parseInt(response);"
-			js += "		if (!isNaN(response_id)) {"
-			js += "			var form = $('##{self.options[:html][:id]}');"
-			js += "			var update_url = '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', response_id);"
-			js += "			if (form.attr('action') != update_url) {"
-			js += "				form.attr('action', update_url); /* Form */"
-			js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');"
-			js += "			}"
-			js += "			this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */"
-			js += "			this.options.method = 'put';"
-			js += "		} else { /* Error saving image */ "
-			js += "		}"
-			js += "	});"
+			js += "	});\n"
+			js += "	dropzone.on('maxfilesexceeded', function(file) {\n"
+			js += "		this.options.maxFiles = 1;\n"
+			js += "		this.removeAllFiles(true);\n"
+			js += "		this.addFile(file);\n"
+			js += "	});\n"
+			js += "	dropzone.on('success', function(file, response) {\n"
+			js += "		var response_id = parseInt(response);\n"
+			js += "		if (!isNaN(response_id)) {\n"
+			js += "			var form = $('##{self.options[:html][:id]}');\n"
+			js += "			var update_url = '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', response_id);\n"
+			js += "			if (form.attr('action') != update_url) {\n"
+			js += "				form.attr('action', update_url); /* Form */\n"
+			js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');\n"
+			js += "			}\n"
+			js += "			this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */\n"
+			js += "			this.options.method = 'put';\n"
+			js += "		} else { /* Error saving image */ \n"
+			js += "		}\n"
+			js += "	});\n"
 
 			value = object.send(name)
 			if value && value.exists?
-				js += "	var mock_file = { name: '#{object.send(name.to_s + "_file_name")}', size: #{object.send(name.to_s + "_file_size")} };"
-				js += "	dropzone.emit('addedfile', mock_file);"
-				js += "	dropzone.emit('thumbnail', mock_file, '#{value.url}');"
-				js += "	dropzone.files.push(mock_file);"
-				js += "	dropzone.emit('complete', mock_file);"
-				js += "	dropzone.options.maxFiles = dropzone.options.maxFiles - 1;"
+				js += "	var mock_file = { name: '#{object.send(name.to_s + "_file_name")}', size: #{object.send(name.to_s + "_file_size")} };\n"
+				js += "	dropzone.emit('addedfile', mock_file);\n"
+				js += "	dropzone.emit('thumbnail', mock_file, '#{value.url}');\n"
+				js += "	dropzone.files.push(mock_file);\n"
+				js += "	dropzone.emit('complete', mock_file);\n"
+				js += "	dropzone.options.maxFiles = dropzone.options.maxFiles - 1;\n"
 			end
 
-			js += "}"
-			js += "$(document).ready(dropzone_#{hash}_ready);"
-			js += "$(document).on('page:load', dropzone_#{hash}_ready);"
+			js += "}\n"
+			js += "$(document).ready(dropzone_#{hash}_ready);\n"
+			js += "$(document).on('page:load', dropzone_#{hash}_ready);\n"
 
 			# Dropzone
 			result += @template.javascript_tag(js)
+			result += "<div class=\"field\">"
 			result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"><div class=\"dz-message\">#{I18n.t("general.drop_file_here")}</div></div>"
+			result += "</div>"
+
+			return result.html_safe
+		end
+
+		def dropzone_many_row(name, attachment_name, create_url, destroy_url, collection = nil, collection_class = nil, options = nil)
+			
+			# Collection
+			if collection.nil?
+				collection = object.send(name)
+			end
+			if collection.nil?
+				raise "Please define collection."
+			end
+
+			# Collection model class
+			if collection_class.nil?
+				collection_class = object.class.reflect_on_association(name).class_name.constantize
+			end
+
+			# Preset
+			result = ""
+
+			# Label
+			if !options.nil? && !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			js = ""
+			js += "function dropzone_many_#{hash}_add_file(dropzone, file_name, file_size, thumb_url, record_id)\n"
+			js += "{\n"
+			js += "	var mock_file = { name: file_name, size: file_size, record_id: record_id };\n"
+			js += "	dropzone.emit('addedfile', mock_file);\n"
+			js += "	dropzone.emit('thumbnail', mock_file, thumb_url);\n"
+			js += "	dropzone.files.push(mock_file);\n"
+			js += "	dropzone.emit('complete', mock_file);\n"
+			js += "}\n"
+			js += "function dropzone_many_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	Dropzone.autoDiscover = false;\n"
+			js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {\n"
+			js += "		url: '#{resolve_path(create_url)}',\n"
+			js += "		method: 'post',\n"
+			js += "		paramName: '#{collection_class.model_name.param_key}[#{attachment_name}]',\n"
+			js += "		addRemoveLinks: true,\n"
+			js += "		dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',\n"
+			js += "		dictRemoveFile: '#{I18n.t("general.action.destroy")}',\n"
+			js += "		dictCancelUpload: '#{I18n.t("general.action.cancel")}',\n"
+			js += "		dictCancelUploadConfirmation: '#{I18n.t("general.are_you_sure")}',\n"
+			js += "	});\n"
+			js += "	dropzone.on('sending', function(file, xhr, data) {\n"
+			js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');\n"
+			if !options.nil? && options[:append_columns]
+				options[:append_columns].each do |append_column, as_column|
+					as_column = append_column if as_column == true
+					js += "		data.append('#{collection_class.model_name.param_key}[#{as_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());\n"
+				end
+			end
+			js += "	});\n"
+			js += "	dropzone.on('success', function(file, response) {\n"
+			js += "		var response_id = parseInt(response);\n"
+			js += "		if (!isNaN(response_id)) {\n"
+			js += "			file.record_id = response_id;\n"
+			js += "		} else { /* Error saving image */\n"
+			js += "		}\n"
+			js += "	});\n"
+			js += "	dropzone.on('removedfile', function(file) {\n"
+			js += "		if (file.record_id) {\n"
+			js += "			var destroy_url = '#{resolve_path(destroy_url, ":id")}'.replace(':id', file.record_id);\n"
+			js += "			$.ajax({\n"
+			js += "				url: destroy_url,\n"
+			js += "				dataType: 'json',\n"
+			js += "				type: 'DELETE'\n"
+			js += "			});\n"
+			js += "		}\n"
+			js += "	});\n"
+			
+			collection.each do |item|
+				value = item.send(attachment_name)
+				if value && value.exists?
+					js += "	dropzone_many_#{hash}_add_file(dropzone, '#{item.send(attachment_name.to_s + "_file_name")}', #{item.send(attachment_name.to_s + "_file_size")}, '#{value.url}', #{item.id});\n"
+				end
+			end
+
+			js += "}\n"
+			js += "$(document).ready(dropzone_many_#{hash}_ready);\n"
+			js += "$(document).on('page:load', dropzone_many_#{hash}_ready);\n"
+
+			# Dropzone
+			result += @template.javascript_tag(js)
+			result += "<div class=\"field\">"
+			result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"></div>"
+			result += "</div>"
 
 			return result.html_safe
 		end
@@ -431,42 +550,43 @@ module RugBuilder
 
 			# JavaScript
 			js = ""
-			js += "var conditional_section_#{hash}_ready_in_progress = true;"
+			js += "var conditional_section_#{hash}_ready_in_progress = true;\n"
 			
-			js += "function conditional_section_#{hash}_interpret(value) {"
-			js += "		console.log(value);"
-			js += "		if (" + condition_rule + ") {"
-			js += "			if (conditional_section_#{hash}_ready_in_progress) {"
-			js += "				$('#conditional_section_#{hash}').show();"
-			js += "			} else {"
-			js += "				$('#conditional_section_#{hash}').slideDown();"
-			js += "			}"
-			js += "		} else {"
-			js += "			if (conditional_section_#{hash}_ready_in_progress) {"
-			js += "				$('#conditional_section_#{hash}').hide();"
-			js += "			} else {"
-			js += "				$('#conditional_section_#{hash}').slideUp();"
-			js += "			}"
-			js += "		}"
-			js += "		conditional_section_#{hash}_ready_in_progress = false;"
-			js += "}"
+			js += "function conditional_section_#{hash}_interpret(value)\n"
+			js += "{\n"
+			js += "		console.log(value);\n"
+			js += "		if (" + condition_rule + ") {\n"
+			js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
+			js += "				$('#conditional_section_#{hash}').show();\n"
+			js += "			} else {\n"
+			js += "				$('#conditional_section_#{hash}').slideDown();\n"
+			js += "			}\n"
+			js += "		} else {\n"
+			js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
+			js += "				$('#conditional_section_#{hash}').hide();\n"
+			js += "			} else {\n"
+			js += "				$('#conditional_section_#{hash}').slideUp();\n"
+			js += "			}\n"
+			js += "		}\n"
+			js += "		conditional_section_#{hash}_ready_in_progress = false;\n"
+			js += "}\n"
 
-			js += "function conditional_section_#{hash}_ready() {"
-			js += "	"
-			js += "	$('#conditional_section_#{hash}').hide();"
-			js += "	$('[name=\\'#{object.class.model_name.param_key}[#{condition_name.to_s}]\\']').on('change', function(e) {"
-			js += "		var _this = $(this);"
-			js += "		if (_this.is(':radio')) {"
-			js += "			if (_this.is(':checked')) {"
-			js += "				conditional_section_#{hash}_interpret(_this.val());"
-			js += "			}"
-			js += "		} else {"
-			js += "			conditional_section_#{hash}_interpret(_this.val());"
-			js += "		}"
-			js += "	}).trigger('change');"
-			js += "}"
-			js += "$(document).ready(conditional_section_#{hash}_ready);"
-			js += "$(document).on('page:load', conditional_section_#{hash}_ready);"
+			js += "function conditional_section_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	$('#conditional_section_#{hash}').hide();\n"
+			js += "	$('[name=\\'#{object.class.model_name.param_key}[#{condition_name.to_s}]\\']').on('change', function(e) {\n"
+			js += "		var _this = $(this);\n"
+			js += "		if (_this.is(':radio')) {\n"
+			js += "			if (_this.is(':checked')) {\n"
+			js += "				conditional_section_#{hash}_interpret(_this.val());\n"
+			js += "			}\n"
+			js += "		} else {\n"
+			js += "			conditional_section_#{hash}_interpret(_this.val());\n"
+			js += "		}\n"
+			js += "	}).trigger('change');\n"
+			js += "}\n"
+			js += "$(document).ready(conditional_section_#{hash}_ready);\n"
+			js += "$(document).on('page:load', conditional_section_#{hash}_ready);\n"
 			
 			# Section
 			result = ""
