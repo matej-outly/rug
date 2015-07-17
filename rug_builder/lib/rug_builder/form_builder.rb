@@ -35,7 +35,7 @@ module RugBuilder
 		end
 
 		def read_only_row(name, content, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -51,12 +51,12 @@ module RugBuilder
 			result += content
 			result += "</textarea></div>"
 			
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def text_input_row(name, method, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -82,12 +82,12 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def text_area_row(name, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -108,12 +108,12 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def picker_row(name, collection = nil, value_attr = :value, label_attr = :label, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -145,12 +145,12 @@ module RugBuilder
 			if object.errors[name].size > 0
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def radios_row(name, collection = nil, value_attr = :value, label_attr = :label, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -196,12 +196,12 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def checkboxes_row(name, collection = nil, value_attr = :value, label_attr = :label, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -229,12 +229,12 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def checkbox_row(name, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Field
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
@@ -254,12 +254,12 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
 		def address_row(name, options = nil)
-			result = "<p>"
+			result = "<div class=\"element\">"
 			
 			# Label
 			if !options.nil? && !options[:label].nil?
@@ -300,7 +300,7 @@ module RugBuilder
 				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
 			end
 
-			result += "</p>"
+			result += "</div>"
 			return result.html_safe
 		end
 
@@ -537,9 +537,9 @@ module RugBuilder
 
 		def primary_button_row(method, options = nil)
 			if !options.nil? && !options[:label].nil?
-				return "<p><div class=\"medium primary btn\">#{self.method(method).call(options[:label])}</div></p>".html_safe
+				return "<div class=\"element\"><div class=\"medium primary btn\">#{self.method(method).call(options[:label])}</div></div>".html_safe
 			else
-				return "<p><div class=\"medium primary btn\">#{self.method(method).call}</div></p>".html_safe
+				return "<div class=\"element\"><div class=\"medium primary btn\">#{self.method(method).call}</div></div>".html_safe
 			end
 		end
 
