@@ -13,6 +13,13 @@ module RugController
 	class Component
 
 		#
+		# Constructor
+		#
+		def initialize
+			self.config = RugController::ComponentConfig.new(self.class)
+		end
+
+		#
 		# Controller setter
 		#
 		def controller=(controller)
@@ -102,6 +109,26 @@ module RugController
 		#
 		def to_partial_path
 			"components/#{namespace.to_snake}/#{name.to_snake}"
+		end
+
+		#
+		# Set config object
+		#
+		def config=(config)
+			@config = config
+		end
+
+		#
+		# Get config object (or some config option)
+		#
+		def config(*args)
+			result = @config
+			args.each do |key|
+				if !result.nil?
+					result = result[key.to_sym]
+				end
+			end
+			return result
 		end
 
 	end

@@ -9,6 +9,8 @@
 # *
 # *****************************************************************************
 
+require "action_controller"
+
 module RugController
 	module Concerns
 		module ComponentBinding extend ActiveSupport::Concern

@@ -2,18 +2,18 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Configuration object of model
+# * Configuration object of component
 # *
 # * Author: Matěj Outlý
-# * Date  : 8. 1. 2015
+# * Date  : 20. 7. 2015
 # *
 # *****************************************************************************
 
 require "ostruct"
 require "yaml"
 
-module RugRecord
-	class Config < OpenStruct
+module RugController
+	class ComponentConfig < OpenStruct
 
 		#
 		# Name suffix of file containing configuration
@@ -23,16 +23,16 @@ module RugRecord
 		#
 		# Constructor
 		#
-		def initialize(model_class)
+		def initialize(component_class)
 
 			# Parent
 			super(nil)
 
 			# Basic
-			@model_type = model_class.to_s
+			@component_type = component_class.to_s
 			
 			# Path to this component
-			model_path = @model_type.to_snake
+			component_path = @component_type.to_snake
 
 			# Preset
 			@config_filenames = []
@@ -41,7 +41,7 @@ module RugRecord
 			load_paths.reverse_each do |load_path|
 
 				# Common
-				config_common_filename = load_path + "/" + model_path + CONFIG_SUFFIX
+				config_common_filename = load_path + "/" + component_path + CONFIG_SUFFIX
 				if File.exists?(config_common_filename)
 					@config_filenames << config_common_filename
 					load(config_common_filename)
@@ -74,7 +74,7 @@ module RugRecord
 		def load_paths
 			result = []
 			$LOAD_PATH.each do |load_path|
-				if load_path.to_s.end_with?("models")
+				if load_path.to_s.end_with?("components")
 					result << load_path.to_s.sub(/\/app\//, "/config/")
 				end
 			end

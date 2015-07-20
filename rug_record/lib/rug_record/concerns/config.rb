@@ -29,7 +29,7 @@ module RugRecord
 				# Set config object
 				#
 				def config=(config)
-					@config = config	
+					@config = config
 				end
 
 				#
