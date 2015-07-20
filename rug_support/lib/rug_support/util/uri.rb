@@ -25,10 +25,12 @@ private
 
 	def query_to_params(query)
 		result = {}
-		query_parts = query.split("&")
-		query_parts.each do |query_part|
-			param_parts = query_part.split("=")
-			result[param_parts[0].to_sym] = param_parts[1].to_s
+		if query
+			query_parts = query.split("&")
+			query_parts.each do |query_part|
+				param_parts = query_part.split("=")
+				result[param_parts[0].to_sym] = param_parts[1].to_s
+			end
 		end
 		return result
 	end
