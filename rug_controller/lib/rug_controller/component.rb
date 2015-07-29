@@ -12,6 +12,10 @@
 module RugController
 	class Component
 
+		# *********************************************************************
+		# Basic
+		# *********************************************************************
+
 		#
 		# Constructor
 		#
@@ -111,6 +115,10 @@ module RugController
 			"components/#{namespace.to_snake}/#{name.to_snake}"
 		end
 
+		# *********************************************************************
+		# Configuration
+		# *********************************************************************
+
 		#
 		# Set config object
 		#
@@ -129,6 +137,93 @@ module RugController
 				end
 			end
 			return result
+		end
+
+		# *********************************************************************
+		# Inbound broadcasts
+		# *********************************************************************
+
+		#
+		# Get all implemented broadcasts
+		#
+		def self.implemented_broadcasts
+			return @implemented_broadcasts
+		end
+
+		#
+		# Get all implemented broadcasts
+		#
+		def implemented_broadcasts
+			return self.class.implemented_broadcasts
+		end
+
+		#
+		# Implements broadcast of this name?
+		#
+		def self.implements_broadcast?(name)
+			return !@implemented_broadcasts.nil? && @implemented_broadcasts.key?(name)
+		end
+
+		#
+		# Implements broadcast of this name?
+		#
+		def implements_broadcast?(name)
+			return self.class.implements_broadcast?(name)
+		end
+
+		#
+		# Register broadcast which can be processed by the component
+		#
+		def self.implement_broadcast(name)
+			
+			# First implemented broadcast
+			if @implemented_broadcasts.nil?
+				@implemented_broadcasts = {}
+			end
+
+			# Multiple registration is not allowed
+			if @implemented_broadcasts.key?(name)
+				return false
+			end
+
+			# Register
+			@implemented_broadcasts[name] = true
+			
+			return true
+		end
+
+		#
+		# Call broadcast which can be processed by the component
+		#
+		def call_implemented_broadcast(name, method, arguments)
+			if implements_broadcast?(name)
+				receive_callback = self.method(method)
+				if receive_callback
+					return receive_callback.call(arguments)
+				else
+					return nil
+				end
+			else
+				return nil
+			end
+		end
+
+		# *********************************************************************
+		# Outbound broadcasts
+		# *********************************************************************
+
+		#
+		# Send new broadcast message
+		#
+		def send_broadcast(name, arguments = nil)
+			@broadcasts << Broadcast.new(name, self, arguments)
+		end
+
+		#
+		# Clear all sended broadcasts
+		#
+		def clear_broadcasts
+			@broadcasts.clear
 		end
 
 	end
