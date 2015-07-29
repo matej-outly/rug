@@ -41,6 +41,10 @@ module RugController
 		# Component reset method
 		#
 		def reset
+
+			# Clear broadcasts
+			clear_broadcasts
+
 		end
 
 		#
@@ -216,13 +220,25 @@ module RugController
 		# Send new broadcast message
 		#
 		def send_broadcast(name, arguments = nil)
-			@broadcasts << Broadcast.new(name, self, arguments)
+			@broadcasts = [] if @broadcasts.nil?
+			@broadcasts << RugController::Broadcast.new(name, self, arguments)
+		end
+
+		#
+		# Forward all sent broadcasts
+		#
+		def forward_broadcasts
+			@broadcasts = [] if @broadcasts.nil?
+			result = @broadcasts.dup
+			@broadcasts.clear
+			return result
 		end
 
 		#
 		# Clear all sended broadcasts
 		#
 		def clear_broadcasts
+			@broadcasts = [] if @broadcasts.nil?
 			@broadcasts.clear
 		end
 

@@ -12,9 +12,11 @@
 # Basic
 require "rug_controller/component"
 require "rug_controller/component_config"
+require "rug_controller/broadcast"
 
 # Concerns
 require "rug_controller/concerns/component_binding"
+require "rug_controller/concerns/broadcast"
 
 # Railtie
 require 'rug_controller/railtie' if defined?(Rails)
