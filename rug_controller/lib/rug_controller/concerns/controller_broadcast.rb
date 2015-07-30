@@ -13,7 +13,24 @@ require "action_controller"
 
 module RugController
 	module Concerns
-		module Broadcast extend ActiveSupport::Concern
+		module ControllerBroadcast extend ActiveSupport::Concern
+
+			#
+			# 'included do' causes the included code to be evaluated in the
+			# context where it is included, rather than being executed in 
+			# the module's context.
+			#
+			included do
+			
+				# Reset
+				before_action do
+					
+					# Clear broadcasts
+					clear_broadcasts
+
+				end
+
+			end
 
 			module ClassMethods
 				
@@ -128,4 +145,4 @@ module RugController
 	end
 end
 
-ActionController::Base.send(:include, RugController::Concerns::Broadcast)
+ActionController::Base.send(:include, RugController::Concerns::ControllerBroadcast)

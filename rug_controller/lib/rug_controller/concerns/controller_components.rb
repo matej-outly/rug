@@ -13,45 +13,7 @@ require "action_controller"
 
 module RugController
 	module Concerns
-		module ComponentBinding extend ActiveSupport::Concern
-
-			#
-			# 'included do' causes the included code to be evaluated in the
-			# context where it is included, rather than being executed in 
-			# the module's context.
-			#
-			included do
-			
-				# Process all broadcasts
-				after_action do
-					
-					# Preset
-					sent_broadcasts = []
-
-					# Gather all sent broadcasts together
-					sent_broadcasts.concat(self.forward_broadcasts)
-					self.active_components.each do |component_path, component|
-						sent_broadcasts.concat(component.forward_broadcasts)
-					end
-
-					# --- All broadcasts are gathered together ---
-
-					# Receive all broadcasts with all components and controller and call back to sender
-					sent_broadcasts.each do |broadcast|
-						
-						# Receive message by controller and all components
-						broadcast.receive(self)
-						self.active_components.each do |component_path, component|
-							broadcast.receive(component)
-						end
-
-						# Finish broadcast process with callback
-						broadcast.callback
-					end
-
-				end
-
-			end
+		module ControllerComponents extend ActiveSupport::Concern
 
 			module ClassMethods
 				
@@ -111,4 +73,4 @@ module RugController
 	end
 end
 
-ActionController::Base.send(:include, RugController::Concerns::ComponentBinding)
+ActionController::Base.send(:include, RugController::Concerns::ControllerComponents)

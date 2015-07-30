@@ -15,8 +15,9 @@ require "rug_controller/component_config"
 require "rug_controller/broadcast"
 
 # Concerns
-require "rug_controller/concerns/component_binding"
-require "rug_controller/concerns/broadcast"
+require "rug_controller/concerns/controller_components"
+require "rug_controller/concerns/controller_broadcast"
+require "rug_controller/concerns/lifecycle"
 
 # Railtie
 require 'rug_controller/railtie' if defined?(Rails)
