@@ -223,7 +223,7 @@ module RugBuilder
 			def render_file(column, object)
 				value = object.send(column)
 				if value.exists?
-					return "<a href=\"#{value.url}\">#{I18n.t("general.action.download")}</a>".html_safe
+					return "#{I18n.t("general.bool_yes")} - <a href=\"#{value.url}\">#{I18n.t("general.action.download")}</a>".html_safe
 				else
 					return I18n.t("general.bool_no")
 				end
