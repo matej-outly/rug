@@ -56,7 +56,7 @@ module Rug
 				when "time" then "text_input_row :#{column_name}, :time_field"
 				when "datetime" then "text_input_row :#{column_name}, :datetime_local_field"
 				when "boolean" then "checkbox_row :#{column_name}"
-				when "file" then "text_input_row :#{column_name}, :file_field"
+				when "file" then "dropzone_row :#{column_name}"
 				when "image" then "text_input_row :#{column_name}, :file_field" 
 				when "enum" then "picker_row :#{column_name}" 
 				when "belongs_to" then "picker_row :#{column_name}"

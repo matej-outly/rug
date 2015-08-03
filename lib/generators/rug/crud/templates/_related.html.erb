@@ -2,7 +2,7 @@
 	
 	<!-- ... -->
 
-	<%% if @<%= model_name.to_snake.singularize %> && action_name == "show" %>
+	<%% if @<%= model_name.to_snake.singularize %> && !@<%= model_name.to_snake.singularize %>.new_record? %>
 
 		<!-- ... -->
 		
