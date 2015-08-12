@@ -54,7 +54,7 @@ module RugBuilder
 		def index_item(label = nil, path = nil, options = {})
 			
 			# Label
-			label = I18n.t("general.action.index").upcase_first if label.nil?
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.index", default: I18n.t("general.action.index")).upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -81,7 +81,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.show").upcase_first if label.nil?
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.show", default: I18n.t("general.action.show")).upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -104,7 +104,7 @@ module RugBuilder
 		def new_item(label = nil, path = nil, options = {})
 			
 			# Label
-			label = I18n.t("general.action.new").upcase_first if label.nil?
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.new", default: I18n.t("general.action.new")).upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -132,7 +132,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.edit").upcase_first if label.nil?
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.edit", default: I18n.t("general.action.edit")).upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -160,7 +160,7 @@ module RugBuilder
 			end
 
 			# Label
-			label = I18n.t("general.action.destroy").upcase_first if label.nil?
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.destroy", default: I18n.t("general.action.destroy")).upcase_first if label.nil?
 			
 			# Path
 			if path.nil?
@@ -176,6 +176,12 @@ module RugBuilder
 			options[:data] = { confirm: I18n.t('general.are_you_sure', default: "Are you sure?") }
 
 			return self.item(label, path, options)
+		end
+
+	protected
+
+		def controller_path
+			return @template.controller.class.name.to_snake[0..-12]
 		end
 
 	end
