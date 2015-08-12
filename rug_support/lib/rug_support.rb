@@ -20,5 +20,8 @@ require "rug_support/util/hash"
 require "rug_support/util/date"
 require "rug_support/util/uri"
 
+# Rails extension
+require "rug_support/routes_reloader" if defined?(Rails)
+
 module RugSupport
 end
