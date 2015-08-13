@@ -14,7 +14,11 @@ module RugController
 		module RenderHelper
 
 			def render_component(component)
-				return render(partial: component.to_partial_path, object: component)
+				if component
+					return render(partial: component.to_partial_path, object: component)
+				else
+					return ""
+				end
 			end
 
 		end
