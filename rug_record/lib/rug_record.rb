@@ -11,6 +11,7 @@
 
 # Basic
 require "rug_record/config"
+require "rug_record/cropper"
 
 # Concerns
 require "rug_record/concerns/localization"
@@ -21,3 +22,4 @@ require "rug_record/concerns/hierarchical_ordering"
 require "rug_record/concerns/config"
 require "rug_record/concerns/remote_model"
 require "rug_record/concerns/sorting"
+require "rug_record/concerns/croppable_picture"

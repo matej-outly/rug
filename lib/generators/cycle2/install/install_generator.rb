@@ -31,11 +31,11 @@ module Cycle2
 			
 			# JS
 			filename = nil
-			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_cycle2/build/*.min.js") do |f|
+			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_cycle2/build/jquery.cycle2.js") do |f|
 				filename = f
 			end
 			if !filename.nil?
-				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/cycle2/jquery.cycle2.min.js")
+				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/cycle2/jquery.cycle2.js")
 			end
 
 			# Map

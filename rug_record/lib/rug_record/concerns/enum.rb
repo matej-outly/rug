@@ -22,7 +22,7 @@ module RugRecord
 				#
 				def enum_column(new_column, spec)
 					
-					# prepare internal structure
+					# Prepare internal structure
 					if @enums.nil?
 						@enums = {}
 					end

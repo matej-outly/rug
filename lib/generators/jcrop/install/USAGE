@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of jCrop library into the application.
+
+Example:
+    rails generate jcrop:install

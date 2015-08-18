@@ -409,6 +409,10 @@ module RugBuilder
 			js += "			}\n"
 			js += "			this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */\n"
 			js += "			this.options.method = 'put';\n"
+			if !options.nil? && options[:crop] == true
+				crop_hash = Digest::SHA1.hexdigest(name.to_s)
+				js += "			crop_#{crop_hash}_reload(response_id);\n"
+			end
 			js += "		} else { /* Error saving image */ \n"
 			js += "		}\n"
 			js += "	});\n"
@@ -532,6 +536,122 @@ module RugBuilder
 			result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"></div>"
 			result += "</div>"
 
+			return result.html_safe
+		end
+
+		def crop_row(name)
+			
+			if !self.options[:update_url] || (object.new_record? && !self.options[:create_url])
+				raise "Please define update and create URL."
+			end
+
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			# Preset
+			result = ""
+
+			# Label
+			if !options.nil? && !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label("#{name.to_s}_crop".to_sym)
+			end
+
+			# Value
+			value = object.send(name)
+
+			# Cropped and croppable styles
+			cropped_style = object.send("#{name.to_s}_cropped_style".to_sym)
+			croppable_style = object.send("#{name.to_s}_croppable_style".to_sym)
+			
+			# Cropped style geometry
+			cropped_style_geometry = value.styles[cropped_style.to_sym].geometry
+			splitted_cropped_style_geometry = cropped_style_geometry[0..-2].split("x")
+			if splitted_cropped_style_geometry.length != 2
+				raise "Unknown style geometry format '#{cropped_style_geometry}'"
+			end
+			cropped_style_width = splitted_cropped_style_geometry[0].to_i
+			cropped_style_height = splitted_cropped_style_geometry[1].to_i
+			if cropped_style_geometry[-1] == "#"
+				cropped_style_aspect_ratio = (cropped_style_width.to_f / cropped_style_height.to_f).round(2)
+			elsif cropped_style_geometry[-1] == ">"
+				cropped_style_aspect_ratio = nil
+			else
+				raise "Unknown style geometry format '#{cropped_style_geometry}'"
+			end
+
+			# JavaScript
+			js = ""
+
+			js += "function crop_#{hash}_update_coords(coords) \n"
+			js += "{\n"
+			js += "	var ratio = 1 / 1;\n"
+			js += "	$('#crop_#{hash} .crop_x').val(Math.round(coords.x * ratio));\n"
+			js += "	$('#crop_#{hash} .crop_y').val(Math.round(coords.y * ratio));\n"
+			js += "	$('#crop_#{hash} .crop_w').val(Math.round(coords.w * ratio));\n"
+			js += "	$('#crop_#{hash} .crop_h').val(Math.round(coords.h * ratio));\n"
+			js += "}\n"
+			
+			js += "function crop_#{hash}_reload_jcrop()\n"
+			js += "{\n"
+			js += "	jcrop_api = $('#crop_#{hash} .cropbox img').data('Jcrop');\n"
+			js += "	if (jcrop_api) {\n"
+			js += "		jcrop_api.destroy();\n"
+			js += "	}\n"
+			js += "	$('#crop_#{hash} .cropbox img').Jcrop({\n"
+			js += "		onChange: crop_#{hash}_update_coords,\n"
+			js += "		onSelect: crop_#{hash}_update_coords,\n"
+			js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
+			if cropped_style_aspect_ratio
+				js += "		aspectRatio: #{cropped_style_aspect_ratio},\n"
+			end
+			js += "	});\n"
+			js += "}\n"
+			
+			js += "function crop_#{hash}_reload(id)\n"
+			js += "{\n"
+			js += "	$.ajax({\n"
+			js += "		dataType: 'json',\n"
+			js += "		url: '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', id),\n" # Update URL is similar to show URL
+			js += "		success: function(callback) {\n"
+			js += "			if (callback && callback.#{name.to_s}_url) {\n"
+			js += "				var src = callback.#{name.to_s}_url.replace('/original/', '/#{croppable_style.to_s}/');\n"
+			js += "				$('#crop_#{hash} .cropbox').html('<img src=\\'' + src + '\\' />');\n"
+			js += "				crop_#{hash}_reload_jcrop();\n"
+			js += "			}\n"
+			js += "		}\n"
+			js += "	});\n"
+			js += "}\n"
+
+			js += "function crop_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	crop_#{hash}_reload_jcrop();\n"
+			js += "}\n"
+
+			js += "$(document).ready(crop_#{hash}_ready);\n"
+			js += "$(document).on('page:load', crop_#{hash}_ready);\n"
+
+			result += @template.javascript_tag(js)
+
+			# Crop container
+			result += "<div id=\"crop_#{hash}\" class=\"field\">"
+
+			# Crop attributes
+			for attribute in [:crop_x, :crop_y, :crop_w, :crop_h]
+				result += hidden_field("#{name.to_s}_#{attribute.to_s}".to_sym, class: attribute)
+			end
+
+			# Cropbox (image)
+			result += "<div class=\"cropbox\">"
+			if value.exists?
+				result += @template.image_tag(value.url("#{croppable_style.to_s}"))
+			end
+			result += "</div>"
+
+			result += "</div>"
 			return result.html_safe
 		end
 

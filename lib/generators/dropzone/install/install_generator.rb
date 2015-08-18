@@ -31,20 +31,20 @@ module Dropzone
 			
 			# JS
 			filename = nil
-			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_dropzone/dist/min/dropzone.min.js") do |f|
+			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_dropzone/dist/dropzone.js") do |f|
 				filename = f
 			end
 			if !filename.nil?
-				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.min.js")
+				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.js")
 			end
 
 			# CSS
 			filename = nil
-			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_dropzone/dist/min/dropzone.min.css") do |f|
+			Dir.glob("#{Dir.pwd}/vendor/assets/libraries/_dropzone/dist/dropzone.css") do |f|
 				filename = f
 			end
 			if !filename.nil?
-				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.min.css")
+				copy_file(filename, "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.css")
 			end
 
 		end
