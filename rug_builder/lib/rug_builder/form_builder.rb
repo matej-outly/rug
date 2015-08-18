@@ -588,11 +588,10 @@ module RugBuilder
 
 			js += "function crop_#{hash}_update_coords(coords) \n"
 			js += "{\n"
-			js += "	var ratio = 1 / 1;\n"
-			js += "	$('#crop_#{hash} .crop_x').val(Math.round(coords.x * ratio));\n"
-			js += "	$('#crop_#{hash} .crop_y').val(Math.round(coords.y * ratio));\n"
-			js += "	$('#crop_#{hash} .crop_w').val(Math.round(coords.w * ratio));\n"
-			js += "	$('#crop_#{hash} .crop_h').val(Math.round(coords.h * ratio));\n"
+			js += "	$('#crop_#{hash} .crop_x').val(Math.round(coords.x));\n"
+			js += "	$('#crop_#{hash} .crop_y').val(Math.round(coords.y));\n"
+			js += "	$('#crop_#{hash} .crop_w').val(Math.round(coords.w));\n"
+			js += "	$('#crop_#{hash} .crop_h').val(Math.round(coords.h));\n"
 			js += "}\n"
 			
 			js += "function crop_#{hash}_reload_jcrop()\n"

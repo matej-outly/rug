@@ -114,7 +114,7 @@ module RugBuilder
 			# Known types
 			# *********************************************************************
 			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :image, :enum, :belongs_to, :has_many, :address, :currency ]
+			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency ]
 
 			def validate_string_options(column_spec)
 				return true
@@ -152,7 +152,7 @@ module RugBuilder
 				return true
 			end
 
-			def validate_image_options(column_spec)
+			def validate_picture_options(column_spec)
 				return column_spec.key?(:thumb_style)
 			end
 
@@ -229,7 +229,7 @@ module RugBuilder
 				end
 			end
 
-			def render_image(column, object)
+			def render_picture(column, object)
 				value = object.send(column)
 				if value.exists?
 					return "<img src=\"#{value.url(@columns[column][:thumb_style])}\" />".html_safe
