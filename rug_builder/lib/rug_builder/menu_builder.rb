@@ -61,7 +61,7 @@ module RugBuilder
 				if @options[:path_base].blank?
 					raise "Please define path_base option or provide item path"
 				end
-				path = @template.method((@options[:path_base].pluralize + "_path").to_sym).call
+				path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].pluralize}_path")
 			end
 
 			# Options
@@ -88,7 +88,7 @@ module RugBuilder
 				if @options[:path_base].blank?
 					raise "Please define path_base option or provide item path"
 				end
-				path = @template.method((@options[:path_base].singularize + "_path").to_sym).call(@object)
+				path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].singularize}_path", @object)
 			end
 
 			# Options
@@ -111,7 +111,8 @@ module RugBuilder
 				if @options[:path_base].blank?
 					raise "Please define path_base option or provide item path"
 				end
-				path = @template.method(("new_" + @options[:path_base].singularize + "_path").to_sym).call
+				splitted_path_base = @options[:path_base].to_s.split(".")
+				path = RugSupport::PathResolver.new(@template).resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}new_#{splitted_path_base.slice(-1).singularize}_path")
 			end
 
 			# Options
@@ -139,7 +140,8 @@ module RugBuilder
 				if @options[:path_base].blank?
 					raise "Please define path_base option or provide item path"
 				end
-				path = @template.method(("edit_" + @options[:path_base].singularize + "_path").to_sym).call(@object)
+				splitted_path_base = @options[:path_base].to_s.split(".")
+				path = RugSupport::PathResolver.new(@template).resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}edit_#{splitted_path_base.slice(-1).singularize}_path", @object)
 			end
 
 			# Options
@@ -167,7 +169,7 @@ module RugBuilder
 				if @options[:path_base].blank?
 					raise "Please define path_base option or provide item path"
 				end
-				path = @template.method((@options[:path_base].singularize + "_path").to_sym).call(@object)
+				path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].singularize}_path", @object)
 			end
 
 			# Options

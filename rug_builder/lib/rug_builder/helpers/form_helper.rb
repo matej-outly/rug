@@ -21,9 +21,9 @@ module RugBuilder
 				# Automatic URL
 				if options[:create_url] || options[:update_url]
 					if options[:create_url] && object.new_record?
-						options[:url] = RugBuilder::FormBuilder.resolve_path(self, options[:create_url])
+						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:create_url])
 					elsif options[:update_url] && !object.new_record?
-						options[:url] = RugBuilder::FormBuilder.resolve_path(self, options[:update_url], object)
+						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:update_url], object)
 					else
 						raise "Unable to resolve form URL."
 					end

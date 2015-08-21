@@ -14,26 +14,6 @@ require 'action_view'
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 		
-		def self.resolve_path(template, path, object = nil)
-			if path.is_a?(Proc)
-				if object.nil?
-					return path.call
-				else
-					return path.call(object)
-				end
-			else
-				if object.nil?
-					return template.method(path.to_sym).call
-				else
-					return template.method(path.to_sym).call(object)
-				end
-			end
-		end
-
-		def resolve_path(path, object = nil)
-			return self.class.resolve_path(@template, path, object)
-		end
-
 		def read_only_row(name, content, options = nil)
 			result = "<div class=\"element\">"
 			
@@ -367,7 +347,7 @@ module RugBuilder
 			end
 
 			# Default URL and method
-			default_url = (object.new_record? ? resolve_path(self.options[:create_url]) : resolve_path(self.options[:update_url], object))
+			default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(self.options[:create_url]) : RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], object))
 			default_method = (object.new_record? ? "post" : "put")
 
 			# Unique hash
@@ -402,7 +382,7 @@ module RugBuilder
 			js += "		var response_id = parseInt(response);\n"
 			js += "		if (!isNaN(response_id)) {\n"
 			js += "			var form = $('##{self.options[:html][:id]}');\n"
-			js += "			var update_url = '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', response_id);\n"
+			js += "			var update_url = '#{RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], ":id")}'.replace(':id', response_id);\n"
 			js += "			if (form.attr('action') != update_url) {\n"
 			js += "				form.attr('action', update_url); /* Form */\n"
 			js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');\n"
@@ -483,7 +463,7 @@ module RugBuilder
 			js += "{\n"
 			js += "	Dropzone.autoDiscover = false;\n"
 			js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {\n"
-			js += "		url: '#{resolve_path(create_url)}',\n"
+			js += "		url: '#{RugSupport::PathResolver.new(@template).resolve(create_url)}',\n"
 			js += "		method: 'post',\n"
 			js += "		paramName: '#{collection_class.model_name.param_key}[#{attachment_name}]',\n"
 			js += "		addRemoveLinks: true,\n"
@@ -510,7 +490,7 @@ module RugBuilder
 			js += "	});\n"
 			js += "	dropzone.on('removedfile', function(file) {\n"
 			js += "		if (file.record_id) {\n"
-			js += "			var destroy_url = '#{resolve_path(destroy_url, ":id")}'.replace(':id', file.record_id);\n"
+			js += "			var destroy_url = '#{RugSupport::PathResolver.new(@template).resolve(destroy_url, ":id")}'.replace(':id', file.record_id);\n"
 			js += "			$.ajax({\n"
 			js += "				url: destroy_url,\n"
 			js += "				dataType: 'json',\n"
@@ -614,7 +594,7 @@ module RugBuilder
 			js += "{\n"
 			js += "	$.ajax({\n"
 			js += "		dataType: 'json',\n"
-			js += "		url: '#{resolve_path(self.options[:update_url], ":id")}'.replace(':id', id),\n" # Update URL is similar to show URL
+			js += "		url: '#{RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], ":id")}'.replace(':id', id),\n" # Update URL is similar to show URL
 			js += "		success: function(callback) {\n"
 			js += "			if (callback && callback.#{name.to_s}_url) {\n"
 			js += "				var src = callback.#{name.to_s}_url.replace('/original/', '/#{croppable_style.to_s}/');\n"

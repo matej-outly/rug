@@ -22,6 +22,7 @@ require "rug_support/util/uri"
 
 # Rails extension
 require "rug_support/routes_reloader" if defined?(Rails)
+require "rug_support/path_resolver"
 
 module RugSupport
 end
