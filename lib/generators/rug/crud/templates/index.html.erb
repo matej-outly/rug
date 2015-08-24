@@ -2,8 +2,8 @@
 	<%%= rug_index_table_for(@<%= model_name.to_snake.pluralize %>, { 
 		id: :integer
 	}, paths: {
-		show: :<%= controller_path.to_snake.gsub("/", "_").singularize %>_path, 
-		edit: :edit_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path, 
-		destroy: :<%= controller_path.to_snake.gsub("/", "_").singularize %>_path
+		show: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
+		edit: "main_app.edit_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
+		destroy: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path"
 	}, sorting: true, pagination: true, summary: true ) %>
 <%% end %>

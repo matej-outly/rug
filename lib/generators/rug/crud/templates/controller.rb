@@ -24,6 +24,10 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	# Show action
 	#
 	def show
+		respond_to do |format|
+			format.html { render "show" }
+			format.json { render json: @<%= model_name.to_snake.singularize %>.to_json }
+		end
 	end
 
 	#
