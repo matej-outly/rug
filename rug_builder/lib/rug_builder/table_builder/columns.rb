@@ -98,7 +98,7 @@ module RugBuilder
 			# Known types
 			# *********************************************************************
 			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency ]
+			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array ]
 
 			def validate_string_options(column_spec)
 				return true
@@ -153,6 +153,10 @@ module RugBuilder
 			end
 
 			def validate_currency_options(column_spec)
+				return true
+			end
+
+			def validate_array_options(column_spec)
 				return true
 			end
 
@@ -255,6 +259,11 @@ module RugBuilder
 			def render_currency(column, object)
 				value = object.send(column)
 				return @template.number_to_currency(value, locale: :cs)
+			end
+
+			def render_array(column, object)
+				value = object.send("#{column.to_s}_formated".to_sym)
+				return value
 			end
 
 		end

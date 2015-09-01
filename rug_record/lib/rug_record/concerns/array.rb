@@ -13,47 +13,47 @@ require "active_record"
 
 module RugRecord
 	module Concerns
-		module Address extend ActiveSupport::Concern
+		module Array extend ActiveSupport::Concern
 
 			module ClassMethods
 				
 				#
 				# Add new enum column
 				#
-				def address_column(new_column)
+				def array_column(new_column)
 				
 					# Set method
-					define_method((new_column.to_s + "=").to_sym) do |address|
+					define_method((new_column.to_s + "=").to_sym) do |array|
 						column = new_column
-						if address.is_a? ::String
-							address = JSON.parse(address)
+						if array.is_a? ::String
+							array = JSON.parse(array)
 						end
-						if address.is_a? Hash
-							write_attribute(column.to_sym, address.to_json)
+						if array.is_a? ::Array
+							write_attribute(column.to_sym, array.to_json)
 						else
-							raise "Wrong address format, expecting Hash"
+							raise "Wrong array format, expecting Array"
 						end
 					end
 
 					# Get method
 					define_method(new_column.to_sym) do
 						column = new_column
-						address = read_attribute(column.to_sym)
-						if address.blank?
+						array = read_attribute(column.to_sym)
+						if array.blank?
 							return nil
 						else
-							return JSON.parse(address)
+							return JSON.parse(array)
 						end
 					end
 
 					# Get method
 					define_method((new_column.to_s + "_formated").to_sym) do
 						column = new_column
-						address = send(column.to_sym)
-						if address.blank?
+						array = send(column.to_sym)
+						if array.blank?
 							return nil
 						else
-							return "#{address["street"]} #{address["number"]}, #{address["postcode"]} #{address["city"]}"
+							return array.join(", ")
 						end
 					end
 
@@ -65,4 +65,4 @@ module RugRecord
 	end
 end
 
-ActiveRecord::Base.send(:include, RugRecord::Concerns::Address)
+ActiveRecord::Base.send(:include, RugRecord::Concerns::Array)
