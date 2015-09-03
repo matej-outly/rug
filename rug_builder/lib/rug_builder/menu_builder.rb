@@ -180,6 +180,33 @@ module RugBuilder
 			return self.item(label, path, options)
 		end
 
+		#
+		# Render duplicate item
+		#
+		def duplicate_item(label = nil, path = nil, options = {})
+			
+			if @object.nil? || @object.new_record?
+				return ""
+			end
+
+			# Label
+			label = I18n.t("headers.#{controller_path.gsub('/', '.')}.duplicate", default: I18n.t("general.action.duplicate")).upcase_first if label.nil?
+			
+			# Path
+			if path.nil?
+				if @options[:path_base].blank?
+					raise "Please define path_base option or provide item path."
+				end
+				path = RugSupport::PathResolver.new(@template).resolve("duplicate_#{@options[:path_base].singularize}_path", @object)
+			end
+
+			# Options
+			options[:icon] = "docs" if options[:icon].nil?
+			options[:method] = :post
+
+			return self.item(label, path, options)
+		end
+
 	protected
 
 		def controller_path
