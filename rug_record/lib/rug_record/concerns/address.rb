@@ -26,9 +26,15 @@ module RugRecord
 					define_method((new_column.to_s + "=").to_sym) do |address|
 						column = new_column
 						if address.is_a? ::String
-							address = JSON.parse(address)
+							if !address.blank?
+								address = JSON.parse(address)
+							else
+								address = nil
+							end
 						end
-						if address.is_a? Hash
+						if address.nil?
+							write_attribute(column.to_sym, nil)
+						elsif address.is_a? Hash
 							write_attribute(column.to_sym, address.to_json)
 						else
 							raise "Wrong address format, expecting Hash"

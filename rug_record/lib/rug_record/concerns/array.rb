@@ -26,9 +26,15 @@ module RugRecord
 					define_method((new_column.to_s + "=").to_sym) do |array|
 						column = new_column
 						if array.is_a? ::String
-							array = JSON.parse(array)
+							if !array.blank?
+								array = JSON.parse(array)
+							else
+								array = nil
+							end
 						end
-						if array.is_a? ::Array
+						if array.nil?
+							write_attribute(column.to_sym, nil)
+						elsif array.is_a? ::Array
 							write_attribute(column.to_sym, array.to_json)
 						else
 							raise "Wrong array format, expecting Array"
