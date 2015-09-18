@@ -264,6 +264,7 @@ module RugBuilder
 				js += '						form.find(".field." + column).addClass("danger");'
 				js += '					}'
 				js += '				}'
+				js += '				$(document).trigger("rug:index_table:inline_edit");'
 				js += '			},'
 				js += '			error: function(callback) '
 				js += '			{'
