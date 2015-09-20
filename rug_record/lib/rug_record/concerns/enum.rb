@@ -20,7 +20,7 @@ module RugRecord
 				#
 				# Add new enum column
 				#
-				def enum_column(new_column, spec)
+				def enum_column(new_column, spec, options = {})
 					
 					# Prepare internal structure
 					if @enums.nil?
@@ -33,8 +33,11 @@ module RugRecord
 						if !item.is_a? Hash
 							item = { value: item.to_s }
 						end
-						if item.empty?
+						if !item[:value]
 							raise "Enum definition cannot be empty."
+						end
+						if !item[:label]
+							item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{item[:value]}")
 						end
 						@enums[new_column][item.values.first] = OpenStruct.new(item)
 					end
@@ -49,6 +52,17 @@ module RugRecord
 					define_singleton_method(("available_" + new_column.to_s.pluralize).to_sym) do
 						column = new_column
 						return @enums[column].values
+					end
+
+					# Default value
+					if options[:default]
+						before_create do
+							column = new_column
+							default = options[:default]
+							if read_attribute(column.to_sym).nil?
+								write_attribute(column.to_sym, default.to_s)
+							end
+						end
 					end
 
 				end
