@@ -24,9 +24,14 @@ module RugBuilder
 				result += label(name)
 			end
 
+			# Field options
+			field_options = {}
+			field_options[:class] = "tinymce"
+			field_options[:id] = options[:id] if !options[:id].nil?
+
 			# Field
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += text_area(name, class: "tinymce")
+			result += text_area(name, field_options)
 			result += "</div>"
 			
 			# Errors
