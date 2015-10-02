@@ -40,7 +40,7 @@ module RugRecord
 							if !item[:label]
 								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{item[:value]}")
 							end
-							@enums[new_column][item.values.first] = OpenStruct.new(item)
+							@enums[new_column][item[:value]] = OpenStruct.new(item)
 						end
 
 						# Obj method
