@@ -172,8 +172,12 @@ module RugBuilder
 			def render_text(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				html_string = TruncateHtml::HtmlString.new(value)
-				return TruncateHtml::HtmlTruncator.new(html_string, {}).truncate.html_safe
+				if @columns[column][:truncate] == false
+					return value.html_safe
+				else
+					html_string = TruncateHtml::HtmlString.new(value)
+					return TruncateHtml::HtmlTruncator.new(html_string, {}).truncate.html_safe
+				end
 			end
 
 			def render_integer(column, object)
