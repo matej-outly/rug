@@ -73,85 +73,91 @@ module RugBuilder
 			open_siblings = {}
 			open_levels = {}
 
-			# Table
-			result = ""
-			result += "<table class=\"hierarchical index_table striped #{options[:class].to_s}\">"
+			if objects.empty?
+				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+			else
 
-			# Table head
-			result += "<thead>"
-			result += "<tr>"
-			result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
-			columns.headers.each_with_index do |column, idx|
-				if idx == 0
-					result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
-				else
-					result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+				# Table
+				result = ""
+				result += "<table class=\"hierarchical index_table striped #{options[:class].to_s}\">"
+
+				# Table head
+				result += "<thead>"
+				result += "<tr>"
+				result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
+				columns.headers.each_with_index do |column, idx|
+					if idx == 0
+						result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+					else
+						result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+					end
 				end
-			end
-			result += "<th></th>" if check_edit_link(options)
-			result += "<th></th>" if check_destroy_link(options)
-			result += "</tr>"
-			result += "</thead>"
+				result += "<th></th>" if check_edit_link(options)
+				result += "<th></th>" if check_destroy_link(options)
+				result += "</tr>"
+				result += "</thead>"
 
-			# Table body
-			result += "<tbody>"
-			idx = 0
-			model_class.each_plus_dummy_with_level(objects) do |object, level|
-				
-				if !object.nil?
+				# Table body
+				result += "<tbody>"
+				idx = 0
+				model_class.each_plus_dummy_with_level(objects) do |object, level|
 					
-					# Node
-					result += "<tr>"
+					if !object.nil?
+						
+						# Node
+						result += "<tr>"
 
-					# Nesting 
-					open_siblings[level] = false 
-					open_levels[level] = object.id
-					
-					(0..level-1).each do |zero_level|
-						if open_siblings[zero_level] == true
-							result += "<td class=\"nesting nesting_0_inner\"></td>"
-						else
-							result += "<td class=\"nesting nesting_0_none\"></td>"
-						end
-					end
-					if object.right_sibling == nil
-						result += "<td class=\"nesting nesting_1_nosibling\"></td>"
-					else
-						open_siblings[level] = true
-						result += "<td class=\"nesting nesting_1_sibling\"></td>"
-					end
-					if object.leaf?
-						result += "<td class=\"nesting nesting_2_nochild\"></td>"
-					else
-						result += "<td class=\"nesting nesting_2_child\"></td>"
-					end
-
-					# Columns
-					columns.headers.each_with_index do |column, column_idx|
-						if column_idx == 0
-							if check_show_link(options)
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
+						# Nesting 
+						open_siblings[level] = false 
+						open_levels[level] = object.id
+						
+						(0..level-1).each do |zero_level|
+							if open_siblings[zero_level] == true
+								result += "<td class=\"nesting nesting_0_inner\"></td>"
 							else
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
+								result += "<td class=\"nesting nesting_0_none\"></td>"
 							end
-						else
-							result += "<td>#{columns.render(column, object)}</td>"
 						end
+						if object.right_sibling == nil
+							result += "<td class=\"nesting nesting_1_nosibling\"></td>"
+						else
+							open_siblings[level] = true
+							result += "<td class=\"nesting nesting_1_sibling\"></td>"
+						end
+						if object.leaf?
+							result += "<td class=\"nesting nesting_2_nochild\"></td>"
+						else
+							result += "<td class=\"nesting nesting_2_child\"></td>"
+						end
+
+						# Columns
+						columns.headers.each_with_index do |column, column_idx|
+							if column_idx == 0
+								if check_show_link(options)
+									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
+								else
+									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
+								end
+							else
+								result += "<td>#{columns.render(column, object)}</td>"
+							end
+						end
+
+						# Actions
+						result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
+						result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
+						result += "</tr>"
+
 					end
+					idx += 1
+				end			
+				result += "</tbody>"
 
-					# Actions
-					result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
-					result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
-					result += "</tr>"
+				# Table
+				result += "</table>"
 
-				end
-				idx += 1
-			end			
-			result += "</tbody>"
-
-			# Table
-			result += "</table>"
-
+			end 
+			
 			# Summary
 			result += resolve_summary(objects, model_class, options)
 
@@ -161,6 +167,10 @@ module RugBuilder
 	protected
 
 		def index_body(objects, columns, model_class, options)
+
+			if objects.empty?
+				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+			end
 
 			# Table
 			result = ""
