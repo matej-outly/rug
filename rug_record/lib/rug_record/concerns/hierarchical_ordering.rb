@@ -76,6 +76,17 @@ module RugRecord
 				return self.class.hierarchically_ordered?
 			end
 
+			#
+			# Get all available parents
+			#
+			def available_parents
+				if self.new_record?
+					self.class.all.order(lft: :asc)
+				else
+					self.class.where("id <> :id", id: self.id).order(lft: :asc)
+				end
+			end
+
 		end
 	end
 end
