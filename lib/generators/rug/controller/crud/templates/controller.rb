@@ -89,7 +89,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 		end
 	end
 
-private
+protected
 
 	#
 	# Set model

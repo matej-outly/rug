@@ -1,0 +1,5 @@
+Description:
+    Create relation controller.
+
+Example:
+    rails generate rug:controller:relation path/to/controller path/to/model1 path/to/model2

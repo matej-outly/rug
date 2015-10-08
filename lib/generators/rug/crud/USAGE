@@ -1,5 +1,0 @@
-Description:
-    Create common CRUD controller.
-
-Example:
-    rails generate rug:crud path/to/controller path/to/model column1:type1 column2:type2
