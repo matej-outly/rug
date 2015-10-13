@@ -18,11 +18,10 @@ module RugBuilder
 				raise "Please define update and create URL."
 			end
 
+			result = "<div class=\"element\">"
+
 			# Unique hash
 			hash = Digest::SHA1.hexdigest(name.to_s)
-
-			# Preset
-			result = ""
 
 			# Label
 			if !options[:label].nil?
@@ -108,7 +107,7 @@ module RugBuilder
 
 			result += @template.javascript_tag(js)
 
-			# Crop container
+			# Container
 			result += "<div id=\"crop_#{hash}\" class=\"field\">"
 
 			# Crop attributes
@@ -121,6 +120,9 @@ module RugBuilder
 			if value.exists?
 				result += @template.image_tag(value.url("#{croppable_style.to_s}"))
 			end
+			result += "</div>"
+
+			# Container end
 			result += "</div>"
 
 			result += "</div>"
