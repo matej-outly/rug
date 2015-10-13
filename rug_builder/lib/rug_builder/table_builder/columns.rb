@@ -98,7 +98,7 @@ module RugBuilder
 			# Known types
 			# *********************************************************************
 			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array ]
+			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array, :geolocation ]
 
 			def validate_string_options(column_spec)
 				return true
@@ -157,6 +157,10 @@ module RugBuilder
 			end
 
 			def validate_array_options(column_spec)
+				return true
+			end
+
+			def validate_geolocation_options(column_spec)
 				return true
 			end
 
@@ -266,6 +270,16 @@ module RugBuilder
 			end
 
 			def render_array(column, object)
+				if @columns[column][:format] == :comma
+					value = object.send(column)
+					value = object.send(column).join(", ") if !value.blank?
+				else
+					value = object.send("#{column.to_s}_formated".to_sym)
+				end
+				return value
+			end
+
+			def render_geolocation(column, object)
 				value = object.send("#{column.to_s}_formated".to_sym)
 				return value
 			end
