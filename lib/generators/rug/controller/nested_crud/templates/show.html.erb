@@ -1,0 +1,6 @@
+<%%= render layout: "ric_admin/layouts/with_right_side" do %>
+	<%%= rug_show_table_for(@<%= model_1_name.to_snake.singularize %>, { 
+		<%= model_2_name.to_snake.singularize %>: { type: :belongs_to, label: :name, path: :<%= model_2_controller_path.to_snake.gsub("/", "_").singularize %>_path },
+		<% columns.each_with_index do |column, idx| %><%= "#{column.split(":").first}: :#{(column.split(":").size > 1 ? column.split(":").at(1) : "string" )}" + (idx != columns.size-1 ? ",\n\t\t" : "") %><% end %>
+	}) %>
+<%% end %>

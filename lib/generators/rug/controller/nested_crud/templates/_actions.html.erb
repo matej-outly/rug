@@ -1,0 +1,6 @@
+<%%= rug_menu_for(@<%= model_1_name.to_snake.singularize %>, name: "actions", path_base: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>") do |m| %>
+	<%%= m.new_item nil, new_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path(<%= model_2_name.to_snake.singularize %>_id: @<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.singularize %>_id) %>
+	<%%= m.show_item %>
+	<%%= m.edit_item %>
+	<%%= m.destroy_item %>
+<%% end %>

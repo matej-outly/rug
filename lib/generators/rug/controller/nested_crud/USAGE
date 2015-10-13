@@ -1,0 +1,5 @@
+Description:
+    Create nested CRUD controller.
+
+Example:
+    rails generate rug:controller:nested_crud path/to/controller path/to/model1 path/to/model2 column1:type1 column2:type2
