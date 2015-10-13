@@ -55,6 +55,14 @@ module RugBuilder
 				result += label(name)
 			end
 
+			# Format
+			format = :json
+			if !options[:format].nil?
+				if options[:format].to_sym == :comma
+					format = :comma
+				end
+			end
+
 			# Unique hash
 			hash = Digest::SHA1.hexdigest(name.to_s)
 
@@ -70,12 +78,20 @@ module RugBuilder
 			js += "			values.push(value);\n"
 			js += "		}\n"
 			js += "	});\n"
-			js += "	field.find('.core input').val(JSON.stringify(values));\n"
+			if format == :comma
+				js += "	field.find('.core input').val(values.join(','));\n"
+			else
+				js += "	field.find('.core input').val(JSON.stringify(values));\n"
+			end
 			js += "}\n"
 			js += "function text_input_many_#{hash}_update_front()\n"
 			js += "{\n"
 			js += "	var field = $('#text_input_many_#{hash}').closest('.field');\n"
-			js += "	var values = JSON.parse(field.find('.core input').val());\n"
+			if format == :comma
+				js += "	var values = field.find('.core input').val().split(',');\n"
+			else
+				js += "	var values = JSON.parse(field.find('.core input').val());\n"
+			end
 			js += "	if (values instanceof Array) {\n"
 			js += "		for (var idx = 0; idx < values.length; ++idx) {\n"
 			js += "			text_input_many_#{hash}_add_front(values[idx]);\n"
@@ -131,7 +147,13 @@ module RugBuilder
 
 			# Value
 			value = object.send(name)
-			value = value.to_json if value
+			if value
+				if format == :comma
+					value = value.join(",")
+				else
+					value = value.to_json 
+				end
+			end
 
 			# Field
 			result += @template.javascript_tag(js)
