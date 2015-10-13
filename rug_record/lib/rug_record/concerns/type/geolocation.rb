@@ -41,36 +41,40 @@ module RugRecord
 								raise "Wrong value format, expecting Hash or nil."
 							end
 
-							# Filter
-							value = value.select { |key, value| ["longitude", "latitude"].include?(key.to_s) } if !value.nil?
+							# Filter and symbolize keys
+							value = value.symbolize_keys.select { |key, value| [:longitude, :latitude].include?(key) } 
 							
 							# Store
-							if value.blank?
-								write_attribute(column.to_sym, nil)
+							if value.blank? || value[:latitude].blank? || value[:longitude].blank?
+								write_attribute("#{column.to_s}_latitude", nil)
+								write_attribute("#{column.to_s}_longitude", nil)
 							else
-								write_attribute(column.to_sym, value.to_json)
+								write_attribute("#{column.to_s}_latitude", value[:latitude])
+								write_attribute("#{column.to_s}_longitude", value[:longitude])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value = read_attribute(column.to_sym)
-							if value.blank?
+							value_latitude = read_attribute("#{column.to_s}_latitude")
+							value_longitude = read_attribute("#{column.to_s}_longitude")
+							if value_latitude.blank? || value_longitude.blank?
 								return nil
 							else
-								return JSON.parse(value)
+								return { latitude: value_latitude, longitude: value_longitude }
 							end
 						end
 
 						# Get method
 						define_method((new_column.to_s + "_formated").to_sym) do
 							column = new_column
-							value = send(column.to_sym)
-							if value.blank?
+							value_latitude = read_attribute("#{column.to_s}_latitude")
+							value_longitude = read_attribute("#{column.to_s}_longitude")
+							if value_latitude.blank? || value_longitude.blank?
 								return nil
 							else
-								return "#{value["longitude"]}, #{value["latitude"]}"
+								return "#{value_latitude}, #{value_longitude}"
 							end
 						end
 

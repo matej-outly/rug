@@ -42,35 +42,47 @@ module RugRecord
 							end
 
 							# Filter
-							value = value.select { |key, value| ["street", "number", "postcode", "city"].include?(key.to_s) } if !value.nil?
+							value = value.symbolize_keys.select { |key, value| [:street, :number, :postcode, :city].include?(key) } if !value.nil?
 							
 							# Store
 							if value.blank?
-								write_attribute(column.to_sym, nil)
+								write_attribute("#{column.to_s}_street", nil)
+								write_attribute("#{column.to_s}_number", nil)
+								write_attribute("#{column.to_s}_postcode", nil)
+								write_attribute("#{column.to_s}_city", nil)
 							else
-								write_attribute(column.to_sym, value.to_json)
+								write_attribute("#{column.to_s}_street", value[:street])
+								write_attribute("#{column.to_s}_number", value[:number])
+								write_attribute("#{column.to_s}_postcode", value[:postcode])
+								write_attribute("#{column.to_s}_city", value[:city])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value = read_attribute(column.to_sym)
-							if value.blank?
+							value_street = read_attribute("#{column.to_s}_street")
+							value_number = read_attribute("#{column.to_s}_number")
+							value_postcode = read_attribute("#{column.to_s}_postcode")
+							value_city = read_attribute("#{column.to_s}_city")
+							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
 								return nil
 							else
-								return JSON.parse(value)
+								return { street: value_street, number: value_number, postcode: value_postcode, city: value_city }
 							end
 						end
 
 						# Get method
 						define_method((new_column.to_s + "_formated").to_sym) do
 							column = new_column
-							value = send(column.to_sym)
-							if value.blank?
+							value_street = read_attribute("#{column.to_s}_street")
+							value_number = read_attribute("#{column.to_s}_number")
+							value_postcode = read_attribute("#{column.to_s}_postcode")
+							value_city = read_attribute("#{column.to_s}_city")
+							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
 								return nil
 							else
-								return "#{value["street"]} #{value["number"]}, #{value["postcode"]} #{value["city"]}"
+								return "#{value_street} #{value_number}, #{value_postcode} #{value_city}"
 							end
 						end
 

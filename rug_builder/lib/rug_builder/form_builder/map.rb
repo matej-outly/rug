@@ -28,13 +28,13 @@ module RugBuilder
 			end
 
 			# Part labels
-			label_longitude = (options[:label_longitude] ? options[:label_longitude] : I18n.t("general.attribute.geolocation.longitude"))
 			label_latitude = (options[:label_latitude] ? options[:label_latitude] : I18n.t("general.attribute.geolocation.latitude"))
+			label_longitude = (options[:label_longitude] ? options[:label_longitude] : I18n.t("general.attribute.geolocation.longitude"))
 			
 			# Part values
 			value = object.send(name)
-			value_longitude = value && value["longitude"] ? value["longitude"] : nil
-			value_latitude = value && value["latitude"] ? value["latitude"] : nil
+			value_latitude = value && value[:latitude] ? value[:latitude] : nil
+			value_longitude = value && value[:longitude] ? value[:longitude] : nil
 			
 			# Java Script
 			js = ""
@@ -128,8 +128,8 @@ module RugBuilder
 			
 			# Text inputs
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "text input normal longitude", placeholder: label_longitude)
 			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "text input normal latitude", placeholder: label_latitude)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "text input normal longitude", placeholder: label_longitude)
 			result += "</div>"
 
 			# Mapbox (canvas)

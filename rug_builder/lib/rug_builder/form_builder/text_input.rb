@@ -193,10 +193,10 @@ module RugBuilder
 			
 			# Part values
 			value = object.send(name)
-			value_street = value && value["street"] ? value["street"] : nil
-			value_number = value && value["number"] ? value["number"] : nil
-			value_city = value && value["city"] ? value["city"] : nil
-			value_postcode = value && value["postcode"] ? value["postcode"] : nil
+			value_street = value && value[:street] ? value[:street] : nil
+			value_number = value && value[:number] ? value[:number] : nil
+			value_city = value && value[:city] ? value[:city] : nil
+			value_postcode = value && value[:postcode] ? value[:postcode] : nil
 
 			# Field (first row)
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
