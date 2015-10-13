@@ -18,6 +18,7 @@ require "rug_record/concerns/type/address"
 require "rug_record/concerns/type/array"
 require "rug_record/concerns/type/enum"
 require "rug_record/concerns/type/croppable_picture"
+require "rug_record/concerns/type/geolocation"
 
 # Concerns
 require "rug_record/concerns/config"

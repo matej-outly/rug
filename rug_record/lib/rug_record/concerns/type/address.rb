@@ -19,48 +19,58 @@ module RugRecord
 				module ClassMethods
 					
 					#
-					# Add new enum column
+					# Add new address column
 					#
 					def address_column(new_column)
 					
 						# Set method
-						define_method((new_column.to_s + "=").to_sym) do |address|
+						define_method((new_column.to_s + "=").to_sym) do |value|
 							column = new_column
-							if address.is_a? ::String
-								if !address.blank?
-									address = JSON.parse(address)
+							
+							# Convert string to Hash 
+							if value.is_a? ::String
+								if !value.blank?
+									value = JSON.parse(value)
 								else
-									address = nil
+									value = nil
 								end
 							end
-							if address.nil?
+
+							# Check type
+							if !value.nil? && !value.is_a?(Hash)
+								raise "Wrong value format, expecting Hash or nil."
+							end
+
+							# Filter
+							value = value.select { |key, value| ["street", "number", "postcode", "city"].include?(key.to_s) } if !value.nil?
+							
+							# Store
+							if value.blank?
 								write_attribute(column.to_sym, nil)
-							elsif address.is_a? Hash
-								write_attribute(column.to_sym, address.to_json)
 							else
-								raise "Wrong address format, expecting Hash"
+								write_attribute(column.to_sym, value.to_json)
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							address = read_attribute(column.to_sym)
-							if address.blank?
+							value = read_attribute(column.to_sym)
+							if value.blank?
 								return nil
 							else
-								return JSON.parse(address)
+								return JSON.parse(value)
 							end
 						end
 
 						# Get method
 						define_method((new_column.to_s + "_formated").to_sym) do
 							column = new_column
-							address = send(column.to_sym)
-							if address.blank?
+							value = send(column.to_sym)
+							if value.blank?
 								return nil
 							else
-								return "#{address["street"]} #{address["number"]}, #{address["postcode"]} #{address["city"]}"
+								return "#{value["street"]} #{value["number"]}, #{value["postcode"]} #{value["city"]}"
 							end
 						end
 

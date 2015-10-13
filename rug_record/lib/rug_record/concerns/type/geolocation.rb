@@ -2,10 +2,10 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Address definition
+# * Geolocation definition
 # *
 # * Author: Matěj Outlý
-# * Date  : 4. 4. 2015
+# * Date  : 13. 10. 2015
 # *
 # *****************************************************************************
 
@@ -14,20 +14,20 @@ require "active_record"
 module RugRecord
 	module Concerns
 		module Type
-			module Array extend ActiveSupport::Concern
+			module Geolocation extend ActiveSupport::Concern
 
 				module ClassMethods
 					
 					#
-					# Add new enum column
+					# Add new geolocation column
 					#
-					def array_column(new_column)
+					def geolocation_column(new_column)
 					
 						# Set method
 						define_method((new_column.to_s + "=").to_sym) do |value|
 							column = new_column
 							
-							# Convert string to Array 
+							# Convert string to Hash 
 							if value.is_a? ::String
 								if !value.blank?
 									value = JSON.parse(value)
@@ -37,9 +37,12 @@ module RugRecord
 							end
 
 							# Check type
-							if !value.nil? && !value.is_a?(Array)
-								raise "Wrong value format, expecting Array or nil."
+							if !value.nil? && !value.is_a?(Hash)
+								raise "Wrong value format, expecting Hash or nil."
 							end
+
+							# Filter
+							value = value.select { |key, value| ["longitude", "latitude"].include?(key.to_s) } if !value.nil?
 							
 							# Store
 							if value.blank?
@@ -67,7 +70,7 @@ module RugRecord
 							if value.blank?
 								return nil
 							else
-								return value.join(", ")
+								return "#{value["longitude"]}, #{value["latitude"]}"
 							end
 						end
 
@@ -80,4 +83,4 @@ module RugRecord
 	end
 end
 
-ActiveRecord::Base.send(:include, RugRecord::Concerns::Type::Array)
+ActiveRecord::Base.send(:include, RugRecord::Concerns::Type::Geolocation)
