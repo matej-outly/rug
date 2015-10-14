@@ -12,7 +12,7 @@
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 
-		def text_input_row(name, method, options = {})
+		def text_input_row(name, method = :text_field, options = {})
 			result = "<div class=\"element\">"
 			
 			# Label
@@ -43,7 +43,7 @@ module RugBuilder
 			return result.html_safe
 		end
 
-		def text_input_many_row(name, method, options = {})
+		def text_input_many_row(name, method = :text_field, options = {})
 			result = "<div class=\"element\">"
 			
 			# Label
@@ -198,16 +198,57 @@ module RugBuilder
 			value_city = value && value[:city] ? value[:city] : nil
 			value_postcode = value && value[:postcode] ? value[:postcode] : nil
 
-			# Field (first row)
+			# Container
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			
+			# Inputs (first row)
+			result += "<div class=\"field-item\">"
 			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: "text input xwide", placeholder: label_street)
 			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: "text input xnarrow", placeholder: label_number)
 			result += "</div>"
 
-			# Field (second row)
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			# Inputs (second row)
+			result += "<div class=\"field-item\">"
 			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: "text input xwide", placeholder: label_city)
 			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: "text input xnarrow", placeholder: label_postcode)
+			result += "</div>"
+
+			result += "</div>"
+
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
+
+			result += "</div>"
+			return result.html_safe
+		end
+
+		def range_row(name, method = :number_field, options = {})
+			result = "<div class=\"element\">"
+			
+			# Label
+			if !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Part labels
+			label_min = (options[:label_min] ? options[:label_min] : I18n.t("general.attribute.range.min"))
+			label_max = (options[:label_max] ? options[:label_max] : I18n.t("general.attribute.range.max"))
+			
+			# Part values
+			value = object.send(name)
+			value_min = value && value[:min] ? value[:min] : nil
+			value_max = value && value[:max] ? value[:max] : nil
+			
+			# Field
+			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: "text input normal", placeholder: label_min)
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: "text input normal", placeholder: label_max)
 			result += "</div>"
 
 			# Errors

@@ -98,7 +98,7 @@ module RugBuilder
 			# Known types
 			# *********************************************************************
 			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array, :geolocation ]
+			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array, :geolocation, :georectangle, :range ]
 
 			def validate_string_options(column_spec)
 				return true
@@ -161,6 +161,14 @@ module RugBuilder
 			end
 
 			def validate_geolocation_options(column_spec)
+				return true
+			end
+
+			def validate_georectangle_options(column_spec)
+				return true
+			end
+
+			def validate_range_options(column_spec)
 				return true
 			end
 
@@ -280,6 +288,16 @@ module RugBuilder
 			end
 
 			def render_geolocation(column, object)
+				value = object.send("#{column.to_s}_formated".to_sym)
+				return value
+			end
+
+			def render_georectangle(column, object)
+				value = object.send("#{column.to_s}_formated".to_sym)
+				return value
+			end
+
+			def render_range(column, object)
 				value = object.send("#{column.to_s}_formated".to_sym)
 				return value
 			end

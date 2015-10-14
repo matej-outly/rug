@@ -19,6 +19,8 @@ require "rug_record/concerns/type/array"
 require "rug_record/concerns/type/enum"
 require "rug_record/concerns/type/croppable_picture"
 require "rug_record/concerns/type/geolocation"
+require "rug_record/concerns/type/georectangle"
+require "rug_record/concerns/type/range"
 
 # Concerns
 require "rug_record/concerns/config"

@@ -149,5 +149,65 @@ module RugBuilder
 			return result.html_safe
 		end
 
+		def map_rectangle_row(name, options = {})
+			result = "<div class=\"element\">"
+			
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			# Label
+			if !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Part labels
+			label_top = (options[:label_top] ? options[:label_top] : I18n.t("general.attribute.georectangle.top"))
+			label_bottom = (options[:label_bottom] ? options[:label_bottom] : I18n.t("general.attribute.georectangle.bottom"))
+			label_left = (options[:label_left] ? options[:label_left] : I18n.t("general.attribute.georectangle.left"))
+			label_right = (options[:label_right] ? options[:label_right] : I18n.t("general.attribute.georectangle.right"))
+			
+			# Part values
+			value = object.send(name)
+			value_top = value && value[:top] ? value[:top] : nil
+			value_bottom = value && value[:bottom] ? value[:bottom] : nil
+			value_left = value && value[:left] ? value[:left] : nil
+			value_right = value && value[:right] ? value[:right] : nil
+						
+			# Container
+			result += "<div id=\"map_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			
+			# Text inputs (first row)
+			result += "<div class=\"field-item\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][top]", value_top, class: "text input normal top", placeholder: label_top)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][bottom]", value_bottom, class: "text input normal bottom", placeholder: label_bottom)
+			result += "</div>"
+
+			# Text inputs (second row)
+			result += "<div class=\"field-item\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][left]", value_left, class: "text input normal left", placeholder: label_left)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][right]", value_right, class: "text input normal right", placeholder: label_right)
+			result += "</div>"
+
+			# Mapbox (canvas)
+			#result += "<div class=\"field-item\">"
+			#result += "<div class=\"mapbox\"></div>"
+			#result += "</div>"
+
+			# Container end
+			result += "</div>"
+
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
+
+			result += "</div>"
+			return result.html_safe
+		end
+
 	end
 end
