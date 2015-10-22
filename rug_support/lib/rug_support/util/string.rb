@@ -98,3 +98,21 @@ class String
 	end
 
 end
+
+module RugSupport
+	module Util
+		class String
+
+			#
+			# Generate random string
+			#
+			def self.random(length = nil)
+				length = 128 if length.nil?
+				#return SecureRandom.random_number(36**length).to_s(36).rjust(length, "0")
+				#return SecureRandom.base64(length)[0..(length-1)]
+				return SecureRandom.hex(length/2 + 1)[0..(length-1)]
+			end
+
+		end
+	end
+end
