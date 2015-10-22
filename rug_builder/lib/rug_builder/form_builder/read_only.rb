@@ -12,7 +12,7 @@
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 
-		def read_only_row(name, content, options = {})
+		def read_only_row(name, content = nil, options = {})
 			result = "<div class=\"element\">"
 			
 			# Label
@@ -24,10 +24,26 @@ module RugBuilder
 				result += label(name)
 			end
 
+			# Content
+			if content.nil?
+				content = object.send(name).to_s
+			end
+
+			# Format
+			if options[:format]
+				format = options[:format]
+			else
+				format = :textarea
+			end
+
 			# Field
-			result += "<div class=\"field\"><textarea class=\"input textarea\" disabled=\"disabled\">"
-			result += content
-			result += "</textarea></div>"
+			result += "<div class=\"field\">"
+			if format == :input
+				result += "<input class=\"text input\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+			elsif format == :textarea
+				result += "<textarea class=\"input textarea\" disabled=\"disabled\">" + content + "</textarea>"
+			end
+			result += "</div>"
 			
 			result += "</div>"
 			return result.html_safe
