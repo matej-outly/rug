@@ -92,6 +92,11 @@ module RugBuilder
 						result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
 					end
 				end
+				if options[:actions]
+					options[:actions].each do |action, action_spec|
+						result += "<th></th>"
+					end
+				end
 				result += "<th></th>" if check_edit_link(options)
 				result += "<th></th>" if check_destroy_link(options)
 				result += "</tr>"
@@ -144,6 +149,11 @@ module RugBuilder
 						end
 
 						# Actions
+						if options[:actions]
+							options[:actions].each do |action, action_spec|
+								result += "<td>#{get_action_link(object, action_spec)}</td>"
+							end
+						end
 						result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
 						result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
 						result += "</tr>"
@@ -185,6 +195,11 @@ module RugBuilder
 				result += resolve_sorting(column, options)
 				result += "</th>"
 			end
+			if options[:actions]
+				options[:actions].each do |action, action_spec|
+					result += "<th></th>"
+				end
+			end
 			result += "<th></th>" if check_inline_edit(options)
 			result += "<th></th>" if check_edit_link(options)
 			result += "<th></th>" if check_destroy_link(options)
@@ -215,7 +230,12 @@ module RugBuilder
 					end
 					result += "</td>"
 				end
-				result += "<td>#{get_inline_edit_links(object, options)}</td>" if check_inline_edit(options)
+				if options[:actions]
+					options[:actions].each do |action, action_spec|
+						result += "<td>#{get_action_link(object, action_spec)}</td>"
+					end
+				end
+				result += "<td>#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
 				result += "<td>#{get_edit_link(object, options)}</td>" if check_edit_link(options)
 				result += "<td>#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
 				result += "</tr>"
@@ -227,6 +247,15 @@ module RugBuilder
 			result += "</table>"
 
 			return result
+		end
+
+		# *********************************************************************
+		# Common actions
+		# *********************************************************************
+
+		def get_action_link(object, spec)
+			url = RugSupport::PathResolver.new(@template).resolve(spec[:path], object)
+			return @template.link_to("<i class=\"icon-#{spec[:icon]}\"></i>".html_safe + spec[:label], url)
 		end
 
 		# *********************************************************************
@@ -301,7 +330,7 @@ module RugBuilder
 			end
 		end
 
-		def get_inline_edit_links(object, options)
+		def get_inline_edit_link(object, options)
 			result = ""
 			result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit")
 			result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline_edit save", style: "display: none;")
