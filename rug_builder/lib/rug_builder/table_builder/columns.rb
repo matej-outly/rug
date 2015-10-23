@@ -9,7 +9,16 @@
 # *
 # *****************************************************************************
 
-require "truncate_html"
+# Parts
+require "rug_builder/table_builder/column_types/address"
+require "rug_builder/table_builder/column_types/array"
+require "rug_builder/table_builder/column_types/basic"
+require "rug_builder/table_builder/column_types/datetime"
+require "rug_builder/table_builder/column_types/enum"
+require "rug_builder/table_builder/column_types/file"
+require "rug_builder/table_builder/column_types/geo"
+require "rug_builder/table_builder/column_types/range"
+require "rug_builder/table_builder/column_types/relation"
 
 module RugBuilder
 	class TableBuilder
@@ -52,7 +61,7 @@ module RugBuilder
 				end
 
 				# Check type
-				if !KNOWN_TYPES.include?(column_spec[:type])
+				if !method("validate_#{column_spec[:type].to_s}_options".to_sym) || !method("render_#{column_spec[:type].to_s}".to_sym)
 					raise "Unknown column type '#{column_spec[:type].to_s}'"
 				end
 
@@ -90,216 +99,6 @@ module RugBuilder
 				else
 					raise "Don't know how to render column '#{column.to_s}'..."
 				end
-			end
-
-		protected
-
-			# *********************************************************************
-			# Known types
-			# *********************************************************************
-			
-			KNOWN_TYPES = [ :string, :text, :integer, :date, :time, :datetime, :boolean, :file, :picture, :enum, :belongs_to, :has_many, :address, :currency, :array, :geolocation, :georectangle, :range ]
-
-			def validate_string_options(column_spec)
-				return true
-			end
-
-			def validate_text_options(column_spec)
-				return true
-			end
-
-			def validate_integer_options(column_spec)
-				return true
-			end
-
-			def validate_date_options(column_spec)
-				return true
-			end
-
-			def validate_time_options(column_spec)
-				return true
-			end
-
-			def validate_datetime_options(column_spec)
-				return true
-			end
-
-			def validate_boolean_options(column_spec)
-				return true
-			end
-
-			def validate_enum_options(column_spec)
-				return true
-			end
-
-			def validate_file_options(column_spec)
-				return true
-			end
-
-			def validate_picture_options(column_spec)
-				return column_spec.key?(:thumb_style)
-			end
-
-			def validate_belongs_to_options(column_spec)
-				return column_spec.key?(:label)
-			end
-
-			def validate_has_many_options(column_spec)
-				return column_spec.key?(:label)
-			end
-
-			def validate_address_options(column_spec)
-				return true
-			end
-
-			def validate_currency_options(column_spec)
-				return true
-			end
-
-			def validate_array_options(column_spec)
-				return true
-			end
-
-			def validate_geolocation_options(column_spec)
-				return true
-			end
-
-			def validate_georectangle_options(column_spec)
-				return true
-			end
-
-			def validate_range_options(column_spec)
-				return true
-			end
-
-			# *********************************************************************
-			# Types rendering
-			# *********************************************************************
-
-			def render_string(column, object)
-				value = object.send(column)
-				return value.to_s
-			end
-
-			def render_text(column, object)
-				value = object.send(column)
-				return "" if value.blank?
-				if @columns[column][:truncate] == false
-					return value.html_safe
-				else
-					html_string = TruncateHtml::HtmlString.new(value)
-					return TruncateHtml::HtmlTruncator.new(html_string, {}).truncate.html_safe
-				end
-			end
-
-			def render_integer(column, object)
-				value = object.send(column)
-				return value.to_i.to_s
-			end
-
-			def render_date(column, object)
-				value = object.send(column)
-				return "" if value.blank?
-				return I18n.l(value)
-			end
-
-			def render_time(column, object)
-				value = object.send(column)
-				return "" if value.blank?
-				return I18n.l(value)
-			end
-
-			def render_datetime(column, object)
-				value = object.send(column)
-				return "" if value.blank?
-				return I18n.l(value)
-			end
-
-			def render_boolean(column, object)
-				value = object.send(column)
-				if value == true
-					return I18n.t("general.bool_yes")
-				else
-					return I18n.t("general.bool_no")
-				end
-			end
-
-			def render_file(column, object)
-				value = object.send(column)
-				if value.exists?
-					return "#{I18n.t("general.bool_yes")} - <a href=\"#{value.url}\">#{I18n.t("general.action.download")}</a>".html_safe
-				else
-					return I18n.t("general.bool_no")
-				end
-			end
-
-			def render_picture(column, object)
-				value = object.send(column)
-				if value.exists?
-					return "<img src=\"#{value.url(@columns[column][:thumb_style])}\" />".html_safe
-				else
-					return I18n.t("general.bool_no")
-				end
-			end
-
-			def render_enum(column, object)
-				value = object.send("#{column.to_s}_obj".to_sym)
-				return "" if value.blank?
-				return value.label
-			end
-
-			def render_belongs_to(column, object)
-				value = object.send(column)
-				return "" if value.blank?
-				if @columns[column][:path]
-					return "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(@columns[column][:path], value)}\">#{value.send(@columns[column][:label])}</a>"
-				else
-					return value.send(@columns[column][:label])
-				end
-			end
-
-			def render_has_many(column, object)
-				collection = object.send(column)
-				if @columns[column][:path]
-					return collection.map { |item| "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(@columns[column][:path], item)}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
-				else
-					return collection.map { |item| item.send(@columns[column][:label]) }.join(", ")
-				end
-			end
-
-			def render_address(column, object)
-				value = object.send("#{column.to_s}_formated".to_sym)
-				return value
-			end
-
-			def render_currency(column, object)
-				value = object.send(column)
-				return @template.number_to_currency(value, locale: :cs)
-			end
-
-			def render_array(column, object)
-				if @columns[column][:format] == :comma
-					value = object.send(column)
-					value = object.send(column).join(", ") if !value.blank?
-				else
-					value = object.send("#{column.to_s}_formated".to_sym)
-				end
-				return value
-			end
-
-			def render_geolocation(column, object)
-				value = object.send("#{column.to_s}_formated".to_sym)
-				return value
-			end
-
-			def render_georectangle(column, object)
-				value = object.send("#{column.to_s}_formated".to_sym)
-				return value
-			end
-
-			def render_range(column, object)
-				value = object.send("#{column.to_s}_formated".to_sym)
-				return value
 			end
 
 		end
