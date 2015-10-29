@@ -24,6 +24,7 @@ require "rug_builder/form_builder/read_only"
 require "rug_builder/form_builder/section"
 require "rug_builder/form_builder/text_area"
 require "rug_builder/form_builder/text_input"
+require "rug_builder/form_builder/token_input"
 
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
