@@ -31,6 +31,10 @@ module Fancybox
 			directory("#{Dir.pwd}/vendor/assets/libraries/_fancybox/source", "#{Dir.pwd}/vendor/assets/libraries/fancybox")
 		end
 
+		def copy_user_js
+			copy_file("fancybox.js", "#{Dir.pwd}/app/assets/javascripts/libraries/fancybox.js")
+		end
+
 		def cleanup
 			remove_dir("#{Dir.pwd}/vendor/assets/libraries/_fancybox")
 		end
