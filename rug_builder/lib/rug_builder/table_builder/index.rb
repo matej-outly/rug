@@ -174,6 +174,56 @@ module RugBuilder
 			return result.html_safe
 		end
 
+		#
+		# Render picture index table
+		#
+		# Options:
+		# - paths (hash) - Define paths to show, edit and destroy actions
+		# - pagination (boolean) - Turn on pagination
+		# - summary (boolean) - Turn on summary
+		#
+		def picture_index(objects, columns, options = {})
+			
+			# Model class
+			model_class = get_model_class(objects, options)
+
+			# Normalize columns
+			columns = normalize_columns(columns)
+
+			# Table
+			if objects.empty?
+				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+			else 
+				result = ""
+				result += "<div class=\"picture index_table\">"
+				objects.each do |object|
+					result += "<div class=\"item\">"
+					columns.headers.each_with_index do |column, idx|
+						
+						# Standard read only value
+						if idx == 0 && check_show_link(options)
+							result += "<div class=\"picture\">#{get_show_link(object, columns.render(column, object), options)}</div>"
+						else
+							result += "<div class=\"description\">#{columns.render(column, object)}</div>"
+						end
+
+					end
+					result += "<div class=\"edit\">#{get_edit_link(object, options)}</div>" if check_edit_link(options)
+					result += "<div class=\"destroy\">#{get_destroy_link(object, options)}</div>" if check_destroy_link(options)
+					result += "</div>"
+				end
+				result += "</div>"
+			end
+
+			# Pagination
+			result += resolve_pagination(objects, options)
+			
+			# Summary
+			result += resolve_summary(objects, model_class, options)
+
+			return result.html_safe
+		end
+
 	protected
 
 		def index_body(objects, columns, model_class, options)

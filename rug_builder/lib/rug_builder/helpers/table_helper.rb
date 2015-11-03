@@ -25,6 +25,10 @@ module RugBuilder
 				RugBuilder::TableBuilder.new(self).hierarchical_index(objects, columns, options)
 			end
 
+			def rug_picture_index_table_for(objects, columns, options = {})
+				RugBuilder::TableBuilder.new(self).picture_index(objects, columns, options)
+			end
+
 			def rug_editor_table_for(objects, columns, data, options = {})
 				RugBuilder::TableBuilder.new(self).editor(objects, columns, data, options)
 			end
