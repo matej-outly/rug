@@ -1,5 +1,5 @@
 Description:
-    Integrate latest version of Textext library into the application.
+    Integrate latest version of Tokeninput library into the application.
 
 Example:
-    rails generate textext:install
+    rails generate tokeninput:install
