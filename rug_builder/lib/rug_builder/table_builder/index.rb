@@ -192,7 +192,7 @@ module RugBuilder
 
 			# Table
 			if objects.empty?
-				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else 
 				result = ""
 				result += "<div class=\"picture index_table\">"
@@ -213,14 +213,15 @@ module RugBuilder
 					result += "</div>"
 				end
 				result += "</div>"
+
+				# Pagination
+				result += resolve_pagination(objects, options)
+				
+				# Summary
+				result += resolve_summary(objects, model_class, options)
+
 			end
-
-			# Pagination
-			result += resolve_pagination(objects, options)
 			
-			# Summary
-			result += resolve_summary(objects, model_class, options)
-
 			return result.html_safe
 		end
 
