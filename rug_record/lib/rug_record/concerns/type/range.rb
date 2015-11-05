@@ -73,6 +73,10 @@ module RugRecord
 							value_max = read_attribute("#{column.to_s}_max")
 							if value_min.blank? && value_max.blank?
 								return nil
+							elsif value_min.blank?
+								return value_max
+							elsif value_max.blank?
+								return value_min
 							else
 								return "#{value_min} - #{value_max}"
 							end
