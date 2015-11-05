@@ -65,7 +65,7 @@ module RugBuilder
 
 					result += get_create_link(object, options) if check_create_link(options)
 				else
-					result += get_destroy_link_raw(object, options) if check_destroy_link(options)
+					result += get_destroy_link(object, options, disable_method_and_notification: true) if check_destroy_link(options)
 				end
 				result += "</td>"
 				result += "</tr>"
@@ -178,7 +178,7 @@ module RugBuilder
 
 						result += get_create_link(object, options) if check_create_link(options)
 					else
-						result += get_destroy_link_raw(object, options) if check_destroy_link(options)
+						result += get_destroy_link(object, options, disable_method_and_notification: true) if check_destroy_link(options)
 					end
 					result += "</td>"
 					result += "</tr>"

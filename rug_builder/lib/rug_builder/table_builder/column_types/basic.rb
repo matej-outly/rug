@@ -26,8 +26,11 @@ module RugBuilder
 			end
 
 			def render_string(column, object)
-				value = object.send(column)
-				return value.to_s
+				value = object.send(column).to_s
+				if @columns[column][:no_break] == true
+					value = value.gsub(" ", "&nbsp;").html_safe
+				end
+				return value
 			end
 
 			# *********************************************************************

@@ -202,14 +202,14 @@ module RugBuilder
 						
 						# Standard read only value
 						if idx == 0 && check_show_link(options)
-							result += "<div class=\"picture\">#{get_show_link(object, columns.render(column, object), options)}</div>"
+							result += "<div class=\"picture\">#{get_show_link(object, columns.render(column, object), options, disable_button: true)}</div>"
 						else
 							result += "<div class=\"description\">#{columns.render(column, object)}</div>"
 						end
 
 					end
-					result += "<div class=\"edit\">#{get_edit_link(object, options)}</div>" if check_edit_link(options)
-					result += "<div class=\"destroy\">#{get_destroy_link(object, options)}</div>" if check_destroy_link(options)
+					result += "<div class=\"edit\">#{get_edit_link(object, options, disable_button: true)}</div>" if check_edit_link(options)
+					result += "<div class=\"destroy\">#{get_destroy_link(object, options, disable_button: true)}</div>" if check_destroy_link(options)
 					result += "</div>"
 				end
 				result += "</div>"

@@ -92,41 +92,77 @@ module RugBuilder
 			return options[:paths] && options[:paths][:destroy]
 		end
 
-		def get_destroy_link(object, options)
+		def get_destroy_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:destroy], object)
-			return (url ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) : "")
-		end
-
-		def get_destroy_link_raw(object, options)
-			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:destroy], object)
-			return (url ? @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, class: "destroy") : "")
+			if url
+				if link_options[:disable_method_and_notification] == true
+					if link_options[:disable_button] == true
+						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, class: "destroy")
+					else
+						return "<div class=\"medium default btn icon-left entypo icon-trash\">#{@template.link_to(I18n.t("general.action.destroy"), url, class: "destroy") }</div>"
+					end
+				else
+					if link_options[:disable_button] == true
+						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } )
+					else
+						return "<div class=\"medium default btn icon-left entypo icon-trash\">#{@template.link_to(I18n.t("general.action.destroy"), url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) }</div>"
+					end
+				end
+			else
+				return ""
+			end
 		end
 		
 		def check_edit_link(options)
 			return options[:paths] && options[:paths][:edit]
 		end
 
-		def get_edit_link(object, options)
+		def get_edit_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:edit], object)
-			return (url ? @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), url, class: "edit"): "")
+			if url
+				if link_options[:disable_button] == true
+					return @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), url, class: "edit")
+				else
+					return "<div class=\"medium default btn icon-left entypo icon-pencil\">#{@template.link_to(I18n.t("general.action.edit"), url, class: "edit")}</div>"
+				end
+			else
+				return ""
+			end
 		end
 
 		def check_show_link(options)
 			return options[:paths] && options[:paths][:show]
 		end
 
-		def get_show_link(object, label, options)
+		def get_show_link(object, label, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:show], object)
-			return (url ? @template.link_to(label, url) : label)
+			if url
+				label = I18n.t("general.action.show") if label.blank?
+				if link_options[:disable_button] == true
+					return @template.link_to(label, url)
+				else
+					return "<div class=\"medium default btn icon-left entypo icon-search full-width\">#{@template.link_to(label, url)}</div>"
+				end
+			else
+				return label
+			end
 		end
 
 		def check_create_link(options)
 			return options[:paths] && options[:paths][:create]
 		end
 
-		def get_create_link(object, options)
+		def get_create_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:create])
-			return (url ? @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), url, class: "create") : "")
+			if url
+				if link_options[:disable_button] == true
+					return @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), url, class: "create")
+				else
+					return "<div class=\"medium default btn icon-left entypo icon-plus\">#{@template.link_to(I18n.t("general.action.bind"), url, class: "create")}</div>"
+				end
+			else
+				return ""
+			end
 		end
 
 	end
