@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Flot library into the application.
+
+Example:
+    rails generate flot:install

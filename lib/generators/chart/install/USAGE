@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Chart.js library into the application.
+
+Example:
+    rails generate chart:install
