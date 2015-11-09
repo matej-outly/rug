@@ -306,7 +306,11 @@ module RugBuilder
 
 		def get_action_link(object, spec)
 			url = RugSupport::PathResolver.new(@template).resolve(spec[:path], object)
-			return @template.link_to("<i class=\"icon-#{spec[:icon]}\"></i>".html_safe + spec[:label], url)
+			if url
+				return "<div class=\"medium default btn icon-left entypo icon-#{spec[:icon]}\">#{@template.link_to(spec[:label], url)}</div>"
+			else
+				return ""
+			end
 		end
 
 		# *********************************************************************
