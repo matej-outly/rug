@@ -39,17 +39,10 @@ module RugRecord
 				end
 
 				#
-				# Set class-scope language
-				#
-				def language=(class_language)
-					@@class_language = class_language
-				end
-
-				#
 				# Get class-scope language
 				#
 				def language
-					return @@class_language
+					return I18n.locale
 				end
 
 			end

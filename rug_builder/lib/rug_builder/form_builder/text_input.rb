@@ -29,14 +29,54 @@ module RugBuilder
 			field_options[:class] = "text input"
 			field_options[:id] = options[:id] if !options[:id].nil?
 			
-			# Field
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += self.method(method).call(name, field_options)
-			result += "</div>"
-			
-			# Errors
-			if object.errors[name].size > 0
-				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			# Localization
+			if options[:localization].nil?
+				localization = [nil]
+				is_localized = false
+			else
+				localization = options[:localization]
+				is_localized = true
+			end
+
+			# Tab header
+			if is_localized
+				result += "<section class=\"tabs pill minimal\">"
+				result += "<ul class=\"tab-nav\">"
+				localization.each_with_index do |locale, index|
+					result += "<li class=\"#{(index == 0 ? "active" : "")}\"><a href=\"#\">#{locale.to_s.upcase}</a></li>"
+				end
+				result += "</ul>"
+			end
+
+			localization.each_with_index do |locale, index|
+				
+				# Tab content
+				if is_localized
+					result += "<div class=\"tab-content #{(index == 0 ? "active" : "")}\">"
+					suffixed_name = (name.to_s + "_#{locale.to_s}").to_sym
+				else
+					suffixed_name = name
+				end
+
+				# Field
+				result += "<div class=\"field #{( object.errors[suffixed_name].size > 0 ? "danger" : "")}\">"
+				result += self.method(method).call(suffixed_name, field_options)
+				result += "</div>"
+				
+				# Errors
+				if object.errors[suffixed_name].size > 0
+					result += @template.content_tag(:span, object.errors[suffixed_name][0], :class => "danger label")
+				end
+
+				# Tab content
+				if is_localized
+					result += "</div>"
+				end
+
+			end
+
+			if is_localized
+				result += "</section>"
 			end
 
 			result += "</div>"
