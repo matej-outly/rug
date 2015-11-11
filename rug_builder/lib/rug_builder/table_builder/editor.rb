@@ -54,8 +54,8 @@ module RugBuilder
 						result += "<td>#{columns.render(column, object)}</td>"
 					end
 				end
-				result += "<td>#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
-				result += "<td>"
+				result += "<td class=\"action\">#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
+				result += "<td class=\"action\">"
 				if object.new_record? 
 
 					# Create hidden fields containing create data
@@ -167,8 +167,8 @@ module RugBuilder
 					end
 
 					# Actions
-					result += "<td>#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
-					result += "<td>"
+					result += "<td class=\"action\">#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
+					result += "<td class=\"action\">"
 					if object.new_record? 
 
 						# Create hidden fields containing create data

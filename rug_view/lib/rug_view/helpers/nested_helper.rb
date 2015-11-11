@@ -13,7 +13,7 @@ module RugView
 	module Helpers
 		module NestedHelper
 
-			def nested_ul(objects, &block)
+			def nested_ul(objects, options = {}, &block)
 				return "" if objects.size == 0
 
 				output = ""
@@ -32,7 +32,7 @@ module RugView
 
 					# Draw ul/li tags
 					if idx == 0
-						output << "<ul><li class=\"#{css_class}\">"
+						output << "<ul class=\"#{options[:class]}\"><li class=\"#{css_class}\">"
 					end
 					if object.parent_id != path.last
 						# We are on a new level, did we descend or ascend?
