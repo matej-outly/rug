@@ -29,6 +29,9 @@ module RugBuilder
 
 			# Value
 			value = object.send(name)
+			if value.is_a? String
+				value = value.split(",")
+			end
 
 			# Java Script
 			js = ""
@@ -48,7 +51,7 @@ module RugBuilder
 				js += "		tokenValue: '#{options[:value_attr]}',\n"
 			end
 			if !value.blank?
-				value_as_json = "[" + (value.split(",").map { |part| "{name:'#{@template.escape_javascript(part)}'}" }.join(",")) + "]"
+				value_as_json = "[" + (value.map { |part| "{name:'#{@template.escape_javascript(part)}'}" }.join(",")) + "]"
 				js += "		prePopulate: #{value_as_json},\n"
 			end
 			js += "	});\n"
