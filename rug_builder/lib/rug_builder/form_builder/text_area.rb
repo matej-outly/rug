@@ -26,7 +26,11 @@ module RugBuilder
 
 			# Field options
 			field_options = {}
-			field_options[:class] = "tinymce"
+			if options[:disable_tinymce] == true
+				field_options[:class] = "textarea input"
+			else
+				field_options[:class] = "tinymce"
+			end
 			field_options[:id] = options[:id] if !options[:id].nil?
 
 			# Localization
