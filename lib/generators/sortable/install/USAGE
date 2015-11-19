@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of jQuery Sortable library into the application.
+
+Example:
+    rails generate sortable:install

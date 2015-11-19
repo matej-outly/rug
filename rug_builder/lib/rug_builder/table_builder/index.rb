@@ -31,24 +31,104 @@ module RugBuilder
 			# Normalize columns
 			columns = normalize_columns(columns)
 
-			# Table
-			result = ""
-			if options[:page_break] && options[:page_break] > 0 # Sliced
-				objects.each_slice(options[:page_break]) do |slice|
-					result += index_body(slice, columns, model_class, options)
+			if objects.empty?
+				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+			else
+
+				# Table
+				result = ""
+				result += "<table class=\"index_table striped #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
+
+				# Table head
+				columns_count = 0
+				result += "<thead>"
+				result += "<tr>"
+				if check_moving(options)
+					result += "<th></th>" 
+					columns_count += 1
 				end
-			else # Not slices
-				result += index_body(objects, columns, model_class, options)
-			end
+				columns.headers.each do |column|
+					result += "<th>"
+					result += model_class.human_attribute_name(column.to_s).upcase_first
+					result += resolve_sorting(column, options)
+					result += "</th>"
+					columns_count += 1
+				end
+				if options[:actions]
+					options[:actions].each do |action, action_spec|
+						result += "<th></th>"
+						columns_count += 1
+					end
+				end
+				if check_inline_edit(options)
+					result += "<th></th>"
+					columns_count += 1
+				end
+				if check_edit_link(options)
+					result += "<th></th>"
+					columns_count += 1
+				end
+				if check_destroy_link(options)
+					result += "<th></th>" 
+					columns_count += 1
+				end
+				result += "</tr>"
+				result += "</thead>"
 
-			# Pagination
-			result += resolve_pagination(objects, options)
+				# Table body
+				result += "<tbody>"
+				objects.each do |object|
+					
+					result += "<tr data-id=\"#{object.id}\">"
+					result += "<td class=\"action\">#{get_moving_link}</td>" if check_moving(options)
+					columns.headers.each_with_index do |column, idx|
+						result += "<td>"
+						if check_inline_edit(options, column)
+							result += "<div class=\"inline_edit value\">"
+						end
+
+						# Standard read only value
+						if idx == 0 && check_show_link(options)
+							result += get_show_link(object, columns.render(column, object), options)
+						else
+							result += columns.render(column, object)
+						end
+						
+						if check_inline_edit(options, column)
+							result += "</div>"
+							result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+						end
+						result += "</td>"
+					end
+					if options[:actions]
+						options[:actions].each do |action, action_spec|
+							result += "<td class=\"action\">#{get_action_link(object, action_spec)}</td>"
+						end
+					end
+					result += "<td class=\"action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
+					result += "<td class=\"action\">#{get_edit_link(object, options)}</td>" if check_edit_link(options)
+					result += "<td class=\"action\">#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
+					result += "</tr>"
+
+				end
+				result += "</tbody>"
+
+				# Table
+				result += "</table>"
 			
-			# Summary
-			result += resolve_summary(objects, model_class, options)
+				# Pagination
+				result += resolve_pagination(objects, options)
+				
+				# Summary
+				result += resolve_summary(objects, model_class, options)
 
-			# Inline edit JS
-			result += resolve_inline_edit_js(options)
+				# Inline edit JS
+				result += resolve_inline_edit_js(options)
+
+				# Moving JS
+				result += resolve_moving_js(columns_count, options)
+
+			end
 
 			return result.html_safe
 		end
@@ -110,7 +190,7 @@ module RugBuilder
 					if !object.nil?
 						
 						# Node
-						result += "<tr>"
+						result += "<tr data-id=\"#{object.id}\">"
 
 						# Nesting 
 						open_siblings[level] = false 
@@ -166,10 +246,10 @@ module RugBuilder
 				# Table
 				result += "</table>"
 
-			end 
-			
-			# Summary
-			result += resolve_summary(objects, model_class, options)
+				# Summary
+				result += resolve_summary(objects, model_class, options)
+
+			end
 
 			return result.html_safe
 		end
@@ -197,7 +277,7 @@ module RugBuilder
 				result = ""
 				result += "<div class=\"picture index_table\">"
 				objects.each do |object|
-					result += "<div class=\"item\">"
+					result += "<div class=\"item\" data-id=\"#{object.id}\">"
 					columns.headers.each_with_index do |column, idx|
 						
 						# Standard read only value
@@ -227,87 +307,14 @@ module RugBuilder
 
 	protected
 
-		def index_body(objects, columns, model_class, options)
-
-			if objects.empty?
-				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
-			end
-
-			# Table
-			result = ""
-			result += "<table class=\"index_table striped #{options[:class].to_s}\">"
-
-			# Table head
-			result += "<thead>"
-			result += "<tr>"
-			columns.headers.each do |column|
-				result += "<th>"
-				result += model_class.human_attribute_name(column.to_s).upcase_first
-				result += resolve_sorting(column, options)
-				result += "</th>"
-			end
-			if options[:actions]
-				options[:actions].each do |action, action_spec|
-					result += "<th></th>"
-				end
-			end
-			result += "<th></th>" if check_inline_edit(options)
-			result += "<th></th>" if check_edit_link(options)
-			result += "<th></th>" if check_destroy_link(options)
-			result += "</tr>"
-			result += "</thead>"
-
-			# Table body
-			result += "<tbody>"
-			objects.each do |object|
-				
-				result += "<tr>"
-				columns.headers.each_with_index do |column, idx|
-					result += "<td>"
-					if check_inline_edit(options, column)
-						result += "<div class=\"inline_edit value\">"
-					end
-
-					# Standard read only value
-					if idx == 0 && check_show_link(options)
-						result += get_show_link(object, columns.render(column, object), options)
-					else
-						result += columns.render(column, object)
-					end
-					
-					if check_inline_edit(options, column)
-						result += "</div>"
-						result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
-					end
-					result += "</td>"
-				end
-				if options[:actions]
-					options[:actions].each do |action, action_spec|
-						result += "<td class=\"action\">#{get_action_link(object, action_spec)}</td>"
-					end
-				end
-				result += "<td class=\"action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
-				result += "<td class=\"action\">#{get_edit_link(object, options)}</td>" if check_edit_link(options)
-				result += "<td class=\"action\">#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
-				result += "</tr>"
-
-			end
-			result += "</tbody>"
-
-			# Table
-			result += "</table>"
-
-			return result
-		end
-
 		# *********************************************************************
 		# Common actions
 		# *********************************************************************
 
-		def get_action_link(object, spec)
-			url = RugSupport::PathResolver.new(@template).resolve(spec[:path], object)
+		def get_action_link(object, link_options)
+			url = RugSupport::PathResolver.new(@template).resolve(link_options[:path], object)
 			if url
-				return "<div class=\"medium default btn icon-left entypo icon-#{spec[:icon]}\">#{@template.link_to(spec[:label], url)}</div>"
+				return "<div class=\"medium default btn icon-left entypo icon-#{link_options[:icon]}\">#{@template.link_to(link_options[:label], url)}</div>"
 			else
 				return ""
 			end
@@ -320,56 +327,56 @@ module RugBuilder
 		def resolve_inline_edit_js(options)
 			if check_inline_edit(options)
 
-				js = ''
-				js += 'function index_table_inline_edit_ready()'
-				js += '{'
-				js += '	$(".index_table a.inline_edit.edit").on("click", function(e) {'
-				js += '		e.preventDefault();'
-				js += '		var row = $(this).closest("tr");'
-				js += '		row.find("a.inline_edit.edit").hide();'
-				js += '		row.find(".inline_edit.value").hide();'
-				js += '		row.find("a.inline_edit.save").show();'
-				js += '		row.find(".inline_edit.field").show();'
-				js += '	});'
+				js = ""
+				js += "function index_table_inline_edit_ready()\n"
+				js += "{\n"
+				js += "	$('.index_table a.inline_edit.edit').on('click', function(e) {\n"
+				js += "		e.preventDefault();\n"
+				js += "		var row = $(this).closest('tr');\n"
+				js += "		row.find('a.inline_edit.edit').hide();\n"
+				js += "		row.find('.inline_edit.value').hide();\n"
+				js += "		row.find('a.inline_edit.save').show();\n"
+				js += "		row.find('.inline_edit.field').show();\n"
+				js += "	});\n"
 
-				js += '	$(".index_table a.inline_edit.save").on("click", function(e) {'
-				js += '		e.preventDefault();'
-				js += '		var _this = $(this);'
-				js += '		var row = _this.closest("tr");'
-				js += '		var url = _this.attr("href");'
-				js += '		$.ajax({'
-				js += '			url: url,'
-				js += '			dataType: "json",'
-				js += '			type: "PUT",'
-				js += '			data: row.find("input").serialize(),'
-				js += '			success: function(callback) '
-				js += '			{'
-				js += '				row.find(".inline_edit.field").removeClass("danger");'
-				js += '				if (callback === true) {'
-				js += '					row.find(".inline_edit.value").each(function () {'
-				js += '						$(this).html($(this).next().find("input").val());'
-				js += '					});'
-				js += '					row.find("a.inline_edit.save").hide();'
-				js += '					row.find(".inline_edit.field").hide();'
-				js += '					row.find("a.inline_edit.edit").show();'
-				js += '					row.find(".inline_edit.value").show();'
-				js += '				} else {'
-				js += '					for (var column in callback) {'
-				js += '						form.find(".field." + column).addClass("danger");'
-				js += '					}'
-				js += '				}'
-				js += '				$(document).trigger("rug:index_table:inline_edit");'
-				js += '			},'
-				js += '			error: function(callback) '
-				js += '			{'
-				js += '				console.log("error");'
-				js += '			}'
-				js += '		});'
-				js += '	});'
-				js += '}'
+				js += "	$('.index_table a.inline_edit.save').on('click', function(e) {\n"
+				js += "		e.preventDefault();\n"
+				js += "		var _this = $(this);\n"
+				js += "		var row = _this.closest('tr');\n"
+				js += "		var url = _this.attr('href');\n"
+				js += "		$.ajax({\n"
+				js += "			url: url,\n"
+				js += "			dataType: 'json',\n"
+				js += "			type: 'PUT',\n"
+				js += "			data: row.find('input').serialize(),\n"
+				js += "			success: function(callback) \n"
+				js += "			{\n"
+				js += "				row.find('.inline_edit.field').removeClass('danger');\n"
+				js += "				if (callback === true) {\n"
+				js += "					row.find('.inline_edit.value').each(function () {\n"
+				js += "						$(this).html($(this).next().find('input').val());\n"
+				js += "					});\n"
+				js += "					row.find('a.inline_edit.save').hide();\n"
+				js += "					row.find('.inline_edit.field').hide();\n"
+				js += "					row.find('a.inline_edit.edit').show();\n"
+				js += "					row.find('.inline_edit.value').show();\n"
+				js += "				} else {\n"
+				js += "					for (var column in callback) {\n"
+				js += "						form.find('.field.' + column).addClass('danger');\n"
+				js += "					}\n"
+				js += "				}\n"
+				js += "				$(document).trigger('rug:index_table:inline_edit');\n"
+				js += "			},\n"
+				js += "			error: function(callback) \n"
+				js += "			{\n"
+				js += "				console.log('error');\n"
+				js += "			}\n"
+				js += "		});\n"
+				js += "	});\n"
+				js += "}\n"
 
-				js += '$(document).ready(index_table_inline_edit_ready);'
-				js += '$(document).on("page:load", index_table_inline_edit_ready);'
+				js += "$(document).ready(index_table_inline_edit_ready);\n"
+				js += "$(document).on('page:load', index_table_inline_edit_ready);\n"
 
 				return @template.javascript_tag(js)
 			else
@@ -394,6 +401,59 @@ module RugBuilder
 
 		def get_inline_edit_field(object, column, value, model_class)
 			return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"text\" class=\"text input\" value=\"#{value}\"/>"
+		end
+
+		# *********************************************************************
+		# Moving
+		# *********************************************************************
+
+		def resolve_moving_js(columns_count, options)
+			if check_moving(options)
+
+				js = ""
+				js += "function index_table_moving_ready()\n"
+				js += "{\n"
+				js += "	$('.index_table.moving').sortable({\n"
+				js += "		containerSelector: 'table',\n"
+				js += "		itemPath: '> tbody',\n"
+				js += "		itemSelector: 'tr',\n"
+				js += "		placeholder: '<tr class=\"placeholder\">#{"<td></td>" * columns_count}</tr>',\n"
+				js += "		handle: '.moving-handle',\n"
+				js += "		onDrop: function ($item, container, _super, event) {\n"
+				js += "			$item.removeClass(container.group.options.draggedClass).removeAttr('style');\n"
+				js += "			$('body').removeClass(container.group.options.bodyClass);\n"
+				js += "			var id = $item.data('id');\n"
+				js += "			var prev_id = $item.prev().data('id') ? $item.prev().data('id') : undefined;\n"
+				js += "			var next_id = $item.next().data('id') ? $item.next().data('id') : undefined;\n"
+				js += "			if (prev_id || next_id) {\n"
+				js += "				var destination_id = prev_id;\n"
+				js += "				var relation = 'succ';\n"
+				js += "				if (!destination_id) {\n"
+				js += "					destination_id = next_id;\n"
+				js += "					relation = 'pred';\n"
+				js += "				}\n"
+				js += "				var move_url = '#{RugSupport::PathResolver.new(@template).resolve(options[:paths][:move], ":id", ":relation", ":destination_id")}'.replace(':id', id).replace(':relation', relation).replace(':destination_id', destination_id);\n"
+				js += "				$.ajax({url: move_url, method: 'PUT', dataType: 'json'});" # TODO check response for TRUE
+				js += "			}\n" # Else unable to move
+				js += "		}\n"
+				js += "	});\n"
+				js += "}\n"
+
+				js += "$(document).ready(index_table_moving_ready);\n"
+				js += "$(document).on('page:load', index_table_moving_ready);\n"
+
+				return @template.javascript_tag(js)
+			else
+				return ""
+			end
+		end
+
+		def check_moving(options)
+			return options[:moving] == true && options[:paths] && options[:paths][:move]
+		end
+
+		def get_moving_link
+			return "<div class=\"medium default btn icon-left entypo icon-arrow-combo moving-handle\"><a href=\"#\">&nbsp;</a></div>"
 		end
 		
 	end
