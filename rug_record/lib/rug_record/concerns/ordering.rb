@@ -47,6 +47,25 @@ module RugRecord
 					return (@ordered == true)
 				end
 
+				#
+				# Move object to relation with other object
+				#
+				def move(moved_id, relation, destination_id)
+					moved_object = find_by_id(moved_id)
+					destination_object = find_by_id(destination_id)
+					if moved_object && destination_object
+						if relation.to_sym == :succ
+							return moved_object.move_to_right_of(destination_object)
+						elsif relation.to_sym == :pred
+							return moved_object.move_to_left_of(destination_object)
+						else
+							return false
+						end
+					else
+						return false
+					end
+				end
+
 			end
 
 			# Instance methods ...
