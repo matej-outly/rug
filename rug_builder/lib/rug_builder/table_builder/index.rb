@@ -32,7 +32,7 @@ module RugBuilder
 			columns = normalize_columns(columns)
 
 			if objects.empty?
-				return "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else
 
 				# Table
