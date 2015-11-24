@@ -27,7 +27,7 @@ module RugBuilder
 
 			# Table
 			result = ""
-			result += "<table class=\"show_table #{options[:class].to_s}%>\">"
+			result += "<table class=\"show_table #{options[:class].to_s}\">"
 
 			# Table body
 			result += "<tbody>"
