@@ -1,4 +1,4 @@
 <%%= rug_form_for(@<%= model_name.to_snake.singularize %>, create_url: "main_app.<%= controller_path.to_snake.gsub("/", "_").pluralize %>_path", update_url: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path") do |f| %>
-	<% columns.each_with_index do |column, idx| %><%%= f.<%= form_field(column.split(":").first, (column.split(":").size > 1 ? column.split(":").at(1) : "string" )) %> %><%= (idx != columns.size-1 ? "\n\t" : "") %><% end %>
+	<% columns.each_with_index do |column, idx| %><%%= f.<%= RugBuilder::FormBuilder.row_from_type(column.split(":").first, (column.split(":").size > 1 ? column.split(":").at(1) : "string" )) %> %><%= (idx != columns.size-1 ? "\n\t" : "") %><% end %>
 	<%%= f.primary_button_row :submit %>
 <%% end %>
