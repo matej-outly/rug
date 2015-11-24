@@ -86,9 +86,94 @@ module RugRecord
 							end
 						end
 
-					end
+						# Search method
+						define_singleton_method((new_column.to_s + "_intersection").to_sym) do |top, left, bottom = nil, right = nil|
+							column = new_column
 
-				end
+							# Point => rectangle transformation
+							bottom = top if bottom.nil?
+							right = left if right.nil?
+
+							if top.blank? || bottom.blank? || left.blank? || right.blank?
+								all
+							else
+
+								# Normalize params
+								top = top.to_f
+								bottom = bottom.to_f
+								left = left.to_f
+								right = right.to_f
+
+								# Normalize rectangle
+								if top < bottom
+									tmp = top
+									top = bottom
+									bottom = tmp
+								end
+								if right < left
+									tmp = right
+									right = left
+									left = tmp
+								end
+
+								# Condition (rectangle intersection)
+								where(
+									":left <= #{column}_right" + " AND " + 
+									":right >= #{column}_left" + " AND " + 
+									":bottom <= #{column}_top" + " AND " + 
+									":top >= #{column}_bottom",
+									top: top,
+									bottom: bottom,
+									left: left,
+									right: right
+								)
+							end
+						end # Search method
+
+						# Check method
+						define_method((new_column.to_s + "_intersection?").to_sym) do |top, left, bottom = nil, right = nil|
+							column = new_column
+
+							# Point => rectangle transformation
+							bottom = top if bottom.nil?
+							right = left if right.nil?
+
+							if top.blank? || bottom.blank? || left.blank? || right.blank?
+								return true
+							end
+
+							# Normalize params
+							top = top.to_f
+							bottom = bottom.to_f
+							left = left.to_f
+							right = right.to_f
+
+							# Normalize rectangle
+							if top < bottom
+								tmp = top
+								top = bottom
+								bottom = tmp
+							end
+							if right < left
+								tmp = right
+								right = left
+								left = tmp
+							end
+
+							# Read values
+							value_top = read_attribute("#{column.to_s}_top")
+							value_bottom = read_attribute("#{column.to_s}_bottom")
+							value_left = read_attribute("#{column.to_s}_left")
+							value_right = read_attribute("#{column.to_s}_right")
+
+							# Perform check
+							return (left <= value_right) && (right >= value_left) && (bottom <= value_top) && (top >= value_bottom)
+							
+						end # Check method
+
+					end # georectangle_column
+
+				end # ClassMethods
 
 			end
 		end

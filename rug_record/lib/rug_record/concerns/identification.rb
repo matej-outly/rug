@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * ActiveRecord identification
+# * ActiveRecord identification (WHAT IS THIS??)
 # *
 # * Author: Matěj Outlý
 # * Date  : 23. 9. 2015

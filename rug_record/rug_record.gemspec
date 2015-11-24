@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "awesome_nested_set", "~> 3.0" # Hierarchical ordering of models
   spec.add_dependency "paperclip", "~> 4.2" # File attachments
   spec.add_dependency "queue_classic", "~> 3.0" # Queue Classic
+  spec.add_dependency "geometry", "~> 6.5" # Basic 2D geometry
+  spec.add_dependency "clipper", "~> 2.9" # Polygon clipping library
   
   spec.add_dependency "rug_support", version
 
