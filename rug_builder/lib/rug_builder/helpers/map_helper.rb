@@ -2,18 +2,21 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug builder
+# * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 27. 4. 2015
+# * Date  : 24. 11. 2015
 # *
 # *****************************************************************************
 
-# Builders
-require "rug_builder/form_builder"
-require "rug_builder/map_builder"
-require "rug_builder/menu_builder"
-require "rug_builder/table_builder"
+module RugBuilder
+	module Helpers
+		module MapHelper
 
-# Railtie
-require 'rug_builder/railtie' if defined?(Rails)
+			def rug_map(name, options = {}, &block)
+				RugBuilder::MapBuilder.new(self).render(name, options, &block)
+			end
+
+		end
+	end
+end
