@@ -66,18 +66,6 @@ module RugRecord
 							end
 						end
 
-						# Get method
-						define_method((new_column.to_s + "_formated").to_sym) do
-							column = new_column
-							value_latitude = read_attribute("#{column.to_s}_latitude")
-							value_longitude = read_attribute("#{column.to_s}_longitude")
-							if value_latitude.blank? || value_longitude.blank?
-								return nil
-							else
-								return "#{value_latitude}, #{value_longitude}"
-							end
-						end
-
 					end
 
 				end
