@@ -36,89 +36,111 @@ module RugBuilder
 			value_latitude = value && value[:latitude] ? value[:latitude] : nil
 			value_longitude = value && value[:longitude] ? value[:longitude] : nil
 			
-			# Java Script TODO: refactor to OOP
+			# Java Script
 			js = ""
+			
+			js += "function RugFormMapLocation(hash, options)\n"
+			js += "{\n"
+			js += "	this.DEFAULT_LATITUDE = 50.0596696; /* Prague */\n"
+			js += "	this.DEFAULT_LONGITUDE = 14.4656239;\n"
+			js += "	this.DEFAULT_ZOOM = 9;\n"
+			js += "	this.map = null;\n"
+			js += "	this.marker = null;\n"
+			js += "	this.hash = hash;\n"
+			js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
+			js += "}\n"
+			js += "RugFormMapLocation.prototype = {\n"
+			js += "	constructor: RugFormMapLocation,\n"
+			js += "	updateInput: function()\n"
+			js += "	{\n"
+			js += "		if (this.marker != null) {\n"
+			js += "			$('#map_' + this.hash + ' input.latitude').val(this.marker.getPosition().lat());\n"
+			js += "			$('#map_' + this.hash + ' input.longitude').val(this.marker.getPosition().lng());\n"
+			js += "		} else {\n"
+			js += "			$('#map_' + this.hash + ' input.latitude').val(null);\n"
+			js += "			$('#map_' + this.hash + ' input.longitude').val(null);\n"
+			js += "		}\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	updateMap: function()\n"
+			js += "	{\n"
+			js += "		var latitude = parseFloat($('#map_' + this.hash + ' input.latitude').val());\n"
+			js += "		var longitude = parseFloat($('#map_' + this.hash + ' input.longitude').val());\n"
+			js += "		if (latitude && longitude) {\n"
+			js += "			this.setMarker(latitude, longitude);\n"
+			js += "		} else {\n"
+			js += "			this.removeMarker();\n"
+			js += "		}\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	setMarker: function(latitude, longitude)\n"
+			js += "	{\n"
+			js += "		var _this = this;\n"
+			js += "		if (this.marker == null) {\n"
+			js += "			this.marker = new google.maps.Marker({\n"
+			js += "				map: this.map,\n"
+			js += "				draggable: true,\n"
+			js += "				position: {lat: latitude, lng: longitude}\n"
+			js += "			});\n"
+			js += "			this.marker.addListener('dragend', function(event) {\n"
+			js += "				_this.updateInputs();\n"
+			js += "			});\n"
+			js += "			this.marker.addListener('click', function() {\n"
+			js += "				_this.removeMarker();\n"
+			js += "				_this.updateInputs();\n"
+			js += "			});\n"
+			js += "		} else {\n"
+			js += "			this.marker.setPosition({lat: latitude, lng: longitude});\n"
+			js += "		}\n"
+			js += "		this.map.panTo({lat: latitude, lng: longitude});\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	removeMarker: function()\n"
+			js += "	{\n"
+			js += "		if (this.marker != null) {\n"
+			js += "			this.marker.setMap(null);\n"
+			js += "			this.marker = null;\n"
+			js += "		}\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	ready: function()\n"
+			js += "	{\n"
+			js += "		var _this = this;\n"
+			js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
+			js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
+			js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
+			js += "		var map_canvas = $('#map_' + this.hash + ' .mapbox').get(0);\n"
+			js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
+			js += "		var map_options = {\n"
+			js += "			center: map_position,\n"
+			js += "			zoom: zoom,\n"
+			js += "			mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
+			js += "		}\n"
+			js += "		this.map = new google.maps.Map(map_canvas, map_options);\n"
+			js += "		google.maps.event.addListener(this.map, 'click', function(event) {\n"
+			js += "			_this.setMarker(event.latLng.lat(), event.latLng.lng());\n"
+			js += "			_this.updateInputs();\n"
+			js += "		});\n"
+			js += "		$('#map_' + this.hash + ' input.latitude').on('change', function() { _this.updateMap(); });\n"
+			js += "		$('#map_' + this.hash + ' input.longitude').on('change', function() { _this.updateMap(); });\n"
+			js += "		this.updateMap();\n"
+			js += "	},\n"
+			js += "	repair: function()\n"
+			js += "	{\n"
+			js += "		google.maps.event.trigger(this.map, 'resize');\n"
+			js += "		this.updateMap();\n"
+			js += "	}\n"
+			js += "}\n"
 
-			js += "var map_#{hash} = null;\n"
-			js += "var map_marker_#{hash} = null;\n"
-			
-			js += "function map_#{hash}_update_inputs(latitude, longitude)\n"
-			js += "{\n"
-			js += "	$('#map_#{hash} input.latitude').val(latitude);\n"
-			js += "	$('#map_#{hash} input.longitude').val(longitude);\n"
-			js += "}\n"
-			
-			js += "function map_#{hash}_update_map()\n"
-			js += "{\n"
-			js += "	var latitude = parseFloat($('#map_#{hash} input.latitude').val());\n"
-			js += "	var longitude = parseFloat($('#map_#{hash} input.longitude').val());\n"
-			js += "	if (latitude && longitude) {\n"
-			js += "		map_#{hash}_set_marker(latitude, longitude);\n"
-			js += "	} else {\n"
-			js += "		map_#{hash}_remove_marker();\n"
-			js += "	}\n"
-			js += "}\n"
-			
-			js += "function map_#{hash}_set_marker(latitude, longitude)\n"
-			js += "{\n"
-			js += "	if (map_marker_#{hash} == null) {\n"
-			js += "		map_marker_#{hash} = new google.maps.Marker({\n"
-			js += "			map: map_#{hash},\n"
-			js += "			draggable: true,\n"
-			js += "			position: {lat: latitude, lng: longitude}\n"
-			js += "		});\n"
-			js += "		map_marker_#{hash}.addListener('dragend', function(event) {\n"
-			js += "			map_#{hash}_update_inputs(event.latLng.lat(), event.latLng.lng());\n"
-			js += "			map_#{hash}.panTo(event.latLng);\n"
-			js += "		});\n"
-			js += "		map_marker_#{hash}.addListener('click', function() {\n"
-			js += "			map_#{hash}_remove_marker();\n"
-			js += "			map_#{hash}_update_inputs(null, null);\n"
-			js += "		});\n"
-			js += "	} else {\n"
-			js += "		map_marker_#{hash}.setPosition({lat: latitude, lng: longitude});\n"
-			js += "	}\n"
-			js += "	map_#{hash}.panTo({lat: latitude, lng: longitude});\n"
-			js += "}\n"
-			
-			js += "function map_#{hash}_remove_marker()\n"
-			js += "{\n"
-			js += "	if (map_marker_#{hash} != null) {\n"
-			js += "		map_marker_#{hash}.setMap(null);\n"
-			js += "		map_marker_#{hash} = null;\n"
-			js += "	}\n"
-			js += "}\n"
-			
-			js += "function map_#{hash}_ready()\n"
-			js += "{\n"
-			js += "	var default_latitude = #{( options[:default_latitude] ? options[:default_latitude] : 50.0596696)};\n"
-			js += "	var default_longitude = #{( options[:default_longitude] ? options[:default_longitude] : 14.4656239)};\n"
-			js += "	var default_zoom = #{( options[:default_zoom] ? options[:default_zoom] : 9)};\n"
-			js += "	var map_canvas = $('#map_#{hash} .mapbox').get(0);\n"
-			js += "	var map_position = new google.maps.LatLng(default_latitude, default_longitude);\n"
-			js += "	var map_options = {\n"
-			js += "		center: map_position,\n"
-			js += "		zoom: default_zoom,\n"
-			js += "		mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
-			js += "	}\n"
-			js += "	map_#{hash} = new google.maps.Map(map_canvas, map_options);\n"
-			js += "	google.maps.event.addListener(map_#{hash}, 'click', function(event) {\n"
-			js += "		map_#{hash}_set_marker(event.latLng.lat(), event.latLng.lng());\n"
-			js += "		map_#{hash}_update_inputs(event.latLng.lat(), event.latLng.lng());\n"
+			js += "var rug_form_map_location_#{hash} = null;\n"
+			js += "$(document).ready(function() {\n"
+			js += "	rug_form_map_location_#{hash} = new RugFormMapLocation('#{hash}', {\n"
+			js += "		latitude: #{@options[:latitude]},\n" if @options[:latitude]
+			js += "		longitude: #{@options[:longitude]},\n" if @options[:longitude]
+			js += "		zoom: #{@options[:zoom]}\n" if @options[:zoom]
 			js += "	});\n"
-			js += "	$('#map_#{hash} input.latitude').on('change', map_#{hash}_update_map);\n"
-			js += "	$('#map_#{hash} input.longitude').on('change', map_#{hash}_update_map);\n"
-			js += "	map_#{hash}_update_map();\n"
-			js += "}\n"
-
-			js += "function map_#{hash}_repair()\n"
-			js += "{\n"
-			js += "	google.maps.event.trigger(map_#{hash}, 'resize');\n"
-			js += "	map_#{hash}_update_map();\n"
-			js += "}\n"
-			
-			js += "$(document).ready(map_#{hash}_ready);\n"
-			js += "$(document).on('page:load', map_#{hash}_ready);\n"
+			js += "	rug_form_map_location_#{hash}.ready();\n"
+			js += "});\n"
 
 			result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
 			result += @template.javascript_tag(js)
@@ -136,66 +158,6 @@ module RugBuilder
 			result += "<div class=\"field-item\">"
 			result += "<div class=\"mapbox\"></div>"
 			result += "</div>"
-
-			# Container end
-			result += "</div>"
-
-			# Errors
-			if object.errors[name].size > 0
-				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
-			end
-
-			result += "</div>"
-			return result.html_safe
-		end
-
-		def map_rectangle_row(name, options = {})
-			result = "<div class=\"element\">"
-			
-			# Unique hash
-			hash = Digest::SHA1.hexdigest(name.to_s)
-
-			# Label
-			if !options[:label].nil?
-				if options[:label] != false
-					result += label(name, options[:label])
-				end
-			else
-				result += label(name)
-			end
-
-			# Part labels
-			label_top = (options[:label_top] ? options[:label_top] : I18n.t("general.attribute.georectangle.top"))
-			label_bottom = (options[:label_bottom] ? options[:label_bottom] : I18n.t("general.attribute.georectangle.bottom"))
-			label_left = (options[:label_left] ? options[:label_left] : I18n.t("general.attribute.georectangle.left"))
-			label_right = (options[:label_right] ? options[:label_right] : I18n.t("general.attribute.georectangle.right"))
-			
-			# Part values
-			value = object.send(name)
-			value_top = value && value[:top] ? value[:top] : nil
-			value_bottom = value && value[:bottom] ? value[:bottom] : nil
-			value_left = value && value[:left] ? value[:left] : nil
-			value_right = value && value[:right] ? value[:right] : nil
-						
-			# Container
-			result += "<div id=\"map_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			
-			# Text inputs (first row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][top]", value_top, class: "text input normal top", placeholder: label_top)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][bottom]", value_bottom, class: "text input normal bottom", placeholder: label_bottom)
-			result += "</div>"
-
-			# Text inputs (second row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][left]", value_left, class: "text input normal left", placeholder: label_left)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][right]", value_right, class: "text input normal right", placeholder: label_right)
-			result += "</div>"
-
-			# Mapbox (canvas)
-			#result += "<div class=\"field-item\">"
-			#result += "<div class=\"mapbox\"></div>"
-			#result += "</div>"
 
 			# Container end
 			result += "</div>"
@@ -230,16 +192,19 @@ module RugBuilder
 			# Java Script
 			js = ""
 
-			js += "function FormMapPolygon(hash, options)\n"
+			js += "function RugFormMapPolygon(hash, options)\n"
 			js += "{\n"
+			js += "	this.DEFAULT_LATITUDE = 50.0596696; /* Prague */\n"
+			js += "	this.DEFAULT_LONGITUDE = 14.4656239;\n"
+			js += "	this.DEFAULT_ZOOM = 9;\n"
 			js += "	this.map = null;\n"
 			js += "	this.markers = [];\n"
 			js += "	this.polygon = null;\n"
 			js += "	this.hash = hash;\n"
 			js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
 			js += "}\n"
-			js += "FormMapPolygon.prototype = {\n"
-			js += "	constructor: FormMapPolygon,\n"
+			js += "RugFormMapPolygon.prototype = {\n"
+			js += "	constructor: RugFormMapPolygon,\n"
 			js += "	updateInput: function()\n"
 			js += "	{\n"
 			js += "		var value = null;\n"
@@ -336,14 +301,14 @@ module RugBuilder
 			js += "	ready: function()\n"
 			js += "	{\n"
 			js += "		var _this = this;\n"
-			js += "		var default_latitude = (this.options.default_latitude ? this.options.default_latitude : 50.0596696); /* Prague */\n"
-			js += "		var default_longitude = (this.options.default_longitude ? this.options.default_longitude : 14.4656239);\n"
-			js += "		var default_zoom = (this.options.default_zoom ? this.options.default_zoom : 9);\n"
+			js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
+			js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
+			js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
 			js += "		var map_canvas = $('#map_' + this.hash + ' .mapbox').get(0);\n"
-			js += "		var map_position = new google.maps.LatLng(default_latitude, default_longitude);\n"
+			js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
 			js += "		var map_options = {\n"
 			js += "			center: map_position,\n"
-			js += "			zoom: default_zoom,\n"
+			js += "			zoom: zoom,\n"
 			js += "			mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
 			js += "		}\n"
 			js += "		this.map = new google.maps.Map(map_canvas, map_options);\n"
@@ -361,14 +326,14 @@ module RugBuilder
 			js += "	}\n"
 			js += "}\n"
 
-			js += "var form_map_polygon_#{hash} = null;\n"
+			js += "var rug_form_map_polygon_#{hash} = null;\n"
 			js += "$(document).ready(function() {\n"
-			js += "	form_map_polygon_#{hash} = new FormMapPolygon('#{hash}', {\n"
-			js += "		default_latitude: #{( options[:default_latitude] ? options[:default_latitude] : 50.0596696)},\n"
-			js += "		default_longitude: #{( options[:default_longitude] ? options[:default_longitude] : 14.4656239)},\n"
-			js += "		default_zoom: #{( options[:default_zoom] ? options[:default_zoom] : 9)}\n"
+			js += "	rug_form_map_polygon_#{hash} = new RugFormMapPolygon('#{hash}', {\n"
+			js += "		latitude: #{@options[:latitude]},\n" if @options[:latitude]
+			js += "		longitude: #{@options[:longitude]},\n" if @options[:longitude]
+			js += "		zoom: #{@options[:zoom]}\n" if @options[:zoom]
 			js += "	});\n"
-			js += "	form_map_polygon_#{hash}.ready();\n"
+			js += "	rug_form_map_polygon_#{hash}.ready();\n"
 			js += "});\n"
 
 			result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
