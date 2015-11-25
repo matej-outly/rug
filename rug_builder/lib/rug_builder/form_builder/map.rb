@@ -51,21 +51,21 @@ module RugBuilder
 			js += "}\n"
 			js += "RugFormMapLocation.prototype = {\n"
 			js += "	constructor: RugFormMapLocation,\n"
-			js += "	updateInput: function()\n"
+			js += "	updateInputs: function()\n"
 			js += "	{\n"
 			js += "		if (this.marker != null) {\n"
-			js += "			$('#map_' + this.hash + ' input.latitude').val(this.marker.getPosition().lat());\n"
-			js += "			$('#map_' + this.hash + ' input.longitude').val(this.marker.getPosition().lng());\n"
+			js += "			$('#map_location_' + this.hash + ' input.latitude').val(this.marker.getPosition().lat());\n"
+			js += "			$('#map_location_' + this.hash + ' input.longitude').val(this.marker.getPosition().lng());\n"
 			js += "		} else {\n"
-			js += "			$('#map_' + this.hash + ' input.latitude').val(null);\n"
-			js += "			$('#map_' + this.hash + ' input.longitude').val(null);\n"
+			js += "			$('#map_location_' + this.hash + ' input.latitude').val(null);\n"
+			js += "			$('#map_location_' + this.hash + ' input.longitude').val(null);\n"
 			js += "		}\n"
 			js += "		return true;\n"
 			js += "	},\n"
 			js += "	updateMap: function()\n"
 			js += "	{\n"
-			js += "		var latitude = parseFloat($('#map_' + this.hash + ' input.latitude').val());\n"
-			js += "		var longitude = parseFloat($('#map_' + this.hash + ' input.longitude').val());\n"
+			js += "		var latitude = parseFloat($('#map_location_' + this.hash + ' input.latitude').val());\n"
+			js += "		var longitude = parseFloat($('#map_location_' + this.hash + ' input.longitude').val());\n"
 			js += "		if (latitude && longitude) {\n"
 			js += "			this.setMarker(latitude, longitude);\n"
 			js += "		} else {\n"
@@ -109,7 +109,7 @@ module RugBuilder
 			js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
 			js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
 			js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
-			js += "		var map_canvas = $('#map_' + this.hash + ' .mapbox').get(0);\n"
+			js += "		var map_canvas = $('#map_location_' + this.hash + ' .mapbox').get(0);\n"
 			js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
 			js += "		var map_options = {\n"
 			js += "			center: map_position,\n"
@@ -121,8 +121,8 @@ module RugBuilder
 			js += "			_this.setMarker(event.latLng.lat(), event.latLng.lng());\n"
 			js += "			_this.updateInputs();\n"
 			js += "		});\n"
-			js += "		$('#map_' + this.hash + ' input.latitude').on('change', function() { _this.updateMap(); });\n"
-			js += "		$('#map_' + this.hash + ' input.longitude').on('change', function() { _this.updateMap(); });\n"
+			js += "		$('#map_location_' + this.hash + ' input.latitude').on('change', function() { _this.updateMap(); });\n"
+			js += "		$('#map_location_' + this.hash + ' input.longitude').on('change', function() { _this.updateMap(); });\n"
 			js += "		this.updateMap();\n"
 			js += "	},\n"
 			js += "	repair: function()\n"
@@ -146,7 +146,7 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"map_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div id=\"map_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Text inputs
 			result += "<div class=\"field-item\">"
@@ -218,12 +218,12 @@ module RugBuilder
 			js += "		} else {\n"
 			js += "			value = '';\n"
 			js += "		}\n"
-			js += "		$('#map_' + this.hash + ' input').val(value);\n"
+			js += "		$('#map_polygon_' + this.hash + ' input').val(value);\n"
 			js += "		return true;\n"
 			js += "	},\n"
 			js += "	updateMap: function()\n"
 			js += "	{\n"
-			js += "		var value = $('#map_' + this.hash + ' input').val();\n"
+			js += "		var value = $('#map_polygon_' + this.hash + ' input').val();\n"
 			js += "		value = JSON.parse(value);\n"
 			js += "		this.clearMarkers();\n"
 			js += "		if (value instanceof Array) {\n"
@@ -304,7 +304,7 @@ module RugBuilder
 			js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
 			js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
 			js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
-			js += "		var map_canvas = $('#map_' + this.hash + ' .mapbox').get(0);\n"
+			js += "		var map_canvas = $('#map_polygon_' + this.hash + ' .mapbox').get(0);\n"
 			js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
 			js += "		var map_options = {\n"
 			js += "			center: map_position,\n"
@@ -340,7 +340,7 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"map_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div id=\"map_polygon_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Input
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
@@ -348,6 +348,131 @@ module RugBuilder
 			# Mapbox (canvas)
 			result += "<div class=\"mapbox\"></div>"
 
+			# Container end
+			result += "</div>"
+
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
+
+			result += "</div>"
+			return result.html_safe
+		end
+
+		def address_location_row(name, options = {})
+			result = "<div class=\"element\">"
+			
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			# Label
+			if !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Part values
+			value = object.send(name)
+			value_latitude = value && value[:latitude] ? value[:latitude] : nil
+			value_longitude = value && value[:longitude] ? value[:longitude] : nil
+			
+			# Java Script
+			js = ""
+			
+			js += "function RugFormAddressLocation(hash, options)\n"
+			js += "{\n"
+			js += "	this.geocoder = null;\n"
+			js += "	this.hash = hash;\n"
+			js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
+			js += "}\n"
+			js += "RugFormAddressLocation.prototype = {\n"
+			js += "	constructor: RugFormAddressLocation,\n"
+			js += "	updateInputs: function()\n"
+			js += "	{\n"
+			js += "		var _this = this;\n"
+			js += "		var address = $('#address_location_' + this.hash + ' input.address').val();\n"
+			js += "		if (address) {\n"
+			js += "			this.geocode(address, function(latitude, longitude) {\n"
+			js += "				$('#address_location_' + _this.hash + ' input.latitude').val(latitude);\n"
+			js += "				$('#address_location_' + _this.hash + ' input.longitude').val(longitude);\n"
+			js += "			});\n"
+			js += "		} else {\n"
+			js += "			$('#address_location_' + this.hash + ' input.latitude').val(null);\n"
+			js += "			$('#address_location_' + this.hash + ' input.longitude').val(null);\n"
+			js += "		}\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	updateAddress: function()\n"
+			js += "	{\n"
+			js += "		var _this = this;\n"
+			js += "		var latitude = parseFloat($('#address_location_' + this.hash + ' input.latitude').val());\n"
+			js += "		var longitude = parseFloat($('#address_location_' + this.hash + ' input.longitude').val());\n"
+			js += "		if (latitude && longitude) {\n"
+			js += "			this.reverseGeocode(latitude, longitude, function(address) {\n"
+			js += "				$('#address_location_' + _this.hash + ' input.address').val(address);\n"
+			js += "			});\n"
+			js += "		} else {\n"
+			js += "			$('#address_location_' + this.hash + ' input.address').val(null);\n"
+			js += "		}\n"
+			js += "		return true;\n"
+			js += "	},\n"
+			js += "	geocode: function(address, callback) {\n"
+			js += "		this.geocoder.geocode({'address': address}, function(results, status) {\n"
+			js += "			if (status === google.maps.GeocoderStatus.OK) {\n"
+			js += "				if (typeof callback === 'function') callback(results[0].geometry.location.lat(), results[0].geometry.location.lng());\n"
+			js += "			} else {\n"
+			js += "				console.log('Geocode not successful with status: ' + status);\n"
+			js += "			}\n"
+			js += "		});		\n"
+			js += "	},\n"
+			js += "	reverseGeocode: function(latitude, longitude, callback) {\n"
+			js += "		this.geocoder.geocode({'location': {lat: latitude, lng: longitude}}, function(results, status) {\n"
+			js += "			if (status === google.maps.GeocoderStatus.OK) {\n"
+			js += "				if (results[0]) {\n"
+			js += "					if (typeof callback === 'function') callback(results[0].formatted_address);\n"
+			js += "				} else {\n"
+			js += "					if (typeof callback === 'function') callback(null);\n"
+			js += "				}\n"
+			js += "			} else {\n"
+			js += "				console.log('Reverse geocode not successful with status: ' + status);\n"
+			js += "			}\n"
+			js += "		});\n"
+			js += "	},\n"
+			js += "	ready: function()\n"
+			js += "	{\n"
+			js += "		var _this = this;\n"
+			js += "		this.geocoder = new google.maps.Geocoder();\n"
+			js += "		$('#address_location_' + this.hash + ' input.address').on('change', function() { _this.updateInputs(); });\n"
+			js += "		$('#address_location_' + this.hash + ' input.latitude').on('change', function() { _this.updateAddress(); });\n"
+			js += "		$('#address_location_' + this.hash + ' input.longitude').on('change', function() { _this.updateAddress(); });\n"
+			js += "		this.updateAddress();\n"
+			js += "	}\n"
+			js += "}\n"
+
+			js += "var rug_form_address_location_#{hash} = null;\n"
+			js += "$(document).ready(function() {\n"
+			js += "	rug_form_address_location_#{hash} = new RugFormAddressLocation('#{hash}', {\n"
+			js += "	});\n"
+			js += "	rug_form_address_location_#{hash}.ready();\n"
+			js += "});\n"
+
+			result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
+			result += @template.javascript_tag(js)
+			
+			# Container
+			result += "<div id=\"address_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			
+			# Address inputs
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", "", class: "text input address")
+			
+			# Location inputs
+			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")
+			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "longitude")
+			
 			# Container end
 			result += "</div>"
 
