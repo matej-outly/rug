@@ -180,7 +180,7 @@ module RugBuilder
 			js += "		google.maps.event.trigger(this.map, 'resize');\n"
 			js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
 			js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
-			js += "		this.map.panTo({lat: latitude, lng: longitude});\n"
+			js += "		this.map.setCenter({lat: latitude, lng: longitude});\n"
 			js += "	}\n"
 			js += "}\n"
 
