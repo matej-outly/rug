@@ -37,7 +37,7 @@ module RugRecord
 							end
 
 							# Check type
-							if !value.nil? && !value.is_a?(Array)
+							if !value.nil? && !value.is_a?(::Array)
 								raise "Wrong value format, expecting Array or nil."
 							end
 							
