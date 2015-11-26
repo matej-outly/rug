@@ -399,6 +399,7 @@ module RugBuilder
 			js += "			this.geocode(address, function(latitude, longitude) {\n"
 			js += "				$('#address_location_' + _this.hash + ' input.latitude').val(latitude);\n"
 			js += "				$('#address_location_' + _this.hash + ' input.longitude').val(longitude);\n"
+			js += "				_this.updateAddress();\n"
 			js += "			});\n"
 			js += "		} else {\n"
 			js += "			$('#address_location_' + this.hash + ' input.latitude').val(null);\n"
