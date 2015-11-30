@@ -2,10 +2,10 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug table builder column definition - address type
+# * Rug table builder column definition - name type
 # *
 # * Author: Matěj Outlý
-# * Date  : 10. 4. 2015
+# * Date  : 30. 11. 2015
 # *
 # *****************************************************************************
 
@@ -16,14 +16,14 @@ module RugBuilder
 		protected
 
 			# *********************************************************************
-			# Address
+			# Name
 			# *********************************************************************
 
-			def validate_address_options(column_spec)
+			def validate_name_options(column_spec)
 				return true
 			end
 
-			def render_address(column, object)
+			def render_name(column, object)
 				value = object.send(column)
 				return value[:formatted]
 			end

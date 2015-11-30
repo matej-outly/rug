@@ -74,8 +74,13 @@ module RugBuilder
 			end
 
 			def render_currency(column, object)
+				if @columns[column][:locale]
+					locale = @columns[column][:locale]
+				else
+					locale = :cs
+				end
 				value = object.send(column)
-				return @template.number_to_currency(value, locale: :cs)
+				return @template.number_to_currency(value, locale: locale)
 			end
 
 			# *********************************************************************

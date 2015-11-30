@@ -24,8 +24,8 @@ module RugBuilder
 			end
 			
 			def render_range(column, object)
-				value = object.send("#{column.to_s}_formated".to_sym)
-				return value
+				value = object.send(column.to_s)
+				return value[:formatted]
 			end
 
 		end

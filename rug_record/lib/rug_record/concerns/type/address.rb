@@ -68,12 +68,12 @@ module RugRecord
 							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
 								return nil
 							else
-								return { street: value_street, number: value_number, postcode: value_postcode, city: value_city }
+								return { street: value_street, number: value_number, postcode: value_postcode, city: value_city, formatted: self.send((column.to_s + "_formatted").to_sym) }
 							end
 						end
 
 						# Get method
-						define_method((new_column.to_s + "_formated").to_sym) do
+						define_method((new_column.to_s + "_formatted").to_sym) do
 							column = new_column
 							value_street = read_attribute("#{column.to_s}_street")
 							value_number = read_attribute("#{column.to_s}_number")

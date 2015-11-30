@@ -26,6 +26,7 @@ module RugBuilder
 				when :enum then "picker_row(:#{name})" 
 				when :belongs_to then "picker_row(:#{name})"
 				when :address then "address_row(:#{name})"
+				when :name then "name_row(:#{name})"
 				when :currency then "text_input_row(:#{name}, :number_field)"
 				when :range then "range_row(:#{name})"
 				else "text_input_row(:#{name})"

@@ -24,11 +24,16 @@ module RugBuilder
 			end
 
 			def render_array(column, object)
+				if @columns[column][:format]
+					format = @columns[column][:format]
+				else
+					format = :comma
+				end
 				if @columns[column][:format] == :comma
 					value = object.send(column)
 					value = object.send(column).join(", ") if !value.blank?
 				else
-					value = object.send("#{column.to_s}_formated".to_sym)
+					raise "Unknown format #{@columns[column][:format]}."
 				end
 				return value
 			end

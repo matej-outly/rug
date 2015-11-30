@@ -264,6 +264,50 @@ module RugBuilder
 			return result.html_safe
 		end
 
+		def name_row(name, options = {})
+			result = "<div class=\"element\">"
+			
+			# Label
+			if !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Part labels
+			label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title"))
+			label_firstname = (options[:label_firstname] ? options[:label_firstname] : I18n.t("general.attribute.name.firstname"))
+			label_lastname = (options[:label_lastname] ? options[:label_lastname] : I18n.t("general.attribute.name.lastname"))
+			
+			# Part values
+			value = object.send(name)
+			value_title = value && value[:title] ? value[:title] : nil
+			value_firstname = value && value[:firstname] ? value[:firstname] : nil
+			value_lastname = value && value[:lastname] ? value[:lastname] : nil
+			
+			# Container
+			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			
+			# Inputs (first row)
+			result += "<div class=\"field-item\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: "text input narrow", placeholder: label_title)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: "text input narrow", placeholder: label_firstname)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: "text input narrow", placeholder: label_lastname)
+			result += "</div>"
+
+			result += "</div>"
+
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
+
+			result += "</div>"
+			return result.html_safe
+		end
+
 		def range_row(name, method = :number_field, options = {})
 			result = "<div class=\"element\">"
 			

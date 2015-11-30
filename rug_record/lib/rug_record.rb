@@ -21,6 +21,7 @@ require "rug_record/concerns/type/croppable_picture"
 require "rug_record/concerns/type/geolocation"
 require "rug_record/concerns/type/georectangle"
 require "rug_record/concerns/type/geopolygon"
+require "rug_record/concerns/type/name"
 require "rug_record/concerns/type/range"
 
 # Concerns

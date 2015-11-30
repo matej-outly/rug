@@ -17,6 +17,7 @@ require "rug_builder/table_builder/column_types/datetime"
 require "rug_builder/table_builder/column_types/enum"
 require "rug_builder/table_builder/column_types/file"
 require "rug_builder/table_builder/column_types/geo"
+require "rug_builder/table_builder/column_types/name"
 require "rug_builder/table_builder/column_types/range"
 require "rug_builder/table_builder/column_types/relation"
 
