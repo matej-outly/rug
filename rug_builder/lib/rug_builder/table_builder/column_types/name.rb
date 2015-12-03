@@ -25,7 +25,11 @@ module RugBuilder
 
 			def render_name(column, object)
 				value = object.send(column)
-				return value[:formatted]
+				if !value.nil?
+					return value[:formatted]
+				else
+					return ""
+				end
 			end
 
 		end

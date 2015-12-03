@@ -25,7 +25,11 @@ module RugBuilder
 			
 			def render_range(column, object)
 				value = object.send(column.to_s)
-				return value[:formatted]
+				if !value.nil?
+					return value[:formatted]
+				else
+					return ""
+				end
 			end
 
 		end
