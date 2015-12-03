@@ -34,6 +34,9 @@ module RugRecord
 				# Get JSON additional methods
 				#
 				def json_additional_methods
+					if @json_additional_methods.nil?
+						@json_additional_methods = []
+					end
 					return @json_additional_methods
 				end
 
