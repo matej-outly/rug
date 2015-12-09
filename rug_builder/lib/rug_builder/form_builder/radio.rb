@@ -31,7 +31,7 @@ module RugBuilder
 
 			# Enable null option
 			if options[:enable_null] == true
-				collection = [OpenStruct.new({value_attr => nil, label_attr => I18n.t("general.null_option")})].concat(collection)
+				collection = [OpenStruct.new({value_attr => "", label_attr => I18n.t("general.null_option")})].concat(collection)
 			end
 
 			# Disable Gumby (i.e. for working change event)
