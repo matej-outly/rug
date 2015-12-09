@@ -12,29 +12,43 @@
 module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 
-		def self.row_from_type(object, name, type)
-			return case type.to_sym
-				when :string then "text_input_row(:#{name})"
-				when :text then "text_area_row(:#{name})"
-				when :integer then "text_input_row(:#{name}, :number_field)"
-				when :date then "datepicker_row(:#{name})"
-				when :time then "text_input_row(:#{name}, :time_field)"
-				when :datetime then "text_input_row(:#{name}, :datetime_local_field)"
-				when :boolean then "checkbox_row(:#{name})"
-				when :file then "dropzone_row(:#{name})"
-				when :picture then "dropzone_row(:#{name})" 
-				when :enum then "picker_row(:#{name})" 
-				when :belongs_to then "picker_row(:#{name})"
-				when :address then "address_row(:#{name})"
-				when :name then "name_row(:#{name})"
-				when :currency then "text_input_row(:#{name}, :number_field)"
-				when :range then "range_row(:#{name})"
-				else "text_input_row(:#{name})"
+		def self.row_from_type(object, name, type, options = {})
+			
+			# Special null cases
+			if options[:enable_null] == true
+				result = case type.to_sym
+					when :boolean then "radios_row(:#{name}, [OpenStruct.new(value: false, label: I18n.t(\"general.bool_no\")), OpenStruct.new(value: true, label: I18n.t(\"general.bool_yes\"))], :value, :label, enable_null: true)"
+					else nil
+				end
 			end
+			
+			# Standard cases
+			if result.nil?
+				result = case type.to_sym
+					when :string then "text_input_row(:#{name})"
+					when :text then "text_area_row(:#{name})"
+					when :integer then "text_input_row(:#{name}, :number_field)"
+					when :date then "datepicker_row(:#{name})"
+					when :time then "text_input_row(:#{name}, :time_field)"
+					when :datetime then "text_input_row(:#{name}, :datetime_local_field)"
+					when :boolean then "checkbox_row(:#{name})"
+					when :file then "dropzone_row(:#{name})"
+					when :picture then "dropzone_row(:#{name})" 
+					when :enum then "picker_row(:#{name})" 
+					when :belongs_to then "picker_row(:#{name})"
+					when :address then "address_row(:#{name})"
+					when :name then "name_row(:#{name})"
+					when :currency then "text_input_row(:#{name}, :number_field)"
+					when :range then "range_row(:#{name})"
+					else "text_input_row(:#{name})"
+				end
+			end
+
+			return result
 		end
 
-		def generic_row(name, type)
-			return eval("self." + self.class.row_from_type(object, name, type))
+		def generic_row(name, type, options = {})
+			return eval("self." + self.class.row_from_type(object, name, type, options))
 		end
 
 	end
