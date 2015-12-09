@@ -16,14 +16,14 @@ module RugBuilder
 		protected
 
 			# *********************************************************************
-			# Array
+			# String array
 			# *********************************************************************
 
-			def validate_array_options(column_spec)
+			def validate_string_array_options(column_spec)
 				return true
 			end
 
-			def render_array(column, object)
+			def render_string_array(column, object)
 				if @columns[column][:format]
 					format = @columns[column][:format]
 				else
