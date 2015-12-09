@@ -29,11 +29,11 @@ module RugBuilder
 				else
 					format = :comma
 				end
-				if @columns[column][:format] == :comma
+				if format == :comma
 					value = object.send(column)
 					value = object.send(column).join(", ") if !value.blank?
 				else
-					raise "Unknown format #{@columns[column][:format]}."
+					raise "Unknown format #{format}."
 				end
 				return value
 			end
