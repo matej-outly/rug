@@ -15,7 +15,7 @@ require 'action_view'
 require "rug_builder/form_builder/button"
 require "rug_builder/form_builder/checkbox"
 require "rug_builder/form_builder/crop"
-require "rug_builder/form_builder/datepicker"
+require "rug_builder/form_builder/datetime"
 require "rug_builder/form_builder/dropzone"
 require "rug_builder/form_builder/generic"
 require "rug_builder/form_builder/map"
