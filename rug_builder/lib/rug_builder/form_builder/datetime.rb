@@ -38,7 +38,7 @@ module RugBuilder
 			
 			# CSS
 			css = ""
-			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; border-radius: 6px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
+			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
 			css += ".pika-single table thead { background: none; }\n"
 			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }\n"
 			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }\n"
@@ -76,7 +76,7 @@ module RugBuilder
 			
 			# CSS
 			css = ""
-			css += ".clockpicker-popover { border: 1px solid #d8d8d8; border-radius: 6px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
+			css += ".clockpicker-popover { border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
 			css += ".clockpicker-popover.bottom { margin-top: 0; }\n"
 			css += ".clockpicker-popover > .arrow { display: none; }\n"
 
@@ -113,16 +113,17 @@ module RugBuilder
 			
 			# Part values
 			value = object.send(name)
-			value_date = value && value[:date] ? value[:date] : nil
-			value_time = value && value[:time] ? value[:time] : nil
-
+			if value
+				value = value.strftime("%Y-%m-%d %k:%M");
+			end
+			
 			# Java Script
 			js = ""
 			js += "function datetime_picker_#{hash}_update_inputs()\n"
 			js += "{\n"
 			js += "	var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');\n"
 			js += " $('#datetime_picker_#{hash} .date').val(date_and_time[0]);"
-			js += "	$('#datetime_picker_#{hash} .date').val(date_and_time[1]);\n"
+			js += "	$('#datetime_picker_#{hash} .time').val(date_and_time[1]);\n"
 			js += "}\n"
 			js += "function datetime_picker_#{hash}_update_datetime()\n"
 			js += "{\n"
@@ -157,14 +158,14 @@ module RugBuilder
 			css = ""
 			
 			# CSS date
-			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; border-radius: 6px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
+			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
 			css += ".pika-single table thead { background: none; }\n"
 			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }\n"
 			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }\n"
 			css += ".pika-button:hover { background: #616161 !important; border-radius: 0 !important; }\n"
 
 			# CSS time
-			css += ".clockpicker-popover { border: 1px solid #d8d8d8; border-radius: 6px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
+			css += ".clockpicker-popover { border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
 			css += ".clockpicker-popover.bottom { margin-top: 0; }\n"
 			css += ".clockpicker-popover > .arrow { display: none; }\n"
 			
