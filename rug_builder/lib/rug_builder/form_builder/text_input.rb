@@ -292,9 +292,13 @@ module RugBuilder
 			
 			# Inputs (first row)
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: "text input narrow", placeholder: label_title)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: "text input narrow", placeholder: label_firstname)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: "text input narrow", placeholder: label_lastname)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: "text input xnarrow", placeholder: label_title)
+			result += "</div>"
+
+			# Inputs (second row)
+			result += "<div class=\"field-item\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: "text input normal", placeholder: label_firstname)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: "text input normal", placeholder: label_lastname)
 			result += "</div>"
 
 			result += "</div>"
