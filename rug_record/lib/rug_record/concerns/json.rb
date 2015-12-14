@@ -45,7 +45,7 @@ module RugRecord
 			#
 			# Export model to JSON
 			#
-			def to_json(options = {})
+			def as_json(options = {})
 				if options[:methods].nil?
 					options[:methods] = self.class.json_additional_methods
 				elsif options[:methods].is_a? Array
