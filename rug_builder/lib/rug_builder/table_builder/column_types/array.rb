@@ -24,18 +24,28 @@ module RugBuilder
 			end
 
 			def render_string_array(column, object)
+				# Check format
 				if @columns[column][:format]
 					format = @columns[column][:format]
 				else
 					format = :comma
 				end
-				if format == :comma
-					value = object.send(column)
-					value = object.send(column).join(", ") if !value.blank?
-				else
+				if ![:comma, :br].include?(format)
 					raise "Unknown format #{format}."
 				end
-				return value
+
+				# Get join string according to format
+				join_string = case format
+					when :comma then ", "
+					when :br then "<br/>"
+				end
+
+				value = object.send(column)
+				if !value.blank?
+					return value.join(join_string)
+				else
+					return ""
+				end
 			end
 
 		end

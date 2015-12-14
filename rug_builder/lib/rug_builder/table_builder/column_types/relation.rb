@@ -42,11 +42,34 @@ module RugBuilder
 			end
 
 			def render_has_many(column, object)
-				collection = object.send(column)
-				if @columns[column][:path]
-					return collection.map { |item| "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(@columns[column][:path], item)}\">#{item.send(@columns[column][:label])}</a>" }.join(", ")
+				
+				# Check format
+				if @columns[column][:format]
+					format = @columns[column][:format]
 				else
-					return collection.map { |item| item.send(@columns[column][:label]) }.join(", ")
+					format = :comma
+				end
+				if ![:comma, :br].include?(format)
+					raise "Unknown format #{format}."
+				end
+
+				# Get join string according to format
+				join_string = case format
+					when :comma then ", "
+					when :br then "<br/>"
+				end
+
+				# Get value and format it
+				collection = object.send(column)
+				if !collection.blank?
+					if @columns[column][:path]
+						arr = collection.map { |item| "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(@columns[column][:path], item)}\">#{item.send(@columns[column][:label])}</a>" }
+					else
+						arr = collection.map { |item| item.send(@columns[column][:label]) }
+					end
+					return arr.join(join_string)
+				else
+					return ""
 				end
 			end
 
