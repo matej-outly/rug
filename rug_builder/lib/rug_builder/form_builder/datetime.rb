@@ -36,21 +36,12 @@ module RugBuilder
 			js += "$(document).ready(date_picker_#{hash}_ready);\n"
 			js += "$(document).on('page:load', date_picker_#{hash}_ready);\n"
 			
-			# CSS
-			css = ""
-			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
-			css += ".pika-single table thead { background: none; }\n"
-			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }\n"
-			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }\n"
-			css += ".pika-button:hover { background: #616161 !important; border-radius: 0 !important; }\n"
-
 			# Options
 			options[:id] = "date_picker_#{hash}"
 
 			# Datepicker
 			result = ""
 			result += @template.javascript_tag(js)
-			result += "<style>" + css + "</style>"
 			result += text_input_row(name, :text_field, options)
 
 			return result.html_safe
@@ -73,12 +64,6 @@ module RugBuilder
 			js += "}\n"
 			js += "$(document).ready(time_picker_#{hash}_ready);\n"
 			js += "$(document).on('page:load', time_picker_#{hash}_ready);\n"
-			
-			# CSS
-			css = ""
-			css += ".clockpicker-popover { border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
-			css += ".clockpicker-popover.bottom { margin-top: 0; }\n"
-			css += ".clockpicker-popover > .arrow { display: none; }\n"
 
 			# Options
 			options[:id] = "time_picker_#{hash}"
@@ -86,7 +71,6 @@ module RugBuilder
 			# Datepicker
 			result = ""
 			result += @template.javascript_tag(js)
-			result += "<style>" + css + "</style>"
 			result += text_input_row(name, :text_field, options)
 			
 			return result.html_safe
@@ -154,25 +138,8 @@ module RugBuilder
 			js += "$(document).ready(datetime_picker_#{hash}_ready);\n"
 			js += "$(document).on('page:load', datetime_picker_#{hash}_ready);\n"
 			
-			# CSS
-			css = ""
-			
-			# CSS date
-			css += ".pika-single.is-bound { font-family: inherit; border: 1px solid #d8d8d8 !important; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; }\n"
-			css += ".pika-single table thead { background: none; }\n"
-			css += ".pika-single table thead th, .pika-single table tbody td { border: 0; }\n"
-			css += ".is-selected .pika-button { background: #33aaff; border-radius: 0; }\n"
-			css += ".pika-button:hover { background: #616161 !important; border-radius: 0 !important; }\n"
-
-			# CSS time
-			css += ".clockpicker-popover { border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
-			css += ".clockpicker-popover.bottom { margin-top: 0; }\n"
-			css += ".clockpicker-popover > .arrow { display: none; }\n"
-			
-			# JS + CSS
 			result += @template.javascript_tag(js)
-			result += "<style>" + css + "</style>"
-
+			
 			# Container
 			result += "<div id=\"datetime_picker_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			

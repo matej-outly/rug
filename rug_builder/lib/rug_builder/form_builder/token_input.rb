@@ -69,16 +69,7 @@ module RugBuilder
 			js += "}\n"
 			js += "$(document).ready(token_input_#{hash}_ready);\n"
 
-			# CSS
-			css = ""
-			css += "ul.token-input-list-facebook { width: auto; border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }\n"
-			css += "li.token-input-token-facebook { padding: 1px 6px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }\n"
-			css += "li.token-input-input-token-facebook { margin: 3px 0 0 0; }\n"
-			css += "div.token-input-dropdown-facebook { font-family: inherit; border: 1px solid #d8d8d8; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }\n"
-			css += "div.token-input-dropdown-facebook ul li.token-input-selected-dropdown-item-facebook { background-color: #33aaff; }\n"
-
 			result += @template.javascript_tag(js)
-			result += "<style>" + css + "</style>"
 			
 			# Field
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
