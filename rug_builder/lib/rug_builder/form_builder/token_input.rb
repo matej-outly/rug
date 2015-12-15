@@ -13,19 +13,9 @@ module RugBuilder
 	class FormBuilder < ActionView::Helpers::FormBuilder
 
 		def token_input_row(name, url, options = {})
-			result = "<div class=\"element\">"
 			
 			# Unique hash
 			hash = Digest::SHA1.hexdigest(name.to_s)
-
-			# Label
-			if !options[:label].nil?
-				if options[:label] != false
-					result += label(name, options[:label])
-				end
-			else
-				result += label(name)
-			end
 
 			# Value
 			value = object.send(options[:as] ? options[:as] : name)
@@ -68,21 +58,47 @@ module RugBuilder
 			js += "	});\n"
 			js += "}\n"
 			js += "$(document).ready(token_input_#{hash}_ready);\n"
-
-			result += @template.javascript_tag(js)
 			
+			# Options
+			options[:id] = "token_input_#{hash}"
+
 			# Field
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += "<input type=\"text\" id=\"token_input_#{hash}\" name=\"#{object.class.model_name.param_key}[#{name.to_s}]\" />"
-			result += "</div>"
-			
-			# Errors
-			if object.errors[name].size > 0
-				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
-			end
+			result = ""
+			result += @template.javascript_tag(js)
+			result += text_input_row(name, :text_field, options)
 
-			result += "</div>"
 			return result.html_safe
+		end
+
+		def autocomplete_input_row(name, url, options = {})
+			
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+			
+			# Java Script
+			js = ""
+
+			js += "function autocomplete_input_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	$('#autocomplete_input_#{hash}').autoComplete({\n"
+			js += "		minChars: 3,\n"
+			js += "		source: function(term, response){\n"
+			js += "			$.getJSON('#{url}', { q: term }, function(data){ response(data); });\n"
+			js += "		}\n"
+			js += "	});\n"
+			js += "}\n"
+			js += "$(document).ready(autocomplete_input_#{hash}_ready);\n"
+
+			# Options
+			options[:id] = "autocomplete_input_#{hash}"
+
+			# Field
+			result = ""
+			result += @template.javascript_tag(js)
+			result += text_input_row(name, :text_field, options)
+
+			return result.html_safe
+
 		end
 
 	end

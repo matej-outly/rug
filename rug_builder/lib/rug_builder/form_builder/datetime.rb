@@ -39,7 +39,7 @@ module RugBuilder
 			# Options
 			options[:id] = "date_picker_#{hash}"
 
-			# Datepicker
+			# Field
 			result = ""
 			result += @template.javascript_tag(js)
 			result += text_input_row(name, :text_field, options)
@@ -68,7 +68,7 @@ module RugBuilder
 			# Options
 			options[:id] = "time_picker_#{hash}"
 
-			# Datepicker
+			# Field
 			result = ""
 			result += @template.javascript_tag(js)
 			result += text_input_row(name, :text_field, options)

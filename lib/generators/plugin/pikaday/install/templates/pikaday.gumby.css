@@ -1,26 +1,61 @@
+/**
+ * Light background ... #f8f8f8
+ * Border color     ... #d8d8d8
+ * Border radius    ... 4px
+ * Hover color      ... #616161
+ * Hover border     ... #3e3e3e
+ * Bold color       ... #d04526
+ * Dropdown shadow  ... 0 2px 6px rgba(0, 0, 0, 0.1)
+ */
+
 .pika-single.is-bound { 
 	font-family: inherit; 
+	
 	border: 1px solid #d8d8d8 !important; 
 	-moz-border-radius: 4px; 
 	-webkit-border-radius: 4px; 
 	border-radius: 4px; 
-	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; 
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; 
 }
 
 .pika-single table thead { 
-	background: none; 
+	background: none !important; 
 }
 
 .pika-single table thead th, .pika-single table tbody td { 
-	border: 0; 
+	border: 0;
+	font-size: 100%;
 }
 
+.pika-label {
+	font-size: 90%;
+}
+
+/* Day */
+.pika-button {
+	font-size: 90%;
+	background: #f8f8f8;
+}
+
+/* Selected day */
 .is-selected .pika-button { 
-	background: #33aaff; 
+	background: #d04526;
+	color: white;
 	border-radius: 0; 
+	box-shadow: none;
+}
+.is-today.is-selected .pika-button { 
+	color: white;
 }
 
+/* Today */
+.is-today .pika-button { 
+	color: #d04526;
+}
+
+/* Hover day */
 .pika-button:hover { 
-	background: #616161 !important; 
-	border-radius: 0 !important; 
+	background: #616161; 
+	border-radius: 0; 
+	color: white;
 }
