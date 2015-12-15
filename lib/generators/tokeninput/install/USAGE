@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Tokeninput library into the application.
-
-Example:
-    rails generate tokeninput:install

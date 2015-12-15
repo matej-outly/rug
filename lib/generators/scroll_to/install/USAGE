@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of ScrollTo library into the application.
-
-Example:
-    rails generate scroll_to:install

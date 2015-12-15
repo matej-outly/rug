@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Combodate library.
-
-Example:
-    rails generate combodate:install

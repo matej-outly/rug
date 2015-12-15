@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of ClockPicker library.
+
+Example:
+    rails generate plugin:clockpicker:install

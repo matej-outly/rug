@@ -1,0 +1,26 @@
+.pika-single.is-bound { 
+	font-family: inherit; 
+	border: 1px solid #d8d8d8 !important; 
+	-moz-border-radius: 4px; 
+	-webkit-border-radius: 4px; 
+	border-radius: 4px; 
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important; 
+}
+
+.pika-single table thead { 
+	background: none; 
+}
+
+.pika-single table thead th, .pika-single table tbody td { 
+	border: 0; 
+}
+
+.is-selected .pika-button { 
+	background: #33aaff; 
+	border-radius: 0; 
+}
+
+.pika-button:hover { 
+	background: #616161 !important; 
+	border-radius: 0 !important; 
+}

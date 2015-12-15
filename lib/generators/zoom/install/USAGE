@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of jQuery Zoom library into the application.
-
-Example:
-    rails generate zoom:install
