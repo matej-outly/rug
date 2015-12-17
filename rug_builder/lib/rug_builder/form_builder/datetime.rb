@@ -52,6 +52,12 @@ module RugBuilder
 			# Unique hash
 			hash = Digest::SHA1.hexdigest(name.to_s)
 
+			# Value
+			value = object.send(name)
+			if value
+				value = value.strftime("%k:%M");
+			end
+
 			# Java Script
 			js = ""
 			js += "function time_picker_#{hash}_ready()\n"
@@ -67,7 +73,8 @@ module RugBuilder
 
 			# Options
 			options[:id] = "time_picker_#{hash}"
-
+			options[:value] = value
+			
 			# Field
 			result = ""
 			result += @template.javascript_tag(js)
