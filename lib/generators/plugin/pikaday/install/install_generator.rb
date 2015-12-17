@@ -80,6 +80,7 @@ gem 'momentjs-rails'
 %{
 /*
  *= require pikaday/pikaday
+ *= require pikaday/pikaday.gumby
  */
 }
 				end
