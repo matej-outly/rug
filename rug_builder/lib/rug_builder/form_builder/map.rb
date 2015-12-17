@@ -379,6 +379,7 @@ module RugBuilder
 			value = object.send(name)
 			value_latitude = value && value[:latitude] ? value[:latitude] : nil
 			value_longitude = value && value[:longitude] ? value[:longitude] : nil
+			value_address = value && value[:address] ? value[:address] : nil
 			
 			# Java Script
 			js = ""
@@ -386,7 +387,8 @@ module RugBuilder
 			js += "function RugFormAddressLocation(hash, options)\n"
 			js += "{\n"
 			js += "	this.geocoder = null;\n"
-			js += "	this.lock = false;\n"
+			js += "	this.lock = false; /* Lock if geocode in progress */\n"
+			js += "	this.dirty = false; /* True if user selected address from suggestions */\n"
 			js += "	this.hash = hash;\n"
 			js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
 			js += "}\n"
@@ -400,7 +402,11 @@ module RugBuilder
 			js += "			this.geocode(address, function(latitude, longitude) {\n"
 			js += "				$('#address_location_' + _this.hash + ' input.latitude').val(latitude);\n"
 			js += "				$('#address_location_' + _this.hash + ' input.longitude').val(longitude);\n"
-			js += "				_this.updateAddress(callback);\n"
+			js += "				if (!_this.dirty) {\n"
+			js += "					if (typeof callback === 'function') callback();\n"
+			js += "				} else {\n"
+			js += "					_this.updateAddress(callback);\n"
+			js += "				}\n"
 			js += "			});\n"
 			js += "		} else {\n"
 			js += "			$('#address_location_' + this.hash + ' input.latitude').val(null);\n"
@@ -489,11 +495,21 @@ module RugBuilder
 			js += "				}\n"
 			js += "			},\n"
 			js += "			onSelect: function(e, term, item) {\n"
+			js += "				_this.dirty = false; /* Clean */\n"
 			js += "				_this.updateInputs();\n"
 			js += "			}\n"
 			js += "		});\n"
-			js += "		address_input.on('change', function() { _this.updateInputs(); });\n"
-			js += "		this.updateAddress();\n"
+			js += "		address_input.keyup(function() { \n"
+			js += "			_this.dirty = true; /* Dirty */\n"
+			js += "		});\n"
+			js += "		address_input.change(function() { \n"
+			js += "			_this.updateInputs(); \n"
+			js += "		});\n"
+			js += "		form.on('submit', function(event) {\n"
+			js += "			_this.updateInputs(function () { form.off('submit'); form.submit(); });\n"
+			js += "			event.preventDefault();\n"
+			js += "		});\n"
+			js += "		/*this.updateAddress();*/\n"
 			js += "	}\n"
 			js += "}\n"
 
@@ -511,7 +527,7 @@ module RugBuilder
 			result += "<div id=\"address_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Address inputs
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", "", class: "text input address")
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, class: "text input address")
 			
 			# Location inputs
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")
