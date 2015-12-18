@@ -54,7 +54,7 @@ module RugBuilder
 
 			# Value
 			value = object.send(name)
-			if value
+			if !value.blank?
 				value = value.strftime("%k:%M");
 			end
 
@@ -104,7 +104,7 @@ module RugBuilder
 			
 			# Part values
 			value = object.send(name)
-			if value
+			if !value.blank?
 				value = value.strftime("%Y-%m-%d %k:%M");
 			end
 			
