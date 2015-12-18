@@ -29,6 +29,7 @@ module RugBuilder
 			field_options[:class] = "text input"
 			field_options[:id] = options[:id] if !options[:id].nil?
 			field_options[:value] = options[:value] if !options[:value].nil?
+			field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 			
 			# Localization
 			if options[:localization].nil?

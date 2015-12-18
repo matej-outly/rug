@@ -453,7 +453,7 @@ module RugBuilder
 		end
 
 		def get_moving_link
-			return "<div class=\"medium default btn icon-left entypo icon-arrow-combo moving-handle\"><a href=\"#\">&nbsp;</a></div>"
+			return "<div class=\"medium default btn icon-left entypo icon-arrow-combo moving-handle\"><a href=\"#\"></a></div>"
 		end
 		
 	end
