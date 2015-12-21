@@ -545,17 +545,19 @@ module RugBuilder
 			js += "		this.address_input.val(address);\n"
 			js += "		this.addressToParts();\n"
 			js += "		this.addressToLocation(callback);\n"
-			js += "		this.dirty = false;	\n"
+			js += "		this.dirty = false;\n"
 			js += "	},\n"
 			js += "	onKeypress: function()\n"
 			js += "	{\n"
 			js += "		this.partsToAddress();\n"
-			js += "		this.dirty = true;	\n"
+			js += "		this.latitude_input.val(null);\n"
+			js += "		this.longitude_input.val(null);\n"
+			js += "		this.dirty = true;\n"
 			js += "	},\n"
 			js += "	onSubmit: function(callback)\n"
 			js += "	{\n"
 			js += "		var _this = this;\n"
-			js += "		if (this.dirty) {\n"
+			js += "		if (this.dirty && this.address_input.val()) {\n"
 			js += "			this.suggest(this.address_input.val(), function(results) {\n"
 			js += "				if (results) {\n"
 			js += "					var message = 'Máte na mysli adresu <strong>' + results[0].formatted_address + '</strong>? Pokud ne, klikněte na tlačítko <strong>NE</strong> a adresu lépe specifikujte (doplňte město či číslo popisné).';\n"
@@ -639,8 +641,8 @@ module RugBuilder
 			
 			# Address parts inputs
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: "text input street normal", placeholder: label_street)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: "text input number normal", placeholder: label_number)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: "text input street wide", placeholder: label_street)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: "text input number narrow", placeholder: label_number)
 			result += "</div>"
 
 			result += "<div class=\"field-item\">"
@@ -648,7 +650,7 @@ module RugBuilder
 			result += "</div>"
 
 			# Address input
-			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, class: "text input address")
+			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, class: "address")
 			
 			# Location inputs
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")
