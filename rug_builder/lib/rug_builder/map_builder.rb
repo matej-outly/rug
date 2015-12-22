@@ -172,6 +172,7 @@ module RugBuilder
 			js += "			center: map_position,\n"
 			js += "			zoom: zoom,\n"
 			js += "			mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
+			js += "			scrollwheel: (this.options.scrollwheel != null ? this.options.scrollwheel : true),\n"
 			js += "		}\n"
 			js += "		this.map = new google.maps.Map(map_canvas, map_options);\n"
 			js += "	},\n"
@@ -195,7 +196,8 @@ module RugBuilder
 			js += "	rug_map_#{@hash} = new RugMap('#{@hash}', {\n"
 			js += "		latitude: #{@options[:latitude]},\n" if @options[:latitude]
 			js += "		longitude: #{@options[:longitude]},\n" if @options[:longitude]
-			js += "		zoom: #{@options[:zoom]}\n" if @options[:zoom]
+			js += "		zoom: #{@options[:zoom]},\n" if @options[:zoom]
+			js += "		scrollwheel: #{@options[:scrollwheel] ? "true" : "false"},\n" if !@options[:scrollwheel].nil?
 			js += "	});\n"
 			js += "	rug_map_#{@hash}.ready();\n"
 			js += @template.capture(self, &block).to_s
