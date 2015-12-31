@@ -44,7 +44,7 @@ module RugBuilder
 			# Field
 			result += "<div class=\"#{( enable_gumby ? "field" : "field-no-gumby" )} #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			result += collection_radio_buttons(name, collection, value_attr, label_attr) do |b|
-				b.label(class: (enable_gumby ? "radio" : "")) do
+				b.label(class: (enable_gumby ? "radio" : "radio-no-gumby")) do
 					b.radio_button + "<span></span>&nbsp;&nbsp;#{b.text}".html_safe
 				end
 			end

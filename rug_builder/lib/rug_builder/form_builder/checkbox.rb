@@ -30,14 +30,14 @@ module RugBuilder
 			else
 				enable_gumby = false
 			end
-			
+
 			# Field
 			result += "<div class=\"#{( enable_gumby ? "field" : "field-no-gumby" )} #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			if collection.nil?
 				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
 			end
 			result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
-				b.label(class: (enable_gumby ? "radio" : "")) do
+				b.label(class: (enable_gumby ? "checkbox" : "checkbox-no-gumby")) do
 					b.check_box + "<span></span>&nbsp;&nbsp;#{b.text}".html_safe
 				end
 			end
@@ -65,11 +65,11 @@ module RugBuilder
 			# Field
 			result += "<div class=\"#{( enable_gumby ? "field" : "field-no-gumby" )} #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			if !options[:label].nil?
-				result += label(name, class: (enable_gumby ? "checkbox" : "")) do
+				result += label(name, class: (enable_gumby ? "checkbox" : "checkbox-no-gumby")) do
 					check_box(name) + "<span></span>&nbsp;&nbsp;#{options[:label]}".html_safe
 				end
 			else
-				result += label(name, class: (enable_gumby ? "checkbox" : "")) do
+				result += label(name, class: (enable_gumby ? "checkbox" : "checkbox-no-gumby")) do
 					check_box(name) + "<span></span>&nbsp;&nbsp;#{object.class.human_attribute_name(name)}".html_safe
 				end
 			end
