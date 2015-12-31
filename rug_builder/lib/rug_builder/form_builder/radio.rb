@@ -34,17 +34,17 @@ module RugBuilder
 				collection = [OpenStruct.new({value_attr => "", label_attr => I18n.t("general.null_option")})].concat(collection)
 			end
 
-			# Disable Gumby (i.e. for working change event)
-			if options[:disable_gumby] == true
-				disable_gumby = true
+			# Enable Gumby (Gumby is disabled by default because of broken event support and other shitty stuff)
+			if options[:enable_gumby] == true
+				enable_gumby = true
 			else
-				disable_gumby = false
+				enable_gumby = false
 			end
 
 			# Field
-			result += "<div class=\"#{( disable_gumby ? "" : "field" )} #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div class=\"#{( enable_gumby ? "field" : "field-no-gumby" )} #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			result += collection_radio_buttons(name, collection, value_attr, label_attr) do |b|
-				b.label(class: (disable_gumby ? "" : "radio")) do
+				b.label(class: (enable_gumby ? "radio" : "")) do
 					b.radio_button + "<span></span>&nbsp;&nbsp;#{b.text}".html_safe
 				end
 			end
