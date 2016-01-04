@@ -28,7 +28,7 @@ module RugBuilder
 
 			# Table
 			result = ""
-			result += "<table class=\"editor_table striped #{options[:class].to_s}\">"
+			result += "<table class=\"editor-table #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
@@ -102,7 +102,7 @@ module RugBuilder
 
 			# Table
 			result = ""
-			result += "<table class=\"hierarchical editor_table striped #{options[:class].to_s}\">"
+			result += "<table class=\"hierarchical editor-table #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
@@ -136,21 +136,21 @@ module RugBuilder
 					
 					(0..level-1).each do |zero_level|
 						if open_siblings[zero_level] == true
-							result += "<td class=\"nesting nesting_0_inner\"></td>"
+							result += "<td class=\"nesting nesting-0-inner\"></td>"
 						else
-							result += "<td class=\"nesting nesting_0_none\"></td>"
+							result += "<td class=\"nesting nesting-0-none\"></td>"
 						end
 					end
 					if object.right_sibling == nil
-						result += "<td class=\"nesting nesting_1_nosibling\"></td>"
+						result += "<td class=\"nesting nesting-1-nosibling\"></td>"
 					else
 						open_siblings[level] = true
-						result += "<td class=\"nesting nesting_1_sibling\"></td>"
+						result += "<td class=\"nesting nesting-1-sibling\"></td>"
 					end
 					if object.leaf?
-						result += "<td class=\"nesting nesting_2_nochild\"></td>"
+						result += "<td class=\"nesting nesting-2-nochild\"></td>"
 					else
-						result += "<td class=\"nesting nesting_2_child\"></td>"
+						result += "<td class=\"nesting nesting-2-child\"></td>"
 					end
 
 					# Columns
@@ -204,7 +204,7 @@ module RugBuilder
 
 			js += 'function editor_table_ready()'
 			js += '{'
-			js += '	$(".editor_table a.create").on("click", function(e) {'
+			js += '	$(".editor-table a.create").on("click", function(e) {'
 			js += '		e.preventDefault();'
 			js += '		var _this = $(this);'
 			js += '		var row = _this.closest("tr");'
@@ -216,8 +216,8 @@ module RugBuilder
 			js += '			data: row.find("input").serialize(),'
 			js += '			success: function(callback) '
 			js += '			{'
-			js += '				var new_html = $(callback).find(".editor_table").html();'
-			js += '				$(".editor_table").html(new_html);'
+			js += '				var new_html = $(callback).find(".editor-table").html();'
+			js += '				$(".editor-table").html(new_html);'
 			js += '				editor_table_ready();'
 			js += '				$(document).trigger("rug:editor_table:create");'
 			js += '			},'
@@ -228,7 +228,7 @@ module RugBuilder
 			js += '		});'
 			js += '	});'
 
-			js += '	$(".editor_table a.destroy").on("click", function(e) {'
+			js += '	$(".editor-table a.destroy").on("click", function(e) {'
 			js += '		e.preventDefault();'
 			js += '		var _this = $(this);'
 			js += '		var url = _this.attr("href");'
@@ -238,8 +238,8 @@ module RugBuilder
 			js += '			type: "DELETE",'
 			js += '			success: function(callback) '
 			js += '			{'
-			js += '				var new_html = $(callback).find(".editor_table").html();'
-			js += '				$(".editor_table").html(new_html);'
+			js += '				var new_html = $(callback).find(".editor-table").html();'
+			js += '				$(".editor-table").html(new_html);'
 			js += '				editor_table_ready();'
 			js += '				$(document).trigger("rug:editor_table:destroy");'
 			js += '			},'

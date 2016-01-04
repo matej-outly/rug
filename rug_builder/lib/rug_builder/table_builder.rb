@@ -94,18 +94,27 @@ module RugBuilder
 
 		def get_destroy_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:destroy], object)
+			if !link_options[:label].nil?
+				if link_options[:label] != false
+					label = link_options[:label]
+				else
+					label = ""
+				end
+			else
+				label = I18n.t("general.action.destroy")
+			end
 			if url
 				if link_options[:disable_method_and_notification] == true
 					if link_options[:disable_button] == true
-						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, class: "destroy")
+						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + label, url, class: "destroy")
 					else
-						return "<div class=\"medium default btn icon-left entypo icon-trash\">#{@template.link_to(I18n.t("general.action.destroy"), url, class: "destroy") }</div>"
+						return "<div class=\"medium danger btn icon-left entypo icon-trash\">#{@template.link_to(label, url, class: "destroy") }</div>"
 					end
 				else
 					if link_options[:disable_button] == true
-						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + I18n.t("general.action.destroy"), url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } )
+						return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + label, url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } )
 					else
-						return "<div class=\"medium default btn icon-left entypo icon-trash\">#{@template.link_to(I18n.t("general.action.destroy"), url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) }</div>"
+						return "<div class=\"medium danger btn icon-left entypo icon-trash\">#{@template.link_to(label, url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) }</div>"
 					end
 				end
 			else
@@ -119,11 +128,20 @@ module RugBuilder
 
 		def get_edit_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:edit], object)
+			if !link_options[:label].nil?
+				if link_options[:label] != false
+					label = link_options[:label]
+				else
+					label = ""
+				end
+			else
+				label = I18n.t("general.action.edit")
+			end
 			if url
 				if link_options[:disable_button] == true
-					return @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), url, class: "edit")
+					return @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + label, url, class: "edit")
 				else
-					return "<div class=\"medium default btn icon-left entypo icon-pencil\">#{@template.link_to(I18n.t("general.action.edit"), url, class: "edit")}</div>"
+					return "<div class=\"medium primary btn icon-left entypo icon-pencil\">#{@template.link_to(label, url, class: "edit")}</div>"
 				end
 			else
 				return ""
@@ -154,11 +172,20 @@ module RugBuilder
 
 		def get_create_link(object, options, link_options = {})
 			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:create])
+			if !link_options[:label].nil?
+				if link_options[:label] != false
+					label = link_options[:label]
+				else
+					label = ""
+				end
+			else
+				label = I18n.t("general.action.bind")
+			end
 			if url
 				if link_options[:disable_button] == true
-					return @template.link_to("<i class=\"icon-plus\"></i>".html_safe + I18n.t("general.action.bind"), url, class: "create")
+					return @template.link_to("<i class=\"icon-plus\"></i>".html_safe + label, url, class: "create")
 				else
-					return "<div class=\"medium default btn icon-left entypo icon-plus\">#{@template.link_to(I18n.t("general.action.bind"), url, class: "create")}</div>"
+					return "<div class=\"medium primary btn icon-left entypo icon-plus\">#{@template.link_to(label, url, class: "create")}</div>"
 				end
 			else
 				return ""

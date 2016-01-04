@@ -37,7 +37,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table class=\"index_table striped #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
+				result += "<table class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
 
 				# Table head
 				columns_count = 0
@@ -84,7 +84,7 @@ module RugBuilder
 					columns.headers.each_with_index do |column, idx|
 						result += "<td>"
 						if check_inline_edit(options, column)
-							result += "<div class=\"inline_edit value\">"
+							result += "<div class=\"inline-edit value\">"
 						end
 
 						# Standard read only value
@@ -96,7 +96,7 @@ module RugBuilder
 						
 						if check_inline_edit(options, column)
 							result += "</div>"
-							result += "<div class=\"inline_edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+							result += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
 						end
 						result += "</td>"
 					end
@@ -106,8 +106,8 @@ module RugBuilder
 						end
 					end
 					result += "<td class=\"action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
-					result += "<td class=\"action\">#{get_edit_link(object, options)}</td>" if check_edit_link(options)
-					result += "<td class=\"action\">#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
+					result += "<td class=\"action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
+					result += "<td class=\"action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
 					result += "</tr>"
 
 				end
@@ -159,7 +159,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table class=\"hierarchical index_table striped #{options[:class].to_s}\">"
+				result += "<table class=\"hierarchical index-table #{options[:class].to_s}\">"
 
 				# Table head
 				result += "<thead>"
@@ -198,21 +198,21 @@ module RugBuilder
 						
 						(0..level-1).each do |zero_level|
 							if open_siblings[zero_level] == true
-								result += "<td class=\"nesting nesting_0_inner\"></td>"
+								result += "<td class=\"nesting nesting-0-inner\"></td>"
 							else
-								result += "<td class=\"nesting nesting_0_none\"></td>"
+								result += "<td class=\"nesting nesting-0-none\"></td>"
 							end
 						end
 						if object.right_sibling == nil
-							result += "<td class=\"nesting nesting_1_nosibling\"></td>"
+							result += "<td class=\"nesting nesting-1-nosibling\"></td>"
 						else
 							open_siblings[level] = true
-							result += "<td class=\"nesting nesting_1_sibling\"></td>"
+							result += "<td class=\"nesting nesting-1-sibling\"></td>"
 						end
 						if object.leaf?
-							result += "<td class=\"nesting nesting_2_nochild\"></td>"
+							result += "<td class=\"nesting nesting-2-nochild\"></td>"
 						else
-							result += "<td class=\"nesting nesting_2_child\"></td>"
+							result += "<td class=\"nesting nesting-2-child\"></td>"
 						end
 
 						# Columns
@@ -234,8 +234,8 @@ module RugBuilder
 								result += "<td class=\"action\">#{get_action_link(object, action_spec)}</td>"
 							end
 						end
-						result += "<td class=\"action\">#{get_edit_link(object, options)}</td>" if check_edit_link(options)
-						result += "<td class=\"action\">#{get_destroy_link(object, options)}</td>" if check_destroy_link(options)
+						result += "<td class=\"action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
+						result += "<td class=\"action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
 						result += "</tr>"
 
 					end
@@ -275,7 +275,7 @@ module RugBuilder
 				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else 
 				result = ""
-				result += "<div class=\"picture index_table\">"
+				result += "<div class=\"picture index-table\">"
 				objects.each do |object|
 					result += "<div class=\"item\" data-id=\"#{object.id}\">"
 					columns.headers.each_with_index do |column, idx|
@@ -330,16 +330,16 @@ module RugBuilder
 				js = ""
 				js += "function index_table_inline_edit_ready()\n"
 				js += "{\n"
-				js += "	$('.index_table a.inline_edit.edit').on('click', function(e) {\n"
+				js += "	$('.index-table a.inline-edit.edit').on('click', function(e) {\n"
 				js += "		e.preventDefault();\n"
 				js += "		var row = $(this).closest('tr');\n"
-				js += "		row.find('a.inline_edit.edit').hide();\n"
-				js += "		row.find('.inline_edit.value').hide();\n"
-				js += "		row.find('a.inline_edit.save').show();\n"
-				js += "		row.find('.inline_edit.field').show();\n"
+				js += "		row.find('a.inline-edit.edit').hide();\n"
+				js += "		row.find('.inline-edit.value').hide();\n"
+				js += "		row.find('a.inline-edit.save').show();\n"
+				js += "		row.find('.inline-edit.field').show();\n"
 				js += "	});\n"
 
-				js += "	$('.index_table a.inline_edit.save').on('click', function(e) {\n"
+				js += "	$('.index-table a.inline-edit.save').on('click', function(e) {\n"
 				js += "		e.preventDefault();\n"
 				js += "		var _this = $(this);\n"
 				js += "		var row = _this.closest('tr');\n"
@@ -351,15 +351,15 @@ module RugBuilder
 				js += "			data: row.find('input').serialize(),\n"
 				js += "			success: function(callback) \n"
 				js += "			{\n"
-				js += "				row.find('.inline_edit.field').removeClass('danger');\n"
+				js += "				row.find('.inline-edit.field').removeClass('danger');\n"
 				js += "				if (callback === true) {\n"
-				js += "					row.find('.inline_edit.value').each(function () {\n"
+				js += "					row.find('.inline-edit.value').each(function () {\n"
 				js += "						$(this).html($(this).next().find('input').val());\n"
 				js += "					});\n"
-				js += "					row.find('a.inline_edit.save').hide();\n"
-				js += "					row.find('.inline_edit.field').hide();\n"
-				js += "					row.find('a.inline_edit.edit').show();\n"
-				js += "					row.find('.inline_edit.value').show();\n"
+				js += "					row.find('a.inline-edit.save').hide();\n"
+				js += "					row.find('.inline-edit.field').hide();\n"
+				js += "					row.find('a.inline-edit.edit').show();\n"
+				js += "					row.find('.inline-edit.value').show();\n"
 				js += "				} else {\n"
 				js += "					for (var column in callback) {\n"
 				js += "						form.find('.field.' + column).addClass('danger');\n"
@@ -413,7 +413,7 @@ module RugBuilder
 				js = ""
 				js += "function index_table_moving_ready()\n"
 				js += "{\n"
-				js += "	$('.index_table.moving').sortable({\n"
+				js += "	$('.index-table.moving').sortable({\n"
 				js += "		containerSelector: 'table',\n"
 				js += "		itemPath: '> tbody',\n"
 				js += "		itemSelector: 'tr',\n"
