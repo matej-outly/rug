@@ -18,12 +18,17 @@
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; 
 }
 
+.pika-single table {
+	margin-bottom: 0;
+}
+
 .pika-single table thead { 
 	background: none !important; 
 }
 
 .pika-single table thead th, .pika-single table tbody td { 
-	border: 0;
+	border: 0 !important;
+	padding: 0 !important;
 	font-size: 100%;
 }
 

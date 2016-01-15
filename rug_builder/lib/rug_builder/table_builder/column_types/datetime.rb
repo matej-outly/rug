@@ -42,7 +42,7 @@ module RugBuilder
 			def render_time(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				return I18n.l(value)
+				return value.strftime(I18n.t("time.formats.raw"))
 			end
 
 			# *********************************************************************
