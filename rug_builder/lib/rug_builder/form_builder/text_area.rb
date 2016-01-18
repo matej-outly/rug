@@ -26,11 +26,14 @@ module RugBuilder
 
 			# Field options
 			field_options = {}
+			klass = []
+			klass << options[:class] if !options[:class].nil?
 			if options[:disable_tinymce] == true
-				field_options[:class] = "textarea input"
+				klass << "textarea input"
 			else
-				field_options[:class] = "tinymce"
+				klass << "tinymce"
 			end
+			field_options[:class] = klass.join(" ")
 			field_options[:id] = options[:id] if !options[:id].nil?
 
 			# Localization

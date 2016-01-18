@@ -26,7 +26,10 @@ module RugBuilder
 
 			# Field options
 			field_options = {}
-			field_options[:class] = "text input"
+			klass = []
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+			field_options[:class] = klass.join(" ")
 			field_options[:id] = options[:id] if !options[:id].nil?
 			field_options[:value] = options[:value] if !options[:value].nil?
 			field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
@@ -185,7 +188,9 @@ module RugBuilder
 			
 			# Front field options
 			front_field_options = {}
-			front_field_options[:class] = "text input"
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+			field_options[:class] = klass.join(" ")
 
 			# Value
 			value = object.send(name)
@@ -240,19 +245,23 @@ module RugBuilder
 			value_city = value && value[:city] ? value[:city] : nil
 			value_postcode = value && value[:postcode] ? value[:postcode] : nil
 
+			# Field options
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+			
 			# Container
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs (first row)
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: "text input xwide", placeholder: label_street)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: "text input xnarrow", placeholder: label_number)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass.concat(["xwide"]).join(" "), placeholder: label_street)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_number)
 			result += "</div>"
 
 			# Inputs (second row)
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: "text input xwide", placeholder: label_city)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: "text input xnarrow", placeholder: label_postcode)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass.concat(["xwide"]).join(" "), placeholder: label_city)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_postcode)
 			result += "</div>"
 
 			result += "</div>"
@@ -289,18 +298,22 @@ module RugBuilder
 			value_firstname = value && value[:firstname] ? value[:firstname] : nil
 			value_lastname = value && value[:lastname] ? value[:lastname] : nil
 			
+			# Field options
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+
 			# Container
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs (first row)
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: "text input xnarrow", placeholder: label_title)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_title)
 			result += "</div>"
 
 			# Inputs (second row)
 			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: "text input normal", placeholder: label_firstname)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: "text input normal", placeholder: label_lastname)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass.concat(["normal"]).join(" "), placeholder: label_firstname)
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass.concat(["normal"]).join(" "), placeholder: label_lastname)
 			result += "</div>"
 
 			result += "</div>"
@@ -335,10 +348,14 @@ module RugBuilder
 			value_min = value && value[:min] ? value[:min] : nil
 			value_max = value && value[:max] ? value[:max] : nil
 			
+			# Field options
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+			
 			# Field
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: "text input normal", placeholder: label_min)
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: "text input normal", placeholder: label_max)
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass.concat(["normal"]).join(" "), placeholder: label_min)
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass.concat(["normal"]).join(" "), placeholder: label_max)
 			result += "</div>"
 
 			# Errors

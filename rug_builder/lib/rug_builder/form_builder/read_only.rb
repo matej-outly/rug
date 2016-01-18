@@ -36,14 +36,28 @@ module RugBuilder
 				format = :textarea
 			end
 
-			# Field
-			result += "<div class=\"field\">"
+			# Class
+			klass = []
+			klass << options[:class] if !options[:class].nil?
 			if format == :input
-				result += "<input class=\"text input\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+				klass << "text input"
 			elsif format == :textarea
-				result += "<textarea class=\"input textarea\" disabled=\"disabled\">" + content + "</textarea>"
+				klass << "input textarea"
+			end
+
+			# Field
+			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			if format == :input
+				result += "<input class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+			elsif format == :textarea
+				result += "<textarea class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 			end
 			result += "</div>"
+
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
 			
 			result += "</div>"
 			return result.html_safe
