@@ -17,6 +17,11 @@ ul.token-input-list-facebook {
 	border-radius: 4px;
 }
 
+.field.danger ul.token-input-list-facebook {
+	border-color: #ca3838;
+    background: #f0c5c5;
+}
+
 /* Token */
 li.token-input-token-facebook {
 	padding: 1px 6px;
