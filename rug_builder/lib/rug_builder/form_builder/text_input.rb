@@ -188,6 +188,7 @@ module RugBuilder
 			
 			# Front field options
 			front_field_options = {}
+			klass = []
 			klass << options[:class] if !options[:class].nil?
 			klass << "text input"
 			field_options[:class] = klass.join(" ")
@@ -246,6 +247,7 @@ module RugBuilder
 			value_postcode = value && value[:postcode] ? value[:postcode] : nil
 
 			# Field options
+			klass = []
 			klass << options[:class] if !options[:class].nil?
 			klass << "text input"
 			
@@ -299,6 +301,7 @@ module RugBuilder
 			value_lastname = value && value[:lastname] ? value[:lastname] : nil
 			
 			# Field options
+			klass = []
 			klass << options[:class] if !options[:class].nil?
 			klass << "text input"
 
@@ -349,6 +352,7 @@ module RugBuilder
 			value_max = value && value[:max] ? value[:max] : nil
 			
 			# Field options
+			klass = []
 			klass << options[:class] if !options[:class].nil?
 			klass << "text input"
 			
