@@ -33,6 +33,8 @@ module RugBuilder
 			field_options[:id] = options[:id] if !options[:id].nil?
 			field_options[:value] = options[:value] if !options[:value].nil?
 			field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
+			field_options[:min] = options[:min] if !options[:min].nil?
+			field_options[:max] = options[:max] if !options[:max].nil?
 			
 			# Localization
 			if options[:localization].nil?

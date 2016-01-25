@@ -55,7 +55,7 @@ module RugBuilder
 			# Value
 			value = object.send(name)
 			if !value.blank?
-				value = value.strftime("%k:%M");
+				value = value.strftime("%k:%M")
 			end
 
 			# Java Script
@@ -105,7 +105,7 @@ module RugBuilder
 			# Part values
 			value = object.send(name)
 			if !value.blank?
-				value = value.strftime("%Y-%m-%d %k:%M");
+				value = value.strftime("%Y-%m-%d %k:%M")
 			end
 			
 			# Java Script
@@ -154,6 +154,121 @@ module RugBuilder
 			result += @template.text_field_tag(nil, nil, class: "text input normal date", placeholder: label_date)
 			result += @template.text_field_tag(nil, nil, class: "text input normal time", placeholder: label_time)
 			
+			# Hidden field
+			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
+
+			# Container end
+			result += "</div>"
+			
+			# Errors
+			if object.errors[name].size > 0
+				result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+			end
+
+			result += "</div>"
+			return result.html_safe
+		end
+
+		def duration_row(name, options = {})
+			result = "<div class=\"element\">"
+
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(name.to_s)
+
+			# Label
+			if !options[:label].nil?
+				if options[:label] != false
+					result += label(name, options[:label])
+				end
+			else
+				result += label(name)
+			end
+
+			# Part labels
+			label_days = (options[:label_days] ? options[:label_days] : I18n.t("general.attribute.duration.days"))
+			label_hours = (options[:label_hours] ? options[:label_hours] : I18n.t("general.attribute.duration.hours"))
+			label_minutes = (options[:label_minutes] ? options[:label_minutes] : I18n.t("general.attribute.duration.minutes"))
+			
+			# Part values
+			value = object.send(name)
+			if !value.blank?
+				value = value.strftime("%Y-%m-%d %k:%M")
+			end
+
+			# Field options
+			klass = []
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+			
+			# Java Script
+			js = ""
+			js += "function duration_#{hash}_days(date)\n"
+			js += "{\n"
+			js += "	var date = new Date(date);\n"
+			js += "	var start = new Date(date.getFullYear(), 0, 1);\n"
+			js += "	return Math.floor((date - start) / (1000 * 60 * 60 * 24));\n"
+			js += "}\n"
+			js += "function duration_#{hash}_date(days)\n"
+			js += "{\n"
+			js += "	var start = new Date(2000, 0, 2);\n"
+			js += "	var date = new Date(start);\n"
+			js += "	date.setDate(start.getDate() + parseInt(days));\n"
+			js += "	return date.toISOString().split('T')[0];\n"
+			js += "}\n"
+			js += "function duration_#{hash}_update_inputs()\n"
+			js += "{\n"
+			js += "	var date_and_time = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });\n"
+			js += "	if (date_and_time.length >= 2) {\n"
+			js += "		var days = duration_#{hash}_days(date_and_time[0]);\n"
+			js += "		var hours_and_minutes = date_and_time[1].split(':');\n"
+			js += " 	$('#duration_#{hash} .days').val(days);"
+			js += " 	$('#duration_#{hash} .hours').val(hours_and_minutes[0]);"
+			js += "		$('#duration_#{hash} .minutes').val(hours_and_minutes[1]);\n"
+			js += "	} else {\n"
+			js += " 	$('#duration_#{hash} .days').val('');"
+			js += " 	$('#duration_#{hash} .hours').val('');"
+			js += "		$('#duration_#{hash} .minutes').val('');\n"
+			js += "	}\n"
+			js += "}\n"
+			js += "function duration_#{hash}_update_datetime()\n"
+			js += "{\n"
+			js += "	var days = parseInt($('#duration_#{hash} .days').val());\n"
+			js += "	var hours = parseInt($('#duration_#{hash} .hours').val());\n"
+			js += "	var minutes = parseInt($('#duration_#{hash} .minutes').val());\n"
+			js += "	if (!(isNaN(days) && isNaN(hours) && isNaN(minutes))) {\n"
+			js += "		days = !isNaN(days) ? days : 0;\n"
+			js += "		hours = !isNaN(hours) ? hours : 0;\n"
+			js += "		minutes = !isNaN(minutes) ? minutes : 0;\n"
+			js += "		$('#duration_#{hash} .datetime').val(duration_#{hash}_date(days) + ' ' + hours.toString() + ':' + minutes.toString());\n"
+			js += "	} else {\n"
+			js += "		$('#duration_#{hash} .datetime').val('');\n"
+			js += "	}\n"
+			js += "}\n"
+			js += "function duration_#{hash}_ready()\n"
+			js += "{\n"
+			js += "	$('#duration_#{hash} .days').change(duration_#{hash}_update_datetime);\n"
+			js += "	$('#duration_#{hash} .hours').change(duration_#{hash}_update_datetime);\n"
+			js += "	$('#duration_#{hash} .minutes').change(duration_#{hash}_update_datetime);\n"
+			js += "	duration_#{hash}_update_inputs();\n"
+			js += "}\n"
+			js += "$(document).ready(duration_#{hash}_ready);\n"
+			js += "$(document).on('page:load', duration_#{hash}_ready);\n"
+			
+			result += @template.javascript_tag(js)
+			
+			# Container
+			result += "<div id=\"duration_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			
+			# Inputs
+			result += "<div class=\"field-item\">"
+			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "days"]).join(" "), placeholder: label_days, min: 0)
+			result += "</div>"
+
+			result += "<div class=\"field-item\">"
+			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "hours"]).join(" "), placeholder: label_hours, min: 0, max: 23)
+			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "minutes"]).join(" "), placeholder: label_minutes, min: 0, max: 59)
+			result += "</div>"
+
 			# Hidden field
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
 
