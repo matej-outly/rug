@@ -28,6 +28,9 @@ module RugBuilder
 			# Model class
 			model_class = get_model_class(objects, options)
 
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(model_class.to_s)
+
 			# Normalize columns
 			columns = normalize_columns(columns)
 
@@ -37,7 +40,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
+				result += "<table id=\"index-table-#{hash}\" class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
 
 				# Table head
 				columns_count = 0
@@ -123,10 +126,10 @@ module RugBuilder
 				result += resolve_summary(objects, model_class, options)
 
 				# Inline edit JS
-				result += resolve_inline_edit_js(options)
+				result += resolve_inline_edit_js(hash, options)
 
 				# Moving JS
-				result += resolve_moving_js(columns_count, options)
+				result += resolve_moving_js(hash, columns_count, options)
 
 			end
 
@@ -145,6 +148,9 @@ module RugBuilder
 			# Model class
 			model_class = get_model_class(objects, options)
 
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(model_class.to_s)
+
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
@@ -159,7 +165,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table class=\"hierarchical index-table #{options[:class].to_s}\">"
+				result += "<table id=\"index-table-#{hash}\" class=\"hierarchical index-table #{options[:class].to_s}\">"
 
 				# Table head
 				result += "<thead>"
@@ -267,6 +273,9 @@ module RugBuilder
 			# Model class
 			model_class = get_model_class(objects, options)
 
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(model_class.to_s)
+
 			# Normalize columns
 			columns = normalize_columns(columns)
 
@@ -275,7 +284,7 @@ module RugBuilder
 				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else 
 				result = ""
-				result += "<div class=\"picture index-table\">"
+				result += "<div id=\"index-table-#{hash}\" class=\"picture index-table\">"
 				objects.each do |object|
 					result += "<div class=\"item\" data-id=\"#{object.id}\">"
 					columns.headers.each_with_index do |column, idx|
@@ -324,13 +333,13 @@ module RugBuilder
 		# Inline editation
 		# *********************************************************************
 
-		def resolve_inline_edit_js(options)
+		def resolve_inline_edit_js(hash, options)
 			if check_inline_edit(options)
 
 				js = ""
-				js += "function index_table_inline_edit_ready()\n"
+				js += "function index_table_#{hash}_inline_edit_ready()\n"
 				js += "{\n"
-				js += "	$('.index-table a.inline-edit.edit').on('click', function(e) {\n"
+				js += "	$('#index-table-#{hash} a.inline-edit.edit').on('click', function(e) {\n"
 				js += "		e.preventDefault();\n"
 				js += "		var row = $(this).closest('tr');\n"
 				js += "		row.find('a.inline-edit.edit').hide();\n"
@@ -339,7 +348,7 @@ module RugBuilder
 				js += "		row.find('.inline-edit.field').show();\n"
 				js += "	});\n"
 
-				js += "	$('.index-table a.inline-edit.save').on('click', function(e) {\n"
+				js += "	$('#index-table-#{hash} a.inline-edit.save').on('click', function(e) {\n"
 				js += "		e.preventDefault();\n"
 				js += "		var _this = $(this);\n"
 				js += "		var row = _this.closest('tr');\n"
@@ -375,8 +384,8 @@ module RugBuilder
 				js += "	});\n"
 				js += "}\n"
 
-				js += "$(document).ready(index_table_inline_edit_ready);\n"
-				js += "$(document).on('page:load', index_table_inline_edit_ready);\n"
+				js += "$(document).ready(index_table_#{hash}_inline_edit_ready);\n"
+				js += "$(document).on('page:load', index_table_#{hash}_inline_edit_ready);\n"
 
 				return @template.javascript_tag(js)
 			else
@@ -407,13 +416,13 @@ module RugBuilder
 		# Moving
 		# *********************************************************************
 
-		def resolve_moving_js(columns_count, options)
+		def resolve_moving_js(hash, columns_count, options)
 			if check_moving(options)
 
 				js = ""
-				js += "function index_table_moving_ready()\n"
+				js += "function index_table_#{hash}_moving_ready()\n"
 				js += "{\n"
-				js += "	$('.index-table.moving').sortable({\n"
+				js += "	$('#index-table-#{hash}.moving').sortable({\n"
 				js += "		containerSelector: 'table',\n"
 				js += "		itemPath: '> tbody',\n"
 				js += "		itemSelector: 'tr',\n"
@@ -439,8 +448,8 @@ module RugBuilder
 				js += "	});\n"
 				js += "}\n"
 
-				js += "$(document).ready(index_table_moving_ready);\n"
-				js += "$(document).on('page:load', index_table_moving_ready);\n"
+				js += "$(document).ready(index_table_#{hash}_moving_ready);\n"
+				js += "$(document).on('page:load', index_table_#{hash}_moving_ready);\n"
 
 				return @template.javascript_tag(js)
 			else

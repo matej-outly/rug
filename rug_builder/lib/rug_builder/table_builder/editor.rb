@@ -23,12 +23,15 @@ module RugBuilder
 			# Model class
 			model_class = get_model_class(objects, options)
 			
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(model_class.to_s)
+
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
 			# Table
 			result = ""
-			result += "<table class=\"editor-table #{options[:class].to_s}\">"
+			result += "<table id=\"editor-table-#{hash}\" class=\"editor-table #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
@@ -76,7 +79,7 @@ module RugBuilder
 			result += "</table>"
 
 			# JS
-			result += resolve_editor_js
+			result += resolve_editor_js(hash)
 
 			return result.html_safe
 		end
@@ -92,6 +95,9 @@ module RugBuilder
 			# Model class
 			model_class = get_model_class(objects, options)
 
+			# Unique hash
+			hash = Digest::SHA1.hexdigest(model_class.to_s)
+
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
@@ -102,7 +108,7 @@ module RugBuilder
 
 			# Table
 			result = ""
-			result += "<table class=\"hierarchical editor-table #{options[:class].to_s}\">"
+			result += "<table id=\"editor-table-#{hash}\" class=\"hierarchical editor-table #{options[:class].to_s}\">"
 
 			# Table head
 			result += "<thead>"
@@ -192,14 +198,14 @@ module RugBuilder
 			result += "</table>"
 
 			# JS
-			result += resolve_editor_js
+			result += resolve_editor_js(hash)
 
 			return result.html_safe
 		end
 	
 	protected
 
-		def resolve_editor_js
+		def resolve_editor_js(hash)
 			js = ''
 
 			js += 'function editor_table_ready()'
