@@ -2,21 +2,14 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Date utility functions 
+# * Time utility functions 
 # *
 # * Author: Matěj Outlý
 # * Date  : 5. 4. 2015
 # *
 # *****************************************************************************
 
-class Date
-
-	#
-	# Get monday of current week
-	#
-	def week_monday
-		return self - (self.cwday - 1).days
-	end
+class Time
 
 	#
 	# Get number of days since New Year

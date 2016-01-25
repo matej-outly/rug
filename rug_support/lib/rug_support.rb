@@ -18,6 +18,8 @@ require "rug_support/util/object"
 require "rug_support/util/string"
 require "rug_support/util/hash"
 require "rug_support/util/date"
+require "rug_support/util/datetime"
+require "rug_support/util/time"
 require "rug_support/util/uri"
 
 # Rails extension
