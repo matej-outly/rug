@@ -292,13 +292,13 @@ module RugBuilder
 			end
 
 			# Part labels
-			label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title"))
+			label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title")) if options[:title] == true
 			label_firstname = (options[:label_firstname] ? options[:label_firstname] : I18n.t("general.attribute.name.firstname"))
 			label_lastname = (options[:label_lastname] ? options[:label_lastname] : I18n.t("general.attribute.name.lastname"))
 			
 			# Part values
 			value = object.send(name)
-			value_title = value && value[:title] ? value[:title] : nil
+			value_title = value && value[:title] ? value[:title] : nil if options[:title] == true
 			value_firstname = value && value[:firstname] ? value[:firstname] : nil
 			value_lastname = value && value[:lastname] ? value[:lastname] : nil
 			
@@ -311,9 +311,11 @@ module RugBuilder
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs (first row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_title)
-			result += "</div>"
+			if options[:title] == true
+				result += "<div class=\"field-item\">"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_title)
+				result += "</div>"
+			end
 
 			# Inputs (second row)
 			result += "<div class=\"field-item\">"
