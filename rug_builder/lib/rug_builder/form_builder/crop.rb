@@ -68,11 +68,13 @@ module RugBuilder
 			
 			js += "function crop_#{hash}_reload_jcrop()\n"
 			js += "{\n"
-			js += "	jcrop_api = $('#crop_#{hash} .cropbox img').data('Jcrop');\n"
+			js += "	var img = $('#crop_#{hash} .cropbox img');\n"
+			js += "	var jcrop_api = img.data('Jcrop');\n"
 			js += "	if (jcrop_api) {\n"
 			js += "		jcrop_api.destroy();\n"
 			js += "	}\n"
-			js += "	$('#crop_#{hash} .cropbox img').Jcrop({\n"
+			js += "	img.Jcrop({\n"
+			js += "		trueSize: [img.get(0).naturalWidth, img.get(0).naturalHeight],\n"
 			js += "		onChange: crop_#{hash}_update_coords,\n"
 			js += "		onSelect: crop_#{hash}_update_coords,\n"
 			js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
@@ -91,7 +93,7 @@ module RugBuilder
 			js += "			if (callback && callback.#{name.to_s}_url) {\n"
 			js += "				var src = callback.#{name.to_s}_url.replace('/original/', '/#{croppable_style.to_s}/');\n"
 			js += "				$('#crop_#{hash} .cropbox').html('<img src=\\'' + src + '\\' />');\n"
-			js += "				crop_#{hash}_reload_jcrop();\n"
+			js += "				$('#crop_#{hash} .cropbox img').load(crop_#{hash}_reload_jcrop);\n"
 			js += "			}\n"
 			js += "		}\n"
 			js += "	});\n"
@@ -99,7 +101,7 @@ module RugBuilder
 
 			js += "function crop_#{hash}_ready()\n"
 			js += "{\n"
-			js += "	crop_#{hash}_reload_jcrop();\n"
+			js += "	$('#crop_#{hash} .cropbox img').load(crop_#{hash}_reload_jcrop);\n"
 			js += "}\n"
 
 			js += "$(document).ready(crop_#{hash}_ready);\n"
