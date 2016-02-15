@@ -23,6 +23,7 @@ require "rug_record/concerns/type/georectangle"
 require "rug_record/concerns/type/geopolygon"
 require "rug_record/concerns/type/name"
 require "rug_record/concerns/type/range"
+require "rug_record/concerns/type/state"
 
 # Concerns
 require "rug_record/concerns/config"
