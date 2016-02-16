@@ -40,9 +40,20 @@ module RugBuilder
 			end
 
 			def render_time(column, object)
+
+				# Check format
+				if @columns[column][:format]
+					format = @columns[column][:format]
+				else
+					format = :hour_min
+				end
+				if ![:hour_min, :min_sec, :hour_min_sec].include?(format)
+					raise "Unknown format #{format}."
+				end
+
 				value = object.send(column)
 				return "" if value.blank?
-				return value.strftime(I18n.t("time.formats.raw"))
+				return value.strftime(I18n.t("time.formats.#{format.to_s}"))
 			end
 
 			# *********************************************************************
@@ -70,7 +81,11 @@ module RugBuilder
 			def render_duration(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				return value.days_since_new_year.to_s + " " + I18n.t("general.attribute.duration.days").downcase_first + ", " + value.hour.to_s + " " + I18n.t("general.attribute.duration.hours").downcase_first + ", " + value.min.to_s + " " + I18n.t("general.attribute.duration.minutes").downcase_first
+				return "" +
+					value.days_since_new_year.to_s + " " + I18n.t("general.attribute.duration.days").downcase_first + ", " + 
+					value.hour.to_s + " " + I18n.t("general.attribute.duration.hours").downcase_first + ", " + 
+					value.min.to_s + " " + I18n.t("general.attribute.duration.minutes").downcase_first + ", " + 
+					value.sec.to_s + " " + I18n.t("general.attribute.duration.seconds").downcase_first
 			end
 
 		end

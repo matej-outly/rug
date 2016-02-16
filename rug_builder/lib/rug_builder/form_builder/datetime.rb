@@ -188,11 +188,12 @@ module RugBuilder
 			label_days = (options[:label_days] ? options[:label_days] : I18n.t("general.attribute.duration.days"))
 			label_hours = (options[:label_hours] ? options[:label_hours] : I18n.t("general.attribute.duration.hours"))
 			label_minutes = (options[:label_minutes] ? options[:label_minutes] : I18n.t("general.attribute.duration.minutes"))
+			label_seconds = (options[:label_seconds] ? options[:label_seconds] : I18n.t("general.attribute.duration.seconds"))
 			
 			# Part values
 			value = object.send(name)
 			if !value.blank?
-				value = value.strftime("%Y-%m-%d %k:%M")
+				value = value.strftime("%Y-%m-%d %k:%M:%S")
 			end
 
 			# Field options
@@ -220,14 +221,16 @@ module RugBuilder
 			js += "	var date_and_time = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });\n"
 			js += "	if (date_and_time.length >= 2) {\n"
 			js += "		var days = duration_#{hash}_days(date_and_time[0]);\n"
-			js += "		var hours_and_minutes = date_and_time[1].split(':');\n"
+			js += "		var hours_and_minutes_and_seconds = date_and_time[1].split(':');\n"
 			js += " 	$('#duration_#{hash} .days').val(days);"
-			js += " 	$('#duration_#{hash} .hours').val(hours_and_minutes[0]);"
-			js += "		$('#duration_#{hash} .minutes').val(hours_and_minutes[1]);\n"
+			js += " 	$('#duration_#{hash} .hours').val(hours_and_minutes_and_seconds[0]);"
+			js += "		$('#duration_#{hash} .minutes').val(hours_and_minutes_and_seconds[1]);\n"
+			js += "		$('#duration_#{hash} .seconds').val(hours_and_minutes_and_seconds[2]);\n"
 			js += "	} else {\n"
 			js += " 	$('#duration_#{hash} .days').val('');"
 			js += " 	$('#duration_#{hash} .hours').val('');"
 			js += "		$('#duration_#{hash} .minutes').val('');\n"
+			js += "		$('#duration_#{hash} .seconds').val('');\n"
 			js += "	}\n"
 			js += "}\n"
 			js += "function duration_#{hash}_update_datetime()\n"
@@ -235,11 +238,13 @@ module RugBuilder
 			js += "	var days = parseInt($('#duration_#{hash} .days').val());\n"
 			js += "	var hours = parseInt($('#duration_#{hash} .hours').val());\n"
 			js += "	var minutes = parseInt($('#duration_#{hash} .minutes').val());\n"
-			js += "	if (!(isNaN(days) && isNaN(hours) && isNaN(minutes))) {\n"
+			js += "	var seconds = parseInt($('#duration_#{hash} .seconds').val());\n"
+			js += "	if (!(isNaN(days) && isNaN(hours) && isNaN(minutes) && isNaN(seconds))) {\n"
 			js += "		days = !isNaN(days) ? days : 0;\n"
 			js += "		hours = !isNaN(hours) ? hours : 0;\n"
 			js += "		minutes = !isNaN(minutes) ? minutes : 0;\n"
-			js += "		$('#duration_#{hash} .datetime').val(duration_#{hash}_date(days) + ' ' + hours.toString() + ':' + minutes.toString());\n"
+			js += "		seconds = !isNaN(seconds) ? seconds : 0;\n"
+			js += "		$('#duration_#{hash} .datetime').val(duration_#{hash}_date(days) + ' ' + hours.toString() + ':' + minutes.toString() + ':' + seconds.toString());\n"
 			js += "	} else {\n"
 			js += "		$('#duration_#{hash} .datetime').val('');\n"
 			js += "	}\n"
@@ -249,6 +254,7 @@ module RugBuilder
 			js += "	$('#duration_#{hash} .days').change(duration_#{hash}_update_datetime);\n"
 			js += "	$('#duration_#{hash} .hours').change(duration_#{hash}_update_datetime);\n"
 			js += "	$('#duration_#{hash} .minutes').change(duration_#{hash}_update_datetime);\n"
+			js += "	$('#duration_#{hash} .seconds').change(duration_#{hash}_update_datetime);\n"
 			js += "	duration_#{hash}_update_inputs();\n"
 			js += "}\n"
 			js += "$(document).ready(duration_#{hash}_ready);\n"
@@ -260,16 +266,33 @@ module RugBuilder
 			result += "<div id=\"duration_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs
-			result += "<div class=\"field-item\">"
-			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "days"]).join(" "), placeholder: label_days, min: 0)
+			result += "<div class=\"row\">"
+			if options[:days] != false
+				result += "<div class=\"three columns\">"
+				result += @template.number_field_tag(nil, nil, class: klass.concat(["days"]).join(" "), placeholder: label_days, min: 0)
+				result += "</div>"
+			end
+
+			if options[:hours] != false
+				result += "<div class=\"three columns\">"
+				result += @template.number_field_tag(nil, nil, class: klass.concat(["hours"]).join(" "), placeholder: label_hours, min: 0, max: 23)
+				result += "</div>"
+			end
+
+			if options[:minutes] != false
+				result += "<div class=\"three columns\">"
+				result += @template.number_field_tag(nil, nil, class: klass.concat(["minutes"]).join(" "), placeholder: label_minutes, min: 0, max: 59)
+				result += "</div>"
+			end
+
+			if options[:seconds] != false
+				result += "<div class=\"three columns\">"
+				result += @template.number_field_tag(nil, nil, class: klass.concat(["seconds"]).join(" "), placeholder: label_seconds, min: 0, max: 59)
+				result += "</div>"
+			end
 			result += "</div>"
 
-			result += "<div class=\"field-item\">"
-			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "hours"]).join(" "), placeholder: label_hours, min: 0, max: 23)
-			result += @template.number_field_tag(nil, nil, class: klass.concat(["normal", "minutes"]).join(" "), placeholder: label_minutes, min: 0, max: 59)
-			result += "</div>"
-
-			# Hidden field
+			# Hidden fields
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
 
 			# Container end
