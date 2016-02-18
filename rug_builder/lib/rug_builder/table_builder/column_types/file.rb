@@ -23,13 +23,12 @@ module RugBuilder
 				return true
 			end
 
-
 			def render_file(column, object)
 				value = object.send(column)
 				if value.exists?
-					return "#{I18n.t("general.bool_yes")} - <a href=\"#{value.url}\">#{I18n.t("general.action.download")}</a>".html_safe
+					return "#{I18n.t("general.attribute.boolean.bool_yes")} - <a href=\"#{value.url}\">#{I18n.t("general.action.download")}</a>".html_safe
 				else
-					return I18n.t("general.bool_no")
+					return I18n.t("general.attribute.boolean.bool_no")
 				end
 			end
 
@@ -46,7 +45,7 @@ module RugBuilder
 				if value.exists?
 					return "<img src=\"#{value.url(@columns[column][:thumb_style])}\" />".html_safe
 				else
-					return I18n.t("general.bool_no")
+					return I18n.t("general.attribute.boolean.bool_no")
 				end
 			end
 

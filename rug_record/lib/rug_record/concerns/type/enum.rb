@@ -75,6 +75,13 @@ module RugRecord
 						return @enums
 					end
 
+					#
+					# Check if given column is enum defined on this model
+					#
+					def has_enum?(column)
+						return !@enums.nil? && !@enums[column].nil?
+					end
+
 				end
 
 			end

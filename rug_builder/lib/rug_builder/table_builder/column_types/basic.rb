@@ -83,23 +83,6 @@ module RugBuilder
 				return @template.number_to_currency(value, locale: locale)
 			end
 
-			# *********************************************************************
-			# Boolean
-			# *********************************************************************
-
-			def validate_boolean_options(column_spec)
-				return true
-			end
-
-			def render_boolean(column, object)
-				value = object.send(column)
-				if value == true
-					return I18n.t("general.bool_yes")
-				else
-					return I18n.t("general.bool_no")
-				end
-			end
-
 		end
 	end
 end
