@@ -96,11 +96,11 @@ module RugBuilder
 				klass << "state"
 				klass << "state-#{value}"
 				klass << "color-#{color}" if format == :color || format == :color_icon
-				klass << "icon-#{icon}" if format == :icon || format == :color_icon
 				klass << "ttip" if @columns[column][:tooltip] != false
 
 				# Render
 				result = "<div class=\"#{klass.join(" ")}\" #{@columns[column][:tooltip] != false ? "data-tooltip=\"" + label + "\"" : ""}>"
+				result += "<i class=\"icon-#{icon}\"></i>"  if format == :icon || format == :color_icon
 				result += label if @columns[column][:tooltip] == false
 				result += "</div>"
 				return result

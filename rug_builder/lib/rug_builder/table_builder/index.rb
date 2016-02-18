@@ -38,6 +38,13 @@ module RugBuilder
 				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else
 
+				# Show link column
+				if options[:show_link_column]
+					show_link_column = options[:show_link_column]
+				else
+					show_link_column = 0
+				end
+
 				# Table
 				result = ""
 				result += "<table id=\"index-table-#{hash}\" class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
@@ -52,7 +59,7 @@ module RugBuilder
 				end
 				columns.headers.each do |column|
 					result += "<th>"
-					result += model_class.human_attribute_name(column.to_s).upcase_first
+					result += columns.label(column, model_class)
 					result += resolve_sorting(column, options)
 					result += "</th>"
 					columns_count += 1
@@ -91,10 +98,11 @@ module RugBuilder
 						end
 
 						# Standard read only value
-						if idx == 0 && check_show_link(options)
-							result += get_show_link(object, columns.render(column, object), options)
+						value = columns.render(column, object)
+						if idx == show_link_column && check_show_link(options)
+							result += get_show_link(object, value, options)
 						else
-							result += columns.render(column, object)
+							result += value
 						end
 						
 						if check_inline_edit(options, column)
@@ -163,6 +171,13 @@ module RugBuilder
 				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
 			else
 
+				# Show link column
+				if options[:show_link_column]
+					show_link_column = options[:show_link_column]
+				else
+					show_link_column = 0
+				end
+
 				# Table
 				result = ""
 				result += "<table id=\"index-table-#{hash}\" class=\"hierarchical index-table #{options[:class].to_s}\">"
@@ -173,9 +188,9 @@ module RugBuilder
 				result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
 				columns.headers.each_with_index do |column, idx|
 					if idx == 0
-						result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+						result += "<th colspan=\"#{ maximal_level + 1 }\">#{ columns.label(column, model_class) }</th>"
 					else
-						result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+						result += "<th>#{ columns.label(column, model_class) }</th>"
 					end
 				end
 				if options[:actions]
@@ -223,14 +238,15 @@ module RugBuilder
 
 						# Columns
 						columns.headers.each_with_index do |column, column_idx|
-							if column_idx == 0
+							value = columns.render(column, object)
+							if column_idx == show_link_column
 								if check_show_link(options)
-									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
+									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, value, options)}</td>"
 								else
-									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
+									result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{value}</td>"
 								end
 							else
-								result += "<td>#{columns.render(column, object)}</td>"
+								result += "<td>#{value}</td>"
 							end
 						end
 
@@ -279,6 +295,13 @@ module RugBuilder
 			# Normalize columns
 			columns = normalize_columns(columns)
 
+			# Show link column
+			if options[:show_link_column]
+				show_link_column = options[:show_link_column]
+			else
+				show_link_column = 0
+			end
+
 			# Table
 			if objects.empty?
 				result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
@@ -290,10 +313,11 @@ module RugBuilder
 					columns.headers.each_with_index do |column, idx|
 						
 						# Standard read only value
-						if idx == 0 && check_show_link(options)
-							result += "<div class=\"picture\">#{get_show_link(object, columns.render(column, object), options, disable_button: true)}</div>"
+						value = columns.render(column, object)
+						if idx == show_link_column && check_show_link(options)
+							result += "<div class=\"picture\">#{get_show_link(object, value, options, disable_button: true)}</div>"
 						else
-							result += "<div class=\"description\">#{columns.render(column, object)}</div>"
+							result += "<div class=\"description\">#{value}</div>"
 						end
 
 					end

@@ -29,6 +29,13 @@ module RugBuilder
 			# Normalize columns to Columns object
 			columns = normalize_columns(columns)
 
+			# Show link column
+			if options[:show_link_column]
+				show_link_column = options[:show_link_column]
+			else
+				show_link_column = 0
+			end
+
 			# Table
 			result = ""
 			result += "<table id=\"editor-table-#{hash}\" class=\"editor-table #{options[:class].to_s}\">"
@@ -38,7 +45,7 @@ module RugBuilder
 			result += "<tr>"
 			columns.headers.each do |column|
 				result += "<th>"
-				result += model_class.human_attribute_name(column.to_s).upcase_first
+				result += columns.label(column, model_class)
 				result += "</th>"
 			end
 			result += "<th></th>" if check_edit_link(options)
@@ -51,10 +58,11 @@ module RugBuilder
 			objects.each do |object|
 				result += "<tr class=\"#{object.new_record? ? "possibility" : ""}\">"
 				columns.headers.each_with_index do |column, idx|
-					if idx == 0 && check_show_link(options)
-						result += "<td>#{get_show_link(object, columns.render(column, object), options)}</td>"
+					value = columns.render(column, object)
+					if idx == show_link_column && check_show_link(options)
+						result += "<td>#{get_show_link(object, value, options)}</td>"
 					else
-						result += "<td>#{columns.render(column, object)}</td>"
+						result += "<td>#{value}</td>"
 					end
 				end
 				result += "<td class=\"action\">#{get_edit_link(object, options) if !object.new_record?}</td>" if check_edit_link(options)
@@ -106,6 +114,13 @@ module RugBuilder
 			open_siblings = {}
 			open_levels = {}
 
+			# Show link column
+			if options[:show_link_column]
+				show_link_column = options[:show_link_column]
+			else
+				show_link_column = 0
+			end
+
 			# Table
 			result = ""
 			result += "<table id=\"editor-table-#{hash}\" class=\"hierarchical editor-table #{options[:class].to_s}\">"
@@ -116,9 +131,9 @@ module RugBuilder
 			result += "<th colspan=\"2\">#{ I18n.t("general.nesting").upcase_first }</th>"
 			columns.headers.each_with_index do |column, idx|
 				if idx == 0
-					result += "<th colspan=\"#{ maximal_level + 1 }\">#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+					result += "<th colspan=\"#{ maximal_level + 1 }\">#{ columns.label(column, model_class) }</th>"
 				else
-					result += "<th>#{ model_class.human_attribute_name(column.to_s).upcase_first }</th>"
+					result += "<th>#{ columns.label(column, model_class) }</th>"
 				end
 			end
 			result += "<th></th>" if check_edit_link(options)
@@ -161,14 +176,15 @@ module RugBuilder
 
 					# Columns
 					columns.headers.each_with_index do |column, column_idx|
-						if column_idx == 0
+						value = columns.render(column, object)
+						if column_idx == show_link_column
 							if check_show_link(options)
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, columns.render(column, object), options)}</td>"
+								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, value, options)}</td>"
 							else
-								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{columns.render(column, object)}</td>"
+								result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{value}</td>"
 							end
 						else
-							result += "<td>#{columns.render(column, object)}</td>"
+							result += "<td>#{value}</td>"
 						end
 					end
 

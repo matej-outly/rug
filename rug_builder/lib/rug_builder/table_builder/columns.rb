@@ -84,6 +84,18 @@ module RugBuilder
 			# Render
 			# *********************************************************************
 
+			def label(column, model_class)
+				if !@columns[column.to_sym][:label].nil?
+					if @columns[column.to_sym][:label] != false
+						return @columns[column.to_sym][:label]
+					else
+						return ""
+					end
+				else
+					return model_class.human_attribute_name(column.to_s).upcase_first
+				end
+			end
+
 			def headers
 				return @columns.keys
 			end
