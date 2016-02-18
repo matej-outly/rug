@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Sidr library into the application.
+
+Example:
+    rails generate plugin:sidr:install
