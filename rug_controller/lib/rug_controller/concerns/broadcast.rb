@@ -13,7 +13,7 @@ require "action_controller"
 
 module RugController
 	module Concerns
-		module ControllerBroadcast extend ActiveSupport::Concern
+		module Broadcast extend ActiveSupport::Concern
 
 			#
 			# 'included do' causes the included code to be evaluated in the
@@ -145,4 +145,4 @@ module RugController
 	end
 end
 
-ActionController::Base.send(:include, RugController::Concerns::ControllerBroadcast)
+ActionController::Base.send(:include, RugController::Concerns::Broadcast)

@@ -12,11 +12,13 @@
 # Basic
 require "rug_controller/component"
 require "rug_controller/component_config"
+require "rug_controller/controller_config"
 require "rug_controller/broadcast"
 
 # Concerns
-require "rug_controller/concerns/controller_components"
-require "rug_controller/concerns/controller_broadcast"
+require "rug_controller/concerns/broadcast"
+require "rug_controller/concerns/components"
+require "rug_controller/concerns/conf"
 require "rug_controller/concerns/lifecycle"
 
 # Railtie

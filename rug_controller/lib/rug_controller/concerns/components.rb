@@ -13,7 +13,7 @@ require "action_controller"
 
 module RugController
 	module Concerns
-		module ControllerComponents extend ActiveSupport::Concern
+		module Components extend ActiveSupport::Concern
 
 			module ClassMethods
 				
@@ -73,4 +73,4 @@ module RugController
 	end
 end
 
-ActionController::Base.send(:include, RugController::Concerns::ControllerComponents)
+ActionController::Base.send(:include, RugController::Concerns::Components)
