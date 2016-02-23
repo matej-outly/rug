@@ -113,12 +113,12 @@ module RugBuilder
 					end
 					if options[:actions]
 						options[:actions].each do |action, action_spec|
-							result += "<td class=\"action\">#{get_action_link(object, action_spec)}</td>"
+							result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
 						end
 					end
-					result += "<td class=\"action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
-					result += "<td class=\"action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
-					result += "<td class=\"action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
+					result += "<td class=\"standard action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
+					result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
+					result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
 					result += "</tr>"
 
 				end
@@ -253,11 +253,11 @@ module RugBuilder
 						# Actions
 						if options[:actions]
 							options[:actions].each do |action, action_spec|
-								result += "<td class=\"action\">#{get_action_link(object, action_spec)}</td>"
+								result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
 							end
 						end
-						result += "<td class=\"action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
-						result += "<td class=\"action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
+						result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
+						result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
 						result += "</tr>"
 
 					end
@@ -321,8 +321,8 @@ module RugBuilder
 						end
 
 					end
-					result += "<div class=\"action edit\">#{get_edit_link(object, options, disable_button: true)}</div>" if check_edit_link(options)
-					result += "<div class=\"action destroy\">#{get_destroy_link(object, options, disable_button: true)}</div>" if check_destroy_link(options)
+					result += "<div class=\"standard action edit\">#{get_edit_link(object, options, disable_button: true)}</div>" if check_edit_link(options)
+					result += "<div class=\"standard action destroy\">#{get_destroy_link(object, options, disable_button: true)}</div>" if check_destroy_link(options)
 					result += "</div>"
 				end
 				result += "</div>"

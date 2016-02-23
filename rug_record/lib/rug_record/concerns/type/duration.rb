@@ -30,7 +30,7 @@ module RugRecord
 							current_hours = self.send((column.to_s + "_hours").to_sym).to_i
 							current_minutes = self.send((column.to_s + "_minutes").to_sym).to_i
 							current_seconds = self.send((column.to_s + "_seconds").to_sym).to_i
-							value = DateTime.parse("2000-01-01 00:00:00")
+							value = DateTime.parse("2000-01-01 00:00:00 +0000")
 							value += (!new_days.nil? ? new_days.to_i.days : current_days.days)
 							value += (!new_hours.nil? ? new_hours.to_i.hours : current_hours.hours)
 							value += (!new_minutes.nil? ? new_minutes.to_i.minutes : current_minutes.minutes)
