@@ -85,9 +85,9 @@ module RugBuilder
 			# *********************************************************************
 
 			def label(column, model_class)
-				if !@columns[column.to_sym][:label].nil?
-					if @columns[column.to_sym][:label] != false
-						return @columns[column.to_sym][:label]
+				if !@columns[column.to_sym][:column_label].nil?
+					if @columns[column.to_sym][:column_label] != false
+						return @columns[column.to_sym][:column_label].to_s
 					else
 						return ""
 					end
