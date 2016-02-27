@@ -108,6 +108,11 @@ module RugBuilder
 				value = value.strftime("%Y-%m-%d %k:%M")
 			end
 			
+			# Field options
+			klass = []
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+
 			# Java Script
 			js = ""
 			js += "function datetime_picker_#{hash}_update_inputs()\n"
@@ -151,9 +156,15 @@ module RugBuilder
 			result += "<div id=\"datetime_picker_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs
-			result += @template.text_field_tag(nil, nil, class: "text input normal date", placeholder: label_date)
-			result += @template.text_field_tag(nil, nil, class: "text input normal time", placeholder: label_time)
-			
+			result += "<div class=\"row\">"
+			result += "<div class=\"six columns\">"
+			result += @template.text_field_tag(nil, nil, class: klass.concat(["date"]).join(" "), placeholder: label_date)
+			result += "</div>"
+			result += "<div class=\"six columns\">"
+			result += @template.text_field_tag(nil, nil, class: klass.concat(["time"]).join(" "), placeholder: label_time)
+			result += "</div>"
+			result += "</div>"
+
 			# Hidden field
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
 

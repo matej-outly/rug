@@ -257,15 +257,25 @@ module RugBuilder
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs (first row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass.concat(["xwide"]).join(" "), placeholder: label_street)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_number)
+			result += "<div class=\"field-item row\">"
+			result += "<div class=\"eight columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass, placeholder: label_street)
+			result += "</div>"
+			
+			result += "<div class=\"four columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass, placeholder: label_number)
+			result += "</div>"
 			result += "</div>"
 
 			# Inputs (second row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass.concat(["xwide"]).join(" "), placeholder: label_city)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_postcode)
+			result += "<div class=\"field-item row\">"
+			result += "<div class=\"eight columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass, placeholder: label_city)
+			result += "</div>"
+			
+			result += "<div class=\"four columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass, placeholder: label_postcode)
+			result += "</div>"
 			result += "</div>"
 
 			result += "</div>"
@@ -310,19 +320,24 @@ module RugBuilder
 			# Container
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
-			# Inputs (first row)
+			# Inputs
+			result += "<div class=\"row\">"
 			if options[:title] == true
-				result += "<div class=\"field-item\">"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass.concat(["xnarrow"]).join(" "), placeholder: label_title)
+				result += "<div class=\"two columns\">"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass), placeholder: label_title)
 				result += "</div>"
 			end
-
-			# Inputs (second row)
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass.concat(["normal"]).join(" "), placeholder: label_firstname)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass.concat(["normal"]).join(" "), placeholder: label_lastname)
+			
+			result += "<div class=\"four columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass, placeholder: label_firstname)
+			result += "</div>"
+			
+			result += "<div class=\"four columns\">"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass, placeholder: label_lastname)
+			result += "</div>"
 			result += "</div>"
 
+			# Container end
 			result += "</div>"
 
 			# Errors
@@ -360,10 +375,21 @@ module RugBuilder
 			klass << options[:class] if !options[:class].nil?
 			klass << "text input"
 			
-			# Field
+			# Container
 			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass.concat(["normal"]).join(" "), placeholder: label_min)
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass.concat(["normal"]).join(" "), placeholder: label_max)
+			
+			# Inputs
+			result += "<div class=\"row\">"
+			result += "<div class=\"six columns\">"
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass, placeholder: label_min)
+			result += "</div>"
+			
+			result += "<div class=\"six columns\">"
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass, placeholder: label_max)
+			result += "</div>"
+			result += "</div>"
+
+			# Container end
 			result += "</div>"
 
 			# Errors
