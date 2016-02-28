@@ -153,15 +153,18 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"datetime_picker_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div id=\"datetime_picker_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs
 			result += "<div class=\"row\">"
-			result += "<div class=\"six columns\">"
-			result += @template.text_field_tag(nil, nil, class: klass.concat(["date"]).join(" "), placeholder: label_date)
+			result += "<div class=\"six columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_date.upcase_first}</span>"
+			result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["date", "normal"]).join(" "))
 			result += "</div>"
-			result += "<div class=\"six columns\">"
-			result += @template.text_field_tag(nil, nil, class: klass.concat(["time"]).join(" "), placeholder: label_time)
+
+			result += "<div class=\"six columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_time.upcase_first}</span>"
+			result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["time", "normal"]).join(" "))
 			result += "</div>"
 			result += "</div>"
 
@@ -274,31 +277,35 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"duration_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-			
+			result += "<div id=\"duration_#{hash}\" class=\"append field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+
 			# Inputs
 			result += "<div class=\"row\">"
 			if options[:days] != false
-				result += "<div class=\"three columns\">"
-				result += @template.number_field_tag(nil, nil, class: klass.concat(["days"]).join(" "), placeholder: label_days, min: 0)
+				result += "<div class=\"three columns field-item\">"
+				result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["days", "normal"]).join(" "), min: 0)
+				result += "<span class=\"adjoined\">#{label_days.downcase_first}</span>"
 				result += "</div>"
 			end
 
 			if options[:hours] != false
-				result += "<div class=\"three columns\">"
-				result += @template.number_field_tag(nil, nil, class: klass.concat(["hours"]).join(" "), placeholder: label_hours, min: 0, max: 23)
+				result += "<div class=\"three columns field-item\">"
+				result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["hours", "normal"]).join(" "), min: 0, max: 23)
+				result += "<span class=\"adjoined\">#{label_hours.downcase_first}</span>"
 				result += "</div>"
 			end
 
 			if options[:minutes] != false
-				result += "<div class=\"three columns\">"
-				result += @template.number_field_tag(nil, nil, class: klass.concat(["minutes"]).join(" "), placeholder: label_minutes, min: 0, max: 59)
+				result += "<div class=\"three columns field-item\">"
+				result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["minutes", "normal"]).join(" "), min: 0, max: 59)
+				result += "<span class=\"adjoined\">#{label_minutes.downcase_first}</span>"
 				result += "</div>"
 			end
 
 			if options[:seconds] != false
-				result += "<div class=\"three columns\">"
-				result += @template.number_field_tag(nil, nil, class: klass.concat(["seconds"]).join(" "), placeholder: label_seconds, min: 0, max: 59)
+				result += "<div class=\"three columns field-item\">"
+				result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["seconds", "normal"]).join(" "), min: 0, max: 59)
+				result += "<span class=\"adjoined\">#{label_seconds.downcase_first}</span>"
 				result += "</div>"
 			end
 			result += "</div>"

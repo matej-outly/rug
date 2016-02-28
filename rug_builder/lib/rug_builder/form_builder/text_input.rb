@@ -254,27 +254,31 @@ module RugBuilder
 			klass << "text input"
 			
 			# Container
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs (first row)
-			result += "<div class=\"field-item row\">"
-			result += "<div class=\"eight columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass, placeholder: label_street)
+			result += "<div class=\"row\">"
+			result += "<div class=\"eight columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_street.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			
-			result += "<div class=\"four columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass, placeholder: label_number)
+			result += "<div class=\"four columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_number.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			result += "</div>"
 
 			# Inputs (second row)
-			result += "<div class=\"field-item row\">"
-			result += "<div class=\"eight columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass, placeholder: label_city)
+			result += "<div class=\"row\">"
+			result += "<div class=\"eight columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_city.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			
-			result += "<div class=\"four columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass, placeholder: label_postcode)
+			result += "<div class=\"four columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_postcode.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			result += "</div>"
 
@@ -318,22 +322,32 @@ module RugBuilder
 			klass << "text input"
 
 			# Container
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
+			# Layout
+			if options[:title] == true
+				columns_layout = ["two", "five", "five"]
+			else
+				columns_layout = [nil, "six", "six"]
+			end
+
 			# Inputs
 			result += "<div class=\"row\">"
 			if options[:title] == true
-				result += "<div class=\"two columns\">"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass), placeholder: label_title)
+				result += "<div class=\"#{columns_layout[0]} columns field-item\">"
+				result += "<span class=\"adjoined\">#{label_title.upcase_first}</span>"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass.dup.concat(["normal"]).join(" "))
 				result += "</div>"
 			end
 			
-			result += "<div class=\"four columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass, placeholder: label_firstname)
+			result += "<div class=\"#{columns_layout[1]} columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_firstname.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			
-			result += "<div class=\"four columns\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass, placeholder: label_lastname)
+			result += "<div class=\"#{columns_layout[2]} columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_lastname.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			result += "</div>"
 
@@ -376,16 +390,18 @@ module RugBuilder
 			klass << "text input"
 			
 			# Container
-			result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Inputs
 			result += "<div class=\"row\">"
-			result += "<div class=\"six columns\">"
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass, placeholder: label_min)
+			result += "<div class=\"six columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_min.upcase_first}</span>"
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			
-			result += "<div class=\"six columns\">"
-			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass, placeholder: label_max)
+			result += "<div class=\"six columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_max.upcase_first}</span>"
+			result += @template.method("#{method.to_s}_tag").call("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass.dup.concat(["normal"]).join(" "))
 			result += "</div>"
 			result += "</div>"
 

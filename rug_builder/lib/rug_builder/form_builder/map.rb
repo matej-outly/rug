@@ -36,6 +36,11 @@ module RugBuilder
 			value_latitude = value && value[:latitude] ? value[:latitude] : nil
 			value_longitude = value && value[:longitude] ? value[:longitude] : nil
 			
+			# Field options
+			klass = []
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+
 			# Java Script
 			js = ""
 			
@@ -146,12 +151,19 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"map_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div id=\"map_location_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Text inputs
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "text input normal latitude", placeholder: label_latitude)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "text input normal longitude", placeholder: label_longitude)
+			result += "<div class=\"row\">"
+			result += "<div class=\"six columns field-item\">" 
+			result += "<span class=\"adjoined\">#{label_latitude.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude", "normal"]).join(" "))
+			result += "</div>"
+
+			result += "<div class=\"six columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_longitude.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude", "normal"]).join(" "))
+			result += "</div>"
 			result += "</div>"
 
 			# Mapbox (canvas)
@@ -386,6 +398,11 @@ module RugBuilder
 			value_longitude = value && value[:longitude] ? value[:longitude] : nil
 			value_address = value && value[:address] ? value[:address] : nil
 			
+			# Field options
+			klass = []
+			klass << options[:class] if !options[:class].nil?
+			klass << "text input"
+
 			# Java Script
 			js = ""
 			
@@ -637,16 +654,27 @@ module RugBuilder
 			result += @template.javascript_tag(js)
 			
 			# Container
-			result += "<div id=\"address_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+			result += "<div id=\"address_location_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
-			# Address parts inputs
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: "text input street wide", placeholder: label_street)
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: "text input number narrow", placeholder: label_number)
+			# Inputs (first row)
+			result += "<div class=\"row\">"
+			result += "<div class=\"eight columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_street.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: klass.dup.concat(["street", "normal"]).join(" "))
 			result += "</div>"
 
-			result += "<div class=\"field-item\">"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", "", class: "text input city", placeholder: label_city)
+			result += "<div class=\"four columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_number.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: klass.dup.concat(["number", "normal"]).join(" "))
+			result += "</div>"
+			result += "</div>"
+
+			# Inputs (second row)
+			result += "<div class=\"row\">"
+			result += "<div class=\"eight columns field-item\">"
+			result += "<span class=\"adjoined\">#{label_city.upcase_first}</span>"
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", "", class: klass.dup.concat(["city", "normal"]).join(" "))
+			result += "</div>"
 			result += "</div>"
 
 			# Address input
