@@ -19,9 +19,9 @@ output_dir="$root_dir/build"
 mkdir -p "$output_dir"
 
 # All rug_* gems
-for gem in rug_support rug_record rug_controller rug_builder rug_view; do
-	cd "$root_dir/$gem"
-	gem build $gem.gemspec
+cat "$script_dir/modules.conf" | while read module; do
+	cd "$root_dir/$module"
+	gem build $module.gemspec
 	mv *.gem "$output_dir"
 done
 

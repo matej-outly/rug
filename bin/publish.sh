@@ -16,8 +16,8 @@ root_dir="$script_dir/.."
 build_dir="$root_dir/build"
 
 # All rug_* gems
-for gem in rug_support rug_record rug_controller rug_builder rug_view; do
-	gem inabox "$build_dir"/"$gem"-*
+cat "$script_dir/modules.conf" | while read module; do
+	gem inabox "$build_dir"/"$module"-*
 done
 
 # Root rug gem
