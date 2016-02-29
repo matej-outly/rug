@@ -22,6 +22,7 @@ module RugBuilder
 		# - summary (boolean) - Turn on summary
 		# - inline_edit (array) - array of columns suitable for inline edit
 		# - page_break (integer) - Break table (and page) after given number of rows
+		# - show_link_column (integer) - Column index used for show link
 		#
 		def index(objects, columns, options = {})
 

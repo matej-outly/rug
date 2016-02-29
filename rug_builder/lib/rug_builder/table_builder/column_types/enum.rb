@@ -72,36 +72,39 @@ module RugBuilder
 					value = value.value
 					label = value.label
 					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}")
-					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}")
+					icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}")
 					return "" if value.blank?
-				else
+				else # Bool
 					value = object.send(column.to_sym)
 					if value == true # Special value TRUE
 						value = "yes"
-						label = I18n.t("general.attribute.boolean.bool_yes")
-						color = I18n.t("general.attribute.boolean_colors.bool_yes")
-						icon = I18n.t("general.attribute.boolean_icons.bool_yes")
 					elsif value == false # Special value FALSE
 						value = "no"
-						label = I18n.t("general.attribute.boolean.bool_no")
-						color = I18n.t("general.attribute.boolean_colors.bool_no")
-						icon = I18n.t("general.attribute.boolean_icons.bool_no")
 					else
 						return ""
+					end
+					if @columns[column][:bool_as_enum] == true
+						label = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.bool_#{value}")
+						color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.bool_#{value}")
+						icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.bool_#{value}")
+					else
+						label = I18n.t("general.attribute.boolean.bool_#{value}")
+						color = I18n.t("general.attribute.boolean_colors.bool_#{value}")
+						icon = I18n.t("general.attribute.boolean_icons.bool_#{value}")
 					end
 				end
 
 				# CSS classes
 				klass = []
-				klass << "state"
+				klass << "default label"
 				klass << "state-#{value}"
 				klass << "color-#{color}" if format == :color || format == :color_icon
-				klass << "ttip" if @columns[column][:tooltip] != false
+				klass << "ttip" if @columns[column][:tooltip] == true
 
 				# Render
-				result = "<div class=\"#{klass.join(" ")}\" #{@columns[column][:tooltip] != false ? "data-tooltip=\"" + label + "\"" : ""}>"
+				result = "<div class=\"#{klass.join(" ")}\" #{@columns[column][:tooltip] == true ? "data-tooltip=\"" + label + "\"" : ""}>"
 				result += "<i class=\"icon-#{icon}\"></i>"  if format == :icon || format == :color_icon
-				result += label if @columns[column][:tooltip] == false
+				result += label if @columns[column][:tooltip] != true
 				result += "</div>"
 				return result
 			end
