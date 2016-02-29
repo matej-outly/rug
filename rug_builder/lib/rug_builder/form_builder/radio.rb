@@ -30,8 +30,9 @@ module RugBuilder
 			end
 
 			# Enable null option
-			if options[:enable_null] == true
-				collection = [OpenStruct.new({value_attr => "", label_attr => I18n.t("general.null_option")})].concat(collection)
+			if options[:enable_null] == true || options[:enable_null].is_a?(String)
+				null_label = options[:enable_null].is_a?(String) ? options[:enable_null] : I18n.t("general.null_option") 
+				collection = [OpenStruct.new({value_attr => nil, label_attr => null_label})].concat(collection)
 			end
 
 			# Enable Gumby (Gumby is disabled by default because of broken event support and other shitty stuff)
