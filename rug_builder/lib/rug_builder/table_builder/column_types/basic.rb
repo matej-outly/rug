@@ -9,8 +9,6 @@
 # *
 # *****************************************************************************
 
-require "truncate_html"
-
 module RugBuilder
 	class TableBuilder
 		class Columns
@@ -44,12 +42,18 @@ module RugBuilder
 			def render_text(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				if @columns[column][:truncate] == false
-					return value.html_safe
-				else
-					html_string = TruncateHtml::HtmlString.new(value)
-					return TruncateHtml::HtmlTruncator.new(html_string, {}).truncate.html_safe
+
+				# Strip tags?
+				if @columns[column][:strip_tags] == true
+					value = value.strip_tags
 				end
+
+				# Truncate?
+				if @columns[column][:truncate] != false
+					value = value.truncate
+				end
+
+				return value.html_safe
 			end
 
 			# *********************************************************************

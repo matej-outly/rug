@@ -90,7 +90,7 @@ module RugBuilder
 				objects.each do |object|
 					
 					result += "<tr data-id=\"#{object.id}\">"
-					result += "<td class=\"action\">#{get_moving_link}</td>" if check_moving(options)
+					result += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(options)
 					columns.headers.each_with_index do |column, idx|
 						result += "<td>"
 						if check_inline_edit(options, column)

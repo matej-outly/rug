@@ -10,6 +10,7 @@
 # *****************************************************************************
 
 require "i18n"
+require "truncate_html"
 
 class String
 
@@ -95,6 +96,20 @@ class String
 			downcase.
 			gsub(/[^a-z0-9\s,\-_]/, "").
 			gsub(/[\s,\-_]+/, "-")
+	end
+
+	#
+	# Truncate
+	#
+	def truncate
+		return TruncateHtml::HtmlTruncator.new(TruncateHtml::HtmlString.new(self), {}).truncate
+	end
+
+	#
+	# Strip tags
+	#
+	def strip_tags
+		return ActionController::Base.helpers.strip_tags(self)
 	end
 
 end

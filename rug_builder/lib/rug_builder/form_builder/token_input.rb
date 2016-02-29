@@ -20,7 +20,7 @@ module RugBuilder
 			# Value
 			value = object.send(options[:as] ? options[:as] : name)
 			value = value.split(",") if value.is_a?(::String)
-			value = [value] if !value.blank? && !value.is_a?(::Array)
+			value = [value] if !value.blank? && !value.respond_to?(:each)
 
 			# Java Script
 			js = ""
