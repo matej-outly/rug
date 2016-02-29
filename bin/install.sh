@@ -17,6 +17,7 @@ build_dir="$root_dir/build"
 
 # All rug_* gems
 cat "$script_dir/modules.conf" | while read module; do
+	module="$(echo -e "${module}" | tr -d '[[:space:]]')"
 	gem install "$build_dir"/"$module"-*
 done
 
