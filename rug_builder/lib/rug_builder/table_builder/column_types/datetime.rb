@@ -81,11 +81,7 @@ module RugBuilder
 			def render_duration(column, object)
 				value = object.send(column)
 				return "" if value.blank?
-				return "" +
-					value.days_since_new_year.to_s + " " + I18n.t("general.attribute.duration.days").downcase_first + ", " + 
-					value.hour.to_s + " " + I18n.t("general.attribute.duration.hours").downcase_first + ", " + 
-					value.min.to_s + " " + I18n.t("general.attribute.duration.minutes").downcase_first + ", " + 
-					value.sec.to_s + " " + I18n.t("general.attribute.duration.seconds").downcase_first
+				return object.send("#{column.to_s}_formatted")
 			end
 
 		end

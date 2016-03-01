@@ -94,6 +94,23 @@ module RugRecord
 							return nil
 						end
 
+						# Get method
+						define_method((new_column.to_s + "_formatted").to_sym) do
+							column = new_column
+							value = read_attribute(column.to_s)
+							return nil if value.blank?
+							days = value.days_since_new_year
+							hours = value.hour
+							minutes = value.min
+							seconds = value.sec
+							result = []
+							result << days.to_s + " " + I18n.t("general.attribute.duration.days").downcase_first if days > 0
+							result << hours.to_s + " " + I18n.t("general.attribute.duration.hours").downcase_first if hours > 0
+							result << minutes.to_s + " " + I18n.t("general.attribute.duration.minutes").downcase_first if minutes > 0
+							result << seconds.to_s + " " + I18n.t("general.attribute.duration.seconds").downcase_first if seconds > 0
+							return result.join(", ")
+						end
+
 					end
 
 				end
