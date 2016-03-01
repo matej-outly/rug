@@ -76,8 +76,9 @@ module RugBuilder
 
 			end
 
-			def add_column_by_block(column, &block)
-				@columns[column.to_sym] = { block: block }
+			def add_column_by_block(column, column_spec = {}, &block)
+				column_spec[:block] = block
+				@columns[column.to_sym] = column_spec
 			end
 
 			# *********************************************************************
