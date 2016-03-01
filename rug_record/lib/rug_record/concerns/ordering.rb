@@ -88,6 +88,7 @@ module RugRecord
 			# Move before some other node
 			#
 			def move_to_left_of(destination)
+				return if self.position.nil? || destination.position.nil?
 				if self.position < destination.position
 					position = destination.position - 1
 				else
@@ -100,6 +101,7 @@ module RugRecord
 			# Move before some other node
 			#
 			def move_to_right_of(destination)
+				return if self.position.nil? || destination.position.nil?
 				if self.position <= destination.position
 					position = destination.position
 				else
