@@ -156,13 +156,13 @@ module RugBuilder
 			# Text inputs
 			result += "<div class=\"row\">"
 			result += "<div class=\"six columns field-item\">" 
-			result += "<span class=\"adjoined\">#{label_latitude.upcase_first}</span>"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude", "normal"]).join(" "))
+			result += "<span class=\"adjoined\">#{label_latitude.upcase_first}</span>" if options[:join] != false
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_latitude.upcase_first : nil))
 			result += "</div>"
 
 			result += "<div class=\"six columns field-item\">"
-			result += "<span class=\"adjoined\">#{label_longitude.upcase_first}</span>"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude", "normal"]).join(" "))
+			result += "<span class=\"adjoined\">#{label_longitude.upcase_first}</span>" if options[:join] != false
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_longitude.upcase_first : nil))
 			result += "</div>"
 			result += "</div>"
 
@@ -659,21 +659,21 @@ module RugBuilder
 			# Inputs (first row)
 			result += "<div class=\"row\">"
 			result += "<div class=\"eight columns field-item\">"
-			result += "<span class=\"adjoined\">#{label_street.upcase_first}</span>"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: klass.dup.concat(["street", "normal"]).join(" "))
+			result += "<span class=\"adjoined\">#{label_street.upcase_first}</span>" if options[:join] != false
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", "", class: klass.dup.concat(["street", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_street.upcase_first : nil))
 			result += "</div>"
 
 			result += "<div class=\"four columns field-item\">"
-			result += "<span class=\"adjoined\">#{label_number.upcase_first}</span>"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: klass.dup.concat(["number", "normal"]).join(" "))
+			result += "<span class=\"adjoined\">#{label_number.upcase_first}</span>" if options[:join] != false
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", "", class: klass.dup.concat(["number", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil))
 			result += "</div>"
 			result += "</div>"
 
 			# Inputs (second row)
 			result += "<div class=\"row\">"
 			result += "<div class=\"eight columns field-item\">"
-			result += "<span class=\"adjoined\">#{label_city.upcase_first}</span>"
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", "", class: klass.dup.concat(["city", "normal"]).join(" "))
+			result += "<span class=\"adjoined\">#{label_city.upcase_first}</span>" if options[:join] != false
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", "", class: klass.dup.concat(["city", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_city.upcase_first : nil))
 			result += "</div>"
 			result += "</div>"
 
