@@ -199,6 +199,7 @@ module RugBuilder
 						result += "<th></th>"
 					end
 				end
+				result += "<th></th><th></th>" if check_moving(options, hierarchical: true)
 				result += "<th></th>" if check_edit_link(options)
 				result += "<th></th>" if check_destroy_link(options)
 				result += "</tr>"
@@ -256,6 +257,10 @@ module RugBuilder
 							options[:actions].each do |action, action_spec|
 								result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
 							end
+						end
+						if check_moving(options, hierarchical: true)
+							result += "<td class=\"standard action\">#{get_moving_up_link(object, options)}</td>" 
+							result += "<td class=\"standard action\">#{get_moving_down_link(object, options)}</td>" 
 						end
 						result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
 						result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
@@ -482,12 +487,30 @@ module RugBuilder
 			end
 		end
 
-		def check_moving(options)
-			return options[:moving] == true && options[:paths] && options[:paths][:move]
+		def check_moving(options, funtion_options = {})
+			result = true
+			result = result && options[:moving] == true
+			result = result && !options[:paths].blank?
+			if funtion_options[:hierarchical] == true
+				result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
+			else
+				result = result && !options[:paths][:move].blank?
+			end
+			return result
 		end
 
 		def get_moving_link
 			return "<div class=\"medium default btn icon-left entypo icon-arrow-combo moving-handle\"><a href=\"#\"></a></div>"
+		end
+
+		def get_moving_up_link(object, options)
+			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_up], object)
+			return "<div class=\"medium default btn icon-left entypo icon-up-dir\"><a data-method=\"put\" href=\"#{url}\"></a></div>"
+		end
+
+		def get_moving_down_link(object, options)
+			url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_down], object)
+			return "<div class=\"medium default btn icon-left entypo icon-down-dir\"><a data-method=\"put\" href=\"#{url}\"></a></div>"
 		end
 		
 	end
