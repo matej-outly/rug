@@ -35,6 +35,13 @@ module RugBuilder
 			# Value
 			value = object.send(name)
 
+			# Current crop
+			crop_x = object.send("#{name.to_s}_crop_x".to_sym)
+			crop_y = object.send("#{name.to_s}_crop_y".to_sym)
+			crop_w = object.send("#{name.to_s}_crop_w".to_sym)
+			crop_h = object.send("#{name.to_s}_crop_h".to_sym)
+			already_cropped = object.send("#{name.to_s}_already_cropped?".to_sym)
+
 			# Cropped and croppable styles
 			cropped_style = object.send("#{name.to_s}_cropped_style".to_sym)
 			croppable_style = object.send("#{name.to_s}_croppable_style".to_sym)
@@ -77,7 +84,11 @@ module RugBuilder
 			js += "		trueSize: [img.get(0).naturalWidth, img.get(0).naturalHeight],\n"
 			js += "		onChange: crop_#{hash}_update_coords,\n"
 			js += "		onSelect: crop_#{hash}_update_coords,\n"
-			js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
+			if already_cropped # TODO Dynamic from hidden inputs
+				js += "		setSelect: [#{crop_x}, #{crop_y}, #{crop_w}, #{crop_h}],\n"
+			else
+				js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
+			end
 			if cropped_style_aspect_ratio
 				js += "		aspectRatio: #{cropped_style_aspect_ratio},\n"
 			end
@@ -116,6 +127,7 @@ module RugBuilder
 			for attribute in [:crop_x, :crop_y, :crop_w, :crop_h]
 				result += hidden_field("#{name.to_s}_#{attribute.to_s}".to_sym, class: attribute)
 			end
+			result += hidden_field("#{name.to_s}_perform_cropping".to_sym, value: "1")
 
 			# Cropbox (image)
 			result += "<div class=\"cropbox\">"

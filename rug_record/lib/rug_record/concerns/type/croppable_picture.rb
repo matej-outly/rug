@@ -91,18 +91,30 @@ module RugRecord
 						end
 
 						# Bind after update event
-						after_update("#{new_column.to_s}_reprocess".to_sym, :if => "#{new_column.to_s}_cropping?".to_sym)
+						after_update("#{new_column.to_s}_reprocess".to_sym, :if => "#{new_column.to_s}_perform_cropping?".to_sym)
 
-						# Define virtual crop attributes
+						# Define virtual crop attributes if needed => specify crop dimensions
 						x_attribute = "#{new_column.to_s}_crop_x".to_sym
+						attr_accessor x_attribute if !column_names.include?(x_attribute.to_s)
 						y_attribute = "#{new_column.to_s}_crop_y".to_sym
+						attr_accessor y_attribute if !column_names.include?(y_attribute.to_s)
 						w_attribute = "#{new_column.to_s}_crop_w".to_sym
+						attr_accessor w_attribute if !column_names.include?(w_attribute.to_s)
 						h_attribute = "#{new_column.to_s}_crop_h".to_sym
-						attr_accessor x_attribute, y_attribute, w_attribute, h_attribute
+						attr_accessor h_attribute if !column_names.include?(h_attribute.to_s)
 
-						# Cropping? method
-						define_method("#{new_column.to_s}_cropping?".to_sym) do
+						# Already cropped method
+						define_method("#{new_column.to_s}_already_cropped?".to_sym) do
 							return !self.send(x_attribute).blank? && !self.send(y_attribute).blank? && !self.send(w_attribute).blank? && !self.send(h_attribute).blank?
+						end
+
+						# Define virtual cropping attribute => specifi if cropping performed
+						perform_cropping_attribute = "#{new_column.to_s}_perform_cropping".to_sym
+						attr_accessor perform_cropping_attribute
+
+						# Perform cropping method
+						define_method("#{new_column.to_s}_perform_cropping?".to_sym) do
+							return !self.send(perform_cropping_attribute).blank?
 						end
 
 					end

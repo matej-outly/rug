@@ -16,9 +16,9 @@ module Paperclip
 		# Modify command accordingly
 		#
 		def transformation_command
-			if cropping?
+			if perform_cropping?
 				command = super
-
+				
 				crop_index = command.index("-crop")
 				if !crop_index.nil?
 					
@@ -55,10 +55,10 @@ module Paperclip
 		#
 		# Is the picture currently cropped?
 		#
-		def cropping?
+		def perform_cropping?
 			name = attachment.name
 			instance = attachment.instance
-			return instance.send("#{name.to_s}_cropping?".to_sym)
+			return instance.send("#{name.to_s}_perform_cropping?".to_sym)
 		end
 
 		#
@@ -67,7 +67,7 @@ module Paperclip
 		def crop_command
 			name = attachment.name
 			instance = attachment.instance
-
+			
 			# Get correction ratio in case croppable style dimensions are different from original dimensions
 			ratio = (instance.send("#{name.to_s}_geometry", :original).width.to_f / instance.send("#{name.to_s}_geometry", instance.send("#{name.to_s}_croppable_style".to_sym)).width.to_f).round(2)
 
