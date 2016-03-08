@@ -35,7 +35,7 @@ module RugBuilder
 					when :file then "dropzone_row(:#{name})"
 					when :picture then "dropzone_row(:#{name})" 
 					when :enum then "picker_row(:#{name})" 
-					when :belongs_to then "picker_row(:#{name})"
+					when :belongs_to then "picker_row(:#{name}, #{!options[:collection].blank? ? options[:collection] : "nil"}, #{!options[:value_attr].blank? ? options[:value_attr] : ":value"}, #{!options[:label_attr].blank? ? options[:label_attr] : ":label"})"
 					when :address then "address_row(:#{name})"
 					when :name then "name_row(:#{name})"
 					when :currency then "text_input_row(:#{name}, :number_field)"
@@ -44,7 +44,7 @@ module RugBuilder
 					else "text_input_row(:#{name})"
 				end
 			end
-
+			
 			return result
 		end
 
