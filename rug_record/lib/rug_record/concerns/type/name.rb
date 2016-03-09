@@ -87,9 +87,9 @@ module RugRecord
 								return nil
 							else
 								result = ""
-								result += "#{value_title} " if options[:title] == true && !value_title.blank?
-								result += "#{value_firstname} " if !value_firstname.blank?
-								result += value_lastname
+								result += "#{value_title.to_s} " if options[:title] == true && !value_title.blank?
+								result += "#{value_firstname.to_s} " if !value_firstname.blank?
+								result += value_lastname.to_s
 								return result
 							end
 						end
