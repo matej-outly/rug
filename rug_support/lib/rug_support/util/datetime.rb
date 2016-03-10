@@ -19,6 +19,13 @@ class DateTime
 	end
 
 	#
+	# Get number of minutes since midnight
+	#
+	def minutes_since_midnight
+		return (self.seconds_since_midnight.to_i / 60).floor
+	end
+
+	#
 	# Compose date and time into one datetime
 	#
 	def self.compose(date, time)

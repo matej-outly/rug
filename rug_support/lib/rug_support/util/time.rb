@@ -18,4 +18,11 @@ class Time
 		return (self.to_date - Date.new(self.year, 1, 1)).to_i
 	end
 
+	#
+	# Get number of minutes since midnight
+	#
+	def minutes_since_midnight
+		return (self.seconds_since_midnight.to_i / 60).floor
+	end
+
 end
