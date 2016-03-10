@@ -14,8 +14,10 @@ module RugBuilder
 
 		def dropzone_row(name, options = {})
 			
-			if !self.options[:update_url] || (object.new_record? && !self.options[:create_url])
-				raise "Please define update and create URL."
+			update_url = self.options[:update_url] || options[:update_url]
+			create_url = self.options[:create_url] || options[:create_url]
+			if !update_url || (object.new_record? && !create_url)
+				raise "Please define update and create URL in form or row options."
 			end
 
 			# Preset
@@ -31,7 +33,7 @@ module RugBuilder
 			end
 
 			# Default URL and method
-			default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(self.options[:create_url]) : RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], object))
+			default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_url) : RugSupport::PathResolver.new(@template).resolve(update_url, object))
 			default_method = (object.new_record? ? "post" : "put")
 
 			# Unique hash
@@ -67,7 +69,7 @@ module RugBuilder
 			js += "		var response_id = parseInt(response);\n"
 			js += "		if (!isNaN(response_id)) {\n"
 			js += "			var form = $('##{self.options[:html][:id]}');\n"
-			js += "			var update_url = '#{RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], ":id")}'.replace(':id', response_id);\n"
+			js += "			var update_url = '#{RugSupport::PathResolver.new(@template).resolve(update_url, ":id")}'.replace(':id', response_id);\n"
 			js += "			if (form.attr('action') != update_url) {\n"
 			js += "				form.attr('action', update_url); /* Form */\n"
 			js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');\n"
