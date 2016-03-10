@@ -80,12 +80,14 @@ module RugBuilder
 			js += "	if (jcrop_api) {\n"
 			js += "		jcrop_api.destroy();\n"
 			js += "	}\n"
+			js += "	var natural_width = img.get(0).naturalWidth;\n"
+			js += "	var natural_height = img.get(0).naturalHeight;\n"
 			js += "	img.Jcrop({\n"
-			js += "		trueSize: [img.get(0).naturalWidth, img.get(0).naturalHeight],\n"
+			js += "		trueSize: [natural_width, natural_height],\n"
 			js += "		onChange: crop_#{hash}_update_coords,\n"
 			js += "		onSelect: crop_#{hash}_update_coords,\n"
 			if already_cropped # TODO Dynamic from hidden inputs
-				js += "		setSelect: [#{crop_x}, #{crop_y}, #{crop_w}, #{crop_h}],\n"
+				js += "		setSelect: [#{(crop_x <= crop_w ? crop_x : crop_x + crop_w)}, #{(crop_y <= crop_h ? crop_y : crop_y + crop_h)}, #{crop_w}, #{crop_h}],\n" # crop_x+crop_w / crop_y+crop_h: Hack overriding bug in jCrop
 			else
 				js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
 			end
