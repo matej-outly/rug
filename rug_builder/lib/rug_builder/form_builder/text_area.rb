@@ -28,8 +28,10 @@ module RugBuilder
 			field_options = {}
 			klass = []
 			klass << options[:class] if !options[:class].nil?
-			if options[:disable_tinymce] == true
+			if options[:tinymce] == false
 				klass << "textarea input"
+			elsif !options[:tinymce].nil?
+				klass << options[:tinymce]
 			else
 				klass << "tinymce"
 			end
