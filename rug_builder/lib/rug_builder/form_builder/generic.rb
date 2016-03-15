@@ -17,7 +17,7 @@ module RugBuilder
 			# Special null cases
 			if options[:enable_null] == true
 				result = case type.to_sym
-					when :boolean then "radios_row(:#{name}, [OpenStruct.new(value: false, label: I18n.t(\"general.bool_no\")), OpenStruct.new(value: true, label: I18n.t(\"general.bool_yes\"))], :value, :label, enable_null: true)"
+					when :boolean then "radios_row(:#{name}, [OpenStruct.new(value: false, label: I18n.t(\"general.attribute.boolean.bool_no\")), OpenStruct.new(value: true, label: I18n.t(\"general.attribute.boolean.bool_yes\"))], :value, :label, enable_null: true)"
 					else nil
 				end
 			end
