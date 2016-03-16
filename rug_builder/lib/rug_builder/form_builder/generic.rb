@@ -36,6 +36,7 @@ module RugBuilder
 					when :picture then "dropzone_row(:#{name})" 
 					when :enum then "picker_row(:#{name})" 
 					when :belongs_to then "picker_row(:#{name}, #{!options[:collection].blank? ? options[:collection] : "nil"}, #{!options[:value_attr].blank? ? options[:value_attr] : ":value"}, #{!options[:label_attr].blank? ? options[:label_attr] : ":label"})"
+					when :has_many then "token_input_row(:#{name}, #{!options[:url].blank? ? '"' + options[:url] + '"' : "nil"}#{!options[:as].blank? ? ", as: " + options[:as] : ""}#{!options[:value_attr].blank? ? ", value_attr: " + options[:value_attr] : ""}#{!options[:label_attr].blank? ? ", label_attr: " + options[:label_attr] : ""})"
 					when :address then "address_row(:#{name})"
 					when :name then "name_row(:#{name})"
 					when :currency then "text_input_row(:#{name}, :number_field)"
