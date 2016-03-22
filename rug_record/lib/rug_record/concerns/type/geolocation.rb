@@ -41,21 +41,24 @@ module RugRecord
 								raise "Wrong value format, expecting Hash or nil."
 							end
 
-							# Check if address valeu part is present
+							# Check if address and level value part is present
 							has_address = self.respond_to?("#{column.to_s}_address")
+							has_level = self.respond_to?("#{column.to_s}_level")
 
 							# Filter and symbolize keys
-							value = value.symbolize_keys.select { |key, value| [:longitude, :latitude, :address].include?(key) } 
+							value = value.symbolize_keys.select { |key, value| [:longitude, :latitude, :address, :level].include?(key) } 
 							
 							# Store
 							if value.blank? || value[:latitude].blank? || value[:longitude].blank?
 								write_attribute("#{column.to_s}_latitude", nil)
 								write_attribute("#{column.to_s}_longitude", nil)
 								write_attribute("#{column.to_s}_address", nil) if has_address
+								write_attribute("#{column.to_s}_level", nil) if has_level
 							else
 								write_attribute("#{column.to_s}_latitude", value[:latitude])
 								write_attribute("#{column.to_s}_longitude", value[:longitude])
 								write_attribute("#{column.to_s}_address", value[:address]) if has_address
+								write_attribute("#{column.to_s}_level", value[:level]) if has_level
 							end
 						end
 
@@ -63,13 +66,15 @@ module RugRecord
 						define_method(new_column.to_sym) do
 							column = new_column
 
-							# Check if address valeu part is present
+							# Check if address and level value part is present
 							has_address = self.respond_to?("#{column.to_s}_address")
+							has_level = self.respond_to?("#{column.to_s}_level")
 							
 							# Get value parts
 							value_latitude = read_attribute("#{column.to_s}_latitude")
 							value_longitude = read_attribute("#{column.to_s}_longitude")
 							value_address = read_attribute("#{column.to_s}_address") if has_address
+							value_level = read_attribute("#{column.to_s}_level") if has_level
 							
 							# Form result
 							if value_latitude.blank? || value_longitude.blank?
@@ -77,6 +82,7 @@ module RugRecord
 							else
 								result = { latitude: value_latitude, longitude: value_longitude }
 								result[:address] = value_address if has_address
+								result[:level] = value_level if has_level
 								return result
 							end
 						end
