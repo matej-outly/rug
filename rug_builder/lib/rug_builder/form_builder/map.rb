@@ -394,24 +394,27 @@ module RugBuilder
 			value_level = value && value[:level] ? value[:level] : nil
 			value_address = value && value[:address] ? value[:address] : nil
 			
-			# Field options
+			# Address field options
+			field_options = {}
 			klass = []
 			klass << options[:class] if !options[:class].nil?
-			klass << "text input"
+			klass << "text input address"
+			field_options[:class] = klass.join(" ")
+			field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 
 			# Java Script
-			js = ""
+			#js = ""
 			
 			# TODO sofar must be done in application JS
 
-			result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
-			result += @template.javascript_tag(js)
+			#result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
+			#result += @template.javascript_tag(js)
 			
 			# Container
 			result += "<div id=\"address_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
 			
 			# Address input
-			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, class: klass.dup.concat(["address"]).join(" "))
+			result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)
 			
 			# Level input
 			result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")
