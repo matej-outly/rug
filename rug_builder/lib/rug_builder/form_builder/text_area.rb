@@ -43,7 +43,11 @@ module RugBuilder
 				localization = [nil]
 				is_localized = false
 			else
-				localization = options[:localization]
+				if options[:localization].is_a?(Array)
+					localization = options[:localization]
+				else
+					localization = I18n.available_locales
+				end
 				is_localized = true
 			end
 
