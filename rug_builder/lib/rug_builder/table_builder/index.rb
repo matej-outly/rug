@@ -117,7 +117,7 @@ module RugBuilder
 							result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
 						end
 					end
-					result += "<td class=\"standard action\">#{get_inline_edit_link(object, options)}</td>" if check_inline_edit(options)
+					result += "<td class=\"standard action\">#{get_inline_edit_link(object, options, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
 					result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
 					result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
 					result += "</tr>"
@@ -373,8 +373,10 @@ module RugBuilder
 				js += "		e.preventDefault();\n"
 				js += "		var row = $(this).closest('tr');\n"
 				js += "		row.find('a.inline-edit.edit').hide();\n"
+				js += "		row.find('a.inline-edit.edit').parent('.btn').hide();\n"
 				js += "		row.find('.inline-edit.value').hide();\n"
 				js += "		row.find('a.inline-edit.save').show();\n"
+				js += "		row.find('a.inline-edit.save').parent('.btn').show();\n"
 				js += "		row.find('.inline-edit.field').show();\n"
 				js += "	});\n"
 
@@ -396,8 +398,10 @@ module RugBuilder
 				js += "						$(this).html($(this).next().find('input').val());\n"
 				js += "					});\n"
 				js += "					row.find('a.inline-edit.save').hide();\n"
+				js += "					row.find('a.inline-edit.save').parent('.btn').hide();\n"
 				js += "					row.find('.inline-edit.field').hide();\n"
 				js += "					row.find('a.inline-edit.edit').show();\n"
+				js += "					row.find('a.inline-edit.edit').parent('.btn').show();\n"
 				js += "					row.find('.inline-edit.value').show();\n"
 				js += "				} else {\n"
 				js += "					for (var column in callback) {\n"
@@ -431,10 +435,33 @@ module RugBuilder
 			end
 		end
 
-		def get_inline_edit_link(object, options)
+		def get_inline_edit_link(object, options, link_options)
 			result = ""
-			result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + I18n.t("general.action.edit"), "#", class: "inline_edit edit")
-			result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + I18n.t("general.action.save"), RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline_edit save", style: "display: none;")
+			if !link_options[:label_edit].nil?
+				if link_options[:label_edit] != false
+					label_edit = link_options[:label_edit]
+				else
+					label_edit = ""
+				end
+			else
+				label_edit = I18n.t("general.action.edit")
+			end
+			if !link_options[:label_save].nil?
+				if link_options[:label_save] != false
+					label_save = link_options[:label_save]
+				else
+					label_save = ""
+				end
+			else
+				label_save = I18n.t("general.action.save")
+			end
+			if link_options[:disable_button] == true
+				result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + label_edit, "#", class: "inline-edit edit")
+				result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save", style: "display: none;")
+			else
+				result += "<div class=\"medium primary btn icon-left entypo icon-pencil\">#{@template.link_to(label_edit, "#", class: "inline-edit edit")}</div>"
+				result += "<div class=\"medium primary btn icon-left entypo icon-check\" style=\"display: none;\">#{@template.link_to(label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save", style: "display: none;")}</div>"
+			end
 			return result
 		end
 
