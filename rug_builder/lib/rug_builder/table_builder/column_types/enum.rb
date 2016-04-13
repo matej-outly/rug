@@ -68,9 +68,9 @@ module RugBuilder
 
 				# Get value
 				if object.class.has_enum?(column)
-					value = object.send("#{column.to_s}_obj".to_sym)
-					value = value.value
-					label = value.label
+					value_obj = object.send("#{column.to_s}_obj".to_sym)
+					value = value_obj.value
+					label = value_obj.label
 					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}")
 					icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}")
 					return "" if value.blank?
