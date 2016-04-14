@@ -46,25 +46,25 @@ module RugRecord
 							
 							# Store
 							if value.blank? || value[:top].blank? || value[:bottom].blank? || value[:left].blank? || value[:right].blank?
-								write_attribute("#{column.to_s}_top", nil)
-								write_attribute("#{column.to_s}_bottom", nil)
-								write_attribute("#{column.to_s}_left", nil)
-								write_attribute("#{column.to_s}_right", nil)
+								self.send("#{column.to_s}_top=", nil)
+								self.send("#{column.to_s}_bottom=", nil)
+								self.send("#{column.to_s}_left=", nil)
+								self.send("#{column.to_s}_right=", nil)
 							else
-								write_attribute("#{column.to_s}_top", value[:top])
-								write_attribute("#{column.to_s}_bottom", value[:bottom])
-								write_attribute("#{column.to_s}_left", value[:left])
-								write_attribute("#{column.to_s}_right", value[:right])
+								self.send("#{column.to_s}_top=", value[:top])
+								self.send("#{column.to_s}_bottom=", value[:bottom])
+								self.send("#{column.to_s}_left=", value[:left])
+								self.send("#{column.to_s}_right=", value[:right])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value_top = read_attribute("#{column.to_s}_top")
-							value_bottom = read_attribute("#{column.to_s}_bottom")
-							value_left = read_attribute("#{column.to_s}_left")
-							value_right = read_attribute("#{column.to_s}_right")
+							value_top = self.send("#{column.to_s}_top")
+							value_bottom = self.send("#{column.to_s}_bottom")
+							value_left = self.send("#{column.to_s}_left")
+							value_right = self.send("#{column.to_s}_right")
 							if value_top.blank? || value_bottom.blank? || value_left.blank? || value_right.blank?
 								return nil
 							else
@@ -75,10 +75,10 @@ module RugRecord
 						# Get method
 						define_method((new_column.to_s + "_formated").to_sym) do
 							column = new_column
-							value_top = read_attribute("#{column.to_s}_top")
-							value_bottom = read_attribute("#{column.to_s}_bottom")
-							value_left = read_attribute("#{column.to_s}_left")
-							value_right = read_attribute("#{column.to_s}_right")
+							value_top = self.send("#{column.to_s}_top")
+							value_bottom = self.send("#{column.to_s}_bottom")
+							value_left = self.send("#{column.to_s}_left")
+							value_right = self.send("#{column.to_s}_right")
 							if value_top.blank? || value_bottom.blank? || value_left.blank? || value_right.blank?
 								return nil
 							else
@@ -161,10 +161,10 @@ module RugRecord
 							end
 
 							# Read values
-							value_top = read_attribute("#{column.to_s}_top")
-							value_bottom = read_attribute("#{column.to_s}_bottom")
-							value_left = read_attribute("#{column.to_s}_left")
-							value_right = read_attribute("#{column.to_s}_right")
+							value_top = self.send("#{column.to_s}_top")
+							value_bottom = self.send("#{column.to_s}_bottom")
+							value_left = self.send("#{column.to_s}_left")
+							value_right = self.send("#{column.to_s}_right")
 
 							# Perform check
 							return (left <= value_right) && (right >= value_left) && (bottom <= value_top) && (top >= value_bottom)

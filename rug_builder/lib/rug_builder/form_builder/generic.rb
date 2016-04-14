@@ -40,7 +40,8 @@ module RugBuilder
 					when :address then "address_row(:#{name})"
 					when :name then "name_row(:#{name})"
 					when :currency then "text_input_row(:#{name}, :number_field)"
-					when :range then "range_row(:#{name})"
+					when :integer_range then "range_row(:#{name})"
+					when :double_range then "range_row(:#{name}, :text_field)"
 					when :string_array then "checkboxes_row(:#{name})"
 					else "text_input_row(:#{name})"
 				end

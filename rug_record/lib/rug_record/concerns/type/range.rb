@@ -46,19 +46,19 @@ module RugRecord
 							
 							# Store
 							if value.blank?
-								write_attribute("#{column.to_s}_min", nil)
-								write_attribute("#{column.to_s}_max", nil)
+								self.send("#{column.to_s}_min=", nil)
+								self.send("#{column.to_s}_max=", nil)
 							else
-								write_attribute("#{column.to_s}_min", value[:min])
-								write_attribute("#{column.to_s}_max", value[:max])
+								self.send("#{column.to_s}_min=", value[:min])
+								self.send("#{column.to_s}_max=", value[:max])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value_min = read_attribute("#{column.to_s}_min")
-							value_max = read_attribute("#{column.to_s}_max")
+							value_min = self.send("#{column.to_s}_min")
+							value_max = self.send("#{column.to_s}_max")
 							if value_min.blank? && value_max.blank?
 								return nil
 							else
@@ -69,8 +69,8 @@ module RugRecord
 						# Get method
 						define_method((new_column.to_s + "_formatted").to_sym) do
 							column = new_column
-							value_min = read_attribute("#{column.to_s}_min")
-							value_max = read_attribute("#{column.to_s}_max")
+							value_min = self.send("#{column.to_s}_min")
+							value_max = self.send("#{column.to_s}_max")
 							if value_min.blank? && value_max.blank?
 								return nil
 							elsif value_min.blank?

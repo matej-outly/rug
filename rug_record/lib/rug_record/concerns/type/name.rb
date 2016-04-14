@@ -47,13 +47,13 @@ module RugRecord
 							
 							# Store
 							if value.blank?
-								write_attribute("#{column.to_s}_title", nil) if options[:title] == true
-								write_attribute("#{column.to_s}_firstname", nil)
-								write_attribute("#{column.to_s}_lastname", nil)
+								self.send("#{column.to_s}_title=", nil) if options[:title] == true
+								self.send("#{column.to_s}_firstname=", nil)
+								self.send("#{column.to_s}_lastname=", nil)
 							else
-								write_attribute("#{column.to_s}_title", value[:title]) if options[:title] == true
-								write_attribute("#{column.to_s}_firstname", value[:firstname])
-								write_attribute("#{column.to_s}_lastname", value[:lastname])
+								self.send("#{column.to_s}_title=", value[:title]) if options[:title] == true
+								self.send("#{column.to_s}_firstname=", value[:firstname])
+								self.send("#{column.to_s}_lastname=", value[:lastname])
 							end
 						end
 
@@ -61,9 +61,9 @@ module RugRecord
 						define_method(new_column.to_sym) do
 							column = new_column
 							options = new_options
-							value_title = read_attribute("#{column.to_s}_title") if options[:title] == true
-							value_firstname = read_attribute("#{column.to_s}_firstname")
-							value_lastname = read_attribute("#{column.to_s}_lastname")
+							value_title = self.send("#{column.to_s}_title") if options[:title] == true
+							value_firstname = self.send("#{column.to_s}_firstname")
+							value_lastname = self.send("#{column.to_s}_lastname")
 							if value_firstname.blank? && value_lastname.blank?
 								return nil
 							else
@@ -80,9 +80,9 @@ module RugRecord
 						define_method((new_column.to_s + "_formatted").to_sym) do
 							column = new_column
 							options = new_options
-							value_title = read_attribute("#{column.to_s}_title") if options[:title] == true
-							value_firstname = read_attribute("#{column.to_s}_firstname")
-							value_lastname = read_attribute("#{column.to_s}_lastname")
+							value_title = self.send("#{column.to_s}_title") if options[:title] == true
+							value_firstname = self.send("#{column.to_s}_firstname")
+							value_lastname = self.send("#{column.to_s}_lastname")
 							if value_firstname.blank? && value_lastname.blank?
 								return nil
 							else

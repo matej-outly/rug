@@ -46,25 +46,25 @@ module RugRecord
 							
 							# Store
 							if value.blank?
-								write_attribute("#{column.to_s}_street", nil)
-								write_attribute("#{column.to_s}_number", nil)
-								write_attribute("#{column.to_s}_postcode", nil)
-								write_attribute("#{column.to_s}_city", nil)
+								self.send("#{column.to_s}_street=", nil)
+								self.send("#{column.to_s}_number=", nil)
+								self.send("#{column.to_s}_postcode=", nil)
+								self.send("#{column.to_s}_city=", nil)
 							else
-								write_attribute("#{column.to_s}_street", value[:street])
-								write_attribute("#{column.to_s}_number", value[:number])
-								write_attribute("#{column.to_s}_postcode", value[:postcode])
-								write_attribute("#{column.to_s}_city", value[:city])
+								self.send("#{column.to_s}_street=", value[:street])
+								self.send("#{column.to_s}_number=", value[:number])
+								self.send("#{column.to_s}_postcode=", value[:postcode])
+								self.send("#{column.to_s}_city=", value[:city])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value_street = read_attribute("#{column.to_s}_street")
-							value_number = read_attribute("#{column.to_s}_number")
-							value_postcode = read_attribute("#{column.to_s}_postcode")
-							value_city = read_attribute("#{column.to_s}_city")
+							value_street = self.send("#{column.to_s}_street")
+							value_number = self.send("#{column.to_s}_number")
+							value_postcode = self.send("#{column.to_s}_postcode")
+							value_city = self.send("#{column.to_s}_city")
 							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
 								return nil
 							else
@@ -75,10 +75,10 @@ module RugRecord
 						# Get method
 						define_method((new_column.to_s + "_formatted").to_sym) do
 							column = new_column
-							value_street = read_attribute("#{column.to_s}_street")
-							value_number = read_attribute("#{column.to_s}_number")
-							value_postcode = read_attribute("#{column.to_s}_postcode")
-							value_city = read_attribute("#{column.to_s}_city")
+							value_street = self.send("#{column.to_s}_street")
+							value_number = self.send("#{column.to_s}_number")
+							value_postcode = self.send("#{column.to_s}_postcode")
+							value_city = self.send("#{column.to_s}_city")
 							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
 								return nil
 							else

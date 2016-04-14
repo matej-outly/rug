@@ -49,11 +49,11 @@ module RugRecord
 							
 							# Store
 							if value.blank?
-								write_attribute("#{column.to_s}_points", nil)
-								write_attribute("#{column.to_s}_top", nil)
-								write_attribute("#{column.to_s}_bottom", nil)
-								write_attribute("#{column.to_s}_left", nil)
-								write_attribute("#{column.to_s}_right", nil)
+								self.send("#{column.to_s}_points=", nil)
+								self.send("#{column.to_s}_top=", nil)
+								self.send("#{column.to_s}_bottom=", nil)
+								self.send("#{column.to_s}_left=", nil)
+								self.send("#{column.to_s}_right=", nil)
 							else
 								
 								# Iterate input, check format and retrieve wrapping rectangle
@@ -84,18 +84,18 @@ module RugRecord
 								end
 
 								# Write attributes
-								write_attribute("#{column.to_s}_points", points.to_json)
-								write_attribute("#{column.to_s}_top", top)
-								write_attribute("#{column.to_s}_bottom", bottom)
-								write_attribute("#{column.to_s}_left", left)
-								write_attribute("#{column.to_s}_right", right)
+								self.send("#{column.to_s}_points=", points.to_json)
+								self.send("#{column.to_s}_top=", top)
+								self.send("#{column.to_s}_bottom=", bottom)
+								self.send("#{column.to_s}_left=", left)
+								self.send("#{column.to_s}_right=", right)
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value = read_attribute("#{column.to_s}_points")
+							value = self.send("#{column.to_s}_points")
 							if value.blank?
 								return nil
 							else
@@ -199,10 +199,10 @@ module RugRecord
 								end
 
 								# Read values
-								value_top = read_attribute("#{column.to_s}_top")
-								value_bottom = read_attribute("#{column.to_s}_bottom")
-								value_left = read_attribute("#{column.to_s}_left")
-								value_right = read_attribute("#{column.to_s}_right")
+								value_top = self.send("#{column.to_s}_top")
+								value_bottom = self.send("#{column.to_s}_bottom")
+								value_left = self.send("#{column.to_s}_left")
+								value_right = self.send("#{column.to_s}_right")
 
 								# Perform check
 								clipper = Clipper::Clipper.new

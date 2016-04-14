@@ -60,8 +60,8 @@ module RugRecord
 							before_create do
 								column = new_column
 								default = options[:default]
-								if read_attribute(column.to_sym).nil?
-									write_attribute(column.to_sym, default.to_s)
+								if self.send(column).nil?
+									self.send(column.to_s + "=", default.to_s)
 								end
 							end
 						end

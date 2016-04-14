@@ -16,7 +16,7 @@ module RugBuilder
 		protected
 
 			# *********************************************************************
-			# Enum
+			# Generic range
 			# *********************************************************************
 
 			def validate_range_options(column_spec)
@@ -24,6 +24,40 @@ module RugBuilder
 			end
 			
 			def render_range(column, object)
+				value = object.send(column.to_s)
+				if !value.nil?
+					return value[:formatted]
+				else
+					return ""
+				end
+			end
+
+			# *********************************************************************
+			# Integer range
+			# *********************************************************************
+
+			def validate_integer_range_options(column_spec)
+				return true
+			end
+			
+			def render_integer_range(column, object)
+				value = object.send(column.to_s)
+				if !value.nil?
+					return value[:formatted]
+				else
+					return ""
+				end
+			end
+
+			# *********************************************************************
+			# Double range
+			# *********************************************************************
+
+			def validate_double_range_options(column_spec)
+				return true
+			end
+			
+			def render_double_range(column, object)
 				value = object.send(column.to_s)
 				if !value.nil?
 					return value[:formatted]

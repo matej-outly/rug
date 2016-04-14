@@ -50,15 +50,15 @@ module RugRecord
 							
 							# Store
 							if value.blank? || value[:latitude].blank? || value[:longitude].blank?
-								write_attribute("#{column.to_s}_latitude", nil)
-								write_attribute("#{column.to_s}_longitude", nil)
-								write_attribute("#{column.to_s}_address", nil) if has_address
-								write_attribute("#{column.to_s}_level", nil) if has_level
+								self.send("#{column.to_s}_latitude=", nil)
+								self.send("#{column.to_s}_longitude=", nil)
+								self.send("#{column.to_s}_address=", nil) if has_address
+								self.send("#{column.to_s}_level=", nil) if has_level
 							else
-								write_attribute("#{column.to_s}_latitude", value[:latitude])
-								write_attribute("#{column.to_s}_longitude", value[:longitude])
-								write_attribute("#{column.to_s}_address", value[:address]) if has_address
-								write_attribute("#{column.to_s}_level", value[:level]) if has_level
+								self.send("#{column.to_s}_latitude=", value[:latitude])
+								self.send("#{column.to_s}_longitude=", value[:longitude])
+								self.send("#{column.to_s}_address=", value[:address]) if has_address
+								self.send("#{column.to_s}_level=", value[:level]) if has_level
 							end
 						end
 
@@ -71,10 +71,10 @@ module RugRecord
 							has_level = self.respond_to?("#{column.to_s}_level")
 							
 							# Get value parts
-							value_latitude = read_attribute("#{column.to_s}_latitude")
-							value_longitude = read_attribute("#{column.to_s}_longitude")
-							value_address = read_attribute("#{column.to_s}_address") if has_address
-							value_level = read_attribute("#{column.to_s}_level") if has_level
+							value_latitude = self.send("#{column.to_s}_latitude")
+							value_longitude = self.send("#{column.to_s}_longitude")
+							value_address = self.send("#{column.to_s}_address") if has_address
+							value_level = self.send("#{column.to_s}_level") if has_level
 							
 							# Form result
 							if value_latitude.blank? || value_longitude.blank?

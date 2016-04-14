@@ -35,7 +35,7 @@ module RugRecord
 							value += (!new_hours.nil? ? new_hours.to_i.hours : current_hours.hours)
 							value += (!new_minutes.nil? ? new_minutes.to_i.minutes : current_minutes.minutes)
 							value += (!new_seconds.nil? ? new_seconds.to_i.seconds : current_seconds.seconds)
-							write_attribute(column.to_s, value)
+							self.send(column.to_s + "=", value)
 						end
 
 						# Days set method
