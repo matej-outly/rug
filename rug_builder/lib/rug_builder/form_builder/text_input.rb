@@ -37,7 +37,7 @@ module RugBuilder
 			field_options[:max] = options[:max] if !options[:max].nil?
 			
 			# Localization
-			if options[:localization].nil?
+			if options[:localization].nil? || options[:localization] == false
 				localization = [nil]
 				is_localized = false
 			else
