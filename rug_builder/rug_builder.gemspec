@@ -17,6 +17,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "actionview", "~> 4.2"
-  spec.add_dependency "truncate_html", "~> 0.9"
-  spec.add_dependency "kaminari", "~> 0.16"
+  spec.add_dependency "rug_support", version
 end

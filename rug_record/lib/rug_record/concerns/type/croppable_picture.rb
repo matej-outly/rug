@@ -10,6 +10,7 @@
 # *****************************************************************************
 
 require "active_record"
+require "rug_record/concerns/type/croppable_picture/cropper"
 
 module RugRecord
 	module Concerns

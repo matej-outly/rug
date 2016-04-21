@@ -9,30 +9,143 @@
 # *
 # *****************************************************************************
 
-# Basic
-require "rug_record/config"
-require "rug_record/cropper"
+# Railtie
+require 'rug_record/railtie' if defined?(Rails)
 
-# Type extensions (concerns)
-require "rug_record/concerns/type/address"
-require "rug_record/concerns/type/array"
-require "rug_record/concerns/type/enum"
-require "rug_record/concerns/type/croppable_picture"
-require "rug_record/concerns/type/duration"
-require "rug_record/concerns/type/geolocation"
-require "rug_record/concerns/type/georectangle"
-require "rug_record/concerns/type/geopolygon"
-require "rug_record/concerns/type/name"
-require "rug_record/concerns/type/range"
-require "rug_record/concerns/type/state"
+module RugRecord
 
-# Concerns
-require "rug_record/concerns/config"
-require "rug_record/concerns/hierarchical_ordering"
-#require "rug_record/concerns/identification"
-require "rug_record/concerns/json"
-require "rug_record/concerns/localization"
-require "rug_record/concerns/ordering"
-require "rug_record/concerns/remote_model"
-require "rug_record/concerns/sorting"
+	# *************************************************************************
+	# Configuration
+	# *************************************************************************
 
+	#
+	# Default way to setup module
+	#
+	def self.setup
+		yield self
+	end
+
+	# *************************************************************************
+	# Config options
+	# *************************************************************************
+
+	#
+	# Enable config
+	#
+	mattr_accessor :enable_config
+	@@enable_config = true
+
+	#
+	# Enable hierarchical ordering
+	#
+	# Use gem awesome_nested_set ~> 3.0 if enabled
+	#
+	mattr_accessor :enable_hierarchical_ordering
+	@@enable_hierarchical_ordering = false
+
+	#
+	# Enable json
+	#
+	mattr_accessor :enable_json
+	@@enable_json = true
+
+	#
+	# Enable localization
+	#
+	mattr_accessor :enable_localization
+	@@enable_localization = true
+
+	#
+	# Enable ordering
+	#
+	# Use gem ordered-active-record ~> 0.9 if enabled
+	#
+	mattr_accessor :enable_ordering
+	@@enable_ordering = false
+
+	#
+	# Enable remote model
+	#
+	mattr_accessor :enable_remote_model
+	@@enable_remote_model = true
+
+	#
+	# Enable sorting
+	#
+	mattr_accessor :enable_sorting
+	@@enable_sorting = true
+
+	#
+	# Enable type address
+	#
+	mattr_accessor :enable_type_address
+	@@enable_type_address = true
+
+	#
+	# Enable type array
+	#
+	mattr_accessor :enable_type_array
+	@@enable_type_array = true
+
+	#
+	# Enable type croppable picture
+	#
+	# Use gem paperclip ~> 4.2 if enabled
+	#
+	mattr_accessor :enable_type_croppable_picture
+	@@enable_type_croppable_picture = false
+
+	#
+	# Enable type duration
+	#
+	mattr_accessor :enable_type_duration
+	@@enable_type_duration = true
+
+	#
+	# Enable type enum
+	#
+	mattr_accessor :enable_type_enum
+	@@enable_type_enum = true
+
+	#
+	# Enable type geolocation
+	#
+	mattr_accessor :enable_type_geolocation
+	@@enable_type_geolocation = true
+
+	#
+	# Enable type geopolygon
+	#
+	# Use gems
+	#  - geometry ~> 6.5
+	#  - clipper ~> 2.9
+	# if enabled
+	#
+	mattr_accessor :enable_type_geopolygon
+	@@enable_type_geopolygon = false
+
+	#
+	# Enable type georectangle
+	#
+	mattr_accessor :enable_type_georectangle
+	@@enable_type_georectangle = true
+
+	#
+	# Enable type name
+	#
+	mattr_accessor :enable_type_name
+	@@enable_type_name = true
+
+	#
+	# Enable type range
+	#
+	mattr_accessor :enable_type_range
+	@@enable_type_range = true
+
+	#
+	# Enable type state
+	#
+	mattr_accessor :enable_type_state
+	@@enable_type_state = true
+
+end

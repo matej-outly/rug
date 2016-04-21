@@ -10,6 +10,7 @@
 # *****************************************************************************
 
 require "active_record"
+require "rug_record/config"
 
 module RugRecord
 	module Concerns

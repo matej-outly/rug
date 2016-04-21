@@ -17,14 +17,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activerecord", "~> 4.2"
-  spec.add_dependency "activerecord-tableless", "~> 1.3" # Full-featured models without database
-  spec.add_dependency "ordered-active-record", "~> 0.9" # Linear ordering of models
-  spec.add_dependency "awesome_nested_set", "~> 3.0" # Hierarchical ordering of models
-  spec.add_dependency "paperclip", "~> 4.2" # File attachments
-  spec.add_dependency "queue_classic", "~> 3.0" # Queue Classic
-  spec.add_dependency "geometry", "~> 6.5" # Basic 2D geometry
-  spec.add_dependency "clipper", "~> 2.9" # Polygon clipping library
-  
   spec.add_dependency "rug_support", version
-
 end
