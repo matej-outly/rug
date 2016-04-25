@@ -9,10 +9,24 @@
 # *
 # *****************************************************************************
 
+puts "RECORD LOAD"
+
 module RugRecord
 	class Railtie < Rails::Railtie
-		config.after_initialize do
+
+		config.before_initialize do
 			
+			# There is no hook after initializers loading and before routes 
+			# loading (RugRecord must be completely initialized for routes 
+			# loading). Therefore we need to use this hook before initializers
+			# are loaded and force a special rug_record.rb initializer to be 
+			# included in advance (we expect that this initializer defines 
+			# which RugRecord submodules should be loaded).
+			config_path = Rails.root.to_s + "/config/initializers/rug_record.rb"
+			if File.file?(config_path)
+				require config_path
+			end
+
 			# Concerns
 			require "rug_record/concerns/config" if RugRecord.enable_config
 			require "rug_record/concerns/hierarchical_ordering"if RugRecord.enable_hierarchical_ordering
@@ -36,5 +50,6 @@ module RugRecord
 			require "rug_record/concerns/type/state" if RugRecord.enable_type_state
 
 		end
+
 	end
 end
