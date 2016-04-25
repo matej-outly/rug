@@ -9,8 +9,6 @@
 # *
 # *****************************************************************************
 
-puts "RECORD LOAD"
-
 module RugRecord
 	class Railtie < Rails::Railtie
 
