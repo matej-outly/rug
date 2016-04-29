@@ -66,7 +66,11 @@ module RugBuilder
 
 			def render_integer(column, object)
 				value = object.send(column)
-				return value.to_i.to_s
+				if value.nil?
+					return ""
+				else
+					return value.to_i.to_s
+				end
 			end
 
 			# *********************************************************************
@@ -86,6 +90,30 @@ module RugBuilder
 				value = object.send(column)
 				return @template.number_to_currency(value, locale: locale)
 			end
+
+			# *********************************************************************
+			# URL
+			# *********************************************************************
+
+			def validate_url_options(column_spec)
+				return true
+			end
+
+			def render_url(column, object)
+				url = object.send(column).to_s
+				if @columns[column][:label]
+					label = @columns[column][:label]
+				else
+					label = url
+				end
+				if @columns[column][:target]
+					target = @columns[column][:target]
+				else
+					target = "_self"
+				end
+				return @template.link_to(label, url, target: target)
+			end
+
 
 		end
 	end
