@@ -88,8 +88,43 @@ module RugRecord
 
 					end
 
-				end
+					#
+					# Parse address
+					#
+					def parse_address(address)
+						country = nil
+						city = nil
+						street = nil
+						number = nil
+						address_parts = address.to_s.split(",").map { |i| i.trim(" ") }
+						if address_parts.length >= 1
+							country = address_parts.pop
+						end
+						if address_parts.length >= 1
+							city = address_parts.pop
+						end
+						if address_parts.length >= 1
+							street = address_parts.join(", ")
+							street_parts = street.split(" ")
+							street_parts.reverse_each_with_index do |street_part, idx|
+								if /\d/.match(street_parts[idx][0])
+									number = street_part
+									if number[number.length-1] == ","
+										if idx > 0
+											street_parts[idx-1] += ",";
+										end
+										number = number.trim(",");
+									end
+									street_parts.delete_at(idx)
+									break
+								end
+							end
+							street = street_parts.join(" ")
+						end
+						return [country, city, street, number]
+					end
 
+				end
 			end
 		end
 	end

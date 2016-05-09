@@ -38,7 +38,7 @@ module RugRecord
 	#
 	# Enable hierarchical ordering
 	#
-	# Use gem awesome_nested_set ~> 3.0 if enabled
+	# Use gem 'awesome_nested_set', '~> 3.0' if enabled
 	#
 	mattr_accessor :enable_hierarchical_ordering
 	@@enable_hierarchical_ordering = false
@@ -58,7 +58,7 @@ module RugRecord
 	#
 	# Enable ordering
 	#
-	# Use gem ordered-active-record ~> 0.9 if enabled
+	# Use gem 'ordered-active-record', '~> 0.9' if enabled
 	#
 	mattr_accessor :enable_ordering
 	@@enable_ordering = false
@@ -90,7 +90,7 @@ module RugRecord
 	#
 	# Enable type croppable picture
 	#
-	# Use gem paperclip ~> 4.2 if enabled
+	# Use gem 'paperclip', '~> 4.2' if enabled
 	#
 	mattr_accessor :enable_type_croppable_picture
 	@@enable_type_croppable_picture = false
@@ -117,8 +117,8 @@ module RugRecord
 	# Enable type geopolygon
 	#
 	# Use gems
-	#  - geometry ~> 6.5
-	#  - clipper ~> 2.9
+	#  - gem 'geometry', '~> 6.5'
+	#  - gem 'clipper', '~> 2.9'
 	# if enabled
 	#
 	mattr_accessor :enable_type_geopolygon
