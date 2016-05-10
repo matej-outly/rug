@@ -31,15 +31,30 @@ module RugRecord
 
 						# Fill out internal structure
 						spec.each do |item|
+							
+							# Value check
 							if !item.is_a? Hash
-								item = { value: item.to_s }
+								item = { value: item }
 							end
 							if !item[:value]
 								raise "Enum definition cannot be empty."
 							end
-							if !item[:label]
-								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{item[:value]}")
+
+							# Identify special type
+							special_type = nil
+							if item[:value].is_a?(Integer)
+								special_type = "integer"
 							end
+
+							# Retype to string
+							item[:value] = item[:value].to_s
+							
+							# Label
+							if !item[:label]
+								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{special_type ? special_type + "_" : ""}#{item[:value]}")
+							end
+
+							# Store
 							@enums[new_column][item[:value].to_s] = OpenStruct.new(item)
 						end
 
