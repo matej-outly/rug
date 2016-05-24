@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rug_support", version
   spec.add_dependency "rug_record", version
-  spec.add_dependency "rug_builder", version
+  #spec.add_dependency "rug_builder", version
 
 end

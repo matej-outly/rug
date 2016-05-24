@@ -1,0 +1,5 @@
+Description:
+    Configure Rails application to RIC.
+
+Example:
+    rails generate ric:configure app_name (i.e. domain.com.www)
