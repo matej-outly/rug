@@ -60,17 +60,6 @@ module RugRecord
 							end
 						end
 
-						# Get method
-						define_method((new_column.to_s + "_formatted").to_sym) do
-							column = new_column
-							value = send(column.to_sym)
-							if value.blank?
-								return nil
-							else
-								return value.join(", ")
-							end
-						end
-
 					end
 
 				end

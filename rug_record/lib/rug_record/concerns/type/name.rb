@@ -71,25 +71,6 @@ module RugRecord
 								result[:title] = value_title if options[:title] == true
 								result[:firstname] = value_firstname
 								result[:lastname] = value_lastname
-								result[:formatted] = self.send((column.to_s + "_formatted").to_sym)
-								return result
-							end
-						end
-
-						# Get method
-						define_method((new_column.to_s + "_formatted").to_sym) do
-							column = new_column
-							options = new_options
-							value_title = self.send("#{column.to_s}_title") if options[:title] == true
-							value_firstname = self.send("#{column.to_s}_firstname")
-							value_lastname = self.send("#{column.to_s}_lastname")
-							if value_firstname.blank? && value_lastname.blank?
-								return nil
-							else
-								result = ""
-								result += "#{value_title.to_s} " if options[:title] == true && !value_title.blank?
-								result += "#{value_firstname.to_s} " if !value_firstname.blank?
-								result += value_lastname.to_s
 								return result
 							end
 						end

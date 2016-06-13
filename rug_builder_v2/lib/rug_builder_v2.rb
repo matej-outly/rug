@@ -9,11 +9,34 @@
 # *
 # *****************************************************************************
 
-# Builders
-require "rug_builder/form_builder"
-require "rug_builder/map_builder"
-require "rug_builder/menu_builder"
-require "rug_builder/table_builder"
+# Common parts
+require "rug_builder/columns"
+require "rug_builder/formatter"
 
 # Railtie
 require 'rug_builder/railtie' if defined?(Rails)
+
+module RugBuilder
+
+	# *************************************************************************
+	# Configuration
+	# *************************************************************************
+
+	#
+	# Default way to setup module
+	#
+	def self.setup
+		yield self
+	end
+
+	# *************************************************************************
+	# Config options
+	# *************************************************************************
+
+	#
+	# Frontend framework
+	#
+	mattr_accessor :frontend_framework
+	@@frontend_framework = "bootstrap"
+
+end

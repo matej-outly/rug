@@ -62,23 +62,7 @@ module RugRecord
 							if value_min.blank? && value_max.blank?
 								return nil
 							else
-								return { min: value_min, max: value_max, formatted: self.send((column.to_s + "_formatted").to_sym) }
-							end
-						end
-
-						# Get method
-						define_method((new_column.to_s + "_formatted").to_sym) do
-							column = new_column
-							value_min = self.send("#{column.to_s}_min")
-							value_max = self.send("#{column.to_s}_max")
-							if value_min.blank? && value_max.blank?
-								return nil
-							elsif value_min.blank?
-								return value_max
-							elsif value_max.blank?
-								return value_min
-							else
-								return "#{value_min} - #{value_max}"
+								return { min: value_min, max: value_max }
 							end
 						end
 
