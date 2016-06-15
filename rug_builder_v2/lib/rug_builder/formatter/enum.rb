@@ -94,13 +94,14 @@ module RugBuilder
 
 			# CSS classes
 			klass = []
-			klass << "default label"
+			klass << "label-default label"
 			klass << "state-#{value}"
 			klass << "color-#{color}" if format == :color || format == :color_icon
-			klass << "ttip" if options[:tooltip] == true
-
+			
 			# Render
-			result = "<div class=\"#{klass.join(" ")}\" #{@columns[column][:tooltip] == true ? "data-tooltip=\"" + label + "\"" : ""}>"
+			result = "<div class=\"#{klass.join(" ")}\""
+			result += " data-toggle=\"tooltip\" data-placement=\"top\" title=\"#{label}\"" if options[:tooltip] == true
+			result += ">"
 			result += "<i class=\"icon-#{icon}\"></i>"  if format == :icon || format == :color_icon
 			result += label if options[:tooltip] != true
 			result += "</div>"

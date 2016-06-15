@@ -23,6 +23,12 @@ module RugBuilder
 				value = value.to_s.gsub(" ", "&nbsp;").html_safe
 			end
 
+			# Truncate?
+			if !options[:truncate].nil? && options[:truncate] != false
+				truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
+				value = value.to_s.truncate(truncate_options)
+			end
+
 			return value.to_s
 		end
 
@@ -42,7 +48,8 @@ module RugBuilder
 
 			# Truncate?
 			if options[:truncate] != false
-				value = value.to_s.truncate
+				truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
+				value = value.to_s.truncate(truncate_options)
 			end
 
 			return value.html_safe

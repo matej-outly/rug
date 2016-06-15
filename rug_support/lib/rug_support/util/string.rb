@@ -101,8 +101,8 @@ class String
 	#
 	# Truncate
 	#
-	def truncate
-		return TruncateHtml::HtmlTruncator.new(TruncateHtml::HtmlString.new(self), {}).truncate
+	def truncate(options = {})
+		return TruncateHtml::HtmlTruncator.new(TruncateHtml::HtmlString.new(self), options).truncate
 	end
 
 	#

@@ -166,9 +166,16 @@ module RugBuilder
 			# *********************************************************************
 
 			def get_action_link(object, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(link_options[:path], object)
-				if url
-					return @template.link_to(self.format_icon(link_options[:icon]) + link_options[:label], url, class: "btn btn-xs btn-default")
+				if link_options[:show_if].nil? || link_options[:show_if].call(object) == true
+					url = RugSupport::PathResolver.new(@template).resolve(link_options[:path], object)
+					if url
+						link_tag_options = {}
+						link_tag_options[:class] = "btn btn-xs btn-default"
+						link_tag_options[:method] = link_options[:method] if link_options[:method]
+						return @template.link_to(self.format_icon(link_options[:icon]) + link_options[:label], url, link_tag_options)
+					else
+						return ""
+					end
 				else
 					return ""
 				end

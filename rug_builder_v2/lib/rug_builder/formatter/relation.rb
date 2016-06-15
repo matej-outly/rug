@@ -26,10 +26,19 @@ module RugBuilder
 				raise "Please, supply a label column."
 			end
 
+			# Get label
+			label = value.send(options[:label])
+
+			# Truncate?
+			if !options[:truncate].nil? && options[:truncate] != false
+				truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
+				label = label.to_s.truncate(truncate_options)
+			end
+
 			if options[:path]
-				return "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options[:path], value)}\">#{value.send(options[:label])}</a>"
+				return "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options[:path], value)}\">#{label}</a>"
 			else
-				return value.send(options[:label])
+				return label
 			end
 		end
 
@@ -62,10 +71,23 @@ module RugBuilder
 
 			# Get value and format it
 			if !collection.blank?
-				if options[:path]
-					arr = collection.map { |item| "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options, item)}\">#{item.send(options[:label])}</a>" }
-				else
-					arr = collection.map { |item| item.send(options[:label]) }
+				arr = []
+				collection.each do |item|
+
+					# Get label
+					label = item.send(options[:label])
+
+					# Truncate?
+					if !options[:truncate].nil? && options[:truncate] != false
+						truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
+						label = label.to_s.truncate(truncate_options)
+					end
+
+					if options[:path]
+						arr << "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options, item)}\">#{label}</a>"
+					else
+						arr << label
+					end
 				end
 				return arr.join(join_string)
 			else

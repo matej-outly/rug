@@ -18,6 +18,7 @@ module RugBuilder
 			#
 			# Options:
 			# - paths (hash) - Define paths to show, new, edit, inline_edit (update) and destroy actions
+			# - actions (hash) - Define custom actions as combination of path, method, icon, label and show_if condition
 			# - pagination (boolean) - Turn on pagination
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary
@@ -57,7 +58,7 @@ module RugBuilder
 					result += "<div class=\"panel panel-default\">" if show_panel
 
 					# Panel heading
-					result += "<div class=\"panel-heading text-right\">" if show_panel_heading
+					result += "<div class=\"panel-heading\">" if show_panel_heading
 
 					result += get_new_link(options) if check_new_link(options)
 
@@ -83,10 +84,8 @@ module RugBuilder
 						columns_count += 1
 					end
 					if options[:actions]
-						options[:actions].each do |action, action_spec|
-							result += "<th></th>"
-							columns_count += 1
-						end
+						result += "<th></th>"
+						columns_count += 1
 					end
 					if check_inline_edit(options)
 						result += "<th></th>"
@@ -130,9 +129,11 @@ module RugBuilder
 							result += "</td>"
 						end
 						if options[:actions]
+							result += "<td class=\"custom action\">"
 							options[:actions].each do |action, action_spec|
-								result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
+								result += get_action_link(object, action_spec)
 							end
+							result += "</td>"
 						end
 						result += "<td class=\"standard action\">#{get_inline_edit_link(object, options, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
 						result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
