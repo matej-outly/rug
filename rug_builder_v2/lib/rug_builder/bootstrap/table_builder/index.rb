@@ -19,6 +19,7 @@ module RugBuilder
 			# Options:
 			# - paths (hash) - Define paths to show, new, edit, inline_edit (update) and destroy actions
 			# - actions (hash) - Define custom actions as combination of path, method, icon, label and show_if condition
+			# - global_actions (hash) - Define custom global actions as combination of path, method, icon and label
 			# - pagination (boolean) - Turn on pagination
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary
@@ -50,9 +51,9 @@ module RugBuilder
 					end
 
 					# Show panel parts
-					show_panel_heading = check_new_link(options)
+					show_panel_heading = check_new_link(options) || options[:global_actions]
 					show_panel_footer = options[:pagination] == true || options[:summary] == true 
-					show_panel = show_panel_heading || show_panel_footer
+					show_panel = true#show_panel_heading || show_panel_footer
 					
 					# Panel
 					result += "<div class=\"panel panel-default\">" if show_panel
@@ -60,7 +61,15 @@ module RugBuilder
 					# Panel heading
 					result += "<div class=\"panel-heading\">" if show_panel_heading
 
-					result += get_new_link(options) if check_new_link(options)
+					# Global actions
+					if options[:global_actions]
+						options[:global_actions].each do |action, action_spec|
+							result += get_action_link(nil, action_spec, button_size: "sm")
+						end
+					end
+
+					# New action
+					result += get_new_link(options, button_size: "sm") if check_new_link(options)
 
 					# Panel heading
 					result += "</div>" if show_panel_heading

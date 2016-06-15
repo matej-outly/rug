@@ -21,7 +21,22 @@ module RugBuilder
 			# Blank?
 			return "" if value.blank?
 			
-			return value.label
+			# Object
+			if options[:object].nil?
+				raise "Please, supply object in options."
+			end
+			object = options[:object]
+
+			# Column
+			if options[:column].nil?
+				raise "Please, supply column in options."
+			end
+			column = options[:column]
+
+			# Get value
+			value_obj = object.send("#{column.to_s}_obj".to_sym)
+
+			return value_obj.label
 		end
 
 		# *********************************************************************

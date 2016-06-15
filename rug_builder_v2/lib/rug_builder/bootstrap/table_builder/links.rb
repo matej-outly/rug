@@ -60,7 +60,7 @@ module RugBuilder
 						link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
 					end
 					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-xs btn-danger"
+						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-danger"
 					end
 					return @template.link_to(self.format_icon("trash") + label, url, link_tag_options)
 				else
@@ -91,7 +91,7 @@ module RugBuilder
 					link_tag_options = {}
 					link_tag_options[:class] = "edit"
 					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-xs btn-primary"
+						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
 					return @template.link_to(self.format_icon("pencil") + label, url, link_tag_options)
 				else
@@ -122,7 +122,7 @@ module RugBuilder
 					link_tag_options = {}
 					link_tag_options[:class] = "new"
 					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-sm btn-primary"
+						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
 					return @template.link_to(self.format_icon("plus") + label, url, link_tag_options)
 				else
@@ -153,7 +153,7 @@ module RugBuilder
 					link_tag_options = {}
 					link_tag_options[:class] = "create"
 					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-xs btn-primary"
+						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
 					return @template.link_to(self.format_icon("plus") + label, url, link_tag_options)
 				else
@@ -165,14 +165,14 @@ module RugBuilder
 			# Common actions
 			# *********************************************************************
 
-			def get_action_link(object, link_options = {})
-				if link_options[:show_if].nil? || link_options[:show_if].call(object) == true
-					url = RugSupport::PathResolver.new(@template).resolve(link_options[:path], object)
+			def get_action_link(object, options, link_options = {})
+				if options[:show_if].nil? || options[:show_if].call(object) == true
+					url = RugSupport::PathResolver.new(@template).resolve(options[:path], object)
 					if url
 						link_tag_options = {}
-						link_tag_options[:class] = "btn btn-xs btn-default"
-						link_tag_options[:method] = link_options[:method] if link_options[:method]
-						return @template.link_to(self.format_icon(link_options[:icon]) + link_options[:label], url, link_tag_options)
+						link_tag_options[:class] = "btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-default"
+						link_tag_options[:method] = options[:method] if options[:method]
+						return @template.link_to(self.format_icon(options[:icon]) + options[:label], url, link_tag_options)
 					else
 						return ""
 					end
