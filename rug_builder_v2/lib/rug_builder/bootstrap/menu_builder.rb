@@ -42,8 +42,8 @@ module RugBuilder
 				icon = options.delete(:icon)
 				active = options.delete(:active)
 
-				result += "<li class=\"#{!icon.nil? ? ("icon-left icon-" + icon) : ""} #{active == true ? "active" : ""}\">"
-				result += @template.link_to(label, path, options)
+				result += "<li class=\"#{active == true ? "active" : ""}\">"
+				result += @template.link_to(self.format_icon(icon) + label, path, options)
 				result += "</li>"
 
 				return result.html_safe
@@ -212,6 +212,18 @@ module RugBuilder
 
 			def controller_path
 				return @template.controller.class.name.to_snake[0..-12]
+			end
+
+			# *********************************************************************
+			# Formatters
+			# *********************************************************************
+
+			def format_icon(icon)
+				if !icon.blank?
+					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span> ".html_safe
+				else
+					return ""
+				end
 			end
 
 		end

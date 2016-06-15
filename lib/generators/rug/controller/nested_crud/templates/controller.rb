@@ -48,7 +48,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 		@<%= model_1_name.to_snake.singularize %> = <%= model_1_path.to_camel.singularize %>.new(<%= model_1_name.to_snake.singularize %>_params)
 		if @<%= model_1_name.to_snake.singularize %>.save
 			respond_to do |format|
-				format.html { redirect_to <%= controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.create") }
+				format.html { redirect_to main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.create") }
 				format.json { render json: @<%= model_1_name.to_snake.singularize %>.id }
 			end
 		else
@@ -65,7 +65,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	def update
 		if @<%= model_1_name.to_snake %>.update(<%= model_1_name.to_snake.singularize %>_params)
 			respond_to do |format|
-				format.html { redirect_to <%= controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.update") }
+				format.html { redirect_to main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.update") }
 				format.json { render json: @<%= model_1_name.to_snake.singularize %>.id }
 			end
 		else
@@ -82,7 +82,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	def destroy
 		@<%= model_1_name.to_snake.singularize %>.destroy
 		respond_to do |format|
-			format.html { redirect_to <%= model_2_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.destroy") }
+			format.html { redirect_to main_app.<%= model_2_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.destroy") }
 			format.json { render json: @<%= model_1_name.to_snake.singularize %>.id }
 		end
 	end

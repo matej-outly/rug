@@ -32,7 +32,31 @@ module RugBuilder
 				field_options = {}
 				field_options[:class] = klass.join(" ")
 
-				return "<div class=\"form-group\">#{self.method(method).call(options[:label], field_options)}</div>".html_safe
+				return self.method(method).call(options[:label], field_options)
+			end
+
+			#
+			# Render link button
+			#
+			def link_button_row(label, url, options = {})
+
+				# CSS class
+				klass = []
+				klass << "btn btn-link"
+				klass << options[:class] if !options[:class].nil?
+				
+				# Field options
+				field_options = {}
+				field_options[:class] = klass.join(" ")
+
+				return @template.link_to(label, url, field_options)
+			end
+
+			#
+			# Render back link button
+			#
+			def back_link_button_row(options = {})
+				return self.link_button_row(I18n.t("general.back").upcase_first, :back)
 			end
 
 		end

@@ -10,6 +10,7 @@
 # *****************************************************************************
 
 # Parts
+require "rug_builder/bootstrap/table_builder/links"
 require "rug_builder/bootstrap/table_builder/show"
 require "rug_builder/bootstrap/table_builder/index"
 require "rug_builder/bootstrap/table_builder/editor"
@@ -25,7 +26,7 @@ module RugBuilder
 				@template = template
 			end
 
-		private
+		protected
 
 			def get_model_class(objects, options)
 				
@@ -84,108 +85,12 @@ module RugBuilder
 			end
 
 			# *********************************************************************
-			# Links
+			# Formatters
 			# *********************************************************************
 
-			def check_destroy_link(options)
-				return options[:paths] && options[:paths][:destroy]
-			end
-
-			def get_destroy_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:destroy], object)
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.destroy")
-				end
-				if url
-					if link_options[:disable_method_and_notification] == true
-						if link_options[:disable_button] == true
-							return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + label, url, class: "destroy")
-						else
-							return "<div class=\"medium danger btn icon-left entypo icon-trash\">#{@template.link_to(label, url, class: "destroy") }</div>"
-						end
-					else
-						if link_options[:disable_button] == true
-							return @template.link_to("<i class=\"icon-trash\"></i>".html_safe + label, url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } )
-						else
-							return "<div class=\"medium danger btn icon-left entypo icon-trash\">#{@template.link_to(label, url, method: :delete, class: "destroy", data: { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") } ) }</div>"
-						end
-					end
-				else
-					return ""
-				end
-			end
-			
-			def check_edit_link(options)
-				return options[:paths] && options[:paths][:edit]
-			end
-
-			def get_edit_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:edit], object)
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.edit")
-				end
-				if url
-					if link_options[:disable_button] == true
-						return @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + label, url, class: "edit")
-					else
-						return "<div class=\"medium primary btn icon-left entypo icon-pencil\">#{@template.link_to(label, url, class: "edit")}</div>"
-					end
-				else
-					return ""
-				end
-			end
-
-			def check_show_link(options)
-				return options[:paths] && options[:paths][:show]
-			end
-
-			def get_show_link(object, label, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:show], object)
-				if url
-					label = I18n.t("general.action.show") if label.blank?
-					if link_options[:disable_button] == true
-						return @template.link_to(label, url)
-					else
-						return "<div class=\"medium default btn icon-left entypo icon-search full-width\">#{@template.link_to(label, url)}</div>"
-					end
-				else
-					return label
-				end
-			end
-
-			def check_create_link(options)
-				return options[:paths] && options[:paths][:create]
-			end
-
-			def get_create_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:create])
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.bind")
-				end
-				if url
-					if link_options[:disable_button] == true
-						return @template.link_to("<i class=\"icon-plus\"></i>".html_safe + label, url, class: "create")
-					else
-						return "<div class=\"medium primary btn icon-left entypo icon-plus\">#{@template.link_to(label, url, class: "create")}</div>"
-					end
+			def format_icon(icon)
+				if !icon.blank?
+					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span> ".html_safe
 				else
 					return ""
 				end

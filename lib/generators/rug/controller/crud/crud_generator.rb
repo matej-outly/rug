@@ -36,6 +36,7 @@ module Rug
 				template("_form.html.erb", "app/views/#{controller_path.to_snake}/_form.html.erb")
 				template("_actions.html.erb", "app/views/#{controller_path.to_snake}/_actions.html.erb")
 				template("_related.html.erb", "app/views/#{controller_path.to_snake}/_related.html.erb")
+				template("_filters.html.erb", "app/views/#{controller_path.to_snake}/_filters.html.erb")
 			end
 
 		private

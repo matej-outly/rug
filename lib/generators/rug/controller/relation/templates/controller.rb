@@ -26,7 +26,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	#
 	def update
 		@<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.singularize %>_ids = <%= model_2_name.to_snake.singularize %>_ids_from_params
-		redirect_to <%= model_1_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.bind_<%= model_2_name.to_snake.singularize %>")
+		redirect_to main_app.<%= model_1_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.bind_<%= model_2_name.to_snake.singularize %>")
 	end
 
 	#
@@ -34,7 +34,7 @@ class <%= controller_path.to_camel %>Controller < ApplicationController
 	#
 	def destroy
 		@<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.pluralize %>.delete(@<%= model_2_name.to_snake.singularize %>)
-		redirect_to <%= model_1_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.unbind_<%= model_2_name.to_snake.singularize %>")
+		redirect_to main_app.<%= model_1_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>), notice: I18n.t("activerecord.notices.models.<%= model_1_name.to_snake.singularize %>.unbind_<%= model_2_name.to_snake.singularize %>")
 	end
 
 protected

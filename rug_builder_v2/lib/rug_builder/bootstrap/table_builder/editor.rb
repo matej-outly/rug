@@ -39,7 +39,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table id=\"editor-table-#{hash}\" class=\"editor-table #{options[:class].to_s}\">"
+				result += "<table id=\"editor-table-#{hash}\" class=\"table editor-table #{options[:class].to_s}\">"
 
 				# Table head
 				result += "<thead>"
@@ -124,7 +124,7 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table id=\"editor-table-#{hash}\" class=\"hierarchical editor-table #{options[:class].to_s}\">"
+				result += "<table id=\"editor-table-#{hash}\" class=\"table hierarchical editor-table #{options[:class].to_s}\">"
 
 				# Table head
 				result += "<thead>"

@@ -2,4 +2,5 @@
 	<%%= f.hidden_field :<%= model_2_name.to_snake.singularize %>_id %>
 	<% columns.each_with_index do |column, idx| %><%%= f.<%= RugBuilder::FormBuilder.row_from_type(nil, column.split(":").first, (column.split(":").size > 1 ? column.split(":").at(1) : "string" )) %> %><%= (idx != columns.size-1 ? "\n\t" : "") %><% end %>
 	<%%= f.primary_button_row :submit %>
+	<%%= f.back_link_button_row %>
 <%% end %>

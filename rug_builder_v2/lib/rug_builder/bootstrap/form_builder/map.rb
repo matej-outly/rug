@@ -14,7 +14,7 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def map_location_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = "<div class=\"form-horizontal\">"
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -39,9 +39,9 @@ module RugBuilder
 				
 				# Field options
 				klass = []
+				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
-				klass << "text input"
-
+	
 				# Java Script
 				js = ""
 				
@@ -151,41 +151,41 @@ module RugBuilder
 				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
 				result += @template.javascript_tag(js)
 				
-				# Container
-				result += "<div id=\"map_location_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+				# Form group
+				result += "<div id=\"map_location_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
 				
 				# Text inputs
-				result += "<div class=\"row\">"
-				result += "<div class=\"six columns field-item\">" 
-				result += "<span class=\"adjoined\">#{label_latitude.upcase_first}</span>" if options[:join] != false
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_latitude.upcase_first : nil))
-				result += "</div>"
+				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
+				result += "<div class=\"input-group-addon\">#{label_latitude.upcase_first}</div>"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))
+				result += "</div></div>"
 
-				result += "<div class=\"six columns field-item\">"
-				result += "<span class=\"adjoined\">#{label_longitude.upcase_first}</span>" if options[:join] != false
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_longitude.upcase_first : nil))
-				result += "</div>"
-				result += "</div>"
+				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
+				result += "<div class=\"input-group-addon\">#{label_longitude.upcase_first}</div>"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))
+				result += "</div></div>"
 
 				# Mapbox (canvas)
-				result += "<div class=\"field-item\">"
+				result += "<div class=\"col-sm-12\">"
 				result += "<div class=\"mapbox\"></div>"
-				result += "</div>"
-
-				# Container end
 				result += "</div>"
 
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += "<div class=\"col-sm-12\">"
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
+					result += "</div>"
 				end
+
+				# Form group
+				result += "</div>"
 
 				result += "</div>"
 				return result.html_safe
 			end
 
 			def map_polygon_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = "<div class=\"form-horizontal\">"
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -352,29 +352,33 @@ module RugBuilder
 				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
 				result += @template.javascript_tag(js)
 				
-				# Container
-				result += "<div id=\"map_polygon_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+				# Form group
+				result += "<div id=\"map_polygon_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
 				
 				# Input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
 
 				# Mapbox (canvas)
+				result += "<div class=\"col-sm-12\">"
 				result += "<div class=\"mapbox\"></div>"
-
-				# Container end
 				result += "</div>"
 
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += "<div class=\"col-sm-12\">"
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
+					result += "</div>"
 				end
+
+				# Form group
+				result += "</div>"
 
 				result += "</div>"
 				return result.html_safe
 			end
 
 			def address_location_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = "<div class=\"form-horizontal\">"
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -398,11 +402,10 @@ module RugBuilder
 				# Address field options
 				field_options = {}
 				klass = []
+				klass << "form-control address"
 				klass << options[:class] if !options[:class].nil?
-				klass << "text input address"
 				field_options[:class] = klass.join(" ")
-				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
-
+				
 				# Java Script
 				#js = ""
 				
@@ -411,11 +414,8 @@ module RugBuilder
 				#result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
 				#result += @template.javascript_tag(js)
 				
-				# Container
-				result += "<div id=\"address_location_#{hash}\" class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-				
-				# Address input
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)
+				# Form group
+				result += "<div id=\"address_location_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
 				
 				# Level input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")
@@ -424,13 +424,20 @@ module RugBuilder
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "longitude")
 				
-				# Container end
+				# Address input
+				result += "<div class=\"col-sm-12\">"
+				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)
 				result += "</div>"
-
+				
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += "<div class=\"col-sm-12\">"
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
+					result += "</div>"
 				end
+
+				# Form group
+				result += "</div>"
 
 				result += "</div>"
 				return result.html_safe

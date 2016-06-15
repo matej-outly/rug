@@ -101,7 +101,7 @@ module RugBuilder
 
 				# Dropzone
 				result += @template.javascript_tag(js)
-				result += "<div class=\"field\">"
+				result += "<div class=\"form-group\">"
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"><div class=\"dz-message\">#{I18n.t("general.drop_file_here")}</div></div>"
 				result += "</div>"
 
@@ -201,7 +201,7 @@ module RugBuilder
 
 				# Dropzone
 				result += @template.javascript_tag(js)
-				result += "<div class=\"field\">"
+				result += "<div class=\"form-group\">"
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"></div>"
 				result += "</div>"
 

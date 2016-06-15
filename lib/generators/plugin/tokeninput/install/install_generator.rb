@@ -52,6 +52,7 @@ module Plugin
 			
 			def copy_user_css
 				copy_file("tokeninput.gumby.css", "#{Dir.pwd}/vendor/assets/libraries/tokeninput/tokeninput.gumby.css")
+				copy_file("tokeninput.bootstrap.css", "#{Dir.pwd}/vendor/assets/libraries/tokeninput/tokeninput.bootstrap.css")
 			end
 
 			def integrate_js
@@ -69,7 +70,7 @@ module Plugin
 /*
  *= require tokeninput/tokeninput
  *= require tokeninput/tokeninput.facebook
- *= require tokeninput/tokeninput.gumby
+ *= require tokeninput/tokeninput.bootstrap
  */
 }
 				end

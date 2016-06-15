@@ -28,7 +28,8 @@ module RugBuilder
 
 				# Table
 				result = ""
-				result += "<table class=\"show-table #{options[:class].to_s}\">"
+				result += "<div class=\"panel panel-default\">"
+				result += "<table class=\"table show-table #{options[:class].to_s}\">"
 
 				# Table body
 				result += "<tbody>"
@@ -42,6 +43,7 @@ module RugBuilder
 
 				# Table
 				result += "</table>"
+				result += "</div>"
 
 				return result.html_safe
 			end

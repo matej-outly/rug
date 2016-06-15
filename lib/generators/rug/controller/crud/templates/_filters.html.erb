@@ -1,0 +1,5 @@
+<%% if action_name == "index" %>
+	<%%= rug_form_for(@filter_<%= model_name.to_snake.singularize %>, url: main_app.filter_<%= controller_path.to_snake.gsub("/", "_").pluralize %>_path) do |f| %>
+		<%%= f.primary_button_row :submit, label: t("helpers.submit.filter") %>
+	<%% end %>
+<%% end %>

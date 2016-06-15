@@ -17,7 +17,7 @@ module RugBuilder
 			# Render index table
 			#
 			# Options:
-			# - paths (hash) - Define paths to show, edit, inline_edit (update) and destroy actions
+			# - paths (hash) - Define paths to show, new, edit, inline_edit (update) and destroy actions
 			# - pagination (boolean) - Turn on pagination
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary
@@ -37,9 +37,10 @@ module RugBuilder
 				columns = normalize_columns(columns)
 
 				if objects.empty?
-					result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+					result = "<div class=\"alert alert-warning\" role=\"alert\">#{ I18n.t("views.index_table.empty") }</div>"
 				else
-
+					result = ""
+					
 					# Show link column
 					if options[:show_link_column]
 						show_link_column = options[:show_link_column]
@@ -47,8 +48,23 @@ module RugBuilder
 						show_link_column = 0
 					end
 
+					# Show panel parts
+					show_panel_heading = check_new_link(options)
+					show_panel_footer = options[:pagination] == true || options[:summary] == true 
+					show_panel = show_panel_heading || show_panel_footer
+					
+					# Panel
+					result += "<div class=\"panel panel-default\">" if show_panel
+
+					# Panel heading
+					result += "<div class=\"panel-heading text-right\">" if show_panel_heading
+
+					result += get_new_link(options) if check_new_link(options)
+
+					# Panel heading
+					result += "</div>" if show_panel_heading
+
 					# Table
-					result = ""
 					result += "<table id=\"index-table-#{hash}\" class=\"table index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
 
 					# Table head
@@ -128,12 +144,21 @@ module RugBuilder
 
 					# Table
 					result += "</table>"
-				
+
+					# Panel footer
+					result += "<div class=\"panel-footer\">" if show_panel_footer
+
 					# Pagination
 					result += resolve_pagination(objects, options)
-					
+
 					# Summary
 					result += resolve_summary(objects, model_class, options)
+
+					# Panel footer
+					result += "</div>" if show_panel_footer
+
+					# Panel
+					result += "</div>" if show_panel
 
 					# Inline edit JS
 					result += resolve_inline_edit_js(hash, options)
@@ -170,7 +195,7 @@ module RugBuilder
 				open_levels = {}
 
 				if objects.empty?
-					result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+					result = "<div class=\"alert alert-warning\" role=\"alert\">#{ I18n.t("views.index_table.empty") }</div>"
 				else
 
 					# Show link column
@@ -182,7 +207,7 @@ module RugBuilder
 
 					# Table
 					result = ""
-					result += "<table id=\"index-table-#{hash}\" class=\"hierarchical index-table #{options[:class].to_s}\">"
+					result += "<table id=\"index-table-#{hash}\" class=\"table hierarchical index-table #{options[:class].to_s}\">"
 
 					# Table head
 					result += "<thead>"
@@ -311,7 +336,7 @@ module RugBuilder
 
 				# Table
 				if objects.empty?
-					result = "<div class=\"flash warning alert\">#{ I18n.t("views.index_table.empty") }</div>"
+					result = "<div class=\"alert alert-warning\" role=\"alert\">#{ I18n.t("views.index_table.empty") }</div>"
 				else 
 					result = ""
 					result += "<div id=\"index-table-#{hash}\" class=\"picture index-table\">"
@@ -346,19 +371,6 @@ module RugBuilder
 			end
 
 		protected
-
-			# *********************************************************************
-			# Common actions
-			# *********************************************************************
-
-			def get_action_link(object, link_options)
-				url = RugSupport::PathResolver.new(@template).resolve(link_options[:path], object)
-				if url
-					return "<div class=\"medium default btn icon-left entypo icon-#{link_options[:icon]}\">#{@template.link_to(link_options[:label], url)}</div>"
-				else
-					return ""
-				end
-			end
 
 			# *********************************************************************
 			# Inline editation
@@ -456,13 +468,12 @@ module RugBuilder
 				else
 					label_save = I18n.t("general.action.save")
 				end
-				if link_options[:disable_button] == true
-					result += @template.link_to("<i class=\"icon-pencil\"></i>".html_safe + label_edit, "#", class: "inline-edit edit")
-					result += @template.link_to("<i class=\"icon-check\"></i>".html_safe + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save", style: "display: none;")
-				else
-					result += "<div class=\"medium primary btn icon-left entypo icon-pencil\">#{@template.link_to(label_edit, "#", class: "inline-edit edit")}</div>"
-					result += "<div class=\"medium primary btn icon-left entypo icon-check\" style=\"display: none;\">#{@template.link_to(label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save", style: "display: none;")}</div>"
+				link_tag_class = ""
+				if link_options[:disable_button] != true
+					link_tag_class = "btn btn-xs btn-primary"
 				end
+				result += @template.link_to(self.format_icon("pencil") + label_edit, "#", class: "inline-edit edit " + link_tag_class)
+				result += @template.link_to(self.format_icon("check") + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save " + link_tag_class, style: "display: none;")
 				return result
 			end
 

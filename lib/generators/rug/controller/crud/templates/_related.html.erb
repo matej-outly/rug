@@ -1,11 +1,6 @@
 <%%= rug_menu_for(@<%= model_name.to_snake.singularize %>, name: "related") do |m| %>
-	
 	<!-- ... -->
-
 	<%% if @<%= model_name.to_snake.singularize %> && !@<%= model_name.to_snake.singularize %>.new_record? %>
-
 		<!-- ... -->
-		
 	<%% end %>
-
 <%% end %>

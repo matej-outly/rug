@@ -85,7 +85,7 @@ module RugBuilder
 			end
 
 			def datetime_picker_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = "<div class=\"form-horizontal\">"
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -111,8 +111,8 @@ module RugBuilder
 				
 				# Field options
 				klass = []
+				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
-				klass << "text input"
 
 				# Java Script
 				js = ""
@@ -153,39 +153,39 @@ module RugBuilder
 				
 				result += @template.javascript_tag(js)
 				
-				# Container
-				result += "<div id=\"datetime_picker_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-				
-				# Inputs
-				result += "<div class=\"row\">"
-				result += "<div class=\"six columns field-item\">"
-				result += "<span class=\"adjoined\">#{label_date.upcase_first}</span>" if options[:join] != false
-				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["date", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_date.upcase_first : nil))
-				result += "</div>"
-
-				result += "<div class=\"six columns field-item\">"
-				result += "<span class=\"adjoined\">#{label_time.upcase_first}</span>" if options[:join] != false
-				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["time", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_time.upcase_first : nil))
-				result += "</div>"
-				result += "</div>"
+				# Form group
+				result += "<div id=\"datetime_picker_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
 
 				# Hidden field
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
-
-				# Container end
-				result += "</div>"
 				
+				# Inputs
+				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
+				result += "<div class=\"input-group-addon\">#{label_date.upcase_first}</div>"
+				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["date"]))
+				result += "</div></div>"
+
+				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
+				result += "<div class=\"input-group-addon\">#{label_time.upcase_first}</div>"
+				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))
+				result += "</div></div>"
+
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += "<div class=\"col-sm-12\">"
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
+					result += "</div>"
 				end
+
+				# Form group
+				result += "</div>"
 
 				result += "</div>"
 				return result.html_safe
 			end
 
 			def duration_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = "<div class=\"form-horizontal\">"
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -213,8 +213,8 @@ module RugBuilder
 
 				# Field options
 				klass = []
+				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
-				klass << "text input"
 				
 				# Java Script
 				js = ""
@@ -277,50 +277,50 @@ module RugBuilder
 				
 				result += @template.javascript_tag(js)
 				
-				# Container
-				result += "<div id=\"duration_#{hash}\" class=\"append field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-
-				# Inputs
-				result += "<div class=\"row\">"
-				if options[:days] != false
-					result += "<div class=\"three columns field-item\">"
-					result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["days", (options[:join] != false ? "normal" : "")]).join(" "), min: 0, placeholder: (options[:placeholder] == true ? label_days.upcase_first : nil))
-					result += "<span class=\"adjoined\">#{label_days.downcase_first}</span>" if options[:join] != false
-					result += "</div>"
-				end
-
-				if options[:hours] != false
-					result += "<div class=\"three columns field-item\">"
-					result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["hours", (options[:join] != false ? "normal" : "")]).join(" "), min: 0, max: 23, placeholder: (options[:placeholder] == true ? label_hours.upcase_first : nil))
-					result += "<span class=\"adjoined\">#{label_hours.downcase_first}</span>" if options[:join] != false
-					result += "</div>"
-				end
-
-				if options[:minutes] != false
-					result += "<div class=\"three columns field-item\">"
-					result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["minutes", (options[:join] != false ? "normal" : "")]).join(" "), min: 0, max: 59, placeholder: (options[:placeholder] == true ? label_minutes.upcase_first : nil))
-					result += "<span class=\"adjoined\">#{label_minutes.downcase_first}</span>" if options[:join] != false
-					result += "</div>"
-				end
-
-				if options[:seconds] != false
-					result += "<div class=\"three columns field-item\">"
-					result += @template.number_field_tag(nil, nil, class: klass.dup.concat(["seconds", (options[:join] != false ? "normal" : "")]).join(" "), min: 0, max: 59, placeholder: (options[:placeholder] == true ? label_seconds.upcase_first : nil))
-					result += "<span class=\"adjoined\">#{label_seconds.downcase_first}</span>" if options[:join] != false
-					result += "</div>"
-				end
-				result += "</div>"
+				# Form group
+				result += "<div id=\"duration_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
 
 				# Hidden fields
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
 
-				# Container end
-				result += "</div>"
-				
+				# Inputs
+				if options[:days] != false
+					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
+					result += "<div class=\"input-group-addon\">#{label_days.upcase_first}</div>"
+					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))
+					result += "</div></div>"
+				end
+
+				if options[:hours] != false
+					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
+					result += "<div class=\"input-group-addon\">#{label_hours.upcase_first}</div>"
+					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))
+					result += "</div></div>"
+				end
+
+				if options[:minutes] != false
+					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
+					result += "<div class=\"input-group-addon\">#{label_minutes.upcase_first}</div>"
+					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))
+					result += "</div></div>"
+				end
+
+				if options[:seconds] != false
+					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
+					result += "<div class=\"input-group-addon\">#{label_seconds.upcase_first}</div>"
+					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))
+					result += "</div></div>"
+				end
+
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += "<div class=\"col-sm-12\">"
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
+					result += "</div>"
 				end
+
+				# Form group
+				result += "</div>"
 
 				result += "</div>"
 				return result.html_safe

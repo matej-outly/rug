@@ -43,6 +43,7 @@ module Plugin
 			end
 
 			def copy_user_css
+				copy_file("dropzone.bootstrap.css", "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.bootstrap.css")
 				copy_file("dropzone.gumby.css", "#{Dir.pwd}/vendor/assets/libraries/dropzone/dropzone.gumby.css")
 			end
 
@@ -60,7 +61,7 @@ module Plugin
 %{
 /*
  *= require dropzone/dropzone
- *= require dropzone/dropzone.gumby
+ *= require dropzone/dropzone.bootstrap
  */
 }
 				end
