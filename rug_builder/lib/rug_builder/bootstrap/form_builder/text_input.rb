@@ -52,7 +52,7 @@ module RugBuilder
 					is_localized = true
 				end
 
-				# Tab header
+				# Tab header TODO
 				if is_localized
 					result += "<section class=\"tabs pill minimal\">"
 					result += "<ul class=\"tab-nav\">"

@@ -30,7 +30,7 @@ module RugBuilder
 				@options = options
 
 				# Render
-				return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
+				return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} #{!@options[:class].blank? ? @options[:class] : ""} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
 			end
 
 			#
@@ -220,7 +220,7 @@ module RugBuilder
 
 			def format_icon(icon)
 				if !icon.blank?
-					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span> ".html_safe
+					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span>&nbsp;&nbsp;".html_safe
 				else
 					return ""
 				end

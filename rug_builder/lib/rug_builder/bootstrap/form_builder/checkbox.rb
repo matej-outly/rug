@@ -44,7 +44,7 @@ module RugBuilder
 						b.check_box + "<span></span>&nbsp;&nbsp;#{b.text}".html_safe
 					end
 					b_result += "</div>"
-					b_result
+					b_result.html_safe
 				end
 
 				# Errors

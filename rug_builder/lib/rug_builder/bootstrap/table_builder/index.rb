@@ -535,32 +535,6 @@ module RugBuilder
 					return ""
 				end
 			end
-
-			def check_moving(options, funtion_options = {})
-				result = true
-				result = result && options[:moving] == true
-				result = result && !options[:paths].blank?
-				if funtion_options[:hierarchical] == true
-					result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
-				else
-					result = result && !options[:paths][:move].blank?
-				end
-				return result
-			end
-
-			def get_moving_link
-				return "<div class=\"medium default btn icon-left entypo icon-arrow-combo moving-handle\"><a href=\"#\"></a></div>"
-			end
-
-			def get_moving_up_link(object, options)
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_up], object)
-				return "<div class=\"medium default btn icon-left entypo icon-up-dir\"><a data-method=\"put\" href=\"#{url}\"></a></div>"
-			end
-
-			def get_moving_down_link(object, options)
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_down], object)
-				return "<div class=\"medium default btn icon-left entypo icon-down-dir\"><a data-method=\"put\" href=\"#{url}\"></a></div>"
-			end
 			
 		end
 #	end

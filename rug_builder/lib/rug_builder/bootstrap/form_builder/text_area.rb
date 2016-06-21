@@ -14,7 +14,7 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def text_area_row(name, options = {})
-				result = "<div class=\"element\">"
+				result = ""
 				
 				# Label
 				if !options[:label].nil?
@@ -30,7 +30,7 @@ module RugBuilder
 				klass = []
 				klass << options[:class] if !options[:class].nil?
 				if options[:tinymce] == false
-					klass << "textarea input"
+					klass << "form-control"
 				elsif !options[:tinymce].nil?
 					klass << options[:tinymce]
 				else
@@ -52,7 +52,7 @@ module RugBuilder
 					is_localized = true
 				end
 
-				# Tab header
+				# Tab header TODO
 				if is_localized
 					result += "<section class=\"tabs pill minimal\">"
 					result += "<ul class=\"tab-nav\">"
@@ -72,16 +72,20 @@ module RugBuilder
 						suffixed_name = name
 					end
 
-					# Field
-					result += "<div class=\"field #{( object.errors[suffixed_name].size > 0 ? "danger" : "")}\">"
-					result += text_area(suffixed_name, field_options)
-					result += "</div>"
+					# Form group
+					result += "<div class=\"form-group #{( object.errors[suffixed_name].size > 0 ? "has-error" : "")}\">"
 					
+					# Text area
+					result += text_area(suffixed_name, field_options)
+
 					# Errors
 					if object.errors[suffixed_name].size > 0
-						result += @template.content_tag(:span, object.errors[suffixed_name][0], :class => "danger label")
+						result += @template.content_tag(:span, object.errors[suffixed_name][0], :class => "label-danger label")
 					end
 
+					# Form group
+					result += "</div>"					
+					
 					# Tab content
 					if is_localized
 						result += "</div>"
@@ -93,7 +97,6 @@ module RugBuilder
 					result += "</section>"
 				end
 
-				result += "</div>"
 				return result.html_safe
 			end
 

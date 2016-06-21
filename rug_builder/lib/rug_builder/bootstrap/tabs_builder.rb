@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug tabs builder TODO
+# * Rug tabs builder
 # *
 # * Author: Matěj Outlý
 # * Date  : 20. 6. 2016
@@ -21,9 +21,10 @@ module RugBuilder
 				@tabs = []
 			end
 
-			def tab(header, &block)
+			def tab(name, heading, &block)
 				@tabs << {
-					header: header,
+					name: name.to_sym,
+					heading: heading.to_s,
 					block: block
 				}
 			end
@@ -46,28 +47,31 @@ module RugBuilder
 
 				# Wrapper
 				result = ""
-				result += "<section class=\"tabs pill\">"
+				result += "<div>"
 				
 				# Render header
-				result += "<ul class=\"tab-nav\">"
+				result += "<ul class=\"nav nav-tabs\" role=\"tablist\">"
 				@tabs.each_with_index do |tab, index|
-					result += "<li class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#\">#{tab[:header].to_s}</a></li>"
+					result += "<li role=\"presentation\" class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"##{tab[:name]}\" aria-controls=\"#{tab[:name]}\" role=\"tab\" data-toggle=\"tab\">#{tab[:heading]}</a></li>"
 				end
 				result += "</ul>"
 				
+				# Content
+				result += "<div class=\"tab-content\">"
 				@tabs.each_with_index do |tab, index|
 					
 					# Get block
 					block = tab[:block]
 
 					# Render tab
-					result += "<div class=\"tab-content #{active_tab_index == index ? "active" : ""}\">"
+					result += "<div role=\"tabpanel\" class=\"tab-pane #{active_tab_index == index ? "active" : ""}\" id=\"#{tab[:name]}\">"
 					result += @template.capture(self, &block).to_s
 					result += "</div>"
 				end
+				result += "</div>"
 
 				# Wrapper
-				result += "</section>"
+				result += "</div>"
 
 				return result.html_safe
 			end

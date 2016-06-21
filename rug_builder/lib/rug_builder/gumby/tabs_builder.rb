@@ -21,9 +21,10 @@ module RugBuilder
 				@tabs = []
 			end
 
-			def tab(header, &block)
+			def tab(name, heading, &block)
 				@tabs << {
-					header: header,
+					name: name,
+					heading: heading.to_s,
 					block: block
 				}
 			end
@@ -51,7 +52,7 @@ module RugBuilder
 				# Render header
 				result += "<ul class=\"tab-nav\">"
 				@tabs.each_with_index do |tab, index|
-					result += "<li class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#\">#{tab[:header].to_s}</a></li>"
+					result += "<li class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#\">#{tab[:heading]}</a></li>"
 				end
 				result += "</ul>"
 				

@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - picker TODO
+# * Rug form builder - picker
 # *
 # * Author: Matěj Outlý
 # * Date  : 8. 3. 2015
@@ -14,7 +14,7 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def picker_row(name, collection = nil, value_attr = :value, label_attr = :label, options = {})
-				result = "<div class=\"element\">"
+				result = ""
 				
 				# Label
 				if !options[:label].nil?
@@ -36,18 +36,20 @@ module RugBuilder
 					collection = [OpenStruct.new({value_attr => "", label_attr => null_label})].concat(collection)
 				end
 
-				# Field
-				result += "<div class=\"field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
-				result += "<div class=\"picker\">"
-				result += collection_select(name, collection, value_attr, label_attr)
-				result += "</div>"
-				result += "</div>"
+				# Form group
+				result += "<div class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				
+				# Select
+				result += collection_select(name, collection, value_attr, label_attr, {}, class: "form-control")
 				
 				# Errors
 				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
 				end
+				
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 

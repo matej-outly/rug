@@ -181,6 +181,44 @@ module RugBuilder
 				end
 			end
 
+			# *********************************************************************
+			# Common actions
+			# *********************************************************************
+
+			def check_moving(options, funtion_options = {})
+				result = true
+				result = result && options[:moving] == true
+				result = result && !options[:paths].blank?
+				if funtion_options[:hierarchical] == true
+					result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
+				else
+					result = result && !options[:paths][:move].blank?
+				end
+				return result
+			end
+
+			def get_moving_link(options = {})
+				link_tag_options = {}
+				link_tag_options[:class] = "moving-handle btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "resize-vertical") + options[:label].to_s, "#", link_tag_options)
+			end
+
+			def get_moving_up_link(object, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_up], object)
+				link_tag_options = {}
+				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				link_tag_options[:method] = options[:method] ? options[:method] : "put"
+				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "arrow-up") + options[:label].to_s, url, link_tag_options)
+			end
+
+			def get_moving_down_link(object, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_down], object)
+				link_tag_options = {}
+				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				link_tag_options[:method] = options[:method] ? options[:method] : "put"
+				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "arrow-down") + options[:label].to_s, url, link_tag_options)
+			end
+
 		end
 #	end
 end
