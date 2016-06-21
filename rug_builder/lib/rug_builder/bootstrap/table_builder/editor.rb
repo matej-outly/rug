@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug table builder - editor
+# * Rug table builder - editor TODO
 # *
 # * Author: Matěj Outlý
 # * Date  : 10. 4. 2015

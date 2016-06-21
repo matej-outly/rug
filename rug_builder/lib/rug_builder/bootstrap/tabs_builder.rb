@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug tabs builder
+# * Rug tabs builder TODO
 # *
 # * Author: Matěj Outlý
 # * Date  : 20. 6. 2016

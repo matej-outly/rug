@@ -24,18 +24,17 @@ module RugBuilder
 				
 				js += "function conditional_section_#{hash}_interpret(value)\n"
 				js += "{\n"
-				js += "		console.log(value);\n"
 				js += "		if (" + condition_rule + ") {\n"
 				js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
-				js += "				$('#conditional_section_#{hash}').show();\n"
+				js += "				$('#conditional-section-#{hash}').show();\n"
 				js += "			} else {\n"
-				js += "				$('#conditional_section_#{hash}').slideDown();\n"
+				js += "				$('#conditional-section-#{hash}').slideDown();\n"
 				js += "			}\n"
 				js += "		} else {\n"
 				js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
-				js += "				$('#conditional_section_#{hash}').hide();\n"
+				js += "				$('#conditional-section-#{hash}').hide();\n"
 				js += "			} else {\n"
-				js += "				$('#conditional_section_#{hash}').slideUp();\n"
+				js += "				$('#conditional-section-#{hash}').slideUp();\n"
 				js += "			}\n"
 				js += "		}\n"
 				js += "		conditional_section_#{hash}_ready_in_progress = false;\n"
@@ -43,7 +42,7 @@ module RugBuilder
 
 				js += "function conditional_section_#{hash}_ready()\n"
 				js += "{\n"
-				js += "	$('#conditional_section_#{hash}').hide();\n"
+				js += "	$('#conditional-section-#{hash}').hide();\n"
 				js += "	$('[name=\\'#{object.class.model_name.param_key}[#{condition_name.to_s}]\\']').on('change', function(e) {\n"
 				js += "		var _this = $(this);\n"
 				js += "		if (_this.is(':radio')) {\n"
@@ -61,7 +60,7 @@ module RugBuilder
 				# Section
 				result = ""
 				result += @template.javascript_tag(js)
-				result += @template.content_tag(:div, { :id => "conditional_section_#{hash}" }, &block)
+				result += @template.content_tag(:div, { :id => "conditional-section-#{hash}" }, &block)
 				
 				return result.html_safe
 			end

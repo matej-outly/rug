@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - TextExt
+# * Rug form builder - token input
 # *
 # * Author: Matěj Outlý
 # * Date  : 29. 10. 2015

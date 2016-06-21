@@ -182,7 +182,7 @@ module RugBuilder
 			end
 
 			#
-			# Render hierarchical index table
+			# Render hierarchical index table TODO
 			#
 			# Options:
 			# - paths (hash) - Define paths to show, edit and destroy actions
@@ -319,7 +319,7 @@ module RugBuilder
 			end
 
 			#
-			# Render picture index table
+			# Render picture index table TODO
 			#
 			# Options:
 			# - paths (hash) - Define paths to show, edit and destroy actions
