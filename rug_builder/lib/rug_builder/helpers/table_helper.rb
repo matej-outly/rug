@@ -13,6 +13,10 @@ module RugBuilder
 	module Helpers
 		module TableHelper
 
+			def rug_columns
+				RugBuilder::Columns.new
+			end
+
 			def rug_show_table_for(object, columns, options = {})
 				RugBuilder::TableBuilder.new(self).show(object, columns, options)
 			end

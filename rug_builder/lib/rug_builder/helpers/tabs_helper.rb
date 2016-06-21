@@ -5,16 +5,16 @@
 # * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 24. 11. 2015
+# * Date  : 20. 6. 2016
 # *
 # *****************************************************************************
 
 module RugBuilder
 	module Helpers
-		module MapHelper
+		module TabsHelper
 
-			def rug_map(name, options = {}, &block)
-				RugBuilder::MapBuilder.new(self).render(name, options, &block)
+			def rug_tabs
+				RugBuilder::TabsBuilder.new(self)
 			end
 
 		end
