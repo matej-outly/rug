@@ -43,7 +43,7 @@ module RugBuilder
 				active = options.delete(:active)
 
 				result += "<li class=\"#{active == true ? "active" : ""}\">"
-				result += @template.link_to(self.format_icon(icon) + label, path, options)
+				result += @template.link_to(RugBuilder::IconBuilder.render(icon) + label, path, options)
 				result += "</li>"
 
 				return result.html_safe
@@ -66,7 +66,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "list" if options[:icon].nil?
+				options[:icon] = :index if options[:icon].nil?
 				options[:active] = (@template.action_name == "index") if options[:active].nil?
 
 				return self.item(label, path, options)
@@ -93,7 +93,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "search" if options[:icon].nil?
+				options[:icon] = :show if options[:icon].nil?
 				options[:active] = (@template.action_name == "show") if options[:active].nil?
 
 				return self.item(label, path, options)
@@ -117,7 +117,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "plus" if options[:icon].nil?
+				options[:icon] = :new if options[:icon].nil?
 				options[:active] = (@template.action_name == "new" || @template.action_name == "create") if options[:active].nil?
 				options["data-no-turbolink"] = true
 
@@ -146,7 +146,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "pencil" if options[:icon].nil?
+				options[:icon] = :edit if options[:icon].nil?
 				options[:active] = (@template.action_name == "edit" || @template.action_name == "update") if options[:active].nil?
 				options["data-no-turbolink"] = true
 
@@ -174,7 +174,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "trash" if options[:icon].nil?
+				options[:icon] = :destroy if options[:icon].nil?
 				options[:method] = :delete
 				options[:data] = { confirm: I18n.t('general.are_you_sure', default: "Are you sure?") }
 
@@ -202,7 +202,7 @@ module RugBuilder
 				end
 
 				# Options
-				options[:icon] = "docs" if options[:icon].nil?
+				options[:icon] = :duplicate if options[:icon].nil?
 				options[:method] = :post
 
 				return self.item(label, path, options)
@@ -212,18 +212,6 @@ module RugBuilder
 
 			def controller_path
 				return @template.controller.class.name.to_snake[0..-12]
-			end
-
-			# *********************************************************************
-			# Formatters
-			# *********************************************************************
-
-			def format_icon(icon)
-				if !icon.blank?
-					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span>&nbsp;&nbsp;".html_safe
-				else
-					return ""
-				end
 			end
 
 		end

@@ -39,4 +39,16 @@ module RugBuilder
 	mattr_accessor :frontend_framework
 	@@frontend_framework = "bootstrap"
 
+	#
+	# Map framework
+	#
+	mattr_accessor :map_framework
+	@@map_framework = "google"
+
+	#
+	# Icon framework
+	#
+	mattr_accessor :icon_framework
+	@@icon_framework = "bootstrap"
+
 end

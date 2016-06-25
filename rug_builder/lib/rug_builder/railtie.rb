@@ -43,10 +43,11 @@ module RugBuilder
 
 			# Config dependent builders
 			require "rug_builder/#{RugBuilder.frontend_framework}/form_builder"
-			require "rug_builder/google/map_builder"
+			require "rug_builder/#{RugBuilder.map_framework}/map_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/table_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/tabs_builder"
+			require "rug_builder/#{RugBuilder.icon_framework}/icon_builder"
 
 		end
 

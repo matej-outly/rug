@@ -62,7 +62,7 @@ module RugBuilder
 					if link_options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-danger"
 					end
-					return @template.link_to(self.format_icon("trash") + label, url, link_tag_options)
+					return @template.link_to(RugBuilder::IconBuilder.render(:destroy) + label, url, link_tag_options)
 				else
 					return ""
 				end
@@ -93,7 +93,7 @@ module RugBuilder
 					if link_options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
-					return @template.link_to(self.format_icon("pencil") + label, url, link_tag_options)
+					return @template.link_to(RugBuilder::IconBuilder.render(:edit) + label, url, link_tag_options)
 				else
 					return ""
 				end
@@ -124,7 +124,7 @@ module RugBuilder
 					if link_options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
-					return @template.link_to(self.format_icon("plus") + label, url, link_tag_options)
+					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options)
 				else
 					return ""
 				end
@@ -155,7 +155,7 @@ module RugBuilder
 					if link_options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
 					end
-					return @template.link_to(self.format_icon("plus") + label, url, link_tag_options)
+					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options)
 				else
 					return ""
 				end
@@ -172,7 +172,7 @@ module RugBuilder
 						link_tag_options = {}
 						link_tag_options[:class] = "btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-default"
 						link_tag_options[:method] = options[:method] if options[:method]
-						return @template.link_to(self.format_icon(options[:icon]) + options[:label], url, link_tag_options)
+						return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + options[:label], url, link_tag_options)
 					else
 						return ""
 					end
@@ -200,7 +200,7 @@ module RugBuilder
 			def get_moving_link(options = {})
 				link_tag_options = {}
 				link_tag_options[:class] = "moving-handle btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
-				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "resize-vertical") + options[:label].to_s, "#", link_tag_options)
+				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move) + options[:label].to_s, "#", link_tag_options)
 			end
 
 			def get_moving_up_link(object, options = {})
@@ -208,7 +208,7 @@ module RugBuilder
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
-				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "arrow-up") + options[:label].to_s, url, link_tag_options)
+				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_up) + options[:label].to_s, url, link_tag_options)
 			end
 
 			def get_moving_down_link(object, options = {})
@@ -216,7 +216,7 @@ module RugBuilder
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
-				return @template.link_to(self.format_icon(options[:icon] ? options[:icon] : "arrow-down") + options[:label].to_s, url, link_tag_options)
+				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_down) + options[:label].to_s, url, link_tag_options)
 			end
 
 		end

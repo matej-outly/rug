@@ -83,18 +83,6 @@ module RugBuilder
 				return result
 			end
 
-			# *********************************************************************
-			# Formatters
-			# *********************************************************************
-
-			def format_icon(icon)
-				if !icon.blank?
-					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span> ".html_safe
-				else
-					return ""
-				end
-			end
-
 		end
 #	end
 end

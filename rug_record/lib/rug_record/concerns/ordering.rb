@@ -27,12 +27,12 @@ module RugRecord
 					column = :position
 
 					# => ordered-active-record
-					acts_as_ordered(column)
+					#acts_as_ordered(column)
 
 					# Ordering if new 
 					before_create do
 						if self.send(column).nil?
-							assign_attributes({ column => self.class.count + 1 })
+							#assign_attributes({ column => self.class.count + 1 })
 						end
 					end
 

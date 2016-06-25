@@ -1,0 +1,5 @@
+Description:
+    Integrate latest version of Slidebars library into the application.
+
+Example:
+    rails generate plugin:slidebars:install

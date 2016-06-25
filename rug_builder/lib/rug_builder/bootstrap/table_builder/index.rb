@@ -482,8 +482,8 @@ module RugBuilder
 				if link_options[:disable_button] != true
 					link_tag_class = "btn btn-xs btn-primary"
 				end
-				result += @template.link_to(self.format_icon("pencil") + label_edit, "#", class: "inline-edit edit " + link_tag_class)
-				result += @template.link_to(self.format_icon("check") + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save " + link_tag_class, style: "display: none;")
+				result += @template.link_to(RugBuilder::IconBuilder.render("pencil") + label_edit, "#", class: "inline-edit edit " + link_tag_class)
+				result += @template.link_to(RugBuilder::IconBuilder.render("check") + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save " + link_tag_class, style: "display: none;")
 				return result
 			end
 
