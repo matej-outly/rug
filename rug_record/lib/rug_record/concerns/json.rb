@@ -31,6 +31,21 @@ module RugRecord
 				end
 
 				#
+				# Set JSON additional methods
+				#
+				def remove_methods_from_json(methods)
+					if !methods.is_a? Array
+						methods = [methods]
+					end
+					if @json_additional_methods.nil?
+						@json_additional_methods = []
+					end
+					methods.each do |method|
+						@json_additional_methods.delete(method)
+					end
+				end
+
+				#
 				# Get JSON additional methods
 				#
 				def json_additional_methods
