@@ -184,6 +184,126 @@ module RugBuilder
 				return result.html_safe
 			end
 
+			def datetime_range_picker_row(name, options = {})
+				result = "<div class=\"element\">"
+
+				# Unique hash
+				hash = Digest::SHA1.hexdigest(name.to_s)
+
+				# Label
+				if !options[:label].nil?
+					if options[:label] != false
+						result += label(name, options[:label])
+					end
+				else
+					result += label(name)
+				end
+
+				# Part labels
+				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime_range.date"))
+				label_from = (options[:label_from] ? options[:label_from] : I18n.t("general.attribute.datetime_range.from"))
+				label_to = (options[:label_to] ? options[:label_to] : I18n.t("general.attribute.datetime_range.to"))
+				
+				# Part values
+				value = object.send(name)
+				value_date = value && value[:date] ? value[:date] : nil
+				value_from = value && value[:from] ? value[:from] : nil
+				if !value_from.blank?
+					value_from = value_from.strftime("%k:%M")
+				end
+				value_to = value && value[:to] ? value[:to] : nil
+				if !value_to.blank?
+					value_to = value_to.strftime("%k:%M")
+				end
+				
+				# Field options
+				klass = []
+				klass << options[:class] if !options[:class].nil?
+				klass << "text input"
+
+				# Java Script
+				js = ""
+				js += "function datetime_range_picker_#{hash}_ready()\n"
+				js += "{\n"
+				js += "	$('#datetime_range_picker_#{hash} .date').pikaday({ \n"
+				js += "		firstDay: 1,\n"
+				js += "		format: 'YYYY-MM-DD',\n"
+				js += "		i18n: {\n"
+				js += "			previousMonth : '#{I18n.t("views.calendar.prev_month")}',\n"
+				js += "			nextMonth     : '#{I18n.t("views.calendar.next_month")}',\n"
+				js += "			months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],\n"
+				js += "			weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],\n"
+				js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
+				js += "		}\n"
+				js += "	});\n"
+				js += "	$('#datetime_range_picker_#{hash} .from').clockpicker({\n"
+				js += "		placement: 'bottom',\n"
+				js += "		align: 'left',\n"
+				js += "		autoclose: true\n"
+				js += "	});\n"
+				js += "	$('#datetime_range_picker_#{hash} .to').clockpicker({\n"
+				js += "		placement: 'bottom',\n"
+				js += "		align: 'left',\n"
+				js += "		autoclose: true\n"
+				js += "	});\n"
+				js += "}\n"
+				js += "$(document).ready(datetime_range_picker_#{hash}_ready);\n"
+				js += "$(document).on('page:load', datetime_range_picker_#{hash}_ready);\n"
+				
+				result += @template.javascript_tag(js)
+				
+				# Container
+				result += "<div id=\"datetime_range_picker_#{hash}\" class=\"prepend field #{( object.errors[name].size > 0 ? "danger" : "")}\">"
+				
+				# Inputs
+				result += "<div class=\"row\">"
+				
+				if options[:date] != false
+					result += "<div class=\"four columns field-item\">"
+					result += "<span class=\"adjoined\">#{label_date.upcase_first}</span>" if options[:join] != false
+					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][date]", value_date, class: klass.dup.concat(["date", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_date.upcase_first : nil))
+					result += "</div>"
+				end
+				
+				if options[:from] != false
+					result += "<div class=\"four columns field-item\">"
+					result += "<span class=\"adjoined\">#{label_from.upcase_first}</span>" if options[:join] != false
+					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][from]", value_from, class: klass.dup.concat(["from", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_from.upcase_first : nil))
+					result += "</div>"
+				end
+
+				if options[:to] != false
+					result += "<div class=\"four columns field-item\">"
+					result += "<span class=\"adjoined\">#{label_to.upcase_first}</span>" if options[:join] != false
+					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][to]", value_to, class: klass.dup.concat(["to", (options[:join] != false ? "normal" : "")]).join(" "), placeholder: (options[:placeholder] == true ? label_to.upcase_first : nil))
+					result += "</div>"
+				end
+
+				result += "</div>"
+
+				# Hidden fields
+				if options[:date] == false
+					result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][date]", value_date)
+				end
+				if options[:from] == false
+					result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][from]", value_from)
+				end
+				if options[:to] == false
+					result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][to]", value_to)
+				end
+
+				# Container end
+				result += "</div>"
+				
+				# Errors
+				if object.errors[name].size > 0
+					result += @template.content_tag(:span, object.errors[name][0], :class => "danger label")
+				end
+
+				result += "</div>"
+				return result.html_safe
+			end
+
 			def duration_row(name, options = {})
 				result = "<div class=\"element\">"
 

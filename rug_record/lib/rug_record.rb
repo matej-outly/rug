@@ -96,6 +96,12 @@ module RugRecord
 	@@enable_type_croppable_picture = false
 
 	#
+	# Enable type datetime range
+	#
+	mattr_accessor :enable_type_datetime_range
+	@@enable_type_datetime_range = true
+
+	#
 	# Enable type duration
 	#
 	mattr_accessor :enable_type_duration
