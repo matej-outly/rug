@@ -86,6 +86,30 @@ module RugRecord
 
 					end
 
+					#
+					# Parse name
+					#
+					def parse_name(name)
+						title = nil
+						firstname = nil
+						lastname = nil
+						name_parts = name.to_s.split(" ")
+						if name_parts.length == 0 # Nothing to do
+						elsif name_parts.length == 1 # Only one part => it's firstname
+							firstname = name_parts[0]
+						elsif name_parts.length == 2 # Standard case
+							firstname = name_parts[0]
+							lastname = name_parts[1]
+						elsif name_parts.length >= 3
+							if name_parts[0].end_with?(".")
+								title = name_parts.shift
+							end
+							lastname = name_parts.pop
+							firstname = name_parts.join(" ")
+						end
+						return [title, firstname, lastname]	
+					end
+
 				end
 
 			end

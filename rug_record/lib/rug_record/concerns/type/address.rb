@@ -80,6 +80,7 @@ module RugRecord
 					def parse_address(address)
 						country = nil
 						city = nil
+						zipcode = nil
 						street = nil
 						number = nil
 						address_parts = address.to_s.split(",").map { |i| i.trim(" ") }
@@ -88,6 +89,19 @@ module RugRecord
 						end
 						if address_parts.length >= 1
 							city = address_parts.pop
+							city_parts = []
+							zipcode_parts = []
+							zipcode_prefix = true
+							city.split(" ").each do |part|
+								if zipcode_prefix && /\A\d+\z/.match(part) # Is a positive number
+									zipcode_parts << part
+								else
+									city_parts << part
+									zipcode_prefix = false
+								end
+							end
+							city = city_parts.join(" ")
+							zipcode = zipcode_parts.join(" ")
 						end
 						if address_parts.length >= 1
 							street = address_parts.join(", ")
@@ -107,7 +121,7 @@ module RugRecord
 							end
 							street = street_parts.join(" ")
 						end
-						return [country, city, street, number]
+						return [country, zipcode, city, street, number]
 					end
 
 				end
