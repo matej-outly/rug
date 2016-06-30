@@ -36,7 +36,11 @@ module RugBuilder
 			# Get value
 			value_obj = object.send("#{column.to_s}_obj".to_sym)
 
-			return value_obj.label
+			if value_obj
+				return value_obj.label
+			else
+				return ""
+			end
 		end
 
 		# *********************************************************************

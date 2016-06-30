@@ -84,7 +84,7 @@ module RugBuilder
 					end
 
 					if options[:path]
-						arr << "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options, item)}\">#{label}</a>"
+						arr << "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options[:path], item)}\">#{label}</a>"
 					else
 						arr << label
 					end
