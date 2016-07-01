@@ -132,16 +132,22 @@ module RugBuilder
 						# Table
 						body_result += "</table>"
 
-						body_result
+						[body_result, columns_count]
 					end
+
+					# Preset
+					result = ""
+					columns_count = 0
 
 					# Table
 					if options[:page_break] && options[:page_break] > 0 # Sliced
 						objects.each_slice(options[:page_break]) do |slice|
-							result += body_renderer.call(slice)
+							body_result, columns_count = body_renderer.call(slice)
+							result += body_result
 						end
 					else # Not slices
-						result += body_renderer.call(objects)
+						body_result, columns_count = body_renderer.call(objects)
+						result += body_result
 					end
 				
 					# Pagination
