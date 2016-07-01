@@ -47,87 +47,102 @@ module RugBuilder
 						show_link_column = 0
 					end
 
-					# Table
-					result = ""
-					result += "<table id=\"index-table-#{hash}\" class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
+					# Define renderer
+					body_renderer = lambda do |body_objects|
+						
+						# Table
+						body_result = ""
+						body_result += "<table id=\"index-table-#{hash}\" class=\"index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
 
-					# Table head
-					columns_count = 0
-					result += "<thead>"
-					result += "<tr>"
-					if check_moving(options)
-						result += "<th></th>" 
-						columns_count += 1
-					end
-					columns.headers.each do |column|
-						result += "<th>"
-						result += columns.label(column, model_class)
-						result += resolve_sorting(column, options)
-						result += "</th>"
-						columns_count += 1
-					end
-					if options[:actions]
-						options[:actions].each do |action, action_spec|
-							result += "<th></th>"
+						# Table head
+						columns_count = 0
+						body_result += "<thead>"
+						body_result += "<tr>"
+						if check_moving(options)
+							body_result += "<th></th>" 
 							columns_count += 1
 						end
-					end
-					if check_inline_edit(options)
-						result += "<th></th>"
-						columns_count += 1
-					end
-					if check_edit_link(options)
-						result += "<th></th>"
-						columns_count += 1
-					end
-					if check_destroy_link(options)
-						result += "<th></th>" 
-						columns_count += 1
-					end
-					result += "</tr>"
-					result += "</thead>"
-
-					# Table body
-					result += "<tbody>"
-					objects.each do |object|
-						
-						result += "<tr data-id=\"#{object.id}\">"
-						result += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(options)
-						columns.headers.each_with_index do |column, idx|
-							result += "<td>"
-							if check_inline_edit(options, column)
-								result += "<div class=\"inline-edit value\">"
-							end
-
-							# Standard read only value
-							value = columns.render(column, object)
-							if idx == show_link_column && check_show_link(options)
-								result += get_show_link(object, value, options)
-							else
-								result += value
-							end
-							
-							if check_inline_edit(options, column)
-								result += "</div>"
-								result += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
-							end
-							result += "</td>"
+						columns.headers.each do |column|
+							body_result += "<th>"
+							body_result += columns.label(column, model_class)
+							body_result += resolve_sorting(column, options)
+							body_result += "</th>"
+							columns_count += 1
 						end
 						if options[:actions]
 							options[:actions].each do |action, action_spec|
-								result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
+								body_result += "<th></th>"
+								columns_count += 1
 							end
 						end
-						result += "<td class=\"standard action\">#{get_inline_edit_link(object, options, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
-						result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
-						result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
-						result += "</tr>"
+						if check_inline_edit(options)
+							body_result += "<th></th>"
+							columns_count += 1
+						end
+						if check_edit_link(options)
+							body_result += "<th></th>"
+							columns_count += 1
+						end
+						if check_destroy_link(options)
+							body_result += "<th></th>" 
+							columns_count += 1
+						end
+						body_result += "</tr>"
+						body_result += "</thead>"
 
+						# Table body
+						body_result += "<tbody>"
+						body_objects.each do |object|
+							
+							body_result += "<tr data-id=\"#{object.id}\">"
+							body_result += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(options)
+							columns.headers.each_with_index do |column, idx|
+								body_result += "<td>"
+								if check_inline_edit(options, column)
+									body_result += "<div class=\"inline-edit value\">"
+								end
+
+								# Standard read only value
+								value = columns.render(column, object)
+								if idx == show_link_column && check_show_link(options)
+									body_result += get_show_link(object, value, options)
+								else
+									body_result += value
+								end
+								
+								if check_inline_edit(options, column)
+									body_result += "</div>"
+									body_result += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+								end
+								body_result += "</td>"
+							end
+							if options[:actions]
+								options[:actions].each do |action, action_spec|
+									body_result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
+								end
+							end
+							body_result += "<td class=\"standard action\">#{get_inline_edit_link(object, options, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
+							body_result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
+							body_result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
+							body_result += "</tr>"
+
+						end
+						body_result += "</tbody>"
+
+						# Table
+						body_result += "</table>"
+
+						body_result
 					end
-					result += "</tbody>"
 
 					# Table
-					result += "</table>"
+					if options[:page_break] && options[:page_break] > 0 # Sliced
+						objects.each_slice(options[:page_break]) do |slice|
+							result += body_renderer.call(slice)
+						end
+					else # Not slices
+						result += body_renderer.call(objects)
+					end
 				
 					# Pagination
 					result += resolve_pagination(objects, options)
