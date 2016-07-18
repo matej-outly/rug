@@ -11,6 +11,7 @@
 
 require "rug_builder/helpers/form_helper"
 require "rug_builder/helpers/format_helper"
+require "rug_builder/helpers/icon_helper"
 require "rug_builder/helpers/map_helper"
 require "rug_builder/helpers/menu_helper"
 require "rug_builder/helpers/table_helper"
@@ -22,6 +23,7 @@ module RugBuilder
 		initializer "rug_builder.helpers" do
 			ActionView::Base.send :include, Helpers::FormHelper
 			ActionView::Base.send :include, Helpers::FormatHelper
+			ActionView::Base.send :include, Helpers::IconHelper
 			ActionView::Base.send :include, Helpers::MapHelper
 			ActionView::Base.send :include, Helpers::MenuHelper
 			ActionView::Base.send :include, Helpers::TableHelper
