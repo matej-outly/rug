@@ -58,7 +58,7 @@ module RugRecord
 	#
 	# Enable ordering
 	#
-	# Use gem 'ordered-active-record', '~> 0.9' if enabled
+	# Use gem 'acts_as_list' if enabled
 	#
 	mattr_accessor :enable_ordering
 	@@enable_ordering = false

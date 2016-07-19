@@ -10,7 +10,7 @@
 # *****************************************************************************
 
 require "active_record"
-require "ordered-active-record"
+require "acts_as_list"
 
 module RugRecord
 	module Concerns
@@ -26,15 +26,8 @@ module RugRecord
 					# Column
 					column = :position
 
-					# => ordered-active-record
-					#acts_as_ordered(column)
-
-					# Ordering if new 
-					before_create do
-						if self.send(column).nil?
-							#assign_attributes({ column => self.class.count + 1 })
-						end
-					end
+					# => acts_as_list gem
+					acts_as_list(column: column)
 
 					# Mark as ordered
 					@ordered = true
@@ -55,9 +48,9 @@ module RugRecord
 					destination_object = find_by_id(destination_id)
 					if moved_object && destination_object
 						if relation.to_sym == :succ
-							return moved_object.move_to_right_of(destination_object)
+							return moved_object.insert_at(destination_object.position + 1)
 						elsif relation.to_sym == :pred
-							return moved_object.move_to_left_of(destination_object)
+							return moved_object.insert_at(destination_object.position)
 						else
 							return false
 						end
@@ -81,7 +74,7 @@ module RugRecord
 			# Move to specific position
 			#
 			def move_to_position(position)
-				update_attributes(position: position)
+				insert_at(position)
 			end
 
 			#
