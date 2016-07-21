@@ -34,10 +34,13 @@ module RugBuilder
 				# Table body
 				result += "<tbody>"
 				columns.headers.each do |column|
-					result += "<tr>"
-					result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
-					result += "<td>#{columns.render(column, object)}</td>"
-					result += "</tr>"
+					value = columns.render(column, object)
+					if options[:show_blank_rows] == true || !value.blank?
+						result += "<tr>"
+						result += "<td>#{object.class.human_attribute_name(column.to_s).upcase_first}</td>"
+						result += "<td>#{value}</td>"
+						result += "</tr>"
+					end
 				end
 				result += "</tbody>"
 

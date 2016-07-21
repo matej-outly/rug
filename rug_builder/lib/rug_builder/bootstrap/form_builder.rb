@@ -30,6 +30,11 @@ require "rug_builder/bootstrap/form_builder/token_input"
 module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
+
+			#def initialize(object_name, object, template, options)
+			#	super(object_name, object, template, options)
+			#end
+
 		end
 #	end
 end

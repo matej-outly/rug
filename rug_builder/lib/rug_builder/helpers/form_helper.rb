@@ -29,6 +29,11 @@ module RugBuilder
 					end
 				end
 
+				# Automatic instance
+				if object.is_a?(Class)
+					object = object.new
+				end
+
 				form_for(object, options, &block)
 			end
 

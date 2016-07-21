@@ -9,6 +9,7 @@
 # *
 # *****************************************************************************
 
+require "rug_builder/helpers/button_helper"
 require "rug_builder/helpers/form_helper"
 require "rug_builder/helpers/format_helper"
 require "rug_builder/helpers/icon_helper"
@@ -21,6 +22,7 @@ module RugBuilder
 	class Railtie < Rails::Railtie
 		
 		initializer "rug_builder.helpers" do
+			ActionView::Base.send :include, Helpers::ButtonHelper
 			ActionView::Base.send :include, Helpers::FormHelper
 			ActionView::Base.send :include, Helpers::FormatHelper
 			ActionView::Base.send :include, Helpers::IconHelper
@@ -44,6 +46,7 @@ module RugBuilder
 			end
 
 			# Config dependent builders
+			require "rug_builder/#{RugBuilder.frontend_framework}/button_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/form_builder"
 			require "rug_builder/#{RugBuilder.map_framework}/map_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
