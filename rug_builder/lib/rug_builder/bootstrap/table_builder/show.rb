@@ -37,7 +37,7 @@ module RugBuilder
 					value = columns.render(column, object)
 					if options[:show_blank_rows] == true || !value.blank?
 						result += "<tr>"
-						result += "<td>#{column.label(column, object.class)}</td>"
+						result += "<td>#{columns.label(column, object.class)}</td>"
 						result += "<td>#{value}</td>"
 						result += "</tr>"
 					end
