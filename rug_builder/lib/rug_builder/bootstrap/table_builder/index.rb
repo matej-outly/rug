@@ -38,41 +38,50 @@ module RugBuilder
 				# Normalize columns
 				columns = normalize_columns(columns)
 
-				if objects.empty?
-					result = "<div class=\"alert alert-warning\" role=\"alert\">#{ I18n.t("views.index_table.empty") }</div>"
+				result = ""
+				
+				# Show link column
+				if options[:show_link_column]
+					show_link_column = options[:show_link_column]
 				else
-					result = ""
-					
-					# Show link column
-					if options[:show_link_column]
-						show_link_column = options[:show_link_column]
-					else
-						show_link_column = 0
-					end
+					show_link_column = 0
+				end
 
-					# Show panel parts
-					show_panel_heading = check_new_link(options) || options[:global_actions]
-					show_panel_footer = options[:pagination] == true || options[:summary] == true 
-					show_panel = true#show_panel_heading || show_panel_footer
-					
+				# Show panel parts
+				show_panel_heading = check_new_link(options) || options[:global_actions]
+				show_panel_footer = options[:pagination] == true || options[:summary] == true 
+				show_panel = true#show_panel_heading || show_panel_footer
+				
+				# Panel
+				result += "<div class=\"panel panel-default\">" if show_panel
+
+				# Panel heading
+				result += "<div class=\"panel-heading\">" if show_panel_heading
+
+				# Global actions
+				if options[:global_actions]
+					options[:global_actions].each do |action, action_spec|
+						result += get_action_link(nil, action_spec, button_size: "sm")
+					end
+				end
+
+				# New action
+				result += get_new_link(options, button_size: "sm") if check_new_link(options)
+
+				# Panel heading
+				result += "</div>" if show_panel_heading
+
+				if objects.empty?
+
+					# Warning
+					result += "<div class=\"panel-body\">" if show_panel
+					result += I18n.t("views.index_table.empty")
+					result += "</div>" if show_panel
+
 					# Panel
-					result += "<div class=\"panel panel-default\">" if show_panel
+					result += "</div>" if show_panel
 
-					# Panel heading
-					result += "<div class=\"panel-heading\">" if show_panel_heading
-
-					# Global actions
-					if options[:global_actions]
-						options[:global_actions].each do |action, action_spec|
-							result += get_action_link(nil, action_spec, button_size: "sm")
-						end
-					end
-
-					# New action
-					result += get_new_link(options, button_size: "sm") if check_new_link(options)
-
-					# Panel heading
-					result += "</div>" if show_panel_heading
+				else
 
 					# Table
 					result += "<table id=\"index-table-#{hash}\" class=\"table index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
