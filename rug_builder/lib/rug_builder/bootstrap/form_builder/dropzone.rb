@@ -97,7 +97,6 @@ module RugBuilder
 
 				js += "}\n"
 				js += "$(document).ready(dropzone_#{hash}_ready);\n"
-				js += "$(document).on('page:load', dropzone_#{hash}_ready);\n"
 
 				# Dropzone
 				result += @template.javascript_tag(js)
@@ -197,7 +196,6 @@ module RugBuilder
 
 				js += "}\n"
 				js += "$(document).ready(dropzone_many_#{hash}_ready);\n"
-				js += "$(document).on('page:load', dropzone_many_#{hash}_ready);\n"
 
 				# Dropzone
 				result += @template.javascript_tag(js)

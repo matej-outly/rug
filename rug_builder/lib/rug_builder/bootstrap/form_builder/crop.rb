@@ -119,7 +119,6 @@ module RugBuilder
 				js += "}\n"
 
 				js += "$(document).ready(crop_#{hash}_ready);\n"
-				js += "$(document).on('page:load', crop_#{hash}_ready);\n"
 
 				result += @template.javascript_tag(js)
 

@@ -55,7 +55,6 @@ module RugBuilder
 				js += "	}).trigger('change');\n"
 				js += "}\n"
 				js += "$(document).ready(conditional_section_#{hash}_ready);\n"
-				js += "$(document).on('page:load', conditional_section_#{hash}_ready);\n"
 				
 				# Section
 				result = ""

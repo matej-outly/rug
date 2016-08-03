@@ -19,7 +19,7 @@ module RugBuilder
 			# Options:
 			# - paths (hash) - Define paths to show, new, edit, inline_edit (update) and destroy actions
 			# - actions (hash) - Define custom actions as combination of path, method, icon, label and show_if condition
-			# - global_actions (hash) - Define custom global actions as combination of path, method, icon and label
+			# - global_actions (hash) - Define custom global actions as combination of path, method, icon, label and show_if condition
 			# - pagination (boolean) - Turn on pagination
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary

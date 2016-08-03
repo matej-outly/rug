@@ -35,7 +35,6 @@ module RugBuilder
 				js += "	});\n"
 				js += "}\n"
 				js += "$(document).ready(date_picker_#{hash}_ready);\n"
-				js += "$(document).on('page:load', date_picker_#{hash}_ready);\n"
 				
 				# Options
 				options[:id] = "date_picker_#{hash}"
@@ -70,7 +69,6 @@ module RugBuilder
 				js += "	});\n"
 				js += "}\n"
 				js += "$(document).ready(time_picker_#{hash}_ready);\n"
-				js += "$(document).on('page:load', time_picker_#{hash}_ready);\n"
 
 				# Options
 				options[:id] = "time_picker_#{hash}"
@@ -149,7 +147,6 @@ module RugBuilder
 				js += "	datetime_picker_#{hash}_update_inputs();\n"
 				js += "}\n"
 				js += "$(document).ready(datetime_picker_#{hash}_ready);\n"
-				js += "$(document).on('page:load', datetime_picker_#{hash}_ready);\n"
 				
 				result += @template.javascript_tag(js)
 				
@@ -273,7 +270,6 @@ module RugBuilder
 				js += "	duration_#{hash}_update_inputs();\n"
 				js += "}\n"
 				js += "$(document).ready(duration_#{hash}_ready);\n"
-				js += "$(document).on('page:load', duration_#{hash}_ready);\n"
 				
 				result += @template.javascript_tag(js)
 				

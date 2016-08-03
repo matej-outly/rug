@@ -84,7 +84,7 @@ module RugBuilder
 			column = options[:column]
 
 			# Get value
-			if object.class.has_enum?(column)
+			if object.respond_to?("#{column.to_s}_obj".to_sym)	
 				value_obj = object.send("#{column.to_s}_obj".to_sym)
 				return "" if value_obj.blank?
 				value = value_obj.value

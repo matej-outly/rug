@@ -30,32 +30,41 @@ module RugBuilder
 			end
 
 			#
+			# Render only tabs header
+			#
+			def self.render_header(tabs = [])
+				result = ""
+				
+				# Find active tab index
+				active_tab_index = self.active_tab_index(tabs)
+
+				# Render header
+				result += "<ul class=\"tab-nav\">"
+				tabs.each_with_index do |tab, index|
+					path = tab[:path] ? tab[:path].to_s : "#"
+					result += "<li class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#{path}\">#{tab[:heading]}</a></li>"
+				end
+				result += "</ul>"
+
+				return result.html_safe
+			end
+
+			#
 			# Main render method
 			#
 			def render(options = {})
-
-				# Find active tab
-				active_tab_index = nil
-				@tabs.each_with_index do |tab, index|
-					if tab[:active] == true
-						active_tab_index = index
-					end
-				end
-				if active_tab_index.nil?
-					active_tab_index = 0
-				end
 
 				# Wrapper
 				result = ""
 				result += "<section class=\"tabs pill\">"
 				
 				# Render header
-				result += "<ul class=\"tab-nav\">"
-				@tabs.each_with_index do |tab, index|
-					result += "<li class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#\">#{tab[:heading]}</a></li>"
-				end
-				result += "</ul>"
-				
+				result += self.class.render_header(@tabs)
+
+				# Find active tab
+				active_tab_index = self.class.active_tab_index(@tabs)
+
+				# Render content
 				@tabs.each_with_index do |tab, index|
 					
 					# Get block
@@ -71,6 +80,24 @@ module RugBuilder
 				result += "</section>"
 
 				return result.html_safe
+			end
+
+		protected
+
+			#
+			# Find active tab index
+			#
+			def self.active_tab_index(tabs = [])
+				result = nil
+				tabs.each_with_index do |tab, index|
+					if tab[:active] == true
+						result = index
+					end
+				end
+				if result.nil?
+					result = 0
+				end
+				return result
 			end
 
 		end
