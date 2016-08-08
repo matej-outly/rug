@@ -24,7 +24,6 @@ module RugBuilder
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary
 			# - inline_edit (array) - array of columns suitable for inline edit
-			# - page_break (integer) - Break table (and page) after given number of rows
 			# - show_link_column (integer) - Column index used for show link
 			#
 			def index(objects, columns, options = {})
@@ -47,6 +46,36 @@ module RugBuilder
 					show_link_column = 0
 				end
 
+				# Prepare global actions
+				global_actions = {}
+				if options[:global_actions]
+					options[:global_actions].each do |action, action_spec|
+						action_spec[:size] = "sm" if action_spec[:size].nil?
+						if action == :new
+							global_actions[:new] = {
+								block: lambda {
+									get_new_link(action_spec[:path], action_spec)
+								}
+							}
+						else
+							global_actions[action] = {
+								block: lambda { 
+									get_action_link(nil, action_spec[:path], action_spec)
+								}
+							}
+						end
+					end
+				end
+				if (options[:global_actions].nil? || options[:global_actions][:new].nil?) && check_new_link(options)
+					global_actions[:new] = {
+						block: lambda {
+							get_new_link(options[:paths][:new], size: "sm")
+						}
+					}
+				end
+
+				# Actions
+
 				# Show panel parts
 				show_panel_heading = check_new_link(options) || options[:global_actions]
 				show_panel_footer = options[:pagination] == true || options[:summary] == true 
@@ -59,14 +88,11 @@ module RugBuilder
 				result += "<div class=\"panel-heading\">" if show_panel_heading
 
 				# Global actions
-				if options[:global_actions]
-					options[:global_actions].each do |action, action_spec|
-						result += get_action_link(nil, action_spec, button_size: "sm")
+				if global_actions
+					global_actions.each do |action, action_spec|
+						result += action_spec[:block].call
 					end
 				end
-
-				# New action
-				result += get_new_link(options, button_size: "sm") if check_new_link(options)
 
 				# Panel heading
 				result += "</div>" if show_panel_heading
@@ -135,7 +161,7 @@ module RugBuilder
 							# Standard read only value
 							value = columns.render(column, object)
 							if idx == show_link_column && check_show_link(options)
-								result += get_show_link(object, value, options)
+								result += get_show_link(object, value, options[:paths][:show])
 							else
 								result += value
 							end
@@ -149,13 +175,13 @@ module RugBuilder
 						if options[:actions]
 							result += "<td class=\"custom action\">"
 							options[:actions].each do |action, action_spec|
-								result += get_action_link(object, action_spec)
+								result += get_action_link(object, action_spec[:path], action_spec)
 							end
 							result += "</td>"
 						end
-						result += "<td class=\"standard action\">#{get_inline_edit_link(object, options, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
-						result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
-						result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
+						result += "<td class=\"standard action\">#{get_inline_edit_link(object, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
+						result += "<td class=\"standard action\">#{get_edit_link(object, options[:paths][:edit], label: false)}</td>" if check_edit_link(options)
+						result += "<td class=\"standard action\">#{get_destroy_link(object, options[:paths][:destroy], label: false)}</td>" if check_destroy_link(options)
 						result += "</tr>"
 
 					end
@@ -288,7 +314,7 @@ module RugBuilder
 								value = columns.render(column, object)
 								if column_idx == show_link_column
 									if check_show_link(options)
-										result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, value, options)}</td>"
+										result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{get_show_link(object, value, options[:paths][:show])}</td>"
 									else
 										result += "<td class=\"leaf\" colspan=\"#{ (maximal_level + 1 - level) }\">#{value}</td>"
 									end
@@ -300,15 +326,15 @@ module RugBuilder
 							# Actions
 							if options[:actions]
 								options[:actions].each do |action, action_spec|
-									result += "<td class=\"custom action\">#{get_action_link(object, action_spec)}</td>"
+									result += "<td class=\"custom action\">#{get_action_link(object, action_spec[:path], action_spec)}</td>"
 								end
 							end
 							if check_moving(options, hierarchical: true)
-								result += "<td class=\"standard action\">#{get_moving_up_link(object, options)}</td>" 
-								result += "<td class=\"standard action\">#{get_moving_down_link(object, options)}</td>" 
+								result += "<td class=\"standard action\">#{get_moving_up_link(object, options[:paths][:move_up])}</td>" 
+								result += "<td class=\"standard action\">#{get_moving_down_link(object, options[:paths][:move_down])}</td>" 
 							end
-							result += "<td class=\"standard action\">#{get_edit_link(object, options, label: false)}</td>" if check_edit_link(options)
-							result += "<td class=\"standard action\">#{get_destroy_link(object, options, label: false)}</td>" if check_destroy_link(options)
+							result += "<td class=\"standard action\">#{get_edit_link(object, options[:paths][:edit], label: false)}</td>" if check_edit_link(options)
+							result += "<td class=\"standard action\">#{get_destroy_link(object, options[:paths][:destroy], label: false)}</td>" if check_destroy_link(options)
 							result += "</tr>"
 
 						end
@@ -366,14 +392,14 @@ module RugBuilder
 							# Standard read only value
 							value = columns.render(column, object)
 							if idx == show_link_column && check_show_link(options)
-								result += "<div class=\"picture\">#{get_show_link(object, value, options, disable_button: true)}</div>"
+								result += "<div class=\"picture\">#{get_show_link(object, value, options[:paths][:show], disable_button: true)}</div>"
 							else
 								result += "<div class=\"description\">#{value}</div>"
 							end
 
 						end
-						result += "<div class=\"standard action edit\">#{get_edit_link(object, options, disable_button: true)}</div>" if check_edit_link(options)
-						result += "<div class=\"standard action destroy\">#{get_destroy_link(object, options, disable_button: true)}</div>" if check_destroy_link(options)
+						result += "<div class=\"standard action edit\">#{get_edit_link(object, options[:paths][:edit], disable_button: true)}</div>" if check_edit_link(options)
+						result += "<div class=\"standard action destroy\">#{get_destroy_link(object, options[:paths][:destroy], disable_button: true)}</div>" if check_destroy_link(options)
 						result += "</div>"
 					end
 					result += "</div>"
@@ -467,20 +493,20 @@ module RugBuilder
 				end
 			end
 
-			def get_inline_edit_link(object, options, link_options)
+			def get_inline_edit_link(object, options)
 				result = ""
-				if !link_options[:label_edit].nil?
-					if link_options[:label_edit] != false
-						label_edit = link_options[:label_edit]
+				if !options[:label_edit].nil?
+					if options[:label_edit] != false
+						label_edit = options[:label_edit]
 					else
 						label_edit = ""
 					end
 				else
 					label_edit = I18n.t("general.action.edit")
 				end
-				if !link_options[:label_save].nil?
-					if link_options[:label_save] != false
-						label_save = link_options[:label_save]
+				if !options[:label_save].nil?
+					if options[:label_save] != false
+						label_save = options[:label_save]
 					else
 						label_save = ""
 					end
@@ -488,7 +514,7 @@ module RugBuilder
 					label_save = I18n.t("general.action.save")
 				end
 				link_tag_class = ""
-				if link_options[:disable_button] != true
+				if options[:disable_button] != true
 					link_tag_class = "btn btn-xs btn-primary"
 				end
 				result += @template.link_to(RugBuilder::IconBuilder.render("pencil") + label_edit, "#", class: "inline-edit edit " + link_tag_class)

@@ -44,14 +44,15 @@ module RugBuilder
 				# Actions
 				if options[:actions]
 					options[:actions].each do |action, action_spec|
-						result += get_action_link(object, action_spec, button_size: "sm")
+						action_spec[:size] = "sm" if action_spec[:size].nil?
+						result += get_action_link(object, action_spec[:path], action_spec)
 					end
 				end
 
 				# Standard actions
-				result += get_new_link(options, button_size: "sm") if check_new_link(options)
-				result += get_edit_link(object, options, button_size: "sm") if check_edit_link(options)
-				result += get_destroy_link(object, options, button_size: "sm") if check_destroy_link(options)
+				result += get_new_link(options[:paths][:new], size: "sm") if check_new_link(options)
+				result += get_edit_link(object, options[:paths][:edit], size: "sm") if check_edit_link(options)
+				result += get_destroy_link(object, options[:paths][:destroy], size: "sm") if check_destroy_link(options)
 
 				# Panel heading
 				result += "</div>" if show_panel_heading

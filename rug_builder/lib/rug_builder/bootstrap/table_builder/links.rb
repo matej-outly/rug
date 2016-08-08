@@ -23,8 +23,8 @@ module RugBuilder
 				return options[:paths] && options[:paths][:show]
 			end
 
-			def get_show_link(object, label, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:show], object)
+			def get_show_link(object, label, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
 				if url
 					label = I18n.t("general.action.show").upcase_first if label.blank?
 					return @template.link_to(label, url) + " "
@@ -41,11 +41,11 @@ module RugBuilder
 				return options[:paths] && options[:paths][:destroy]
 			end
 
-			def get_destroy_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:destroy], object)
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
+			def get_destroy_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
 					else
 						label = ""
 					end
@@ -55,12 +55,12 @@ module RugBuilder
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "destroy"
-					if link_options[:disable_method_and_notification] != true
+					if options[:disable_method_and_notification] != true
 						link_tag_options[:method] = :delete
 						link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
 					end
-					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-danger"
+					if options[:disable_button] != true
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "danger"}"
 					end
 					return @template.link_to(RugBuilder::IconBuilder.render(:destroy) + label, url, link_tag_options) + " "
 				else
@@ -76,11 +76,11 @@ module RugBuilder
 				return options[:paths] && options[:paths][:edit]
 			end
 
-			def get_edit_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:edit], object)
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
+			def get_edit_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
 					else
 						label = ""
 					end
@@ -90,8 +90,8 @@ module RugBuilder
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "edit"
-					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
+					if options[:disable_button] != true
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
 					return @template.link_to(RugBuilder::IconBuilder.render(:edit) + label, url, link_tag_options) + " "
 				else
@@ -107,11 +107,11 @@ module RugBuilder
 				return options[:paths] && options[:paths][:new]
 			end
 
-			def get_new_link(options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:new])
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
+			def get_new_link(path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
 					else
 						label = ""
 					end
@@ -121,8 +121,8 @@ module RugBuilder
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "new"
-					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
+					if options[:disable_button] != true
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
 					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
 				else
@@ -138,11 +138,11 @@ module RugBuilder
 				return options[:paths] && options[:paths][:create]
 			end
 
-			def get_create_link(object, options, link_options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:create])
-				if !link_options[:label].nil?
-					if link_options[:label] != false
-						label = link_options[:label]
+			def get_create_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
 					else
 						label = ""
 					end
@@ -152,8 +152,8 @@ module RugBuilder
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "create"
-					if link_options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-primary"
+					if options[:disable_button] != true
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
 					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
 				else
@@ -165,14 +165,14 @@ module RugBuilder
 			# Common actions
 			# *********************************************************************
 
-			def get_action_link(object, options, link_options = {})
+			def get_action_link(object, path, options = {})
 				if options[:show_if].nil? || options[:show_if].call(object) == true
-					url = RugSupport::PathResolver.new(@template).resolve(options[:path], object)
+					url = RugSupport::PathResolver.new(@template).resolve(path, object)
 					if url
 						link_tag_options = {}
-						link_tag_options[:class] = "btn btn-#{link_options[:button_size] ? link_options[:button_size] : "xs"} btn-default"
+						link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 						link_tag_options[:method] = options[:method] if options[:method]
-						return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + options[:label], url, link_tag_options) + " "
+						return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + options[:label].to_s, url, link_tag_options) + " "
 					else
 						return ""
 					end
@@ -185,11 +185,11 @@ module RugBuilder
 			# Common actions
 			# *********************************************************************
 
-			def check_moving(options, funtion_options = {})
+			def check_moving(options, function_options = {})
 				result = true
 				result = result && options[:moving] == true
 				result = result && !options[:paths].blank?
-				if funtion_options[:hierarchical] == true
+				if function_options[:hierarchical] == true
 					result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
 				else
 					result = result && !options[:paths][:move].blank?
@@ -199,22 +199,22 @@ module RugBuilder
 
 			def get_moving_link(options = {})
 				link_tag_options = {}
-				link_tag_options[:class] = "moving-handle btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				link_tag_options[:class] = "moving-handle btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move) + options[:label].to_s, "#", link_tag_options) + " "
 			end
 
-			def get_moving_up_link(object, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_up], object)
+			def get_moving_up_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
 				link_tag_options = {}
-				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
 				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_up) + options[:label].to_s, url, link_tag_options) + " "
 			end
 
-			def get_moving_down_link(object, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(options[:paths][:move_down], object)
+			def get_moving_down_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
 				link_tag_options = {}
-				link_tag_options[:class] = "btn btn-#{options[:button_size] ? options[:button_size] : "xs"} btn-default"
+				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
 				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_down) + options[:label].to_s, url, link_tag_options) + " "
 			end
