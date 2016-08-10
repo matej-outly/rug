@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug table builder - index
+# * Rug table builder - index TODO inline edit
 # *
 # * Author: Matěj Outlý
 # * Date  : 10. 4. 2015
@@ -53,31 +53,54 @@ module RugBuilder
 						action_spec[:size] = "sm" if action_spec[:size].nil?
 						if action == :new
 							global_actions[:new] = {
-								block: lambda {
-									get_new_link(action_spec[:path], action_spec)
-								}
+								block: lambda { get_new_link(action_spec[:path], action_spec) }
 							}
 						else
 							global_actions[action] = {
-								block: lambda { 
-									get_action_link(nil, action_spec[:path], action_spec)
-								}
+								block: lambda { get_action_link(nil, action_spec[:path], action_spec) }
 							}
 						end
 					end
 				end
-				if (options[:global_actions].nil? || options[:global_actions][:new].nil?) && check_new_link(options)
+				if (options[:global_actions].nil? || options[:global_actions][:new].nil?) && check_new_link(options) # Automatic NEW action
 					global_actions[:new] = {
-						block: lambda {
-							get_new_link(options[:paths][:new], size: "sm")
-						}
+						block: lambda { get_new_link(options[:paths][:new], size: "sm") }
 					}
 				end
 
-				# Actions
+				# Prepare actions
+				actions = {}
+				if options[:actions]
+					options[:actions].each do |action, action_spec|
+						action_spec[:label] = false if action_spec[:label].nil?
+						if action == :edit
+							actions[:edit] = {
+								block: lambda { |object| get_edit_link(object, action_spec[:path], action_spec) }
+							}
+						elsif action == :destroy
+							actions[:destroy] = {
+								block: lambda { |object| get_destroy_link(object, action_spec[:path], action_spec) }
+							}
+						else
+							actions[action] = {
+								block: lambda { |object| get_action_link(object, action_spec[:path], action_spec) }
+							}
+						end
+					end
+				end
+				if (options[:actions].nil? || options[:actions][:edit].nil?) && check_edit_link(options) # Automatic EDIT action
+					actions[:edit] = {
+						block: lambda { |object| get_edit_link(object, options[:paths][:edit], label: false) }
+					}
+				end
+				if (options[:actions].nil? || options[:actions][:destroy].nil?) && check_destroy_link(options) # Automatic EDIT action
+					actions[:destroy] = {
+						block: lambda { |object| get_destroy_link(object, options[:paths][:destroy], label: false) }
+					}
+				end
 
 				# Show panel parts
-				show_panel_heading = check_new_link(options) || options[:global_actions]
+				show_panel_heading = !global_actions.empty?
 				show_panel_footer = options[:pagination] == true || options[:summary] == true 
 				show_panel = true#show_panel_heading || show_panel_footer
 				
@@ -127,20 +150,8 @@ module RugBuilder
 						result += "</th>"
 						columns_count += 1
 					end
-					if options[:actions]
+					if actions
 						result += "<th></th>"
-						columns_count += 1
-					end
-					if check_inline_edit(options)
-						result += "<th></th>"
-						columns_count += 1
-					end
-					if check_edit_link(options)
-						result += "<th></th>"
-						columns_count += 1
-					end
-					if check_destroy_link(options)
-						result += "<th></th>" 
 						columns_count += 1
 					end
 					result += "</tr>"
@@ -172,16 +183,13 @@ module RugBuilder
 							end
 							result += "</td>"
 						end
-						if options[:actions]
+						if actions
 							result += "<td class=\"custom action\">"
-							options[:actions].each do |action, action_spec|
-								result += get_action_link(object, action_spec[:path], action_spec)
+							actions.each do |action, action_spec|
+								result += action_spec[:block].call(object)
 							end
 							result += "</td>"
 						end
-						result += "<td class=\"standard action\">#{get_inline_edit_link(object, label_edit: false, label_save: false)}</td>" if check_inline_edit(options)
-						result += "<td class=\"standard action\">#{get_edit_link(object, options[:paths][:edit], label: false)}</td>" if check_edit_link(options)
-						result += "<td class=\"standard action\">#{get_destroy_link(object, options[:paths][:destroy], label: false)}</td>" if check_destroy_link(options)
 						result += "</tr>"
 
 					end
