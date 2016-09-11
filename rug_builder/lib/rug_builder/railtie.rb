@@ -15,6 +15,8 @@ require "rug_builder/helpers/format_helper"
 require "rug_builder/helpers/icon_helper"
 require "rug_builder/helpers/map_helper"
 require "rug_builder/helpers/menu_helper"
+require "rug_builder/helpers/nested_helper"
+require "rug_builder/helpers/pagination_helper"
 require "rug_builder/helpers/table_helper"
 require "rug_builder/helpers/tabs_helper"
 
@@ -28,6 +30,8 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::IconHelper
 			ActionView::Base.send :include, Helpers::MapHelper
 			ActionView::Base.send :include, Helpers::MenuHelper
+			ActionView::Base.send :include, Helpers::NestedHelper
+			ActionView::Base.send :include, Helpers::PaginationHelper
 			ActionView::Base.send :include, Helpers::TableHelper
 			ActionView::Base.send :include, Helpers::TabsHelper
 		end
