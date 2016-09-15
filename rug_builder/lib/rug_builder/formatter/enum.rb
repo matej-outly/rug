@@ -65,9 +65,9 @@ module RugBuilder
 			if options[:format]
 				format = options[:format]
 			else
-				format = :color
+				format = :label
 			end
-			if ![:color, :icon, :color_icon].include?(format)
+			if ![:label, :button].include?(format)
 				raise "Unknown format #{format}."
 			end
 
@@ -83,14 +83,15 @@ module RugBuilder
 			end
 			column = options[:column]
 
-			# Get value
+			# Get value, color and icon
 			if object.respond_to?("#{column.to_s}_obj".to_sym)	
 				value_obj = object.send("#{column.to_s}_obj".to_sym)
 				return "" if value_obj.blank?
 				value = value_obj.value
 				label = value_obj.label
-				color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}")
-				icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}")
+				color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
+				icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
+			
 			else # Bool
 				value = object.send(column.to_sym)
 				if value == true # Special value TRUE
@@ -101,49 +102,56 @@ module RugBuilder
 					return ""
 				end
 				if options[:bool_as_enum] == true
-					label = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.bool_#{value}")
-					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.bool_#{value}")
-					icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.bool_#{value}")
+					label = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.bool_#{value}", default: "")
+					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.bool_#{value}", default: "")
+					icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.bool_#{value}", default: "")
 				else
-					label = I18n.t("general.attribute.boolean.bool_#{value}")
-					color = I18n.t("general.attribute.boolean_colors.bool_#{value}")
-					icon = I18n.t("general.attribute.boolean_icons.bool_#{value}")
+					label = I18n.t("general.attribute.boolean.bool_#{value}", default: "")
+					color = I18n.t("general.attribute.boolean_colors.bool_#{value}", default: "")
+					icon = I18n.t("general.attribute.boolean_icons.bool_#{value}", default: "")
 				end
 			end
 
-			if RugBuilder.frontend_framework == "gumby"
+			if format == :label
 				
-				# CSS classes
-				klass = []
-				klass << "default label"
-				klass << "state-#{value}"
-				klass << "color-#{color}" if format == :color || format == :color_icon
-				klass << "ttip" if options[:tooltip] == true
-
-				# Render
-				result = "<div class=\"#{klass.join(" ")}\" #{options[:tooltip] == true ? "data-tooltip=\"" + label + "\"" : ""}>"
-				result += "<i class=\"icon-#{icon}\"></i>"  if format == :icon || format == :color_icon
-				result += label if options[:tooltip] != true
-				result += "</div>"
-
-			else # Bootstrap
-
-				# CSS classes
-				klass = []
-				klass << "label-default label"
-				klass << "state-#{value}"
-				klass << "color-#{color}" if format == :color || format == :color_icon
+				el_options = {}
+				el_options[:color] = color if !color.blank? && options[:color] != false
+				el_options[:tooltip] = label if options[:tooltip] == true
+				el_label = ""
+				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += label if options[:tooltip] != true
 				
-				# Render	
-				result = "<div class=\"#{klass.join(" ")}\""
-				result += " data-toggle=\"tooltip\" data-placement=\"top\" title=\"#{label}\"" if options[:tooltip] == true
-				result += ">"
-				result += "<i class=\"icon-#{icon}\"></i>"  if format == :icon || format == :color_icon
-				result += label if options[:tooltip] != true
-				result += "</div>"
+				return RugBuilder::LabelBuilder.render(el_label, el_options)
+
+			elsif format == :button
+
+				el_options = {}
+				el_options[:color] = color if !color.blank? && options[:color] != false
+				el_options[:tooltip] = label if options[:tooltip] == true
+				el_options[:format] = :button
+				el_options[:size] = options[:size] if options[:size]
+				el_label = ""
+				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += label if options[:tooltip] != true
+				
+				builder = RugBuilder::ButtonBuilder.new(@template)
+				return builder.button_group do |b|
+					result_1 = ""
+					result_1 += b.button(el_label, nil, el_options)
+					if options[:path]
+						result_1 += b.dropdown_button(nil, el_options) do |m| 
+							result_2 = ""
+							object.class.send("available_#{column.to_s.pluralize}".to_sym).each do |available_state|
+								result_2 += m.item(available_state.label, RugSupport::PathResolver.new(@template).resolve(options[:path], available_state.value), method: "put")
+							end
+							result_2.html_safe
+						end
+					end
+					result_1.html_safe
+				end
 
 			end
-			return result
+
 		end
 
 	end

@@ -69,6 +69,13 @@ module RugRecord
 					end
 
 					#
+					# Add ne state transition
+					#
+					def state_transition(column, from_state, to_states)
+						
+					end
+
+					#
 					# Get all defined states 
 					#
 					def states

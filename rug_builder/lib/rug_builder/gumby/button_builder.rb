@@ -10,23 +10,35 @@
 # *****************************************************************************
 
 module RugBuilder
-#	module Bootstrap
+#	module Gumby
 		class ButtonBuilder
+
+			#
+			# Constructor
+			#
+			def initialize(template)
+				@template = template
+			end
 
 			#
 			# Render button 
 			#
-			def self.render(label, url, options = {})
-				style = options[:style] ? options[:style] : "default"
-				size = options[:size] ? options[:size] : nil
-				method = options[:method] ? options[:method] : nil
-				url = "#" if url.blank?
+			def button(label, url = nil, options = {})
+				return "".html_safe # TODO
+			end
 
-				if !label.blank?
-					return "".html_safe # TODO
-				else
-					return ""
-				end
+			#
+			# Render button 
+			#
+			def dropdown_button(label = nil, options = {}, &block)
+				return "".html_safe # TODO
+			end
+
+			#
+			# Render button 
+			#
+			def button_group(options = {}, &block)
+				return "".html_safe # TODO
 			end
 
 		end
