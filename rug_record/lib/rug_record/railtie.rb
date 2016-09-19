@@ -33,6 +33,7 @@ module RugRecord
 			require "rug_record/concerns/ordering"if RugRecord.enable_ordering
 			require "rug_record/concerns/remote_model"if RugRecord.enable_remote_model
 			require "rug_record/concerns/sorting"if RugRecord.enable_sorting
+			require "rug_record/concerns/statistics"if RugRecord.enable_statistics
 
 			# Type extensions (concerns)
 			require "rug_record/concerns/type/address" if RugRecord.enable_type_address

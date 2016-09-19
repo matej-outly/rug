@@ -76,6 +76,14 @@ module RugRecord
 	@@enable_sorting = true
 
 	#
+	# Enable statistics
+	#
+	# Use gem 'groupdate' if enabled
+	#
+	mattr_accessor :enable_statistics
+	@@enable_statistics = false
+
+	#
 	# Enable type address
 	#
 	mattr_accessor :enable_type_address
