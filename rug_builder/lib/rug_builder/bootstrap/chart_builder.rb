@@ -21,9 +21,25 @@ module RugBuilder
 			end
 
 			#
+			# Time flexible line chart
+			#
+			def time_flexible_line_chart(path, options = {})
+				return time_flexible_chart(:line, path, options)
+			end
+
+			#
 			# Time flexible area chart
 			#
 			def time_flexible_area_chart(path, options = {})
+				return time_flexible_chart(:area, path, options)
+			end
+
+		protected
+
+			#
+			# Time flexible chart
+			#
+			def time_flexible_chart(type, path, options = {})
 				result = ""
 			
 				# ID check
@@ -57,7 +73,7 @@ module RugBuilder
 				js += "Chartkick.configure({'language': '#{I18n.locale.to_s}'});\n"
 
 				# Reload function
-				js += "function time_flexible_area_chart_#{hash}_reload()\n"
+				js += "function time_flexible_#{type.to_s}_chart_#{hash}_reload()\n"
 				js += "{\n"
 				js += "	var from_date = $('#date_picker_#{from_hash}').val();\n"
 				js += "	var to_date = $('#date_picker_#{to_hash}').val();\n"
@@ -70,11 +86,11 @@ module RugBuilder
 				js += "		params.push('to=' + to_date)\n"
 				js += "	}\n"
 				js += "	var chart_options = Chartkick.charts['#{options[:id]}'].getOptions();\n"
-				js += "	new Chartkick.AreaChart('#{options[:id]}', path + '?' + params.join('&'), chart_options);\n"
+				js += "	new Chartkick.#{type.to_s.to_snake.upcase_first}Chart('#{options[:id]}', path + '?' + params.join('&'), chart_options);\n"
 				js += "}\n"
 
 				# Ready function
-				js += "function time_flexible_area_chart_#{hash}_ready()\n"
+				js += "function time_flexible_#{type.to_s}_chart_#{hash}_ready()\n"
 				js += "{\n"
 				js += "	$('#date_picker_#{from_hash}, #date_picker_#{to_hash}').pikaday({ \n"
 				js += "		firstDay: 1,\n"
@@ -87,9 +103,9 @@ module RugBuilder
 				js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
 				js += "		}\n"
 				js += "	});\n"
-				js += "	$('#date_picker_#{from_hash}, #date_picker_#{to_hash}').on('change', time_flexible_area_chart_#{hash}_reload);\n"
+				js += "	$('#date_picker_#{from_hash}, #date_picker_#{to_hash}').on('change', time_flexible_#{type.to_s}_chart_#{hash}_reload);\n"
 				js += "}\n"
-				js += "$(document).ready(time_flexible_area_chart_#{hash}_ready);\n"
+				js += "$(document).ready(time_flexible_#{type.to_s}_chart_#{hash}_ready);\n"
 
 				# Add JavaScript to result
 				result += @template.javascript_tag(js)
@@ -99,19 +115,19 @@ module RugBuilder
 				result += "<div class=\"panel-body\">"
 
 				# Chart
-				result += @template.area_chart(path + "?from=#{default_from.to_s}&to=#{default_to.to_s}", options)
+				result += @template.send("#{type.to_s}_chart".to_sym, path + "?from=#{default_from.to_s}&to=#{default_to.to_s}", options)
 
 				# Row
 				result += "<div class=\"row\">"
 				
 				# From
 				result += "<div class=\"col-sm-3\">"
-				result += @template.text_field_tag("time_flexible_area_chart_#{hash}_from", default_from.to_s, class: "form-control", id: "date_picker_#{from_hash}")
+				result += @template.text_field_tag("time_flexible_#{type.to_s}_chart_#{hash}_from", default_from.to_s, class: "form-control", id: "date_picker_#{from_hash}")
 				result += "</div>"
 
 				# To
 				result += "<div class=\"col-sm-3 col-sm-offset-6\">"
-				result += @template.text_field_tag("time_flexible_area_chart_#{hash}_to", default_to.to_s, class: "form-control", id: "date_picker_#{to_hash}")
+				result += @template.text_field_tag("time_flexible_#{type.to_s}_chart_#{hash}_to", default_to.to_s, class: "form-control", id: "date_picker_#{to_hash}")
 				result += "</div>"
 				
 				# Row end
