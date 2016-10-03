@@ -19,9 +19,10 @@ module RugBuilder
 			def self.render(label, options = {})
 				style = options[:style] ? options[:style] : "default"
 				color = options[:color] ? options[:color] : nil
+				klass = options[:class] ? options[:class] : ""
 
 				if !label.blank?
-					return "<span class=\"label label-#{style} #{color ? "color-" + color : ""}\">#{label}</span>".html_safe
+					return "<span class=\"label label-#{style} #{color ? "color-" + color : ""} #{klass}\">#{label}</span>".html_safe
 				else
 					return ""
 				end

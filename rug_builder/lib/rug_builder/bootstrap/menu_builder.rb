@@ -24,25 +24,26 @@ module RugBuilder
 			# Main render method
 			#
 			def render(object, options = {}, &block)
-				
+				klass = options[:class] ? options[:class] : ""
+
 				# Set context
 				@object = object
 				@options = options
 
 				# Render
-				return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} #{!@options[:class].blank? ? @options[:class] : ""} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
+				return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} #{klass} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
 			end
 
 			#
 			# Render common item
 			#
 			def item(label, path, options = {})
-				result = ""
-
 				icon = options.delete(:icon)
 				active = options.delete(:active)
+				klass = options[:class] ? options[:class] : ""
 
-				result += "<li class=\"#{active == true ? "active" : ""}\">"
+				result = ""
+				result += "<li class=\"#{active == true ? "active" : ""} #{klass}\">"
 				result += @template.link_to(RugBuilder::IconBuilder.render(icon) + label, path, options)
 				result += "</li>"
 

@@ -28,6 +28,7 @@ module RugBuilder
 				size = options[:size] ? options[:size] : nil
 				method = options[:method] ? options[:method] : nil
 				color = options[:color] ? options[:color] : nil
+				klass = options[:class] ? options[:class] : ""
 				url = "#" if url.blank?
 
 				# Check format
@@ -44,7 +45,7 @@ module RugBuilder
 					if format == :a
 						result = ""
 						result += "<a 
-							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""}\" 
+							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}\" 
 							#{method ? "data-method=\"" + method + "\"" : ""}
 							href=\"#{url}\"
 						>"
@@ -55,7 +56,7 @@ module RugBuilder
 						result = ""
 						result += "<button 
 							type=\"button\"
-							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""}\" 
+							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}\" 
 							#{method ? "data-method=\"" + method + "\"" : ""}
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
 						>" # TODO method not working here
@@ -75,12 +76,13 @@ module RugBuilder
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
+				klass = options[:class] ? options[:class] : ""
 				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
 
 				result = ""
 				result += "<button 
 					type=\"button\" 
-					class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} dropdown-toggle\" 
+					class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} dropdown-toggle #{klass}\" 
 					data-toggle=\"dropdown\" 
 					aria-haspopup=\"true\" 
 					aria-expanded=\"false\"
@@ -98,8 +100,10 @@ module RugBuilder
 			# Render button group
 			#
 			def button_group(options = {}, &block)
+				klass = options[:class] ? options[:class] : ""
+
 				result = ""
-				result += "<div class=\"btn-group\">"
+				result += "<div class=\"btn-group #{klass}\">"
 				result += @template.capture(self, &block).to_s
 				result += "</div>"
 				return result.html_safe

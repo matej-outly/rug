@@ -35,9 +35,10 @@ module RugBuilder
 			# Render icon 
 			#
 			def self.render(icon)
+				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
 				if !icon.blank?
-					return "<span class=\"glyphicon glyphicon-#{icon}\" aria-hidden=\"true\"></span> ".html_safe
+					return "<span class=\"glyphicon glyphicon-#{icon} #{klass}\" aria-hidden=\"true\"></span> ".html_safe
 				else
 					return ""
 				end

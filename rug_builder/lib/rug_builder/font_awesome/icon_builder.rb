@@ -34,10 +34,11 @@ module RugBuilder
 			#
 			# Render icon 
 			#
-			def self.render(icon)
+			def self.render(icon, options = {})
+				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
 				if !icon.blank?
-					return "<i class=\"fa fa-#{icon}\"></i> ".html_safe
+					return "<i class=\"fa fa-#{icon} #{klass}\"></i> ".html_safe
 				else
 					return ""
 				end
