@@ -44,7 +44,7 @@ module RugBuilder
 
 				result = ""
 				result += "<li class=\"#{active == true ? "active" : ""} #{klass}\">"
-				result += @template.link_to(RugBuilder::IconBuilder.render(icon) + label, path, options)
+				result += @template.link_to((RugBuilder::IconBuilder.render(icon) + label).html_safe, path, options)
 				result += "</li>"
 
 				return result.html_safe

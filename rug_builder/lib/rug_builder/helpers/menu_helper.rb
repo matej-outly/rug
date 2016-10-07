@@ -17,6 +17,10 @@ module RugBuilder
 				RugBuilder::MenuBuilder.new(self).render(object, options, &block)
 			end
 
+			def rug_menu(options = {}, &block)
+				RugBuilder::MenuBuilder.new(self).render(nil, options, &block)
+			end
+
 		end
 	end
 end
