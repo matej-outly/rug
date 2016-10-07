@@ -81,6 +81,17 @@ module RugRecord
 							return RugBuilder::Formatter.name(self.send(column))
 						end
 
+						# Set method
+						define_method("#{new_column}_formatted=".to_sym) do |value|
+							column = new_column
+							parsed_value = self.class.parse_name(value.to_s)
+							self.send("#{column}=".to_sym, {
+								title: parsed_value[0],
+								firstname: parsed_value[1],
+								lastname: parsed_value[2]
+							})
+						end
+
 						# Attribute for filter
 						attr_accessor "#{new_column}_for_filter".to_sym
 
