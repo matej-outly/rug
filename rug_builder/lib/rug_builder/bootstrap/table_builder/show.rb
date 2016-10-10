@@ -33,85 +33,81 @@ module RugBuilder
 				columns = normalize_columns(columns)
 
 				# Prepare global actions
-				actions = {}
-				if options[:actions]
-					options[:actions].each do |action, action_spec|
-						action_spec[:size] = "sm" if action_spec[:size].nil?
-						if action == :new
-							actions[:new] = {
-								block: lambda { |object| get_new_link(object, action_spec[:path], action_spec) }
-							}
-						elsif action == :edit
-							actions[:edit] = {
-								block: lambda { |object| get_edit_link(object, action_spec[:path], action_spec) }
-							}
-						elsif action == :destroy
-							actions[:destroy] = {
-								block: lambda { |object| get_destroy_link(object, action_spec[:path], action_spec) }
-							}
-						else
-							actions[action] = {
-								block: lambda { |object| get_action_link(object, action_spec[:path], action_spec) }
-							}
-						end
-					end
-				end
-				if (options[:actions].nil? || options[:actions][:new].nil?) && check_new_link(options) # Automatic NEW action
-					actions[:new] = {
-						block: lambda { |object| get_new_link(options[:paths][:new], size: "sm") }
-					}
-				end
-				if (options[:actions].nil? || options[:actions][:edit].nil?) && check_edit_link(options) # Automatic EDIT action
-					actions[:edit] = {
-						block: lambda { |object| get_edit_link(object, options[:paths][:edit], size: "sm") }
-					}
-				end
-				if (options[:actions].nil? || options[:actions][:destroy].nil?) && check_destroy_link(options) # Automatic DESTROY action
-					actions[:destroy] = {
-						block: lambda { |object| get_destroy_link(object, options[:paths][:destroy], size: "sm") }
-					}
-				end
+				actions = prepare_actions(options, :actions, [:new, :edit, :destroy], size: "sm")
 
 				# Show panel parts
-				show_panel_heading = !actions.empty?
-
-				# Panel
-				result += "<div class=\"panel panel-default\">"
-
-				# Panel heading
-				result += "<div class=\"panel-heading\">" if show_panel_heading
-
-				# Actions
-				if actions
-					actions.each do |action, action_spec|
-						result += action_spec[:block].call(object)
-					end
-				end
+				#show_panel_heading = !actions.empty?
 				
-				# Panel heading
-				result += "</div>" if show_panel_heading
+				# Table heading
+				result += show_layout_3(
+					options[:class],
+					lambda {
+						result_3 = ""
+						if actions
+							actions.each do |action, action_spec|
+								result_3 += action_spec[:block].call(object)
+							end
+						end
+						result_3
+					}
+				)
 
 				# Table
-				result += "<table class=\"table show-table #{options[:class].to_s}\">"
-
-				# Table body
-				result += "<tbody>"
-				columns.headers.each do |column|
-					value = columns.render(column, object)
-					if options[:show_blank_rows] == true || !value.blank?
-						result += "<tr>"
-						result += "<td>#{columns.label(column, object.class)}</td>"
-						result += "<td>#{value}</td>"
-						result += "</tr>"
+				result += show_layout_1(options[:class]) do
+					result_1 = ""
+					columns.headers.each do |column|
+						value = columns.render(column, object)
+						if options[:show_blank_rows] == true || !value.blank?
+							result_1 += show_layout_2(lambda { columns.label(column, object.class) }, lambda { value })
+						end
 					end
+					result_1
 				end
-				result += "</tbody>"
-
-				# Table
-				result += "</table>"
-				result += "</div>"
 
 				return result.html_safe
+			end
+
+		protected
+
+			#
+			# Main table
+			#
+			def show_layout_1(klass, &block)
+				result = %{
+					<table class="table table-curved show-table #{klass.to_s}">
+						<tbody>
+							#{block.call}
+						</tbody>
+					</table>
+				}
+				result
+			end
+
+			#
+			# Single column
+			#
+			def show_layout_2(label_block, value_block)
+				result = %{
+					<tr>
+						<td>#{label_block.call}</td>
+						<td>#{value_block.call}</td>
+					</tr>
+				}
+				result
+			end
+
+			#
+			# Table heading
+			#
+			def show_layout_3(klass, actions_block)
+				result = %{
+					<div class="show-table-heading #{klass.to_s}">
+						<div class="actions">
+							#{actions_block.call}
+						</div>
+					</div>
+				}
+				result
 			end
 			
 		end

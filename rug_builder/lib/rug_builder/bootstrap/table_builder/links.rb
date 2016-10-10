@@ -34,15 +34,15 @@ module RugBuilder
 			end
 
 			# *********************************************************************
-			# Destroy
+			# New
 			# *********************************************************************
-
-			def check_destroy_link(options)
-				return options[:paths] && options[:paths][:destroy]
+			
+			def check_new_link(options)
+				return options[:paths] && options[:paths][:new]
 			end
 
-			def get_destroy_link(object, path, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+			def get_new_link(unused_object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -50,19 +50,15 @@ module RugBuilder
 						label = ""
 					end
 				else
-					label = I18n.t("general.action.destroy").upcase_first
+					label = I18n.t("general.action.new").upcase_first
 				end
 				if url
 					link_tag_options = {}
-					link_tag_options[:class] = "destroy"
-					if options[:disable_method_and_notification] != true
-						link_tag_options[:method] = :delete
-						link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
-					end
+					link_tag_options[:class] = "new"
 					if options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "danger"}"
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:destroy) + label, url, link_tag_options) + " "
+					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -98,37 +94,6 @@ module RugBuilder
 					return ""
 				end
 			end
-
-			# *********************************************************************
-			# New
-			# *********************************************************************
-			
-			def check_new_link(options)
-				return options[:paths] && options[:paths][:new]
-			end
-
-			def get_new_link(path, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(path)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.new").upcase_first
-				end
-				if url
-					link_tag_options = {}
-					link_tag_options[:class] = "new"
-					if options[:disable_button] != true
-						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
-					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
-				else
-					return ""
-				end
-			end
 			
 			# *********************************************************************
 			# Create
@@ -138,7 +103,7 @@ module RugBuilder
 				return options[:paths] && options[:paths][:create]
 			end
 
-			def get_create_link(object, path, options = {})
+			def get_create_link(unused_object, path, options = {})
 				url = RugSupport::PathResolver.new(@template).resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
@@ -156,6 +121,41 @@ module RugBuilder
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
 					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
+				else
+					return ""
+				end
+			end
+
+			# *********************************************************************
+			# Destroy
+			# *********************************************************************
+
+			def check_destroy_link(options)
+				return options[:paths] && options[:paths][:destroy]
+			end
+
+			def get_destroy_link(object, path, options = {})
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
+					else
+						label = ""
+					end
+				else
+					label = I18n.t("general.action.destroy").upcase_first
+				end
+				if url
+					link_tag_options = {}
+					link_tag_options[:class] = "destroy"
+					if options[:disable_method_and_notification] != true
+						link_tag_options[:method] = :delete
+						link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+					end
+					if options[:disable_button] != true
+						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "danger"}"
+					end
+					return @template.link_to(RugBuilder::IconBuilder.render(:destroy) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end

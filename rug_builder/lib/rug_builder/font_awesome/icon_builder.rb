@@ -23,7 +23,7 @@ module RugBuilder
 					when :edit then "pencil"
 					when :new then "plus"
 					when :destroy then "trash"
-					when :move then "arrows-v"
+					when :move then "arrows"
 					when :move_up then "long-arrow-up"
 					when :move_down then "long-arrow-down"
 					when :duplicate then "files-o"
