@@ -82,7 +82,7 @@ class String
 	#
 	# Remove characters from string on the left and right side
 	#
-	def trim(chars)
+	def trim(chars = "\s")
 		return self.
 			sub(/^[#{Regexp.escape(chars)}]*/, "").
 			sub(/[#{Regexp.escape(chars)}]*$/, "")
