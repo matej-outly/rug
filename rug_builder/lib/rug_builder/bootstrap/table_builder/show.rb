@@ -20,6 +20,7 @@ module RugBuilder
 			# - show_blank_rows (boolean) - Turn on rows without any content
 			# - paths (hash) - Define paths to new, edit and destroy actions
 			# - actions (hash) - Define custom global actions as combination of path, method, icon, label and show_if condition
+			# - heading (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional heading displayed in table heading
 			#
 			def show(object, columns, options = {})
 				result = ""
@@ -40,7 +41,14 @@ module RugBuilder
 				
 				# Table heading
 				result += show_layout_3(
-					options[:class],
+					options[:class], 
+					lambda {
+						if options[:heading].is_a?(Array)
+							options[:heading].first.to_s
+						else
+							options[:heading].to_s
+						end
+					},
 					lambda {
 						result_3 = ""
 						if actions
@@ -49,7 +57,8 @@ module RugBuilder
 							end
 						end
 						result_3
-					}
+					},
+					(options[:heading].is_a?(Array) && options[:heading].length >= 2 ? options[:heading][1].to_s : "h2")
 				)
 
 				# Table
@@ -99,11 +108,14 @@ module RugBuilder
 			#
 			# Table heading
 			#
-			def show_layout_3(klass, actions_block)
+			def show_layout_3(klass, heading_block, actions_block, heading_tag = "h2")
+				heading = heading_block.call.trim
+				actions = actions_block.call.trim
 				result = %{
-					<div class="show-table-heading #{klass.to_s}">
+					<div class="show-table-heading #{klass.to_s} #{actions.blank? && heading.blank? ? "empty" : ""}">
+						#{ !heading.blank? ? "<" + heading_tag + ">" + heading + "</" + heading_tag + ">" : "" }
 						<div class="actions">
-							#{actions_block.call}
+							#{actions}
 						</div>
 					</div>
 				}

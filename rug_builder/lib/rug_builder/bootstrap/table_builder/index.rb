@@ -33,7 +33,7 @@ module RugBuilder
 			# - moving (boolean) - Turn on moving
 			# - inline_edit (array) - array of columns suitable for inline edit
 			# - show_link_column (integer) - Column index used for show link
-			# - heading (string) - optional heading displayed in table heading
+			# - heading (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional heading displayed in table heading
 			#
 			def index(objects, columns, options = {})
 				result = ""
@@ -72,7 +72,11 @@ module RugBuilder
 				result += index_layout_3(
 					options[:class], 
 					lambda {
-						options[:heading].to_s
+						if options[:heading].is_a?(Array)
+							options[:heading].first.to_s
+						else
+							options[:heading].to_s
+						end
 					},
 					lambda {
 						result_3 = ""
@@ -82,7 +86,8 @@ module RugBuilder
 							end
 						end
 						result_3
-					}
+					},
+					(options[:heading].is_a?(Array) && options[:heading].length >= 2 ? options[:heading][1].to_s : "h2")
 				)
 
 				if objects.empty?
@@ -90,72 +95,71 @@ module RugBuilder
 						I18n.t("views.index_table.empty")
 					end
 				else
+					columns_count = 0	
+					result += index_layout_1(hash, "#{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}") do
+						result_1 = ""
 
-					# Table
-					result += "<table id=\"index-table-#{hash}\" class=\"table index-table #{(check_moving(options) ? "moving" : "")} #{options[:class].to_s}\">"
-
-					# Table head
-					columns_count = 0
-					result += "<thead>"
-					result += "<tr>"
-					if check_moving(options)
-						result += "<th></th>" 
-						columns_count += 1
-					end
-					columns.headers.each do |column|
-						result += "<th>"
-						result += columns.label(column, model_class)
-						result += resolve_sorting(column, options)
-						result += "</th>"
-						columns_count += 1
-					end
-					if actions
-						result += "<th></th>"
-						columns_count += 1
-					end
-					result += "</tr>"
-					result += "</thead>"
-
-					# Table body
-					result += "<tbody>"
-					objects.each do |object|
-						
-						result += "<tr data-id=\"#{object.id}\">"
-						result += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(options)
-						columns.headers.each_with_index do |column, idx|
-							result += "<td>"
-							#if check_inline_edit(options, column)
-							#	result += "<div class=\"inline-edit value\">"
-							#end
-
-							# Standard read only value
-							value = columns.render(column, object)
-							if idx == show_link_column && check_show_link(options)
-								result += get_show_link(object, value, options[:paths][:show])
-							else
-								result += value
-							end
-							
-							#if check_inline_edit(options, column)
-							#	result += "</div>"
-							#	result += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
-							#end
-							result += "</td>"
+						# Table head
+						result_1 += "<thead>"
+						result_1 += "<tr>"
+						if check_moving(options)
+							result_1 += "<th></th>" 
+							columns_count += 1
+						end
+						columns.headers.each do |column|
+							result_1 += "<th>"
+							result_1 += columns.label(column, model_class)
+							result_1 += resolve_sorting(column, options)
+							result_1 += "</th>"
+							columns_count += 1
 						end
 						if actions
-							result += "<td class=\"custom action\">"
-							actions.each do |action, action_spec|
-								result += action_spec[:block].call(object)
-							end
-							result += "</td>"
+							result_1 += "<th></th>"
+							columns_count += 1
 						end
-						result += "</tr>"
+						result_1 += "</tr>"
+						result_1 += "</thead>"
 
+						# Table body
+						result_1 += "<tbody>"
+						objects.each do |object|
+							
+							result_1 += "<tr data-id=\"#{object.id}\">"
+							result_1 += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(options)
+							columns.headers.each_with_index do |column, idx|
+								result_1 += "<td>"
+								#if check_inline_edit(options, column)
+								#	result_1 += "<div class=\"inline-edit value\">"
+								#end
+
+								# Standard read only value
+								value = columns.render(column, object)
+								if idx == show_link_column && check_show_link(options)
+									result_1 += get_show_link(object, value, options[:paths][:show])
+								else
+									result_1 += value
+								end
+								
+								#if check_inline_edit(options, column)
+								#	result_1 += "</div>"
+								#	result_1 += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
+								#end
+								result_1 += "</td>"
+							end
+							if actions
+								result_1 += "<td class=\"custom action\">"
+								actions.each do |action, action_spec|
+									result_1 += action_spec[:block].call(object)
+								end
+								result_1 += "</td>"
+							end
+							result_1 += "</tr>"
+
+						end
+						result_1 += "</tbody>"
+
+						result_1
 					end
-					result += "</tbody>"
-
-					# Table
-					result += "</table>"
 
 					# Table footer
 					result += index_layout_4(
@@ -201,7 +205,7 @@ module RugBuilder
 			# - summary (boolean) - Turn on summary
 			# - moving (boolean) - Turn on moving
 			# - show_link_column (integer) - Column index used for show link
-			# - heading (string) - optional heading displayed in table heading
+			# - heading (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional heading displayed in table heading
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -232,7 +236,11 @@ module RugBuilder
 				result += picture_index_layout_3(
 					options[:class], 
 					lambda {
-						options[:heading].to_s
+						if options[:heading].is_a?(Array)
+							options[:heading].first.to_s
+						else
+							options[:heading].to_s
+						end
 					},
 					lambda {
 						result_3 = ""
@@ -242,7 +250,8 @@ module RugBuilder
 							end
 						end
 						result_3
-					}
+					},
+					(options[:heading].is_a?(Array) && options[:heading].length >= 2 ? options[:heading][1].to_s : "h2")
 				)
 
 				# Table
@@ -325,8 +334,13 @@ module RugBuilder
 			# Index layouts
 			# *********************************************************************
 
-			def index_layout_1(hash, options, &block)
-				# ...
+			def index_layout_1(hash, klass, &block)
+				result = %{
+					<table id="index-table-#{hash}" class="table index-table #{klass.to_s}">
+						#{block.call}
+					</table>
+				}
+				result
 			end
 
 			def index_layout_2(object_id, columns_blocks, actions_block, moving_handle_block)
@@ -336,12 +350,12 @@ module RugBuilder
 			#
 			# Table heading
 			#
-			def index_layout_3(klass, heading_block, actions_block)
+			def index_layout_3(klass, heading_block, actions_block, heading_tag = "h2")
 				heading = heading_block.call.trim
 				actions = actions_block.call.trim
 				result = %{
 					<div class="index-table-heading #{klass.to_s} #{actions.blank? && heading.blank? ? "empty" : ""}">
-						#{ !heading.blank? ? "<h2>" + heading + "</h2>" : "" }
+						#{ !heading.blank? ? "<" + heading_tag + ">" + heading + "</" + heading_tag + ">" : "" }
 						<div class="actions">
 							#{actions}
 						</div>
@@ -435,12 +449,12 @@ module RugBuilder
 			#
 			# Table heading
 			#
-			def picture_index_layout_3(klass, heading_block, actions_block)
+			def picture_index_layout_3(klass, heading_block, actions_block, heading_tag = "h2")
 				heading = heading_block.call.trim
 				actions = actions_block.call.trim
 				result = %{
 					<div class="picture-index-table-heading #{klass.to_s} #{actions.blank? && heading.blank? ? "empty" : ""}">
-						#{ !heading.blank? ? "<h2>" + heading + "</h2>" : "" }
+						#{ !heading.blank? ? "<" + heading_tag + ">" + heading + "</" + heading_tag + ">" : "" }
 						<div class="actions">
 							#{actions}
 						</div>
