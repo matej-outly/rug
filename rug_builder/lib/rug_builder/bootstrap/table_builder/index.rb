@@ -33,7 +33,7 @@ module RugBuilder
 			# - moving (boolean) - Turn on moving
 			# - inline_edit (array) - array of columns suitable for inline edit
 			# - show_link_column (integer) - Column index used for show link
-			# - heading (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional heading displayed in table heading
+			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table heading
 			#
 			def index(objects, columns, options = {})
 				result = ""
@@ -72,10 +72,10 @@ module RugBuilder
 				result += index_layout_3(
 					options[:class], 
 					lambda {
-						if options[:heading].is_a?(Array)
-							options[:heading].first.to_s
+						if options[:header].is_a?(Array)
+							options[:header].first.to_s
 						else
-							options[:heading].to_s
+							options[:header].to_s
 						end
 					},
 					lambda {
@@ -87,7 +87,7 @@ module RugBuilder
 						end
 						result_3
 					},
-					(options[:heading].is_a?(Array) && options[:heading].length >= 2 ? options[:heading][1].to_s : "h2")
+					(options[:header].is_a?(Array) && options[:header].length >= 2 ? options[:header][1].to_s : "h2")
 				)
 
 				if objects.empty?
@@ -205,7 +205,7 @@ module RugBuilder
 			# - summary (boolean) - Turn on summary
 			# - moving (boolean) - Turn on moving
 			# - show_link_column (integer) - Column index used for show link
-			# - heading (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional heading displayed in table heading
+			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table header
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -236,10 +236,10 @@ module RugBuilder
 				result += picture_index_layout_3(
 					options[:class], 
 					lambda {
-						if options[:heading].is_a?(Array)
-							options[:heading].first.to_s
+						if options[:header].is_a?(Array)
+							options[:header].first.to_s
 						else
-							options[:heading].to_s
+							options[:header].to_s
 						end
 					},
 					lambda {
@@ -251,7 +251,7 @@ module RugBuilder
 						end
 						result_3
 					},
-					(options[:heading].is_a?(Array) && options[:heading].length >= 2 ? options[:heading][1].to_s : "h2")
+					(options[:header].is_a?(Array) && options[:header].length >= 2 ? options[:header][1].to_s : "h2")
 				)
 
 				# Table
@@ -350,12 +350,12 @@ module RugBuilder
 			#
 			# Table heading
 			#
-			def index_layout_3(klass, heading_block, actions_block, heading_tag = "h2")
-				heading = heading_block.call.trim
+			def index_layout_3(klass, header_block, actions_block, header_tag = "h2")
+				header = header_block.call.trim
 				actions = actions_block.call.trim
 				result = %{
-					<div class="index-table-heading #{klass.to_s} #{actions.blank? && heading.blank? ? "empty" : ""}">
-						#{ !heading.blank? ? "<" + heading_tag + ">" + heading + "</" + heading_tag + ">" : "" }
+					<div class="index-table-heading #{klass.to_s} #{actions.blank? && header.blank? ? "empty" : ""}">
+						#{ !header.blank? ? "<" + header_tag + ">" + header + "</" + header_tag + ">" : "" }
 						<div class="actions">
 							#{actions}
 						</div>
@@ -449,12 +449,12 @@ module RugBuilder
 			#
 			# Table heading
 			#
-			def picture_index_layout_3(klass, heading_block, actions_block, heading_tag = "h2")
-				heading = heading_block.call.trim
+			def picture_index_layout_3(klass, header_block, actions_block, header_tag = "h2")
+				header = header_block.call.trim
 				actions = actions_block.call.trim
 				result = %{
-					<div class="picture-index-table-heading #{klass.to_s} #{actions.blank? && heading.blank? ? "empty" : ""}">
-						#{ !heading.blank? ? "<" + heading_tag + ">" + heading + "</" + heading_tag + ">" : "" }
+					<div class="picture-index-table-heading #{klass.to_s} #{actions.blank? && header.blank? ? "empty" : ""}">
+						#{ !header.blank? ? "<" + header_tag + ">" + header + "</" + header_tag + ">" : "" }
 						<div class="actions">
 							#{actions}
 						</div>

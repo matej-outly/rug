@@ -26,9 +26,10 @@ module RugBuilder
 			def button(label, url = nil, options = {})
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
-				method = options[:method] ? options[:method] : nil
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""
+				method = options[:method] ? options[:method] : nil
+				data = options[:data] ? options[:data] : nil
 				url = "#" if url.blank?
 
 				# Check format
@@ -43,23 +44,18 @@ module RugBuilder
 
 				if !label.blank?
 					if format == :a
-						result = ""
-						result += "<a 
-							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}\" 
-							#{method ? "data-method=\"" + method + "\"" : ""}
-							href=\"#{url}\"
-						>"
-						result += label
-						result += "</a>"
-						return result.html_safe
+						return @template.link_to(label, url, {
+							class: "btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}",
+							method: method,
+							data: data
+						}) 
 					elsif format == :button
 						result = ""
 						result += "<button 
 							type=\"button\"
 							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}\" 
-							#{method ? "data-method=\"" + method + "\"" : ""}
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
-						>" # TODO method not working here
+						>" # method and data not working here
 						result += label
 						result += "</button>"
 						return result.html_safe
