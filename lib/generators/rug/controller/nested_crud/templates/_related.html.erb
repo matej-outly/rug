@@ -1,5 +1,0 @@
-<%%= rug_menu_for(@<%= model_1_name.to_snake.singularize %>, name: "related") do |m| %>
-	<%% if @<%= model_1_name.to_snake.singularize %> %>
-		<%%= m.item t("headers.<%= model_2_controller_path.to_snake.gsub("/", ".") %>.show"), <%= model_2_controller_path.to_snake.gsub("/", "_").singularize %>_path(@<%= model_1_name.to_snake.singularize %>.<%= model_2_name.to_snake.singularize %>_id), icon: "search" %>
-	<%% end %>
-<%% end %>

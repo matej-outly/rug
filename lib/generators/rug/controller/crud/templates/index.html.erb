@@ -1,10 +1,9 @@
-<%%= render layout: "ric_admin/layouts/with_right_side" do %>
-	<%%= rug_index_table_for(@<%= model_name.to_snake.pluralize %>, { 
-		<% columns.each_with_index do |column, idx| %><%= "#{column.split(":").first}: :#{(column.split(":").size > 1 ? column.split(":").at(1) : "string" )}" + (idx != columns.size-1 ? ",\n\t\t" : "") %><% end %>
-	}, paths: {
-		show: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
-		new: "main_app.new_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
-		edit: "main_app.edit_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
-		destroy: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path"
-	}, sorting: true, pagination: true, summary: true ) %>
-<%% end %>
+<%%= render layout: "ruth_admin/components/page_header" %>
+<%%= rug_index_table_for(@<%= model_name.to_snake.pluralize %>, { 
+	<% columns.each_with_index do |column, idx| %><%= "#{column.split(":").first}: :#{(column.split(":").size > 1 ? column.split(":").at(1) : "string" )}" + (idx != columns.size-1 ? ",\n\t\t" : "") %><% end %>
+}, paths: {
+	show: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
+	new: "main_app.new_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
+	edit: "main_app.edit_<%= controller_path.to_snake.gsub("/", "_").singularize %>_path", 
+	destroy: "main_app.<%= controller_path.to_snake.gsub("/", "_").singularize %>_path"
+}, sorting: true, pagination: true, summary: true ) %>

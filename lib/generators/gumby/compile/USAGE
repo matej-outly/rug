@@ -1,5 +1,0 @@
-Description:
-    Compile SASS changes in Gumby Framework
-
-Example:
-    rails generate gumby:compile

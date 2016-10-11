@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Gumby Framework and compatible jQuery and Modernizr libraries into the application.
-
-Example:
-    rails generate gumby:install
