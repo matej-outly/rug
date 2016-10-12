@@ -41,7 +41,10 @@ module RugBuilder
 				return options[:paths] && options[:paths][:new]
 			end
 
-			def get_new_link(unused_object, path, options = {})
+			def get_new_link(object, path, options = {})
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return ""
+				end
 				url = RugSupport::PathResolver.new(@template).resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
@@ -73,6 +76,9 @@ module RugBuilder
 			end
 
 			def get_edit_link(object, path, options = {})
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return ""
+				end
 				url = RugSupport::PathResolver.new(@template).resolve(path, object)
 				if !options[:label].nil?
 					if options[:label] != false
@@ -103,7 +109,10 @@ module RugBuilder
 				return options[:paths] && options[:paths][:create]
 			end
 
-			def get_create_link(unused_object, path, options = {})
+			def get_create_link(object, path, options = {})
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return ""
+				end
 				url = RugSupport::PathResolver.new(@template).resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
@@ -135,6 +144,9 @@ module RugBuilder
 			end
 
 			def get_destroy_link(object, path, options = {})
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return ""
+				end
 				url = RugSupport::PathResolver.new(@template).resolve(path, object)
 				if !options[:label].nil?
 					if options[:label] != false
@@ -166,25 +178,24 @@ module RugBuilder
 			# *********************************************************************
 
 			def get_action_link(object, path, options = {})
-				if options[:show_if].nil? || options[:show_if].call(object) == true
-					url = RugSupport::PathResolver.new(@template).resolve(path, object)
-					if !options[:label].nil?
-						if options[:label] != false
-							label = options[:label]
-						else
-							label = ""
-						end
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return ""
+				end
+				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				if !options[:label].nil?
+					if options[:label] != false
+						label = options[:label]
 					else
 						label = ""
 					end
-					if url
-						link_tag_options = {}
-						link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
-						link_tag_options[:method] = options[:method] if options[:method]
-						return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + label, url, link_tag_options) + " "
-					else
-						return ""
-					end
+				else
+					label = ""
+				end
+				if url
+					link_tag_options = {}
+					link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
+					link_tag_options[:method] = options[:method] if options[:method]
+					return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
