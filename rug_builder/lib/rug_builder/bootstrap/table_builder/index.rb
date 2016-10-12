@@ -418,6 +418,7 @@ module RugBuilder
 			# Single object
 			#
 			def picture_index_layout_2(object_id, columns_blocks, actions_block, moving_handle_block)
+				actions = actions_block.call.trim
 				first_column_block = columns_blocks.shift
 				result = ""
 				result += %{
@@ -431,14 +432,13 @@ module RugBuilder
 				}
 				columns_blocks.each_with_index do |column_block, index|
 					if index == 0 
-						result += "<h3>" + column_block.call + "</h3>"
+						result += "<h5>" + column_block.call + "</h5>"
 					else
 						result += column_block.call
 					end
 				end
 				result += %{
-								<hr/>
-								#{actions_block.call}
+								#{!actions.blank? ? "<hr/>" + actions : ""}
 							</div>
 						</div>	
 					</div>
