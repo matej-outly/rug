@@ -18,6 +18,7 @@ module RugBuilder
 			#
 			def initialize(template)
 				@template = template
+				@path_resolver = RugSupport::PathResolver.new(@template)
 			end
 
 			#
@@ -63,7 +64,9 @@ module RugBuilder
 					if @options[:path_base].blank?
 						raise "Please define path_base option or provide item path."
 					end
-					path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].pluralize}_path")
+					path = @path_resolver.resolve("#{@options[:path_base].pluralize}_path")
+				else
+					path = @path_resolver.resolve(path)
 				end
 
 				# Options
@@ -90,7 +93,9 @@ module RugBuilder
 					if @options[:path_base].blank?
 						raise "Please define path_base option or provide item path."
 					end
-					path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].singularize}_path", @object)
+					path = @path_resolver.resolve("#{@options[:path_base].singularize}_path", @object)
+				else
+					path = @path_resolver.resolve(path, @object)
 				end
 
 				# Options
@@ -114,7 +119,9 @@ module RugBuilder
 						raise "Please define path_base option or provide item path."
 					end
 					splitted_path_base = @options[:path_base].to_s.split(".")
-					path = RugSupport::PathResolver.new(@template).resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}new_#{splitted_path_base.slice(-1).singularize}_path")
+					path = @path_resolver.resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}new_#{splitted_path_base.slice(-1).singularize}_path")
+				else
+					path = @path_resolver.resolve(path)
 				end
 
 				# Options
@@ -143,7 +150,9 @@ module RugBuilder
 						raise "Please define path_base option or provide item path."
 					end
 					splitted_path_base = @options[:path_base].to_s.split(".")
-					path = RugSupport::PathResolver.new(@template).resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}edit_#{splitted_path_base.slice(-1).singularize}_path", @object)
+					path = @path_resolver.resolve("#{(splitted_path_base.length > 1 ? splitted_path_base.slice(0..-2).join(".") + "." : "")}edit_#{splitted_path_base.slice(-1).singularize}_path", @object)
+				else
+					path = @path_resolver.resolve(path, @object)
 				end
 
 				# Options
@@ -171,7 +180,9 @@ module RugBuilder
 					if @options[:path_base].blank?
 						raise "Please define path_base option or provide item path."
 					end
-					path = RugSupport::PathResolver.new(@template).resolve("#{@options[:path_base].singularize}_path", @object)
+					path = @path_resolver.resolve("#{@options[:path_base].singularize}_path", @object)
+				else
+					path = @path_resolver.resolve(path, @object)
 				end
 
 				# Options
@@ -199,7 +210,9 @@ module RugBuilder
 					if @options[:path_base].blank?
 						raise "Please define path_base option or provide item path."
 					end
-					path = RugSupport::PathResolver.new(@template).resolve("duplicate_#{@options[:path_base].singularize}_path", @object)
+					path = @path_resolver.resolve("duplicate_#{@options[:path_base].singularize}_path", @object)
+				else
+					path = @path_resolver.resolve(path, @object)
 				end
 
 				# Options

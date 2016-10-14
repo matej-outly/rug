@@ -89,13 +89,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label(name)
-				end
+				result += compose_label(name, options)
 
 				# Part labels
 				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime.date"))
@@ -188,13 +182,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label(name)
-				end
+				result += compose_label(name, options)
 
 				# Part labels
 				label_days = (options[:label_days] ? options[:label_days] : I18n.t("general.attribute.duration.days"))

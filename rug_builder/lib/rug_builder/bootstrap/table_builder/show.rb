@@ -62,15 +62,32 @@ module RugBuilder
 				)
 
 				# Table
-				result += show_layout_1(options[:class]) do
+				empty = true
+				table_result = show_layout_1(options[:class]) do
 					result_1 = ""
 					columns.headers.each do |column|
-						value = columns.render(column, object)
-						if options[:show_blank_rows] == true || !value.blank?
-							result_1 += show_layout_2(lambda { columns.label(column, object.class) }, lambda { value })
+						if columns.is_store?(column)
+							columns.render_store(column, object).each do |store_item|
+								empty = false
+								result_1 += show_layout_2(lambda { store_item[:label] }, lambda { store_item[:value] })
+							end
+						else
+							value = columns.render(column, object)
+							if options[:show_blank_rows] == true || !value.blank?
+								empty = false
+								result_1 += show_layout_2(lambda { columns.label(column, object.class) }, lambda { value })
+							end
 						end
 					end
 					result_1
+				end
+
+				if empty
+					result += show_layout_6(options[:class]) do
+						I18n.t("views.index_table.empty")
+					end
+				else
+					result += table_result
 				end
 
 				return result.html_safe
@@ -117,6 +134,18 @@ module RugBuilder
 						<div class="actions">
 							#{actions}
 						</div>
+					</div>
+				}
+				result
+			end
+
+			#
+			# Empty table
+			#
+			def show_layout_6(klass, &block)
+				result = %{
+					<div class="show-table-empty #{klass.to_s}">
+						#{block.call}
 					</div>
 				}
 				result

@@ -17,13 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label], class: "control-label")
-					end
-				else
-					result += label(name, class: "control-label")
-				end
+				result += compose_label(name, options)
 
 				# Collection
 				if collection.nil?

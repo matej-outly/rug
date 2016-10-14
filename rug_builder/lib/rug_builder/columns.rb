@@ -49,7 +49,7 @@ module RugBuilder
 			end
 
 			# Check type
-			if !Formatter.method(column_spec[:type].to_sym)
+			if column_spec[:type].to_sym != :store && !Formatter.method(column_spec[:type].to_sym)
 				raise "Unknown column type '#{column_spec[:type].to_s}'."
 			end
 
@@ -67,6 +67,10 @@ module RugBuilder
 		# Render
 		# *********************************************************************
 
+		def headers
+			return @columns.keys
+		end
+
 		def label(column, model_class)
 			if !@columns[column.to_sym][:column_label].nil?
 				if @columns[column.to_sym][:column_label] != false
@@ -77,10 +81,6 @@ module RugBuilder
 			else
 				return model_class.human_attribute_name(column.to_s).upcase_first
 			end
-		end
-
-		def headers
-			return @columns.keys
 		end
 
 		def render(column, object)
@@ -111,6 +111,37 @@ module RugBuilder
 				# Unknown
 				raise "Don't know how to render column '#{column.to_s}'..."
 			end
+		end
+
+		# *********************************************************************
+		# Render store
+		# *********************************************************************
+
+		def is_store?(column)
+			return (@columns[column.to_sym][:type].to_sym == :store)
+		end
+
+		def render_store(column, object)
+			result = []
+
+			# Get value
+			store_value = object.send(column.to_sym)
+			if !store_value.nil?
+				Formatter.initialize(@template)
+				
+				# Go through the store and render each item
+				store_value.each do |label, single_value|
+					result << {
+						label: label,
+						value: Formatter.string(single_value, {
+							object: object,
+							column: column
+						})
+					}
+				end
+			end
+
+			return result
 		end
 
 	end

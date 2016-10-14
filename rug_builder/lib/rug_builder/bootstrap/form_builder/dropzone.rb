@@ -25,13 +25,7 @@ module RugBuilder
 				result = ""
 
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label(name)
-				end
+				result += compose_label(name, options)
 
 				# Default URL and method
 				default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_url) : RugSupport::PathResolver.new(@template).resolve(update_url, object))

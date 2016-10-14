@@ -17,13 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label(name)
-				end
+				result += compose_label(name, options)
 
 				# Field options
 				field_options = {}

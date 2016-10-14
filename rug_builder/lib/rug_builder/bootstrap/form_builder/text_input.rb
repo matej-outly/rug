@@ -17,13 +17,7 @@ module RugBuilder
 				result = ""
 
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label], class: "control-label")
-					end
-				else
-					result += label(name, class: "control-label")
-				end
+				result += compose_label(name, options)
 
 				# CSS class
 				klass = []
@@ -104,13 +98,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label], class: "control-label")
-					end
-				else
-					result += label(name, class: "control-label")
-				end
+				result += compose_label(name, options)
 
 				# Part labels
 				label_street = (options[:label_street] ? options[:label_street] : I18n.t("general.attribute.address.street"))
@@ -173,13 +161,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label], class: "control-label")
-					end
-				else
-					result += label(name, class: "control-label")
-				end
+				result += compose_label(name, options)
 
 				# Part labels
 				label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title")) if options[:title] == true
@@ -243,13 +225,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label], class: "control-label")
-					end
-				else
-					result += label(name, class: "control-label")
-				end
+				result += compose_label(name, options)
 
 				# Part labels
 				label_min = (options[:label_min] ? options[:label_min] : I18n.t("general.attribute.range.min"))
