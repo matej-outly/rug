@@ -20,6 +20,7 @@ require "rug_controller/concerns/broadcast"
 require "rug_controller/concerns/components"
 require "rug_controller/concerns/conf"
 require "rug_controller/concerns/lifecycle"
+require "rug_controller/concerns/referrer"
 
 # Railtie
 require 'rug_controller/railtie' if defined?(Rails)

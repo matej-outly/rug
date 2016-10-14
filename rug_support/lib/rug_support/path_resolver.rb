@@ -22,11 +22,13 @@ module RugSupport
 		def resolve(path, *args)
 			if path.is_a?(Proc)
 				return path.call(*args)
-			else
+			elsif path.is_a?(String) || path.is_a?(Symbol)
 				callee = @template
 				path.to_s.split(".").slice(0..-2).each { |path_path| callee = callee.send(path_path.to_sym) }
 				path_method = path.to_s.split(".").slice(-1).to_sym
 				return callee.send(path_method, *args)
+			else
+				return path
 			end
 		end
 
