@@ -76,6 +76,8 @@ module RugBuilder
 			# Locale
 			if options[:locale]
 				locale = options[:locale]
+			elsif options[:object] && options[:object].respond_to?(:currency)
+				locale = options[:object].currency.to_sym
 			else
 				locale = :cs
 			end
@@ -95,6 +97,8 @@ module RugBuilder
 			else
 				label = value.to_s
 			end
+			label = label[7..-1] if label.start_with?("http://")
+			label = label[8..-1] if label.start_with?("https://")
 			
 			# Target
 			if options[:target]
