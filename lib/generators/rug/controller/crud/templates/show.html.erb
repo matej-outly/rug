@@ -1,4 +1,4 @@
-<%%= render layout: "ruth_admin/components/page_header" %>
+<%%= render partial: "ruth_admin/components/page_header" %>
 <%%= rug_show_table_for(@<%= model_name.to_snake.singularize %>, { 
 	<% columns.each_with_index do |column, idx| %><%= "#{column.split(":").first}: :#{(column.split(":").size > 1 ? column.split(":").at(1) : "string" )}" + (idx != columns.size-1 ? ",\n\t\t" : "") %><% end %>
 }) %>
