@@ -19,20 +19,48 @@ module RugBuilder
 			def initialize(template)
 				@template = template
 				@path_resolver = RugSupport::PathResolver.new(@template)
+				@button_builder = RugBuilder::ButtonBuilder.new(@template)
+				@icon_builder = RugBuilder::IconBuilder
 			end
 
 			#
 			# Main render method
 			#
 			def render(object, options = {}, &block)
-				klass = options[:class] ? options[:class] : ""
-
+				
 				# Set context
 				@object = object
 				@options = options
 
+				# Class
+				klass = @options[:class] ? @options[:class] : ""
+
+				# Format
+				if @options[:format]
+					@format = @options[:format]
+				else
+					@format = :ul
+				end
+				if ![:ul, :btn].include?(@format)
+					raise "Unknown format #{@format}."
+				end
+
 				# Render
-				return ("<ul class=\"#{!@options[:name].blank? ? @options[:name] : ""} #{klass} menu\">" + @template.capture(self, &block).to_s + "</ul>").html_safe
+				if @format == :btn
+					result = %{
+						<div class="#{klass} btn-group">
+							#{@template.capture(self, &block).to_s}
+						</div>
+					}
+				else
+					result = %{
+						<ul class="#{klass}">
+							#{@template.capture(self, &block).to_s}
+						</ul>
+					}
+				end
+
+				return result.html_safe
 			end
 
 			#
@@ -40,13 +68,22 @@ module RugBuilder
 			#
 			def item(label, path, options = {})
 				icon = options.delete(:icon)
-				active = options.delete(:active)
+				active = (options[:active] == true)
 				klass = options[:class] ? options[:class] : ""
+				label = @options[:labels] != false ? label : ""
 
-				result = ""
-				result += "<li class=\"#{active == true ? "active" : ""} #{klass}\">"
-				result += @template.link_to((RugBuilder::IconBuilder.render(icon) + label).html_safe, path, options)
-				result += "</li>"
+				# Render
+				if @format == :btn
+					options[:style] = options[:style].nil? ? @options[:btn_style] : nil
+					options[:size] = options[:size].nil? ? @options[:btn_size] : nil
+					result = @button_builder.button((@icon_builder.render(icon) + label).html_safe, path, options)
+				else
+					result = %{
+						<li class="#{active == true ? "active" : ""} #{klass}">
+							#{@template.link_to((@icon_builder.render(icon) + label).html_safe, path, options)}
+						</li>
+					}
+				end
 
 				return result.html_safe
 			end

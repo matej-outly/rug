@@ -55,7 +55,7 @@ module RugBuilder
 				end
 
 				# Prepare global actions
-				global_actions = prepare_actions(options, :global_actions, [:new], size: "sm")
+				global_actions = prepare_actions(options, :global_actions, [:new], size: "sm", label: false)
 
 				# Prepare actions
 				actions = prepare_actions(options, :actions, [:edit, :destroy], label: false)
@@ -217,7 +217,7 @@ module RugBuilder
 				end
 
 				# Prepare global actions
-				global_actions = prepare_actions(options, :global_actions, [:new], size: "sm")
+				global_actions = prepare_actions(options, :global_actions, [:new], size: "sm", label: false)
 
 				# Prepare actions
 				actions = prepare_actions(options, :actions, [:edit, :destroy], label: false)

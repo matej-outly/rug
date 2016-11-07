@@ -29,6 +29,7 @@ module RugBuilder
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""
 				method = options[:method] ? options[:method] : nil
+				active = (options[:active] == true)
 				data = options[:data] ? options[:data] : nil
 				url = "#" if url.blank?
 
@@ -45,7 +46,7 @@ module RugBuilder
 				if !label.blank?
 					if format == :a
 						return @template.link_to(label, url, {
-							class: "btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}",
+							class: "btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} #{klass}",
 							method: method,
 							data: data
 						}) 
@@ -53,7 +54,7 @@ module RugBuilder
 						result = ""
 						result += "<button 
 							type=\"button\"
-							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{klass}\" 
+							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} #{klass}\" 
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
 						>" # method and data not working here
 						result += label
@@ -73,12 +74,13 @@ module RugBuilder
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""
+				active = (options[:active] == true)
 				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
 
 				result = ""
 				result += "<button 
 					type=\"button\" 
-					class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} dropdown-toggle #{klass}\" 
+					class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} dropdown-toggle #{klass}\" 
 					data-toggle=\"dropdown\" 
 					aria-haspopup=\"true\" 
 					aria-expanded=\"false\"
