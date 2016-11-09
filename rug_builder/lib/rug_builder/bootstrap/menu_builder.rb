@@ -70,17 +70,18 @@ module RugBuilder
 				icon = options.delete(:icon)
 				active = (options[:active] == true)
 				klass = options[:class] ? options[:class] : ""
-				label = @options[:labels] != false ? label : ""
+				rendered_label = @options[:labels] != false ? label : ""
 
 				# Render
 				if @format == :btn
 					options[:style] = options[:style].nil? ? @options[:btn_style] : nil
 					options[:size] = options[:size].nil? ? @options[:btn_size] : nil
-					result = @button_builder.button((@icon_builder.render(icon) + label).html_safe, path, options)
+					options[:tooltip] =  @options[:labels] == false ? label : nil
+					result = @button_builder.button((@icon_builder.render(icon) + rendered_label).html_safe, path, options)
 				else
 					result = %{
 						<li class="#{active == true ? "active" : ""} #{klass}">
-							#{@template.link_to((@icon_builder.render(icon) + label).html_safe, path, options)}
+							#{@template.link_to((@icon_builder.render(icon) + rendered_label).html_safe, path, options)}
 						</li>
 					}
 				end

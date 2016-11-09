@@ -27,6 +27,12 @@ module RugBuilder
 					when :move_up then "long-arrow-up"
 					when :move_down then "long-arrow-down"
 					when :duplicate then "files-o"
+					when :profile then "user"
+					when :password then "lock"
+					when :recover then "life-ring"
+					when :sign_in then "sign-in"
+					when :sign_out then "sign-out"
+					when :sign_up then "user-plus"
 					else nil
 				end
 			end
