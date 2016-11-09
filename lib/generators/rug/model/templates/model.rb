@@ -75,4 +75,11 @@ class <%= model_path.to_camel.singularize %> < ActiveRecord::Base
 		[]
 	end
 
+	#
+	# Get all columns permitted for filtering
+	#
+	def self.filter_columns
+		[]
+	end
+
 end

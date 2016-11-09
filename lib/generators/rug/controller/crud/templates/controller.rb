@@ -174,7 +174,7 @@ protected
 	# Never trust parameters from the scary internet, only allow the white list through.
 	#
 	def filter_params
-		return params[:<%= model_name.to_snake.singularize %>]#.permit(...)
+		return params[:<%= model_name.to_snake.singularize %>].permit(<%= model_path.to_camel.singularize %>.filter_columns)
 	end
 
 end
