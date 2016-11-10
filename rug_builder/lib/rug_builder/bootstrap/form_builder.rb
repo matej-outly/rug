@@ -39,7 +39,7 @@ module RugBuilder
 
 		protected
 
-			def compose_label(name, options)
+			def compose_label(name, options = {})
 				if !options[:label].nil?
 					if options[:label] != false
 						return label(name, options[:label], class: "control-label")

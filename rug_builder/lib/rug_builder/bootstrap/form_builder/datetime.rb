@@ -19,22 +19,23 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Java Script
-				js = ""
-				js += "function date_picker_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#date_picker_#{hash}').pikaday({ \n"
-				js += "		firstDay: 1,\n"
-				js += "		format: 'YYYY-MM-DD',\n"
-				js += "		i18n: {\n"
-				js += "			previousMonth : '#{I18n.t("views.calendar.prev_month")}',\n"
-				js += "			nextMonth     : '#{I18n.t("views.calendar.next_month")}',\n"
-				js += "			months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],\n"
-				js += "			weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],\n"
-				js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
-				js += "		}\n"
-				js += "	});\n"
-				js += "}\n"
-				js += "$(document).ready(date_picker_#{hash}_ready);\n"
+				js = %{
+					function date_picker_#{hash}_ready()
+					{
+						$('#date_picker_#{hash}').pikaday({ 
+							firstDay: 1,
+							format: 'YYYY-MM-DD',
+							i18n: {
+								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
+								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
+								months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],
+								weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],
+								weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']
+							}
+						});
+					}
+					$(document).ready(date_picker_#{hash}_ready);
+				}
 				
 				# Options
 				options[:id] = "date_picker_#{hash}"
@@ -59,16 +60,17 @@ module RugBuilder
 				end
 
 				# Java Script
-				js = ""
-				js += "function time_picker_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#time_picker_#{hash}').clockpicker({\n"
-				js += "		placement: 'bottom',\n"
-				js += "		align: 'left',\n"
-				js += "		autoclose: true\n"
-				js += "	});\n"
-				js += "}\n"
-				js += "$(document).ready(time_picker_#{hash}_ready);\n"
+				js = %{
+					function time_picker_#{hash}_ready()
+					{
+						$('#time_picker_#{hash}').clockpicker({
+							placement: 'bottom',
+							align: 'left',
+							autoclose: true
+						});
+					}
+					$(document).ready(time_picker_#{hash}_ready);
+				}
 
 				# Options
 				options[:id] = "time_picker_#{hash}"
@@ -83,7 +85,7 @@ module RugBuilder
 			end
 
 			def datetime_picker_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -101,82 +103,75 @@ module RugBuilder
 					value = value.strftime("%Y-%m-%d %k:%M")
 				end
 				
+				# Java Script
+				js = %{
+					function datetime_picker_#{hash}_update_inputs()
+					{
+						var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');
+						$('#datetime_picker_#{hash} .date').val(date_and_time[0]);
+						$('#datetime_picker_#{hash} .time').val(date_and_time[1]);
+					}
+					function datetime_picker_#{hash}_update_datetime()
+					{
+						$('#datetime_picker_#{hash} .datetime').val($('#datetime_picker_#{hash} .date').val() + ' ' + $('#datetime_picker_#{hash} .time').val());
+					}
+					function datetime_picker_#{hash}_ready()
+					{
+						$('#datetime_picker_#{hash} .date').pikaday({ 
+							firstDay: 1,
+							format: 'YYYY-MM-DD',
+							i18n: {
+								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
+								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
+								months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],
+								weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],
+								weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']
+							}
+						});
+						$('#datetime_picker_#{hash} .time').clockpicker({
+							placement: 'bottom',
+							align: 'left',
+							autoclose: true
+						});
+						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_datetime);
+						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_datetime);
+						datetime_picker_#{hash}_update_inputs();
+					}
+					$(document).ready(datetime_picker_#{hash}_ready);
+				}
+				result += @template.javascript_tag(js)
+				
 				# Field options
 				klass = []
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 
-				# Java Script
-				js = ""
-				js += "function datetime_picker_#{hash}_update_inputs()\n"
-				js += "{\n"
-				js += "	var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');\n"
-				js += " $('#datetime_picker_#{hash} .date').val(date_and_time[0]);"
-				js += "	$('#datetime_picker_#{hash} .time').val(date_and_time[1]);\n"
-				js += "}\n"
-				js += "function datetime_picker_#{hash}_update_datetime()\n"
-				js += "{\n"
-				js += "	$('#datetime_picker_#{hash} .datetime').val($('#datetime_picker_#{hash} .date').val() + ' ' + $('#datetime_picker_#{hash} .time').val());\n"
-				js += "}\n"
-				js += "function datetime_picker_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#datetime_picker_#{hash} .date').pikaday({ \n"
-				js += "		firstDay: 1,\n"
-				js += "		format: 'YYYY-MM-DD',\n"
-				js += "		i18n: {\n"
-				js += "			previousMonth : '#{I18n.t("views.calendar.prev_month")}',\n"
-				js += "			nextMonth     : '#{I18n.t("views.calendar.next_month")}',\n"
-				js += "			months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],\n"
-				js += "			weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],\n"
-				js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
-				js += "		}\n"
-				js += "	});\n"
-				js += "	$('#datetime_picker_#{hash} .time').clockpicker({\n"
-				js += "		placement: 'bottom',\n"
-				js += "		align: 'left',\n"
-				js += "		autoclose: true\n"
-				js += "	});\n"
-				js += "	$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_datetime);\n"
-				js += "	$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_datetime);\n"
-				js += "	datetime_picker_#{hash}_update_inputs();\n"
-				js += "}\n"
-				js += "$(document).ready(datetime_picker_#{hash}_ready);\n"
-				
-				result += @template.javascript_tag(js)
-				
-				# Form group
-				result += "<div id=\"datetime_picker_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += %{
+					<div class="form-horizontal">
+						<div id="datetime_picker_#{hash}" class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
+							<div class="col-sm-6">
+								<div class="input-group">
+									<div class="input-group-addon">#{label_date.upcase_first}</div>
+									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["date"]))}
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="input-group">
+									<div class="input-group-addon">#{label_time.upcase_first}</div>
+									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))}
+								</div>
+							</div>
+							#{ object.errors[name].size > 0 ? '<div class="col-sm-12">' + errors(name) + '</div>': ""}
+						</div>
+					</div>
+				}
 
-				# Hidden field
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
-				
-				# Inputs
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_date.upcase_first}</div>"
-				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["date"]))
-				result += "</div></div>"
-
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_time.upcase_first}</div>"
-				result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))
-				result += "</div></div>"
-
-				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
-
-				# Form group
-				result += "</div>"
-
-				result += "</div>"
 				return result.html_safe
 			end
 
 			def duration_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -196,117 +191,127 @@ module RugBuilder
 					value = value.strftime("%Y-%m-%d %k:%M:%S")
 				end
 
+				# Java Script
+				js = %{
+					function duration_#{hash}_days(date)
+					{
+						var date = new Date(date);
+						var start = new Date(date.getFullYear(), 0, 1);
+						return Math.floor((date - start) / (1000 * 60 * 60 * 24));
+					}
+					function duration_#{hash}_date(days)
+					{
+						var start = new Date(2000, 0, 2);
+						var date = new Date(start);
+						date.setDate(start.getDate() + parseInt(days));
+						return date.toISOString().split('T')[0];
+					}
+					function duration_#{hash}_update_inputs()
+					{
+						var date_and_time = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });
+						if (date_and_time.length >= 2) {
+							var days = duration_#{hash}_days(date_and_time[0]);
+							var hours_and_minutes_and_seconds = date_and_time[1].split(':');
+							$('#duration_#{hash} .days').val(days);
+							$('#duration_#{hash} .hours').val(hours_and_minutes_and_seconds[0]);
+							$('#duration_#{hash} .minutes').val(hours_and_minutes_and_seconds[1]);
+							$('#duration_#{hash} .seconds').val(hours_and_minutes_and_seconds[2]);
+						} else {
+							$('#duration_#{hash} .days').val('');
+							$('#duration_#{hash} .hours').val('');
+							$('#duration_#{hash} .minutes').val('');
+							$('#duration_#{hash} .seconds').val('');
+						}
+					}
+					function duration_#{hash}_update_datetime()
+					{
+						var days = parseInt($('#duration_#{hash} .days').val());
+						var hours = parseInt($('#duration_#{hash} .hours').val());
+						var minutes = parseInt($('#duration_#{hash} .minutes').val());
+						var seconds = parseInt($('#duration_#{hash} .seconds').val());
+						if (!(isNaN(days) && isNaN(hours) && isNaN(minutes) && isNaN(seconds))) {
+							days = !isNaN(days) ? days : 0;
+							hours = !isNaN(hours) ? hours : 0;
+							minutes = !isNaN(minutes) ? minutes : 0;
+							seconds = !isNaN(seconds) ? seconds : 0;
+							$('#duration_#{hash} .datetime').val(duration_#{hash}_date(days) + ' ' + hours.toString() + ':' + minutes.toString() + ':' + seconds.toString());
+						} else {
+							$('#duration_#{hash} .datetime').val('');
+						}
+					}
+					function duration_#{hash}_ready()
+					{
+						$('#duration_#{hash} .days').change(duration_#{hash}_update_datetime);
+						$('#duration_#{hash} .hours').change(duration_#{hash}_update_datetime);
+						$('#duration_#{hash} .minutes').change(duration_#{hash}_update_datetime);
+						$('#duration_#{hash} .seconds').change(duration_#{hash}_update_datetime);
+						duration_#{hash}_update_inputs();
+					}
+					$(document).ready(duration_#{hash}_ready);
+				}
+				result += @template.javascript_tag(js)
+				
 				# Field options
 				klass = []
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 				
-				# Java Script
-				js = ""
-				js += "function duration_#{hash}_days(date)\n"
-				js += "{\n"
-				js += "	var date = new Date(date);\n"
-				js += "	var start = new Date(date.getFullYear(), 0, 1);\n"
-				js += "	return Math.floor((date - start) / (1000 * 60 * 60 * 24));\n"
-				js += "}\n"
-				js += "function duration_#{hash}_date(days)\n"
-				js += "{\n"
-				js += "	var start = new Date(2000, 0, 2);\n"
-				js += "	var date = new Date(start);\n"
-				js += "	date.setDate(start.getDate() + parseInt(days));\n"
-				js += "	return date.toISOString().split('T')[0];\n"
-				js += "}\n"
-				js += "function duration_#{hash}_update_inputs()\n"
-				js += "{\n"
-				js += "	var date_and_time = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });\n"
-				js += "	if (date_and_time.length >= 2) {\n"
-				js += "		var days = duration_#{hash}_days(date_and_time[0]);\n"
-				js += "		var hours_and_minutes_and_seconds = date_and_time[1].split(':');\n"
-				js += " 	$('#duration_#{hash} .days').val(days);"
-				js += " 	$('#duration_#{hash} .hours').val(hours_and_minutes_and_seconds[0]);"
-				js += "		$('#duration_#{hash} .minutes').val(hours_and_minutes_and_seconds[1]);\n"
-				js += "		$('#duration_#{hash} .seconds').val(hours_and_minutes_and_seconds[2]);\n"
-				js += "	} else {\n"
-				js += " 	$('#duration_#{hash} .days').val('');"
-				js += " 	$('#duration_#{hash} .hours').val('');"
-				js += "		$('#duration_#{hash} .minutes').val('');\n"
-				js += "		$('#duration_#{hash} .seconds').val('');\n"
-				js += "	}\n"
-				js += "}\n"
-				js += "function duration_#{hash}_update_datetime()\n"
-				js += "{\n"
-				js += "	var days = parseInt($('#duration_#{hash} .days').val());\n"
-				js += "	var hours = parseInt($('#duration_#{hash} .hours').val());\n"
-				js += "	var minutes = parseInt($('#duration_#{hash} .minutes').val());\n"
-				js += "	var seconds = parseInt($('#duration_#{hash} .seconds').val());\n"
-				js += "	if (!(isNaN(days) && isNaN(hours) && isNaN(minutes) && isNaN(seconds))) {\n"
-				js += "		days = !isNaN(days) ? days : 0;\n"
-				js += "		hours = !isNaN(hours) ? hours : 0;\n"
-				js += "		minutes = !isNaN(minutes) ? minutes : 0;\n"
-				js += "		seconds = !isNaN(seconds) ? seconds : 0;\n"
-				js += "		$('#duration_#{hash} .datetime').val(duration_#{hash}_date(days) + ' ' + hours.toString() + ':' + minutes.toString() + ':' + seconds.toString());\n"
-				js += "	} else {\n"
-				js += "		$('#duration_#{hash} .datetime').val('');\n"
-				js += "	}\n"
-				js += "}\n"
-				js += "function duration_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#duration_#{hash} .days').change(duration_#{hash}_update_datetime);\n"
-				js += "	$('#duration_#{hash} .hours').change(duration_#{hash}_update_datetime);\n"
-				js += "	$('#duration_#{hash} .minutes').change(duration_#{hash}_update_datetime);\n"
-				js += "	$('#duration_#{hash} .seconds').change(duration_#{hash}_update_datetime);\n"
-				js += "	duration_#{hash}_update_inputs();\n"
-				js += "}\n"
-				js += "$(document).ready(duration_#{hash}_ready);\n"
-				
-				result += @template.javascript_tag(js)
-				
-				# Form group
-				result += "<div id=\"duration_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				# number of columns
+				colums_count = 0
+				columns_count += 1 if options[:days] != false
+				columns_count += 1 if options[:hours] != false
+				columns_count += 1 if options[:minutes] != false
+				columns_count += 1 if options[:seconds] != false
 
-				# Hidden fields
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")
+				result_days = %{
+					<div class="col-sm-#{12 / columns_count}">
+						<div class="input-group\>
+							<div class="input-group-addon">#{label_days.upcase_first}</div>
+							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))}
+						</div>
+					</div>
+				}
 
-				# Inputs
-				if options[:days] != false
-					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
-					result += "<div class=\"input-group-addon\">#{label_days.upcase_first}</div>"
-					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))
-					result += "</div></div>"
-				end
+				result_hours = %{
+					<div class="col-sm-#{12 / columns_count}">
+						<div class="input-group\>
+							<div class="input-group-addon">#{label_days.upcase_first}</div>
+							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))}
+						</div>
+					</div>
+				}
 
-				if options[:hours] != false
-					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
-					result += "<div class=\"input-group-addon\">#{label_hours.upcase_first}</div>"
-					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))
-					result += "</div></div>"
-				end
+				result_minutes = %{
+					<div class="col-sm-#{12 / columns_count}">
+						<div class="input-group\>
+							<div class="input-group-addon">#{label_days.upcase_first}</div>
+							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))}
+						</div>
+					</div>
+				}
 
-				if options[:minutes] != false
-					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
-					result += "<div class=\"input-group-addon\">#{label_minutes.upcase_first}</div>"
-					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))
-					result += "</div></div>"
-				end
+				result_seconds = %{
+					<div class="col-sm-#{12 / columns_count}">
+						<div class="input-group\>
+							<div class="input-group-addon">#{label_days.upcase_first}</div>
+							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))}
+						</div>
+					</div>
+				}
 
-				if options[:seconds] != false
-					result += "<div class=\"col-sm-3\"><div class=\"input-group\">"
-					result += "<div class=\"input-group-addon\">#{label_seconds.upcase_first}</div>"
-					result += @template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))
-					result += "</div></div>"
-				end
+				result += %{
+					<div class="form-horizontal">
+						<div id="duration_#{hash}" class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
+							#{ options[:days] != false ? result_days : ""}
+							#{ options[:hours] != false ? result_hours : ""}
+							#{ options[:minutes] != false ? result_minutes : ""}
+							#{ options[:seconds] != false ? result_seconds : ""}
+							#{ object.errors[name].size > 0 ? '<div class="col-sm-12">' + errors(name) + '</div>': ""}
+						</div>
+					</div>
+				}
 
-				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
-
-				# Form group
-				result += "</div>"
-
-				result += "</div>"
 				return result.html_safe
 			end
 

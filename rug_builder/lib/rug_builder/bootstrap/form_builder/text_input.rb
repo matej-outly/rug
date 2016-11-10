@@ -73,10 +73,8 @@ module RugBuilder
 					result += self.method(method).call(suffixed_name, field_options)
 					
 					# Errors
-					if object.errors[suffixed_name].size > 0
-						result += @template.content_tag(:span, object.errors[suffixed_name][0], :class => "label-danger label")
-					end
-
+					result += errors(suffixed_name)
+					
 					# Form group
 					result += "</div>"
 
