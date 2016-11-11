@@ -21,6 +21,7 @@ require "rug_builder/helpers/nested_helper"
 require "rug_builder/helpers/pagination_helper"
 require "rug_builder/helpers/table_helper"
 require "rug_builder/helpers/tabs_helper"
+require "rug_builder/helpers/tree_helper"
 
 module RugBuilder
 	class Railtie < Rails::Railtie
@@ -38,6 +39,7 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::PaginationHelper
 			ActionView::Base.send :include, Helpers::TableHelper
 			ActionView::Base.send :include, Helpers::TabsHelper
+			ActionView::Base.send :include, Helpers::TreeHelper
 		end
 
 		config.before_initialize do
@@ -63,6 +65,7 @@ module RugBuilder
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/table_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/tabs_builder"
+			require "rug_builder/#{RugBuilder.frontend_framework}/tree_builder"
 			
 		end
 

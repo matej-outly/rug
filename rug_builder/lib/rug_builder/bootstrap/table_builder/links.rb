@@ -24,7 +24,7 @@ module RugBuilder
 			end
 
 			def get_show_link(object, label, path, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				if url
 					label = I18n.t("general.action.show").upcase_first if label.blank?
 					return @template.link_to(label, url) + " "
@@ -45,7 +45,7 @@ module RugBuilder
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
 				end
-				url = RugSupport::PathResolver.new(@template).resolve(path)
+				url = @path_resolver.resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -79,7 +79,7 @@ module RugBuilder
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
 				end
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -113,7 +113,7 @@ module RugBuilder
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
 				end
-				url = RugSupport::PathResolver.new(@template).resolve(path)
+				url = @path_resolver.resolve(path)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -147,7 +147,7 @@ module RugBuilder
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
 				end
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -181,7 +181,7 @@ module RugBuilder
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
 				end
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				if !options[:label].nil?
 					if options[:label] != false
 						label = options[:label]
@@ -224,7 +224,7 @@ module RugBuilder
 			end
 
 			def get_moving_up_link(object, path, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
@@ -232,7 +232,7 @@ module RugBuilder
 			end
 
 			def get_moving_down_link(object, path, options = {})
-				url = RugSupport::PathResolver.new(@template).resolve(path, object)
+				url = @path_resolver.resolve(path, object)
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"

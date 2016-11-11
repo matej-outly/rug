@@ -754,12 +754,12 @@ module RugBuilder
 									var next_id = $item.next().data('id') ? $item.next().data('id') : undefined;
 									if (prev_id || next_id) {
 										var destination_id = prev_id;
-										var relation = 'succ';
+										var relation = 'right';
 										if (!destination_id) {
 											destination_id = next_id;
-											relation = 'pred';
+											relation = 'left';
 										}
-										var move_url = '#{RugSupport::PathResolver.new(@template).resolve(options[:paths][:move], ":id", ":relation", ":destination_id")}'.replace(':id', id).replace(':relation', relation).replace(':destination_id', destination_id);
+										var move_url = '#{@path_resolver.resolve(options[:paths][:move], ":id", ":relation", ":destination_id")}'.replace(':id', id).replace(':relation', relation).replace(':destination_id', destination_id);
 										$.ajax({url: move_url, method: 'PUT', dataType: 'json'});
 									}
 								}
