@@ -47,15 +47,30 @@ module RugBuilder
 						});
 					}
 				end
+				if check_show_link(options)
+					show_js = %{
+						$('#tree_#{hash}').bind('tree.select', function(event) {
+							if (event.node) {
+								var node = event.node;
+								var show_url = '#{@path_resolver.resolve(options[:paths][:show], ":id")}'.replace(':id', event.node.id);
+								window.location.href = show_url;
+							}
+							else {
+								// Node was deselected
+							}
+						});
+					}
+				end
 				js = %{
 					function tree_#{hash}_ready()
 					{
 						$('#tree_#{hash}').tree({
-							dragAndDrop: true,
+							#{check_moving(options) && "dragAndDrop: true,"}
 							saveState: true,
 							closedIcon: $('#{@icon_builder.render("chevron-right")}'),
 							openedIcon: $('#{@icon_builder.render("chevron-down")}')
 						});
+						#{check_show_link(options) && show_js}
 						#{check_moving(options) && moving_js}
 					}
 					$(document).ready(tree_#{hash}_ready);
@@ -68,6 +83,10 @@ module RugBuilder
 			end
 
 		protected
+
+			def check_show_link(options)
+				return options[:paths] && options[:paths][:show]
+			end
 
 			def check_moving(options)
 				result = true
