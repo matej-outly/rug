@@ -12,6 +12,9 @@
 # Railtie
 require 'rug_record/railtie' if defined?(Rails)
 
+# Importer
+require "rug_record/importer"
+
 module RugRecord
 
 	# *************************************************************************
