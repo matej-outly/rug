@@ -60,6 +60,7 @@ module RugBuilder
 
 		def add_column_by_block(column, column_spec = {}, &block)
 			column_spec[:block] = block
+			column_spec[:type] = :block
 			@columns[column.to_sym] = column_spec
 		end
 
@@ -69,6 +70,10 @@ module RugBuilder
 
 		def headers
 			return @columns.keys
+		end
+
+		def type(column)
+			return @columns[column.to_sym][:type].to_sym
 		end
 
 		def label(column, model_class)

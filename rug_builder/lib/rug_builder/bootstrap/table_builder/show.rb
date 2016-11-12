@@ -69,13 +69,13 @@ module RugBuilder
 						if columns.is_store?(column)
 							columns.render_store(column, object).each do |store_item|
 								empty = false
-								result_1 += show_layout_2(lambda { store_item[:label] }, lambda { store_item[:value] })
+								result_1 += show_layout_2(lambda { store_item[:label] }, lambda { store_item[:value] }, :store)
 							end
 						else
 							value = columns.render(column, object)
 							if options[:show_blank_rows] == true || !value.blank?
 								empty = false
-								result_1 += show_layout_2(lambda { columns.label(column, object.class) }, lambda { value })
+								result_1 += show_layout_2(lambda { columns.label(column, object.class) }, lambda { value }, columns.type(column))
 							end
 						end
 					end
@@ -112,13 +112,25 @@ module RugBuilder
 			#
 			# Single column
 			#
-			def show_layout_2(label_block, value_block)
-				result = %{
-					<tr>
-						<td>#{label_block.call}</td>
-						<td>#{value_block.call}</td>
-					</tr>
-				}
+			def show_layout_2(label_block, value_block, type)
+				puts type.inspect
+				if type == :text
+					result = %{
+						<tr>
+							<td colspan="2" class="show-table-label">#{label_block.call}</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="show-table-value">#{value_block.call}</td>
+						</tr>
+					}
+				else
+					result = %{
+						<tr>
+							<td class="show-table-label">#{label_block.call}</td>
+							<td class="show-table-value">#{value_block.call}</td>
+						</tr>
+					}
+				end
 				result
 			end
 
