@@ -18,6 +18,8 @@ module RugBuilder
 			#
 			def self.standard_icon(standard_icon)
 				return case standard_icon
+					when :ok then "check"
+					when :cancel then "times"
 					when :index then "list"
 					when :show then "search"
 					when :edit then "pencil"
