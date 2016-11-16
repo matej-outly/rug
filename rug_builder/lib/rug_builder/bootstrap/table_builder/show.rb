@@ -113,7 +113,6 @@ module RugBuilder
 			# Single column
 			#
 			def show_layout_2(label_block, value_block, type)
-				puts type.inspect
 				if type == :text
 					result = %{
 						<tr>
