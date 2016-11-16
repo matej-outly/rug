@@ -51,6 +51,13 @@ module RugRecord
 			(@password ? @password : "")
 		end
 
+		def self.set_encoding(new_encoding)
+			@encoding = new_encoding
+		end
+		def self.get_encoding
+			(@encoding ? @encoding : "utf8")
+		end
+
 		def self.set_logging(new_logging)
 			@logging = new_logging
 		end
@@ -68,6 +75,11 @@ module RugRecord
 		# *************************************************************************
 		# Definition
 		# *************************************************************************
+
+		def self.def_import_custom_block(key, &custom_block)
+			self.import_defs[key] = {} if self.import_defs[key].nil?
+			self.import_defs[key][:custom_block] = custom_block
+		end
 
 		def self.def_import_query(key, query)
 			self.import_defs[key] = {} if self.import_defs[key].nil?
@@ -98,7 +110,13 @@ module RugRecord
 		def self.import(options = {})
 			begin
 				self.import_defs.each do |import_key, import_def|
-					self.do_import(import_key, import_def) if import_def[:disabled] != true
+					if import_def[:disabled] != true
+						if import_def[:custom_block] 
+							import_def[:custom_block].call(import_key, import_def)
+						else
+							self.do_import(import_key, import_def) 
+						end
+					end
 				end
 			rescue Exception => e 
 				if self.get_exceptions == :raise || options[:exceptions] == :raise
@@ -108,6 +126,10 @@ module RugRecord
 				end
 			end
 			return true
+		end
+
+		def self.i(options = {})
+			return self.import(options)
 		end
 	 
 	protected
@@ -176,7 +198,8 @@ module RugRecord
 						host: self.get_host, 
 						database: self.get_database, 
 						username: self.get_username, 
-						password: self.get_password
+						password: self.get_password,
+						encoding: self.get_encoding
 					)
 				end
 			end
@@ -202,13 +225,13 @@ module RugRecord
 		# Execute a query to remote database
 		#
 		def self.exec(query)
+			disconnect_after_exec = (@connection.nil?)
 			if self.get_driver == :pgsql
 				result = self.connect.exec(query)
-				self.disconnect
 			elsif self.get_driver == :mysql
 				result = self.connect.query(query)
-				self.disconnect
 			end
+			self.disconnect if disconnect_after_exec
 			return result
 		end
 		
@@ -258,6 +281,13 @@ module RugRecord
 			@progress_current = @progress_count
 			if self.deactivated_logger
 				self.deactivated_logger.info("Progress #{@progress_label}: stop")
+			end
+		end
+
+		def self.tick_progress
+			@progress_current += 1
+			if self.deactivated_logger
+				self.deactivated_logger.info("Progress #{@progress_label}: tick #{@progress_current}")
 			end
 		end
 
