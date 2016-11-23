@@ -143,6 +143,9 @@ module RugRecord
 		def import(options = {})
 			begin
 				
+				# Deactivate standard logging
+				deactivate_logging
+
 				# Before callback
 				before_imports
 
@@ -168,12 +171,21 @@ module RugRecord
 				# After callback
 				after_imports
 
+				# Activate standard logging
+				activate_logging
+
 			rescue Exception => e 
+
+				# Activate standard logging
+				activate_logging
+
+				# Handle exception
 				if get_exceptions == :raise || options[:exceptions] == :raise
 					raise e
 				else
 					return false
 				end
+
 			end
 			return true
 		end
@@ -214,9 +226,6 @@ module RugRecord
 			# Establish connection to local database (not necessary, local connection not lost)
 			# ...
 
-			# Deactivate standard logging
-			deactivate_logging
-				
 			# Progres logging
 			init_progress(data.count, key)
 
@@ -238,18 +247,12 @@ module RugRecord
 			# Progress logging
 			finish_progress
 
-			# Activate standard logging
-			activate_logging
-
 			return true
 		end
 
 		def import_xml(key, options)
 			return false if options[:url].blank?
 
-			# Deactivate standard logging
-			deactivate_logging
-				
 			# Progres logging
 			init_progress(nil, key)
 
@@ -258,9 +261,6 @@ module RugRecord
 
 			# Progress logging
 			finish_progress
-
-			# Activate standard logging
-			activate_logging
 
 			return true
 		end
@@ -420,6 +420,14 @@ module RugRecord
 		def xml_inner_text(element)
 			if element
 				return element.inner_text.to_s
+			else
+				return ""
+			end
+		end
+
+		def xml_attr(element, attribute)
+			if element && attribute
+				return element[attribute].to_s
 			else
 				return ""
 			end
