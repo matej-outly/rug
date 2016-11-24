@@ -157,7 +157,7 @@ module RugRecord
 						import_options = import_options.merge(options)
 						if import_options[:disabled] != true
 							if import_options[:custom_block] 
-								import_options[:custom_block].call(key, import_options)
+								instance_exec(key, import_options, &import_options[:custom_block])
 							elsif [:pgsql, :mysql].include?(get_driver)
 								import_sql(key, import_options) 
 							elsif [:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
@@ -221,7 +221,7 @@ module RugRecord
 			return false if options[:query].nil?
 
 			# Make remote database query
-			data = self.exec(options[:query].to_s)
+			data = sql_exec(options[:query].to_s)
 			
 			# Establish connection to local database (not necessary, local connection not lost)
 			# ...
