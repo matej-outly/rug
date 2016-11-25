@@ -21,6 +21,7 @@ module RugBuilder
 				@path_resolver = RugSupport::PathResolver.new(@template)
 				@button_builder = RugBuilder::ButtonBuilder.new(@template)
 				@icon_builder = RugBuilder::IconBuilder
+				@options = {}
 			end
 
 			#

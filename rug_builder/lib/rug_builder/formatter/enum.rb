@@ -142,7 +142,7 @@ module RugBuilder
 						result_1 += b.dropdown_button(nil, el_options) do |m| 
 							result_2 = ""
 							object.class.send("available_#{column.to_s.pluralize}".to_sym).each do |available_state|
-								result_2 += m.item(available_state.label, RugSupport::PathResolver.new(@template).resolve(options[:path], available_state.value), method: "put")
+								result_2 += m.item(available_state.label, RugSupport::PathResolver.new(@template).resolve(options[:path], object, available_state.value), method: "put")
 							end
 							result_2.html_safe
 						end
