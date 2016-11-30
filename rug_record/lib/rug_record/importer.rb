@@ -203,12 +203,12 @@ module RugRecord
 			return self.import(options)
 		end
 
-		def self.queue
-			# TODO
+		def self.enqueue
+			QC.enqueue("#{self.to_s}.import")
 		end
 
-		def queue
-			return self.class.queue
+		def enqueue
+			return self.class.enqueue
 		end
 	 
 	protected
