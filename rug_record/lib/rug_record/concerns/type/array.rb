@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Address definition
+# * Array definition
 # *
 # * Author: Matěj Outlý
 # * Date  : 4. 4. 2015

@@ -76,8 +76,8 @@ module RugBuilder
 			# Locale
 			if options[:locale]
 				locale = options[:locale]
-			elsif options[:object] && options[:object].respond_to?(:currency)
-				locale = options[:object].currency.to_sym
+			elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
+				locale = options[:object].currency_as_locale
 			else
 				locale = :cs
 			end

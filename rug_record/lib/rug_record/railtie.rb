@@ -38,10 +38,11 @@ module RugRecord
 			# Type extensions (concerns)
 			require "rug_record/concerns/type/address" if RugRecord.enable_type_address
 			require "rug_record/concerns/type/array" if RugRecord.enable_type_array
-			require "rug_record/concerns/type/enum" if RugRecord.enable_type_enum
 			require "rug_record/concerns/type/croppable_picture" if RugRecord.enable_type_croppable_picture
+			require "rug_record/concerns/type/currency" if RugRecord.enable_type_currency
 			require "rug_record/concerns/type/datetime_range" if RugRecord.enable_type_datetime_range
 			require "rug_record/concerns/type/duration" if RugRecord.enable_type_duration
+			require "rug_record/concerns/type/enum" if RugRecord.enable_type_enum
 			require "rug_record/concerns/type/geolocation" if RugRecord.enable_type_geolocation
 			require "rug_record/concerns/type/georectangle" if RugRecord.enable_type_georectangle
 			require "rug_record/concerns/type/geopolygon" if RugRecord.enable_type_geopolygon

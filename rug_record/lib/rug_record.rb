@@ -107,6 +107,12 @@ module RugRecord
 	@@enable_type_croppable_picture = false
 
 	#
+	# Enable type currency
+	#
+	mattr_accessor :enable_type_currency
+	@@enable_type_currency = true
+
+	#
 	# Enable type datetime range
 	#
 	mattr_accessor :enable_type_datetime_range
