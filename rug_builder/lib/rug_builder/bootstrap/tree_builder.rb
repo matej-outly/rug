@@ -49,16 +49,25 @@ module RugBuilder
 				end
 				if check_show_link(options)
 					show_js = %{
-						$('#tree_#{hash}').bind('tree.select', function(event) {
+						$('#tree_#{hash}').bind('tree.dblclick', function(event) {
 							if (event.node) {
 								var node = event.node;
 								var show_url = '#{@path_resolver.resolve(options[:paths][:show], ":id")}'.replace(':id', event.node.id);
 								window.location.href = show_url;
 							}
-							else {
-								// Node was deselected
-							}
 						});
+					}
+				end
+				if options[:type_icon]
+					icon_js = %{
+						onCreateLi: function(node, $li) {
+							var icon = node.#{options[:type_icon]}
+							if (!icon) {
+								icon = 'file-o';
+							}
+							var icon_html = '#{@icon_builder.render(":icon", class: "jqtree-icon")}'.replace(':icon', icon);
+							$li.find('.jqtree-title').before(icon_html);
+						}
 					}
 				end
 				js = %{
@@ -67,8 +76,9 @@ module RugBuilder
 						$('#tree_#{hash}').tree({
 							#{check_moving(options) && "dragAndDrop: true,"}
 							saveState: true,
-							closedIcon: $('#{@icon_builder.render("chevron-right")}'),
-							openedIcon: $('#{@icon_builder.render("chevron-down")}')
+							closedIcon: $('#{@icon_builder.render(options[:closed_icon] ? options[:closed_icon] : "chevron-right")}'),
+							openedIcon: $('#{@icon_builder.render(options[:opened_icon] ? options[:opened_icon] : "chevron-down")}'),
+							#{icon_js && icon_js}
 						});
 						#{check_show_link(options) && show_js}
 						#{check_moving(options) && moving_js}
