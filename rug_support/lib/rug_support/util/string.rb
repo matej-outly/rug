@@ -115,6 +115,41 @@ class String
 		return ActionController::Base.helpers.strip_tags(self)
 	end
 
+	# 
+	# Convert coordinate in degree format to decimal format
+	#
+	def coordinate_to_decimal
+		return nil if self.blank?
+		result = 0.0
+		minus = false
+		
+		# Degrees
+		splitted_1 = self.split("°")
+		return nil if splitted_1.length != 2
+		result += splitted_1[0].to_i.to_f
+
+		# Minus correction
+		if result < 0.0
+			minus = true
+			result = -result
+		end
+
+		# Minutes
+		splitted_2 = splitted_1[1].split("'")
+		return nil if splitted_2.length != 2
+		result += (splitted_2[0].to_i.to_f / 60.to_f).to_f
+
+		# Seconds
+		result += (splitted_2[1].to_f / 3600.to_f).to_f
+
+		# Minus correction
+		if minus
+			result = -result
+		end
+
+		return result
+	end
+
 end
 
 module RugSupport
