@@ -43,4 +43,17 @@ class Array
 		return result
 	end
 
+	#
+	# Join array using extra last join string
+	# 
+	def join_with_extra_last(join_string_common, join_string_last)
+		result = ""
+		self.each_with_index do |item, index|
+			result += join_string_common.to_s if index != 0 && index < self.length-1
+			result += join_string_last.to_s if index != 0 && index >= self.length-1
+			result += item.to_s
+		end
+		return result
+	end
+
 end

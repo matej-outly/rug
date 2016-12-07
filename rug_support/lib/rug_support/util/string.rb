@@ -97,7 +97,7 @@ class String
 			strip_tags.
 			downcase.
 			gsub(/[^a-z0-9\.\s,\-_]/, "").
-			gsub(/[\s,\-_]+/, "-").
+			gsub(/[\.\s,\-_]+/, "-").
 			trim("-")
 	end
 
