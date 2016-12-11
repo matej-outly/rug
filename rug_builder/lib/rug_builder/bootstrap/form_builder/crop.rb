@@ -115,6 +115,7 @@ module RugBuilder
 				js += "function crop_#{hash}_ready()\n"
 				js += "{\n"
 				js += "	$('#crop_#{hash} .cropbox img').load(crop_#{hash}_reload_jcrop);\n"
+				js += "	crop_#{hash}_reload_jcrop();\n"
 				js += "}\n"
 
 				js += "$(document).ready(crop_#{hash}_ready);\n"
