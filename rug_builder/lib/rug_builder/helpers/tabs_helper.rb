@@ -17,8 +17,8 @@ module RugBuilder
 				RugBuilder::TabsBuilder.new(self)
 			end
 
-			def rug_tabs_header(tabs = [])
-				RugBuilder::TabsBuilder.render_header(tabs)
+			def rug_tabs_header(tabs = [], options = {})
+				RugBuilder::TabsBuilder.render_header(tabs, options)
 			end
 
 		end

@@ -32,14 +32,23 @@ module RugBuilder
 			#
 			# Render only tabs header
 			#
-			def self.render_header(tabs = [])
+			def self.render_header(tabs = [], options = {})
 				result = ""
 				
+				# Class and container class
+				klass = options[:class] ? options[:class] : ""
+				container_klass = options[:container_class] ? options[:container_class] : ""
+				container = !container_klass.blank?
+
+				# Style
+				style = options[:style] ? options[:style] : "tabs"
+
 				# Find active tab index
 				active_tab_index = self.active_tab_index(tabs)
 
 				# Render header
-				result += "<ul class=\"nav nav-tabs\" role=\"tablist\">"
+				result += "<div class=\"#{container_klass}\">" if container
+				result += "<ul class=\"nav nav-#{style} #{klass}\" role=\"tablist\">"
 				tabs.each_with_index do |tab, index|
 
 					# Attributes
@@ -56,6 +65,7 @@ module RugBuilder
 					result += "<li role=\"presentation\" class=\"#{active_tab_index == index ? "active" : ""}\"><a href=\"#{path}\" aria-controls=\"#{name}\" role=\"tab\" #{data_toggle}>#{heading}</a></li>"
 				end
 				result += "</ul>"
+				result += "</div>" if container
 
 				return result.html_safe
 			end
@@ -72,8 +82,16 @@ module RugBuilder
 				result = ""
 				result += "<div id=\"tabs_#{hash}\">"
 				
+				# Header options
+				header_options = {}
+				options.each do |key, value|
+					if key.to_s.starts_with?("header_")
+						header_options[key.to_s[7..-1].to_sym] = value
+					end
+				end
+
 				# Render header
-				result += self.class.render_header(@tabs)
+				result += self.class.render_header(@tabs, header_options)
 				
 				# Find active tab
 				active_tab_index = self.class.active_tab_index(@tabs)
