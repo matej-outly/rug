@@ -55,7 +55,7 @@ module RugBuilder
 
 				if !label.blank?
 					if format == :a
-						return @template.link_to(label, url, {
+						return @template.link_to(label.html_safe, url, {
 							class: "btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} #{klass}",
 							method: method,
 							data: data,

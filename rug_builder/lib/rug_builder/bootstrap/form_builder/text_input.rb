@@ -68,10 +68,22 @@ module RugBuilder
 
 					# Form group
 					result += "<div class=\"form-group #{(object.errors[suffixed_name].size > 0 ? "has-error" : "")}\">"
-				
+					
+					# Input group
+					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
+					
+					# Prefix
+					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
+					
 					# Field
 					result += self.method(method).call(suffixed_name, field_options)
 					
+					# Suffix
+					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
+					
+					# Input group
+					result += "</div>" if options[:prefix] || options[:suffix]
+				
 					# Errors
 					result += errors(suffixed_name)
 					
