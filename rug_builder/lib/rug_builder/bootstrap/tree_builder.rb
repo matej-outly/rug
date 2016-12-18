@@ -31,6 +31,7 @@ module RugBuilder
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(data_path.to_s)
 
+				# Moving
 				if check_moving(options)
 					moving_js = %{
 						$('#tree_#{hash}').bind('tree.move', function(event) {
@@ -47,6 +48,8 @@ module RugBuilder
 						});
 					}
 				end
+
+				# Show
 				if check_show_link(options)
 					show_js = %{
 						$('#tree_#{hash}').bind('tree.dblclick', function(event) {
@@ -58,18 +61,40 @@ module RugBuilder
 						});
 					}
 				end
+
+				# Actions
+				if options[:actions]
+					actions_js = ""
+					actions_js += "var actions_html = '';\n"
+					actions_js += "actions_html += '<div class=\"jqtree-actions\">';\n"
+					actions_js += "actions_html += '	<div class=\"btn-group\">';\n"
+					actions_js += "actions_html += '		<button type=\"button\" class=\"btn btn-default btn-xs dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">';\n"
+					actions_js += "actions_html += '			<span class=\"caret\"></span>';\n"
+					actions_js += "actions_html += '		</button>';\n"
+					actions_js += "actions_html += '		<ul class=\"dropdown-menu dropdown-menu-right\">';\n"
+					actions_js += "var path = null;\n"
+					options[:actions].each do |key, action|
+						actions_js += "path = '#{@path_resolver.resolve(action[:path], ":id")}'.replace('%3Aid', node.id);\n"
+						actions_js += "actions_html += '			<li><a href=\"' + path + '\">#{@icon_builder.render(action[:icon])}&nbsp;&nbsp;#{action[:label]}</a></li>';\n"
+					end 
+					actions_js += "actions_html += '		</ul>';\n"
+					actions_js += "actions_html += '	</div>';\n"
+					actions_js += "actions_html += '</div>';\n"
+					actions_js += "$li.find('.jqtree-title').after(actions_html);\n"
+				end
+
+				# Icon
 				if options[:type_icon]
 					icon_js = %{
-						onCreateLi: function(node, $li) {
-							var icon = node.#{options[:type_icon]}
-							if (!icon) {
-								icon = 'file-o';
-							}
-							var icon_html = '#{@icon_builder.render(":icon", class: "jqtree-icon")}'.replace(':icon', icon);
-							$li.find('.jqtree-title').before(icon_html);
+						var icon = node.#{options[:type_icon]}
+						if (!icon) {
+							icon = 'file-o';
 						}
+						var icon_html = '#{@icon_builder.render(":icon", class: "jqtree-icon")}'.replace(':icon', icon);
+						$li.find('.jqtree-title').before(icon_html);
 					}
 				end
+
 				js = %{
 					function tree_#{hash}_ready()
 					{
@@ -78,7 +103,10 @@ module RugBuilder
 							saveState: true,
 							closedIcon: $('#{@icon_builder.render(options[:closed_icon] ? options[:closed_icon] : "chevron-right")}'),
 							openedIcon: $('#{@icon_builder.render(options[:opened_icon] ? options[:opened_icon] : "chevron-down")}'),
-							#{icon_js && icon_js}
+							onCreateLi: function(node, $li) {
+								#{icon_js && icon_js}
+								#{actions_js && actions_js}
+							}
 						});
 						#{check_show_link(options) && show_js}
 						#{check_moving(options) && moving_js}
