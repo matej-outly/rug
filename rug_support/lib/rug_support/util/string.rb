@@ -89,6 +89,22 @@ class String
 	end
 
 	#
+	# Remove characters from string on the left side
+	#
+	def ltrim(chars = "\s")
+		return self.
+			sub(/^[#{Regexp.escape(chars)}]*/, "")
+	end
+
+	#
+	# Remove characters from string on the right side
+	#
+	def rtrim(chars = "\s")
+		return self.
+			sub(/[#{Regexp.escape(chars)}]*$/, "")
+	end
+
+	#
 	# Convert string to URL suitable format (= url-suitable-format)
 	#
 	def to_url
