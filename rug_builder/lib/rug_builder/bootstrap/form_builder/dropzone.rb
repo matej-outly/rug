@@ -101,19 +101,26 @@ module RugBuilder
 				return result.html_safe
 			end
 
-			def dropzone_many_row(name, attachment_name, create_url, destroy_url, collection = nil, collection_class = nil, options = {})
+			def dropzone_many_row(name, attachment_name, create_url, destroy_url, options = {})
 				
 				# Collection
-				if collection.nil?
+				if options[:collection].nil?
 					collection = object.send(name)
+				else
+					collection = options[:collection]
 				end
 				if collection.nil?
 					raise "Please define collection."
 				end
 
 				# Collection model class
-				if collection_class.nil?
+				if options[:collection_class].nil?
 					collection_class = object.class.reflect_on_association(name).class_name.constantize
+				else
+					collection_class = options[:collection_class]
+				end
+				if collection_class.nil?
+					raise "Please define collection class."
 				end
 
 				# Preset
