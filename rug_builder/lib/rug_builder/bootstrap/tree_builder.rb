@@ -12,7 +12,7 @@
 module RugBuilder
 #	module Bootstrap
 		class TreeBuilder
-			
+
 			#
 			# Constructor
 			#
@@ -76,7 +76,7 @@ module RugBuilder
 					options[:actions].each do |key, action|
 						actions_js += "path = '#{@path_resolver.resolve(action[:path], ":id")}'.replace('%3Aid', node.id);\n"
 						actions_js += "actions_html += '			<li><a href=\"' + path + '\">#{@icon_builder.render(action[:icon])}&nbsp;&nbsp;#{action[:label]}</a></li>';\n"
-					end 
+					end
 					actions_js += "actions_html += '		</ul>';\n"
 					actions_js += "actions_html += '	</div>';\n"
 					actions_js += "actions_html += '</div>';\n"
@@ -95,6 +95,22 @@ module RugBuilder
 					}
 				end
 
+				# Clipboard
+				if options[:clipboard]
+					clipboard_text_js = "node.#{options[:clipboard]}"
+					if options[:clipboard_label]
+						clipboard_text_js = "<a href='\" + #{clipboard_text_js} + \"'>\" + node.#{options[:clipboard_label]} + \"</a>"
+					end
+
+					clipboard_js = %{
+						var clipboard_html = "<div class=\\\"btn btn-default btn-xs jqtree-clipboard\\\" data-clipboard-text=\\\"#{clipboard_text_js}\\\">#{@icon_builder.render(options[:clipboard_icon] ? options[:clipboard_icon] : "clipboard").gsub('"', '\"')}</div>";
+						$li.find('.jqtree-title').after(clipboard_html);
+					}
+					enable_clipboard_js = %{
+					    new Clipboard('#tree_#{hash} .jqtree-clipboard');
+					}
+				end
+
 				js = %{
 					function tree_#{hash}_ready()
 					{
@@ -106,17 +122,19 @@ module RugBuilder
 							onCreateLi: function(node, $li) {
 								#{icon_js && icon_js}
 								#{actions_js && actions_js}
+								#{clipboard_js && clipboard_js}
 							}
 						});
 						#{check_show_link(options) && show_js}
 						#{check_moving(options) && moving_js}
+						#{enable_clipboard_js && enable_clipboard_js}
 					}
 					$(document).ready(tree_#{hash}_ready);
 				}
 				result += @template.javascript_tag(js)
 
 				result += %{<div id="tree_#{hash}" data-url="#{data_path.to_s}"></div>}
-				
+
 				return result.html_safe
 			end
 
