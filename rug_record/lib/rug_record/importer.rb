@@ -344,6 +344,9 @@ module RugRecord
 				ftp.passive = true
 				result = ftp.getbinaryfile(filename, nil)
 				ftp.close
+			elsif url.starts_with?("file://")
+				path = url[6..-1]
+				result = File.read(path)
 			else
 				require "rest-client"
 				rest_client_options = {}
