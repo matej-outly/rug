@@ -125,7 +125,7 @@ module RugBuilder
 								#end
 
 								# Standard read only value
-								value = columns.render(column, object)
+								value = columns.render(column, object).to_s
 								if idx == show_link_column && check_show_link(options)
 									result_1 += get_show_link(object, value, options[:paths][:show])
 								else

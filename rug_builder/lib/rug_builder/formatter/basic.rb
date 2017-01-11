@@ -82,7 +82,7 @@ module RugBuilder
 				locale = :cs
 			end
 
-			return @template.number_to_currency(value, locale: locale)
+			return @template.number_to_currency(value, locale: locale).to_s
 		end
 
 		# *********************************************************************
@@ -107,7 +107,7 @@ module RugBuilder
 				target = "_self"
 			end
 			
-			return @template.link_to(label, value.to_s, target: target)
+			return @template.link_to(label, value.to_s, target: target).to_s
 		end
 
 
