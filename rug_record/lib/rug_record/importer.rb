@@ -20,6 +20,10 @@ module RugRecord
 			
 		end
 
+		def next_batch
+			return @next_batch
+		end
+
 		# *************************************************************************
 		# Settings
 		# *************************************************************************
@@ -152,18 +156,34 @@ module RugRecord
 				# Around callback
 				around_imports do 
 
-					# Perform imports
-					self.imports.each do |key, import_options|
-						import_options = import_options.merge(options)
-						if import_options[:disabled] != true
-							if import_options[:custom_block] 
-								instance_exec(key, import_options, &import_options[:custom_block])
-							elsif [:pgsql, :mysql].include?(get_driver)
-								import_sql(key, import_options) 
-							elsif [:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
-								import_xml(key, import_options) 
+					begin
+						
+						# Init subject
+						init_subject
+						
+						# Perform imports
+						self.imports.each do |key, import_options|
+							import_options = import_options.merge(options)
+							if import_options[:disabled] != true
+								if import_options[:custom_block] 
+									instance_exec(key, import_options, &import_options[:custom_block])
+								elsif [:pgsql, :mysql].include?(get_driver)
+									import_sql(key, import_options) 
+								elsif [:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
+									import_xml(key, import_options) 
+								end
 							end
 						end
+
+						# Finish subject
+						finish_subject
+					
+					rescue Exception => e 
+
+						# Finish subject with error
+						finish_subject(true, e.message)
+
+						raise e
 					end
 
 				end
@@ -194,17 +214,43 @@ module RugRecord
 			return self.import(options)
 		end
 
+		def self.i(options = {})
+			return self.import(options)
+		end
+
 		def self.import(options = {})
 			instance = self.new
 			return instance.import(options)
 		end
 
-		def self.i(options = {})
-			return self.import(options)
+		def self.import_and_enqueue(options = {})
+			instance = self.new
+			result = instance.import(options)
+
+			# Finalize
+			if instance.next_batch == true
+
+				# Enqueue another batch
+				QC.enqueue("#{self.to_s}.import_and_enqueue", options)
+				return false
+			
+			else
+
+				# Enqueue callback
+				if options[:enqueue_callback]
+					QC.enqueue(options[:enqueue_callback])
+				end
+
+				return true
+			end
+		end
+
+		def import_and_enqueue(options = {})
+			return self.class.import_and_enqueue(options)
 		end
 
 		def self.enqueue
-			QC.enqueue("#{self.to_s}.import")
+			QC.enqueue("#{self.to_s}.import_and_enqueue")
 		end
 
 		def enqueue
@@ -365,7 +411,7 @@ module RugRecord
 		# XML
 		# *************************************************************************
 
-		def xml_load(url)
+		def xml_load(url, batch_size = nil)
 			if ![:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
 				raise "Can't call xml_load for driver '#{get_driver}'."
 			end
@@ -391,7 +437,7 @@ module RugRecord
 				# Extract gzip
 				yield Nokogiri::XML(Zlib::GzipReader.open(tmp_file.path).read)
 				
-				# Delte tempfile
+				# Delete tempfile
 				tmp_file.close
 				tmp_file.unlink 
 
@@ -403,16 +449,37 @@ module RugRecord
 				tmp_file.binmode
 				tmp_file.write(response)
 				
+				# Get current batch state
+				if !batch_size.nil?
+					batch_state = init_subject_batch 
+				end
+
 				# Extract zip
 				Zip::File.open(tmp_file.path) do |zip_file|
+					file_index = 0
 					zip_file.each do |entry|
 						if entry.name.ends_with?(".xml")
-							yield Nokogiri::XML(entry.get_input_stream.read)
+
+							if batch_size.nil? || (file_index >= batch_state && file_index < (batch_state + batch_size))
+								
+								# Yield if inside batch (or batch not active)
+								yield Nokogiri::XML(entry.get_input_stream.read)
+							
+							elsif !batch_size.nil? && (file_index >= (batch_state + batch_size))
+								@next_batch = true
+							end
+							
+							# Index
+							file_index += 1
+
 						end
 					end
 				end
 
-				# Delte tempfile
+				# Save new batch state
+				finish_subject_batch(@next_batch ? (batch_state + batch_size) : nil) if !batch_size.nil?
+
+				# Delete tempfile
 				tmp_file.close
 				tmp_file.unlink 
 			end
@@ -489,6 +556,64 @@ module RugRecord
 			@progress_current += 1
 			if deactivated_logger
 				deactivated_logger.info("Progress #{@progress_label}: tick #{@progress_current}")
+			end
+		end
+
+		# *************************************************************************
+		# Subject
+		# *************************************************************************
+
+		#
+		# To be overridden
+		#
+		def subject
+			nil
+		end
+
+		def init_subject
+			if self.subject
+				self.subject.last_import_at = Time.current
+				self.subject.last_import_state = "in_progress"
+				self.subject.save
+			end
+		end
+
+		def finish_subject(error = false, error_message = nil)
+			if self.subject
+				if error
+					self.subject.last_import_state = "error"
+					self.subject.last_import_message = error_message
+				else
+					self.subject.last_import_state = "success"
+					self.subject.last_import_message = nil
+				end
+				time_begin = self.subject.last_import_at
+				time_end = Time.current
+				if @prev_batch == true
+					self.subject.last_import_duration += (time_end - time_begin)
+				else
+					self.subject.last_import_duration = (time_end - time_begin)
+				end
+				self.subject.last_import_at = time_end
+				self.subject.save
+			end
+		end
+
+		def init_subject_batch
+			if self.subject
+				result = self.subject.last_import_batch_state.to_i
+				@prev_batch = (result != 0)
+				@next_batch = false
+				return result
+			else
+				return 0
+			end
+		end
+
+		def finish_subject_batch(batch_state)
+			if self.subject
+				self.subject.last_import_batch_state = batch_state
+				self.subject.save
 			end
 		end
 
