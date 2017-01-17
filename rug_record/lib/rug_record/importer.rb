@@ -224,6 +224,8 @@ module RugRecord
 		end
 
 		def self.import_and_enqueue(options = {})
+			options = options.symbolize_keys # Repair options probably passed from previous QC job
+
 			instance = self.new
 			result = instance.import(options)
 
