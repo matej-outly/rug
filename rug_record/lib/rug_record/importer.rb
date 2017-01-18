@@ -43,6 +43,10 @@ module RugRecord
 				# Behaviour settings
 				logging: :simple,
 				exceptions: :supress,
+
+				# Batch and limits
+				batch_size: nil, 
+				xml_size_limit: 200, # in MB
 			}
 		end
 
@@ -379,6 +383,8 @@ module RugRecord
 		
 		def load_from_url(url)
 			url = URI.escape(url)
+
+			# FTP
 			if url.starts_with?("ftp://")
 				require "net/ftp"
 				splitted_url = url[6..-1].split("/")
@@ -392,9 +398,13 @@ module RugRecord
 				ftp.passive = true
 				result = ftp.getbinaryfile(filename, nil)
 				ftp.close
+			
+			# Local file
 			elsif url.starts_with?("file://")
 				path = url[6..-1]
 				result = File.read(path)
+			
+			# Standard URL
 			else
 				require "rest-client"
 				rest_client_options = {}
@@ -413,7 +423,27 @@ module RugRecord
 		# XML
 		# *************************************************************************
 
-		def xml_load(url, batch_size = nil)
+		def xml_parse(data, options = {})
+			if !options[:split_by_element].nil?
+				Nokogiri::XML::Reader(data).each do |node|
+					if node.name == options[:split_by_element].to_s && node.node_type == Nokogiri::XML::Reader::TYPE_ELEMENT
+						if (node.outer_xml.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
+							yield Nokogiri::XML(node.outer_xml)
+						else
+							raise "XML data too large."
+						end
+					end
+				end
+			else
+				if (data.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
+					yield Nokogiri::XML(data)
+				else
+					raise "XML data too large."
+				end
+			end
+		end
+
+		def xml_load(url, options = {})
 			if ![:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
 				raise "Can't call xml_load for driver '#{get_driver}'."
 			end
@@ -426,8 +456,10 @@ module RugRecord
 			
 			# Parse data into nokogiri document
 			if get_driver == :xml
-				yield Nokogiri::XML(response)
-			
+				xml_parse(response, options) do |root_element|
+					yield root_element
+				end
+				
 			elsif get_driver == :xml_gzip
 				require "zlib" 
 				
@@ -437,7 +469,10 @@ module RugRecord
 				tmp_file.write(response)
 				
 				# Extract gzip
-				yield Nokogiri::XML(Zlib::GzipReader.open(tmp_file.path).read)
+				extracted_response = Zlib::GzipReader.open(tmp_file.path).read
+				xml_parse(extracted_response, options) do |root_element|
+					yield root_element
+				end
 				
 				# Delete tempfile
 				tmp_file.close
@@ -446,13 +481,17 @@ module RugRecord
 			elsif get_driver == :xml_folder_zip
 				require "zip"
 
+				# Batch
+				batch_size = get_batch_size
+				batch_enabled = (!batch_size.nil?)
+				
 				# Create temp file
 				tmp_file = Tempfile.new("import")
 				tmp_file.binmode
 				tmp_file.write(response)
-				
+
 				# Get current batch state
-				if !batch_size.nil?
+				if batch_enabled
 					batch_state = init_subject_batch 
 				end
 
@@ -462,24 +501,32 @@ module RugRecord
 					zip_file.each do |entry|
 						if entry.name.ends_with?(".xml")
 
-							if batch_size.nil? || (file_index >= batch_state && file_index < (batch_state + batch_size))
+							# File size check (big files cannot be parsed to DOM)
+							if (entry.size / 1048576) <= get_xml_size_limit
+
+								# Batch management => yield if inside current batch or batch not enabled
+								if !batch_enabled || (file_index >= batch_state && file_index < (batch_state + batch_size))
+									xml_parse(entry.get_input_stream.read, options) do |root_element|
+										yield root_element
+									end
 								
-								# Yield if inside batch (or batch not active)
-								yield Nokogiri::XML(entry.get_input_stream.read)
-							
-							elsif !batch_size.nil? && (file_index >= (batch_state + batch_size))
-								@next_batch = true
+								elsif batch_enabled && (file_index >= (batch_state + batch_size))
+									@next_batch = true # Remember that another batch is necessary to complete operation
+								end
+								
+								# Index
+								file_index += 1
+
+							else
+								#raise "XML file too large."
 							end
-							
-							# Index
-							file_index += 1
 
 						end
 					end
 				end
 
 				# Save new batch state
-				finish_subject_batch(@next_batch ? (batch_state + batch_size) : nil) if !batch_size.nil?
+				finish_subject_batch(@next_batch ? (batch_state + batch_size) : nil) if batch_enabled
 
 				# Delete tempfile
 				tmp_file.close
