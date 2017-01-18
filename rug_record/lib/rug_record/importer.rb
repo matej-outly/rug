@@ -428,7 +428,7 @@ module RugRecord
 				Nokogiri::XML::Reader(data).each do |node|
 					if node.name == options[:split_by_element].to_s && node.node_type == Nokogiri::XML::Reader::TYPE_ELEMENT
 						if (node.outer_xml.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
-							yield Nokogiri::XML(node.outer_xml)
+							yield Nokogiri::XML(node.outer_xml).first_element_child
 						else
 							raise "XML data too large."
 						end
@@ -436,7 +436,7 @@ module RugRecord
 				end
 			else
 				if (data.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
-					yield Nokogiri::XML(data)
+					yield Nokogiri::XML(data).first_element_child
 				else
 					raise "XML data too large."
 				end
@@ -590,7 +590,7 @@ module RugRecord
 		def increment_progress
 			@progress_current += 1
 			if deactivated_logger
-				deactivated_logger.info("Progress #{@progress_label}: #{@progress_current}/#{@progress_count}")
+				deactivated_logger.info("Progress #{@progress_label}: #{@progress_current}#{@progress_count.nil? ? "" : "/" + @progress_count}")
 			end
 		end
 
