@@ -590,7 +590,7 @@ module RugRecord
 		def increment_progress
 			@progress_current += 1
 			if deactivated_logger
-				deactivated_logger.info("Progress #{@progress_label}: #{@progress_current}#{@progress_count.nil? ? "" : "/" + @progress_count}")
+				deactivated_logger.info("Progress #{@progress_label}: #{@progress_current.to_s}#{@progress_count.nil? ? "" : "/" + @progress_count.to_s}")
 			end
 		end
 
@@ -604,7 +604,7 @@ module RugRecord
 		def tick_progress
 			@progress_current += 1
 			if deactivated_logger
-				deactivated_logger.info("Progress #{@progress_label}: tick #{@progress_current}")
+				deactivated_logger.info("Progress #{@progress_label}: tick #{@progress_current.to_s}")
 			end
 		end
 
@@ -639,7 +639,7 @@ module RugRecord
 				time_begin = self.subject.last_import_at
 				time_end = Time.current
 				if @prev_batch == true
-					self.subject.last_import_duration += (time_end - time_begin)
+					self.subject.last_import_duration = self.subject.last_import_duration.to_i + (time_end - time_begin)
 				else
 					self.subject.last_import_duration = (time_end - time_begin)
 				end
