@@ -436,7 +436,7 @@ module RugRecord
 				end
 			else
 				if (data.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
-					yield Nokogiri::XML(data).first_element_child
+					yield Nokogiri::XML(data)
 				else
 					raise "XML data too large."
 				end
