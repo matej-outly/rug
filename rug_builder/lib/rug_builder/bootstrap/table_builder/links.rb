@@ -46,15 +46,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.new").upcase_first
-				end
+				label = get_link_label(object, optionsI18n.t("general.action.new").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "new"
@@ -80,15 +72,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path, object)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.edit").upcase_first
-				end
+				label = get_link_label(object, optionsI18n.t("general.action.edit").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "edit"
@@ -114,15 +98,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.bind").upcase_first
-				end
+				label = get_link_label(object, optionsI18n.t("general.action.create").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "create"
@@ -148,15 +124,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path, object)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = I18n.t("general.action.destroy").upcase_first
-				end
+				label = get_link_label(object, optionsI18n.t("general.action.destroy").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "destroy"
@@ -182,15 +150,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path, object)
-				if !options[:label].nil?
-					if options[:label] != false
-						label = options[:label]
-					else
-						label = ""
-					end
-				else
-					label = ""
-				end
+				label = get_link_label(object, options)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
@@ -237,6 +197,26 @@ module RugBuilder
 				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
 				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_down) + options[:label].to_s, url, link_tag_options) + " "
+			end
+
+			# *********************************************************************
+			# Label
+			# *********************************************************************
+
+			def get_link_label(object, options, default = "")
+				if !options[:label].nil?
+					if options[:label] != false
+						if options[:label].is_a?(Proc)
+							return options[:label].call(object)
+						else
+							return options[:label]
+						end
+					else
+						return ""
+					end
+				else
+					return default
+				end
 			end
 
 		end

@@ -383,6 +383,7 @@ module RugBuilder
 			# - moving (boolean) - Turn on moving
 			# - show_link_column (integer) - Column index used for show link
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table header
+			# - grid_columns - Number of columns in the grid (default 3)
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -408,6 +409,10 @@ module RugBuilder
 				else
 					show_link_column = 0
 				end
+
+				# Grid columns
+				grid_columns = 3
+				grid_columns = options[:grid_columns] if options[:grid_columns]
 
 				# Table heading
 				result += picture_index_layout_3(
@@ -472,8 +477,8 @@ module RugBuilder
 								result_2
 							}
 
-							# Use layoput to render single item
-							result_1 += picture_index_layout_2(object.id, columns_blocks, actions_block, moving_handle_block)
+							# Use layout to render single item
+							result_1 += picture_index_layout_2(object.id, grid_columns, columns_blocks, actions_block, moving_handle_block)
 						end
 						result_1
 					end
@@ -651,12 +656,14 @@ module RugBuilder
 			#
 			# Single object
 			#
-			def picture_index_layout_2(object_id, columns_blocks, actions_block, moving_handle_block)
+			def picture_index_layout_2(object_id, grid_columns, columns_blocks, actions_block, moving_handle_block)
 				actions = actions_block.call.trim
 				first_column_block = columns_blocks.shift
+				col_sm = 6
+				col_md = 12 / grid_columns
 				result = ""
 				result += %{
-					<div class="item col-sm-6 col-md-4" data-id=\"#{object_id}\">
+					<div class="item col-sm-#{col_sm} col-md-#{col_md}" data-id=\"#{object_id}\">
 						#{moving_handle_block.call}
 						<div class="thumbnail">
 				}

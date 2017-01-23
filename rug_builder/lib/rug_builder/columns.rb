@@ -92,8 +92,13 @@ module RugBuilder
 			if !@columns[column.to_sym]
 				raise "Unknown column '#{column.to_s}'."
 			end
+			
+			if @columns[column.to_sym][:block]
 
-			if @columns[column.to_sym][:type]
+				# Call block
+				return @columns[column.to_sym][:block].call(object).to_s
+
+			elsif @columns[column.to_sym][:type]
 
 				# Get value
 				value = object.send(column.to_sym)
@@ -107,10 +112,6 @@ module RugBuilder
 				Formatter.initialize(@template)
 				return Formatter.method(@columns[column.to_sym][:type].to_sym).call(value, options)
 
-			elsif @columns[column.to_sym][:block]
-
-				# Call block
-				return @columns[column.to_sym][:block].call(object).to_s
 			else
 
 				# Unknown

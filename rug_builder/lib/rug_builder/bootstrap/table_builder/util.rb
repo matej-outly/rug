@@ -117,7 +117,7 @@ module RugBuilder
 					end
 				end
 
-				# Add all builtin actions in not defined by common actions
+				# Add all builtin actions if not defined by common actions
 				builtin_actions.each do |builtin_action|
 					if (options[options_attr].nil? || options[options_attr][builtin_action].nil?) && self.send("check_#{builtin_action}_link", options)
 						result[builtin_action] = {
