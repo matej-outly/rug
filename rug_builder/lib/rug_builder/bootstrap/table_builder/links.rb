@@ -46,7 +46,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path)
-				label = get_link_label(object, optionsI18n.t("general.action.new").upcase_first)
+				label = get_link_label(object, options, I18n.t("general.action.new").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "new"
@@ -72,7 +72,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path, object)
-				label = get_link_label(object, optionsI18n.t("general.action.edit").upcase_first)
+				label = get_link_label(object, options, I18n.t("general.action.edit").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "edit"
@@ -98,7 +98,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path)
-				label = get_link_label(object, optionsI18n.t("general.action.create").upcase_first)
+				label = get_link_label(object, options, I18n.t("general.action.create").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "create"
@@ -124,7 +124,7 @@ module RugBuilder
 					return ""
 				end
 				url = @path_resolver.resolve(path, object)
-				label = get_link_label(object, optionsI18n.t("general.action.destroy").upcase_first)
+				label = get_link_label(object, options, I18n.t("general.action.destroy").upcase_first)
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "destroy"
