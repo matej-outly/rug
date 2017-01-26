@@ -115,7 +115,7 @@ module RugBuilder
 					function tree_#{hash}_ready()
 					{
 						$('#tree_#{hash}').tree({
-							#{check_moving(options) && "dragAndDrop: true,"}
+							#{check_moving(options) ? "dragAndDrop: true," : ""}
 							saveState: true,
 							closedIcon: $('#{@icon_builder.render(options[:closed_icon] ? options[:closed_icon] : "chevron-right")}'),
 							openedIcon: $('#{@icon_builder.render(options[:opened_icon] ? options[:opened_icon] : "chevron-down")}'),

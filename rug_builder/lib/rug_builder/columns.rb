@@ -137,13 +137,15 @@ module RugBuilder
 				
 				# Go through the store and render each item
 				store_value.each do |label, single_value|
-					result << {
-						label: label,
-						value: Formatter.string(single_value, {
-							object: object,
-							column: column
-						})
-					}
+					if !label.blank? && !single_value.blank?
+						result << {
+							label: label,
+							value: Formatter.string(single_value, {
+								object: object,
+								column: column
+							})
+						}
+					end
 				end
 			end
 
