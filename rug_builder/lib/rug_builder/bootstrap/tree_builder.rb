@@ -51,8 +51,9 @@ module RugBuilder
 
 				# Show
 				if check_show_link(options)
+					event = (options[:show_event] && options[:show_event].to_sym == :double_click ? "dblclick" : "click")
 					show_js = %{
-						$('#tree_#{hash}').bind('tree.dblclick', function(event) {
+						$('#tree_#{hash}').bind('tree.#{event}', function(event) {
 							if (event.node) {
 								var node = event.node;
 								var show_url = '#{@path_resolver.resolve(options[:paths][:show], ":id")}'.replace(':id', event.node.id);

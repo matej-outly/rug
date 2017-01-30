@@ -408,7 +408,7 @@ module RugRecord
 			else
 				require "rest-client"
 				rest_client_options = {}
-				rest_client_options[:url] = URI.escape(url)
+				rest_client_options[:url] = url
 				rest_client_options[:method] = :get
 				if !get_username.blank? && !get_password.blank?
 					rest_client_options[:user] = get_username
