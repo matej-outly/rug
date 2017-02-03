@@ -383,7 +383,8 @@ module RugBuilder
 			# - moving (boolean) - Turn on moving
 			# - show_link_column (integer) - Column index used for show link
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table header
-			# - grid_columns - Number of columns in the grid (default 3)
+			# - grid_columns (integer) - Number of columns in the grid (default 3)
+			# - thumbanail_crop (indeger) - Height of thumbnail in px if it should be cropped (default no crop)
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -413,6 +414,10 @@ module RugBuilder
 				# Grid columns
 				grid_columns = 3
 				grid_columns = options[:grid_columns] if options[:grid_columns]
+
+				# Thumbnail crop
+				thumbnail_crop = nil
+				thumbnail_crop = options[:thumbnail_crop] if options[:thumbnail_crop]
 
 				# Table heading
 				result += picture_index_layout_3(
@@ -478,7 +483,7 @@ module RugBuilder
 							}
 
 							# Use layout to render single item
-							result_1 += picture_index_layout_2(object.id, grid_columns, columns_blocks, actions_block, moving_handle_block)
+							result_1 += picture_index_layout_2(object.id, grid_columns, thumbnail_crop, columns_blocks, actions_block, moving_handle_block)
 						end
 						result_1
 					end
@@ -656,7 +661,7 @@ module RugBuilder
 			#
 			# Single object
 			#
-			def picture_index_layout_2(object_id, grid_columns, columns_blocks, actions_block, moving_handle_block)
+			def picture_index_layout_2(object_id, grid_columns, thumbnail_crop, columns_blocks, actions_block, moving_handle_block)
 				actions = actions_block.call.trim
 				first_column_block = columns_blocks.shift
 				col_sm = 6
@@ -667,7 +672,20 @@ module RugBuilder
 						#{moving_handle_block.call}
 						<div class="thumbnail">
 				}
+				if !thumbnail_crop.nil?
+					result += %{
+							<span class="thumbnail-crop thumbnail-crop-horizontal" style="height: #{thumbnail_crop}px; width: 100%;">
+					}
+				end
+				
+				# Picture
 				result += first_column_block.call if first_column_block
+				
+				if !thumbnail_crop.nil?	
+					result += %{		
+							</span>
+					}
+				end
 				result += %{
 							<div class="caption">
 				}
