@@ -36,13 +36,18 @@ module RugBuilder
 			end
 
 			#
-			# Render link button
+			# Render common button
 			#
-			def link_button_row(label, url, options = {})
-
+			def button_row(label, url, options = {})
+				
 				# CSS class
 				klass = []
-				klass << "btn btn-link"
+				klass << "btn"
+				if !options[:style].nil?
+					klass << "btn-#{options[:style]}"
+				else
+					klass << "btn-default"
+				end
 				klass << options[:class] if !options[:class].nil?
 				
 				# Field options
@@ -50,6 +55,15 @@ module RugBuilder
 				field_options[:class] = klass.join(" ")
 
 				return @template.link_to(label, url, field_options)
+
+			end
+
+			#
+			# Render link button
+			#
+			def link_button_row(label, url, options = {})
+				options[:style] = "link"
+				return self.button_row(label, url, options)
 			end
 
 			#
