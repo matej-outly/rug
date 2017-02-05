@@ -128,7 +128,7 @@ module RugBuilder
 							// Moving
 							moving: #{check_moving(@options) ? 'true' : 'false' },
 							movingPlaceholder: '#{markup[:moving_placeholder].to_s}',
-							movingUrl: '#{@path_resolver.resolve(@options[:paths][:move], ":id", ":relation", ":destination_id")}',
+							movingUrl: '#{check_moving(@options) && @path_resolver.resolve(@options[:paths][:move], ":id", ":relation", ":destination_id")}',
 
 						});
 						rug_table_#{@hash}.ready();
