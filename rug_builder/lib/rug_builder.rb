@@ -12,6 +12,7 @@
 # Common parts
 require "rug_builder/columns"
 require "rug_builder/formatter"
+require "rug_builder/templater"
 
 # Railtie
 require 'rug_builder/railtie' if defined?(Rails)

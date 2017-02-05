@@ -53,7 +53,7 @@ module RugBuilder
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
+					return @template.link_to(@icon_builder.render(:new) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -79,7 +79,7 @@ module RugBuilder
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:edit) + label, url, link_tag_options) + " "
+					return @template.link_to(@icon_builder.render(:edit) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -105,7 +105,7 @@ module RugBuilder
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:new) + label, url, link_tag_options) + " "
+					return @template.link_to(@icon_builder.render(:new) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -135,7 +135,7 @@ module RugBuilder
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "danger"}"
 					end
-					return @template.link_to(RugBuilder::IconBuilder.render(:destroy) + label, url, link_tag_options) + " "
+					return @template.link_to(@icon_builder.render(:destroy) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -155,7 +155,7 @@ module RugBuilder
 					link_tag_options = {}
 					link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 					link_tag_options[:method] = options[:method] if options[:method]
-					return @template.link_to(RugBuilder::IconBuilder.render(options[:icon]) + label, url, link_tag_options) + " "
+					return @template.link_to(@icon_builder.render(options[:icon]) + label, url, link_tag_options) + " "
 				else
 					return ""
 				end
@@ -180,7 +180,7 @@ module RugBuilder
 			def get_moving_link(options = {})
 				link_tag_options = {}
 				link_tag_options[:class] = "moving-handle btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
-				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move) + options[:label].to_s, "#", link_tag_options) + " "
+				return @template.link_to(@icon_builder.render(options[:icon] ? options[:icon] : :move) + options[:label].to_s, "#", link_tag_options) + " "
 			end
 
 			def get_moving_up_link(object, path, options = {})
@@ -188,7 +188,7 @@ module RugBuilder
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
-				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_up) + options[:label].to_s, url, link_tag_options) + " "
+				return @template.link_to(@icon_builder.render(options[:icon] ? options[:icon] : :move_up) + options[:label].to_s, url, link_tag_options) + " "
 			end
 
 			def get_moving_down_link(object, path, options = {})
@@ -196,7 +196,7 @@ module RugBuilder
 				link_tag_options = {}
 				link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 				link_tag_options[:method] = options[:method] ? options[:method] : "put"
-				return @template.link_to(RugBuilder::IconBuilder.render(options[:icon] ? options[:icon] : :move_down) + options[:label].to_s, url, link_tag_options) + " "
+				return @template.link_to(@icon_builder.render(options[:icon] ? options[:icon] : :move_down) + options[:label].to_s, url, link_tag_options) + " "
 			end
 
 			# *********************************************************************

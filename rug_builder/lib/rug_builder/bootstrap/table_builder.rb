@@ -10,10 +10,13 @@
 # *****************************************************************************
 
 # Parts
-require "rug_builder/bootstrap/table_builder/util"
-require "rug_builder/bootstrap/table_builder/links"
+require "rug_builder/bootstrap/table_builder/util/util"
+require "rug_builder/bootstrap/table_builder/util/links"
+require "rug_builder/bootstrap/table_builder/util/js"
 require "rug_builder/bootstrap/table_builder/show"
 require "rug_builder/bootstrap/table_builder/index"
+require "rug_builder/bootstrap/table_builder/hierarchical_index"
+require "rug_builder/bootstrap/table_builder/picture_index"
 
 module RugBuilder
 #	module Bootstrap

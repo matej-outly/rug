@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug table builder - links
+# * Rug table builder - common util functions
 # *
 # * Author: Matěj Outlý
 # * Date  : 10. 4. 2015

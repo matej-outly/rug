@@ -13,87 +13,158 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
+			#
+			# Dropzone element to upload single file as attribute of model
+			#
+			# Options:
+			# - create_url (string of lamba function)
+			# - update_url (string of lamba function)
+			# - crop (string) ... JS object implementing reload() function
+			#
 			def dropzone_row(name, options = {})
-				
+				result = ""
+
+				# URLs
 				update_url = self.options[:update_url] || options[:update_url]
 				create_url = self.options[:create_url] || options[:create_url]
 				if !update_url || (object.new_record? && !create_url)
 					raise "Please define update and create URL in form or row options."
 				end
-
-				# Preset
-				result = ""
-
-				# Label
-				result += compose_label(name, options)
-
+				
 				# Default URL and method
 				default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_url) : RugSupport::PathResolver.new(@template).resolve(update_url, object))
 				default_method = (object.new_record? ? "post" : "put")
 
+				# Crop
+				crop = (options[:crop] ? options[:crop] : nil)
+
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
-				# Java Script
-				js = ""
-				js += "function dropzone_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	Dropzone.autoDiscover = false;\n"
-				js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {\n"
-				js += "		url: '#{default_url}',\n"
-				js += "		method: '#{default_method}', /* method given by function not working, that's why we do it by changing static options in success event */\n"
-				js += "		paramName: '#{object.class.model_name.param_key}[#{name.to_s}]',\n"
-				js += "		maxFiles: 1,\n"
-				js += "		dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',\n"
-				js += "	});\n"
-				js += "	dropzone.on('sending', function(file, xhr, data) {\n"
-				js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');\n"
+				# Label
+				result += compose_label(name, options)
+
+				# Library JS code
+				result += @template.javascript_tag(%{
+					function RugDropzone(hash, options)
+					{
+						this.hash = hash;
+						this.dropzone = null;
+						this.options = (typeof options !== 'undefined' ? options : {});
+					}
+					RugDropzone.prototype = {
+						constructor: RugDropzone,
+						addFile: function(file_name, file_size, thumb_url)
+						{
+							var mock_file = { name: file_name, size: file_size };
+							this.dropzone.emit('addedfile', mock_file);
+							this.dropzone.emit('thumbnail', mock_file, thumb_url);
+							this.dropzone.files.push(mock_file);
+							this.dropzone.emit('complete', mock_file);
+							this.dropzone.options.maxFiles = this.dropzone.options.maxFiles - 1;
+						},
+						ready: function()
+						{
+							var _this = this;
+
+							console.log(this.options.defaultUrl);
+
+							// Dropzone	
+							Dropzone.autoDiscover = false;
+							this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
+								url: this.options.defaultUrl,
+								method: this.options.defaultMethod, /* method given by function not working, that's why we do it by changing static options in success event */
+								paramName: this.options.objectParamKey + '[' + this.options.name + ']',
+								maxFiles: 1,
+								dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',
+							});
+
+							// Events
+							this.dropzone.on('sending', function(file, xhr, data) {
+								data.append('authenticity_token', _this.options.formAuthenticityToken);
+								if (_this.options.appendColumns) {
+									for (appendColumn in _this.options.appendColumns) {
+										var asColumn = _this.options.appendColumns[appendColumn];
+										data.append(_this.options.objectParamKey + '[' + asColumn + ']', $('#' + _this.options.objectParamKey + '_' + appendColumn).val());
+									}
+								}
+							});
+							this.dropzone.on('maxfilesexceeded', function(file) {
+								this.options.maxFiles = 1;
+								this.removeAllFiles(true);
+								this.addFile(file);
+							});
+							this.dropzone.on('success', function(file, response) {
+								var response_id = parseInt(response);
+								if (!isNaN(response_id)) {
+									var form = $(_this.options.formSelector);
+									var update_url = _this.options.updateUrl.replace(':id', response_id);
+									if (form.attr('action') != update_url) {
+										form.attr('action', update_url); /* Form */
+										form.prepend('<input type="hidden" name="_method" value="patch" />');
+									}
+									this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */
+									this.options.method = 'put';
+									if (_this.options.crop) {
+										eval('var crop = ' + _this.options.crop + ';');
+										crop.reload(response_id);
+									}
+								} else { /* Error saving image */ 
+								}
+							});
+
+						}
+					}
+				})
+
+				# Append columns
+				append_columns_js = "{"
 				if options[:append_columns]
 					options[:append_columns].each do |append_column, as_column|
 						as_column = append_column if as_column == true
-						js += "		data.append('#{object.class.model_name.param_key}[#{as_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());\n"
+						append_columns_js += "#{append_column}: '#{as_column}',"
 					end
 				end
-				js += "	});\n"
-				js += "	dropzone.on('maxfilesexceeded', function(file) {\n"
-				js += "		this.options.maxFiles = 1;\n"
-				js += "		this.removeAllFiles(true);\n"
-				js += "		this.addFile(file);\n"
-				js += "	});\n"
-				js += "	dropzone.on('success', function(file, response) {\n"
-				js += "		var response_id = parseInt(response);\n"
-				js += "		if (!isNaN(response_id)) {\n"
-				js += "			var form = $('##{self.options[:html][:id]}');\n"
-				js += "			var update_url = '#{RugSupport::PathResolver.new(@template).resolve(update_url, ":id")}'.replace(':id', response_id);\n"
-				js += "			if (form.attr('action') != update_url) {\n"
-				js += "				form.attr('action', update_url); /* Form */\n"
-				js += "				form.prepend('<input type=\\'hidden\\' name=\\'_method\\' value=\\'patch\\' />');\n"
-				js += "			}\n"
-				js += "			this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */\n"
-				js += "			this.options.method = 'put';\n"
-				if options[:crop] == true
-					crop_hash = Digest::SHA1.hexdigest(name.to_s)
-					js += "			crop_#{crop_hash}_reload(response_id);\n"
-				end
-				js += "		} else { /* Error saving image */ \n"
-				js += "		}\n"
-				js += "	});\n"
+				append_columns_js += "}"
 
+				# Default file
+				defaut_file_js = ""
 				value = object.send(name)
 				if value && value.exists?
-					js += "	var mock_file = { name: '#{object.send(name.to_s + "_file_name")}', size: #{object.send(name.to_s + "_file_size")} };\n"
-					js += "	dropzone.emit('addedfile', mock_file);\n"
-					js += "	dropzone.emit('thumbnail', mock_file, '#{value.url}');\n"
-					js += "	dropzone.files.push(mock_file);\n"
-					js += "	dropzone.emit('complete', mock_file);\n"
-					js += "	dropzone.options.maxFiles = dropzone.options.maxFiles - 1;\n"
+					defaut_file_js = "rug_dropzone_#{hash}.addFile('#{object.send(name.to_s + "_file_name")}', #{object.send(name.to_s + "_file_size")}, '#{value.url}');\n"
 				end
 
-				js += "}\n"
-				js += "$(document).ready(dropzone_#{hash}_ready);\n"
+				# Application JS code
+				result += @template.javascript_tag(%{
+					var rug_dropzone_#{hash} = null;
+					$(document).ready(function() {
+						rug_dropzone_#{hash} = new RugDropzone('#{hash}', {
 
-				# Dropzone
-				result += @template.javascript_tag(js)
+							// Columns names
+							name: '#{name}',
+							
+							// Param keys
+							objectParamKey: '#{object.class.model_name.param_key}',
+
+							// URLs
+							defaultUrl: '#{default_url}',
+							defaultMethod: '#{default_method}',
+							updateUrl: '#{RugSupport::PathResolver.new(@template).resolve(update_url, ":id")}',
+							
+							// Form
+							formSelector: '##{self.options[:html][:id]}',
+							formAuthenticityToken: '#{@template.form_authenticity_token}',
+
+							// Options
+							appendColumns: #{append_columns_js},
+							crop: '#{crop.to_s}',
+						});
+						rug_dropzone_#{hash}.ready();
+						#{defaut_file_js}
+					});
+				})
+
+				# HTML
 				result += "<div class=\"form-group\">"
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"><div class=\"dz-message\">#{I18n.t("general.drop_file_here")}</div></div>"
 				result += "</div>"
@@ -101,8 +172,27 @@ module RugBuilder
 				return result.html_safe
 			end
 
-			def dropzone_many_row(name, attachment_name, create_url, destroy_url, options = {})
-				
+			#
+			# Dropzone element for uploading multiple files as nested collection
+			#
+			# Options:
+			# - attachment_name (string)
+			# - create_url (string of lamba function)
+			# - destroy_url (string of lamba function)
+			# - show_url (string of lamba function)
+			# - collection
+			# - collection_class
+			# - move_to (string) ... JS object implementing addItem() function
+			#
+			def dropzone_many_row(name, options = {})
+				result = ""
+
+				# Attachment name
+				attachment_name = options[:attachment_name]
+				if attachment_name.nil?
+					raise "Please define attachment name."
+				end
+
 				# Collection
 				if options[:collection].nil?
 					collection = object.send(name)
@@ -123,83 +213,157 @@ module RugBuilder
 					raise "Please define collection class."
 				end
 
-				# Preset
-				result = ""
+				# Move to
+				move_to = (options[:move_to] ? options[:move_to] : nil)
 
-				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label(name)
+				# URLs
+				show_url = options[:show_url]
+				create_url = options[:create_url]
+				destroy_url = options[:destroy_url]
+				if create_url.nil?
+					raise "Please define create URL."
+				end
+				if move_to && show_url.nil?
+					raise "Please define show URL."
+				end
+				if !move_to && destroy_url.nil?
+					raise "Please define destroy URL."
 				end
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
-				# Java Script
-				js = ""
-				js += "function dropzone_many_#{hash}_add_file(dropzone, file_name, file_size, thumb_url, record_id)\n"
-				js += "{\n"
-				js += "	var mock_file = { name: file_name, size: file_size, record_id: record_id };\n"
-				js += "	dropzone.emit('addedfile', mock_file);\n"
-				js += "	dropzone.emit('thumbnail', mock_file, thumb_url);\n"
-				js += "	dropzone.files.push(mock_file);\n"
-				js += "	dropzone.emit('complete', mock_file);\n"
-				js += "}\n"
-				js += "function dropzone_many_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	Dropzone.autoDiscover = false;\n"
-				js += "	var dropzone = new Dropzone('div##{object.class.model_name.param_key}_#{name.to_s}', {\n"
-				js += "		url: '#{RugSupport::PathResolver.new(@template).resolve(create_url)}',\n"
-				js += "		method: 'post',\n"
-				js += "		paramName: '#{collection_class.model_name.param_key}[#{attachment_name}]',\n"
-				js += "		addRemoveLinks: true,\n"
-				js += "		dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',\n"
-				js += "		dictRemoveFile: '#{I18n.t("general.action.destroy")}',\n"
-				js += "		dictCancelUpload: '#{I18n.t("general.action.cancel")}',\n"
-				js += "		dictCancelUploadConfirmation: '#{I18n.t("general.are_you_sure")}',\n"
-				js += "	});\n"
-				js += "	dropzone.on('sending', function(file, xhr, data) {\n"
-				js += "		data.append('authenticity_token', '#{@template.form_authenticity_token}');\n"
+				# Label
+				result += compose_label(name, options)
+				
+				# Library JS code
+				result += @template.javascript_tag(%{
+					function RugDropzoneMany(hash, options)
+					{
+						this.hash = hash;
+						this.dropzone = null;
+						this.options = (typeof options !== 'undefined' ? options : {});
+					}
+					RugDropzoneMany.prototype = {
+						constructor: RugDropzoneMany,
+						addFile: function(file_name, file_size, thumb_url, record_id)
+						{
+							var mock_file = { name: file_name, size: file_size, record_id: record_id };
+							this.dropzone.emit('addedfile', mock_file);
+							this.dropzone.emit('thumbnail', mock_file, thumb_url);
+							this.dropzone.files.push(mock_file);
+							this.dropzone.emit('complete', mock_file);
+						},
+						ready: function()
+						{
+							var _this = this;
+							
+							// Dropzone init
+							Dropzone.autoDiscover = false;
+							this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
+								url: this.options.createUrl,
+								method: 'post',
+								paramName: this.options.collectionParamKey + '[' + this.options.attachmentName + ']',
+								addRemoveLinks: true,
+								dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',
+								dictRemoveFile: '#{I18n.t("general.action.destroy")}',
+								dictCancelUpload: '#{I18n.t("general.action.cancel")}',
+								dictCancelUploadConfirmation: '#{I18n.t("general.are_you_sure")}',
+							});
+
+							// Events
+							this.dropzone.on('sending', function(file, xhr, data) {
+								data.append('authenticity_token', _this.options.formAuthenticityToken);
+								if (_this.options.appendColumns) {
+									for (appendColumn in _this.options.appendColumns) {
+										var asColumn = _this.options.appendColumns[appendColumn];
+										data.append(_this.options.collectionParamKey + '[' + asColumn + ']', $('#' + _this.options.objectParamKey + '_' + appendColumn).val());
+									}
+								}
+							});
+							this.dropzone.on('success', function(file, response) {
+								var response_id = parseInt(response);
+								if (!isNaN(response_id)) {
+									file.record_id = response_id;
+									if (_this.options.moveTo) {
+										eval('var move_to = ' + _this.options.moveTo + ';');
+										var show_url = _this.options.showUrl.replace(':id', file.record_id);
+										$.get(show_url, function(data) {
+											_this.dropzone.removeFile(file);
+											move_to.addItem(data);
+										});
+									}
+								} else { /* Error saving image */
+								}
+							});
+							if (!this.options.moveTo) {
+								this.dropzone.on('removedfile', function(file) {
+									if (file.record_id) {
+										var destroy_url = _this.options.destroyUrl.replace(':id', file.record_id);
+										$.ajax({
+											url: destroy_url,
+											dataType: 'json',
+											type: 'DELETE'
+										});
+									}
+								});
+							}
+							
+						}
+					}
+				})
+
+				# Append columns
+				append_columns_js = "{"
 				if options[:append_columns]
 					options[:append_columns].each do |append_column, as_column|
 						as_column = append_column if as_column == true
-						js += "		data.append('#{collection_class.model_name.param_key}[#{as_column}]', $('##{object.class.model_name.param_key}_#{append_column.to_s}').val());\n"
+						append_columns_js += "#{append_column}: '#{as_column}',"
 					end
 				end
-				js += "	});\n"
-				js += "	dropzone.on('success', function(file, response) {\n"
-				js += "		var response_id = parseInt(response);\n"
-				js += "		if (!isNaN(response_id)) {\n"
-				js += "			file.record_id = response_id;\n"
-				js += "		} else { /* Error saving image */\n"
-				js += "		}\n"
-				js += "	});\n"
-				js += "	dropzone.on('removedfile', function(file) {\n"
-				js += "		if (file.record_id) {\n"
-				js += "			var destroy_url = '#{RugSupport::PathResolver.new(@template).resolve(destroy_url, ":id")}'.replace(':id', file.record_id);\n"
-				js += "			$.ajax({\n"
-				js += "				url: destroy_url,\n"
-				js += "				dataType: 'json',\n"
-				js += "				type: 'DELETE'\n"
-				js += "			});\n"
-				js += "		}\n"
-				js += "	});\n"
-				
+				append_columns_js += "}"
+
+				# Default files
+				defaut_files_js = ""
 				collection.each do |item|
 					value = item.send(attachment_name)
 					if value && value.exists?
-						js += "	dropzone_many_#{hash}_add_file(dropzone, '#{item.send(attachment_name.to_s + "_file_name")}', #{item.send(attachment_name.to_s + "_file_size")}, '#{value.url}', #{item.id});\n"
+						defaut_files_js += "rug_dropzone_many_#{hash}.addFile('#{item.send(attachment_name.to_s + "_file_name")}', #{item.send(attachment_name.to_s + "_file_size")}, '#{value.url}', #{item.id});\n"
 					end
 				end
 
-				js += "}\n"
-				js += "$(document).ready(dropzone_many_#{hash}_ready);\n"
+				# Application JS code
+				result += @template.javascript_tag(%{
+					var rug_dropzone_many_#{hash} = null;
+					$(document).ready(function() {
+						rug_dropzone_many_#{hash} = new RugDropzoneMany('#{hash}', {
 
-				# Dropzone
-				result += @template.javascript_tag(js)
+							// Columns names
+							name: '#{name}',
+							attachmentName: '#{attachment_name}',
+							
+							// Param keys
+							collectionParamKey: '#{collection_class.model_name.param_key}',
+							objectParamKey: '#{object.class.model_name.param_key}',
+
+							// URLs
+							createUrl: '#{RugSupport::PathResolver.new(@template).resolve(create_url)}',
+							destroyUrl: '#{RugSupport::PathResolver.new(@template).resolve(destroy_url, ":id")}',
+							showUrl: '#{RugSupport::PathResolver.new(@template).resolve(show_url, ":id")}',
+							
+							// Form
+							formAuthenticityToken: '#{@template.form_authenticity_token}',
+
+							// Options
+							appendColumns: #{append_columns_js},
+							moveTo: '#{move_to.to_s}',
+						});
+						rug_dropzone_many_#{hash}.ready();
+						#{move_to.nil? && defaut_files_js}
+					});
+				})
+
+				# HTML
 				result += "<div class=\"form-group\">"
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"></div>"
 				result += "</div>"

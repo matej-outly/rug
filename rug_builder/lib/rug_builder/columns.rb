@@ -88,6 +88,16 @@ module RugBuilder
 			end
 		end
 
+		def template_object
+			result = { id: ":id" }
+			self.headers.each do |column|
+				result[column] = Templater.send(@columns[column.to_sym][:type].to_sym, column)
+			end
+			result = OpenStruct.new(result)
+			def result.to_s() id end
+			return result
+		end
+
 		def render(column, object)
 			if !@columns[column.to_sym]
 				raise "Unknown column '#{column.to_s}'."
