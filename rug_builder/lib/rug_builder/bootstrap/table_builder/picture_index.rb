@@ -94,12 +94,13 @@ module RugBuilder
 				)
 
 				# Table
-				if objects.empty?
-					result += picture_index_layout_6(@options[:class]) do
-						I18n.t("views.index_table.empty")
-					end
-				else
-					result += picture_index_layout_1("#{(check_moving(@options) ? "moving" : "")} #{@options[:class].to_s}") do
+				result += picture_index_layout_1("#{(check_moving(@options) ? "moving" : "")} #{@options[:class].to_s}") do
+					if objects.empty?
+						result_1 = picture_index_layout_6(@options[:class]) do
+							I18n.t("views.index_table.empty")
+						end
+						result_1
+					else
 						result_1 = ""
 						objects.each do |object|
 							result_1 += picture_index_object(object)
@@ -271,7 +272,7 @@ module RugBuilder
 			#
 			def picture_index_layout_6(klass, &block)
 				result = %{
-					<div class="picture-index-table-empty #{klass.to_s}">
+					<div class="empty-message picture-index-table-empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}

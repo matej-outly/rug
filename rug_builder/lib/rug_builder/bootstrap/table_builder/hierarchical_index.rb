@@ -265,7 +265,7 @@ module RugBuilder
 			#
 			def hierarchical_index_layout_6(klass, &block)
 				result = %{
-					<div class="hierarchical-index-table-empty #{klass.to_s}">
+					<div class="empty-message hierarchical-index-table-empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}

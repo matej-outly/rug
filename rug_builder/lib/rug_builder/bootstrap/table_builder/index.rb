@@ -242,53 +242,11 @@ module RugBuilder
 			#
 			def index_layout_6(klass, &block)
 				result = %{
-					<div class="index-table-empty #{klass.to_s}">
+					<div class="empty-message index-table-empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}
 				result
-			end
-
-			# *********************************************************************
-			# Moving
-			# *********************************************************************
-
-			def resolve_moving_js(hash, options, markup = {})
-				if check_moving(options)
-					js = %{
-						function index_table_#{hash}_moving_ready()
-						{
-							$('#index-table-#{hash}.moving').sortable({
-								containerSelector: '#{markup[:container_selector].to_s}',
-								itemPath: '#{markup[:item_path].to_s}',
-								itemSelector: '#{markup[:item_selector].to_s}',
-								placeholder: '#{markup[:placeholder].to_s}',
-								handle: '.moving-handle',
-								onDrop: function ($item, container, _super, event) {
-									$item.removeClass(container.group.options.draggedClass).removeAttr('style');
-									$('body').removeClass(container.group.options.bodyClass);
-									var id = $item.data('id');
-									var prev_id = $item.prev().data('id') ? $item.prev().data('id') : undefined;
-									var next_id = $item.next().data('id') ? $item.next().data('id') : undefined;
-									if (prev_id || next_id) {
-										var destination_id = prev_id;
-										var relation = 'right';
-										if (!destination_id) {
-											destination_id = next_id;
-											relation = 'left';
-										}
-										var move_url = '#{@path_resolver.resolve(options[:paths][:move], ":id", ":relation", ":destination_id")}'.replace(':id', id).replace(':relation', relation).replace(':destination_id', destination_id);
-										$.ajax({url: move_url, method: 'PUT', dataType: 'json'});
-									}
-								}
-							});
-						}
-						$(document).ready(index_table_#{hash}_moving_ready);
-					}
-					return @template.javascript_tag(js)
-				else
-					return ""
-				end
 			end
 
 			# *********************************************************************

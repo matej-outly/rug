@@ -46,6 +46,9 @@ module RugBuilder
 
 							// Append or prepend new item to container		
 							container.append(item);
+
+							// Hide empty message
+							container.find(".empty-message").hide();
 						},
 						removeItem: function(id)
 						{
