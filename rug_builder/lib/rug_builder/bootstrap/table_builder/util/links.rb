@@ -19,10 +19,6 @@ module RugBuilder
 			# Show
 			# *********************************************************************
 
-			def check_show_link(options)
-				return options[:paths] && options[:paths][:show]
-			end
-
 			def get_show_link(object, label, path, options = {})
 				url = @path_resolver.resolve(path, object)
 				if url
@@ -37,10 +33,6 @@ module RugBuilder
 			# New
 			# *********************************************************************
 			
-			def check_new_link(options)
-				return options[:paths] && options[:paths][:new]
-			end
-
 			def get_new_link(object, path, options = {})
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
@@ -63,10 +55,6 @@ module RugBuilder
 			# Edit
 			# *********************************************************************
 			
-			def check_edit_link(options)
-				return options[:paths] && options[:paths][:edit]
-			end
-
 			def get_edit_link(object, path, options = {})
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
@@ -88,10 +76,6 @@ module RugBuilder
 			# *********************************************************************
 			# Create
 			# *********************************************************************
-
-			def check_create_link(options)
-				return options[:paths] && options[:paths][:create]
-			end
 
 			def get_create_link(object, path, options = {})
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
@@ -115,10 +99,6 @@ module RugBuilder
 			# Destroy
 			# *********************************************************************
 
-			def check_destroy_link(options)
-				return options[:paths] && options[:paths][:destroy]
-			end
-
 			def get_destroy_link(object, path, options = {})
 				if !options[:show_if].nil? && options[:show_if].call(object) != true
 					return ""
@@ -128,9 +108,11 @@ module RugBuilder
 				if url
 					link_tag_options = {}
 					link_tag_options[:class] = "destroy"
-					if options[:disable_method_and_notification] != true
-						link_tag_options[:method] = :delete
-						link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+					if !check_inline_destroy(@options) # If inline destroy enabled, method and confirm cannot be set because it activates jquery_ujs handling which breaks destroyable...
+						if options[:disable_method_and_notification] != true
+							link_tag_options[:method] = :delete
+							link_tag_options[:data] = { confirm: I18n.t("general.are_you_sure", default: "Are you sure?") }
+						end
 					end
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "danger"}"
@@ -139,6 +121,13 @@ module RugBuilder
 				else
 					return ""
 				end
+			end
+
+			def get_inline_destroy_data(object, path, options = {})
+				result = ""
+				result += "data-destroy-url=\"#{url = @path_resolver.resolve(path, object)}\" "
+				result += "data-destroy=\"a.destroy\" "
+				return result
 			end
 
 			# *********************************************************************
@@ -164,18 +153,6 @@ module RugBuilder
 			# *********************************************************************
 			# Common actions
 			# *********************************************************************
-
-			def check_moving(options, function_options = {})
-				result = true
-				result = result && options[:moving] == true
-				result = result && !options[:paths].blank?
-				if function_options[:hierarchical] == true
-					result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
-				else
-					result = result && !options[:paths][:move].blank?
-				end
-				return result
-			end
 
 			def get_moving_link(options = {})
 				link_tag_options = {}

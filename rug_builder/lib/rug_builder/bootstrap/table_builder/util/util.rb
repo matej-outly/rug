@@ -119,7 +119,7 @@ module RugBuilder
 
 				# Add all builtin actions if not defined by common actions
 				builtin_actions.each do |builtin_action|
-					if (options[options_attr].nil? || options[options_attr][builtin_action].nil?) && self.send("check_#{builtin_action}_link", options)
+					if (options[options_attr].nil? || options[options_attr][builtin_action].nil?) && self.send("check_#{builtin_action}", options)
 						result[builtin_action] = {
 							block: lambda { |object| self.method("get_#{builtin_action}_link").call(object, options[:paths][builtin_action], default_link_options) }
 						}
@@ -128,6 +128,47 @@ module RugBuilder
 				
 				return result
 			end
+
+			# *********************************************************************
+			# Checkers
+			# *********************************************************************
+
+			def check_show(options)
+				return options[:paths] && options[:paths][:show]
+			end
+
+			def check_new(options)
+				return options[:paths] && options[:paths][:new]
+			end
+
+			def check_edit(options)
+				return options[:paths] && options[:paths][:edit]
+			end
+
+			def check_create(options)
+				return options[:paths] && options[:paths][:create]
+			end
+
+			def check_inline_destroy(options)
+				return options[:paths] && options[:paths][:destroy] && options[:inline_destroy] == true
+			end
+
+			def check_destroy(options)
+				return options[:paths] && options[:paths][:destroy]
+			end
+
+			def check_moving(options, function_options = {})
+				result = true
+				result = result && options[:moving] == true
+				result = result && !options[:paths].blank?
+				if function_options[:hierarchical] == true
+					result = result && !options[:paths][:move_up].blank? && !options[:paths][:move_down].blank?
+				else
+					result = result && !options[:paths][:move].blank?
+				end
+				return result
+			end
+
 		end
 	#end
 end

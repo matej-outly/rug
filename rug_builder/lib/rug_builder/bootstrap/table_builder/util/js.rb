@@ -93,12 +93,24 @@ module RugBuilder
 								});
 							}
 						},
+						inlineDestroyReady()
+						{
+							if (this.options.inlineDestroy == true) {
+								this.table.find(".destroyable").destroyable({
+									confirmTitle: this.options.inlineDestroyConfirmTitle,
+									confirmMessage: this.options.inlineDestroyConfirmMessage,
+									successMessage: this.options.inlineDestroySuccessMessage,
+									errorMessage: this.options.inlineDestroyErrorMessage,
+								});
+							}
+						},
 						ready: function()
 						{
 							var _this = this;
 							this.table = $('#index-table-' + this.hash);
 
 							this.movingReady();
+							this.inlineDestroyReady();
 						}
 					}
 				}
@@ -132,6 +144,13 @@ module RugBuilder
 							moving: #{check_moving(@options) ? 'true' : 'false' },
 							movingPlaceholder: '#{markup[:moving_placeholder].to_s}',
 							movingUrl: '#{check_moving(@options) && @path_resolver.resolve(@options[:paths][:move], ":id", ":relation", ":destination_id")}',
+
+							// Inline destroy
+							inlineDestroy: #{check_inline_destroy(@options) ? 'true' : 'false'},
+							inlineDestroyConfirmTitle: '#{I18n.t("general.are_you_sure")}',
+							inlineDestroyConfirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
+							inlineDestroySuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
+							inlineDestroyErrorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
 
 						});
 						rug_table_#{@hash}.ready();

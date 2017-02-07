@@ -164,7 +164,7 @@ module RugBuilder
 									else
 										result_1 += "<td>"
 									end
-									if column_idx == @show_link_column && check_show_link(@options)
+									if column_idx == @show_link_column && check_show(@options)
 										result_1 += get_show_link(object, value, @options[:paths][:show])
 									else
 										result_1 += value

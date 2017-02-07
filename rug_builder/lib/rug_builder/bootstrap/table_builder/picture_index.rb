@@ -30,6 +30,8 @@ module RugBuilder
 			# - pagination (boolean) - Turn on pagination
 			# - summary (boolean) - Turn on summary
 			# - moving (boolean) - Turn on moving
+			# - inline_edit (array) - Array of columns suitable for inline edit
+			# - inline_destroy (boolean) - Turn on destroy by ajax request
 			# - show_link_column (integer) - Column index used for show link
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table header
 			# - grid_columns (integer) - Number of columns in the grid (default 3)
@@ -94,7 +96,7 @@ module RugBuilder
 				)
 
 				# Table
-				result += picture_index_layout_1("#{(check_moving(@options) ? "moving" : "")} #{@options[:class].to_s}") do
+				result += picture_index_layout_1(@options[:class]) do
 					if objects.empty?
 						result_1 = picture_index_layout_6(@options[:class]) do
 							I18n.t("views.index_table.empty")
@@ -139,7 +141,7 @@ module RugBuilder
 				@columns.headers.each_with_index do |column, idx|
 					columns_blocks << lambda {
 						value = @columns.render(column, object)
-						if idx == @show_link_column && check_show_link(@options)
+						if idx == @show_link_column && check_show(@options)
 							get_show_link(object, value, @options[:paths][:show])
 						else
 							value
@@ -166,7 +168,7 @@ module RugBuilder
 				}
 
 				# Use layout to render single item
-				return picture_index_layout_2(object.id, columns_blocks, actions_block, moving_handle_block)
+				return picture_index_layout_2(object, columns_blocks, actions_block, moving_handle_block)
 			end
 
 			#
@@ -174,7 +176,7 @@ module RugBuilder
 			#
 			def picture_index_layout_1(klass, &block)
 				result = %{
-					<div id="index-table-#{@hash}" class="list picture-index-table row #{klass.to_s}">
+					<div id="index-table-#{@hash}" class="list picture-index-table row #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
 						#{block.call}
 					</div>
 				}
@@ -184,14 +186,14 @@ module RugBuilder
 			#
 			# Single object
 			#
-			def picture_index_layout_2(object_id, columns_blocks, actions_block, moving_handle_block)
+			def picture_index_layout_2(object, columns_blocks, actions_block, moving_handle_block)
 				actions = actions_block.call.trim
 				first_column_block = columns_blocks.shift
 				col_sm = 6
 				col_md = 12 / @grid_columns
 				result = ""
 				result += %{
-					<div class="item col-sm-#{col_sm} col-md-#{col_md}" data-id=\"#{object_id}\">
+					<div class="item col-sm-#{col_sm} col-md-#{col_md} #{check_inline_destroy(@options) ? "destroyable" : ""}" data-id=\"#{object.id}\" #{check_inline_destroy(@options) ? get_inline_destroy_data(object, @options[:paths][:destroy]) : ""}>
 						#{moving_handle_block.call}
 						<div class="thumbnail">
 				}

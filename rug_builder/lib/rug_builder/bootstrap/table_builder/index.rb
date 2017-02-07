@@ -31,7 +31,8 @@ module RugBuilder
 			# - sorting (boolean or hash) - Turn on sorting, can be specified which columns are suitable for sorting
 			# - summary (boolean) - Turn on summary
 			# - moving (boolean) - Turn on moving
-			# - inline_edit (array) - array of columns suitable for inline edit
+			# - inline_edit (array) - Array of columns suitable for inline edit
+			# - inline_destroy (boolean) - Turn on destroy by ajax request
 			# - show_link_column (integer) - Column index used for show link
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table heading
 			#
@@ -91,7 +92,7 @@ module RugBuilder
 					end
 				else
 					columns_count = 0	
-					result += index_layout_1("#{(check_moving(@options) ? "moving" : "")} #{@options[:class].to_s}") do
+					result += index_layout_1(@options[:class]) do
 						result_1 = ""
 
 						# Table head
@@ -119,26 +120,19 @@ module RugBuilder
 						result_1 += "<tbody>"
 						objects.each do |object|
 							
-							result_1 += "<tr data-id=\"#{object.id}\">"
+							result_1 += "<tr data-id=\"#{object.id}\" #{check_inline_destroy(@options) ? get_inline_destroy_data(object, @options[:paths][:destroy]) : ""} class=\"#{check_inline_destroy(@options) ? "destroyable" : ""}\">"
 							result_1 += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(@options)
 							@columns.headers.each_with_index do |column, idx|
 								result_1 += "<td>"
-								#if check_inline_edit(@options, column)
-								#	result_1 += "<div class=\"inline-edit value\">"
-								#end
-
+								
 								# Standard read only value
 								value = @columns.render(column, object).to_s
-								if idx == @show_link_column && check_show_link(@options)
+								if idx == @show_link_column && check_show(@options)
 									result_1 += get_show_link(object, value, @options[:paths][:show])
 								else
 									result_1 += value
 								end
 								
-								#if check_inline_edit(@options, column)
-								#	result_1 += "</div>"
-								#	result_1 += "<div class=\"inline-edit field\" style=\"display: none;\">#{get_inline_edit_field(object, column, columns.render(column, object), model_class)}</div>"
-								#end
 								result_1 += "</td>"
 							end
 							if @actions
@@ -187,7 +181,7 @@ module RugBuilder
 
 			def index_layout_1(klass, &block)
 				result = %{
-					<table id="index-table-#{@hash}" class="table index-table #{klass.to_s}">
+					<table id="index-table-#{@hash}" class="table index-table #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
 						#{block.call}
 					</table>
 				}
