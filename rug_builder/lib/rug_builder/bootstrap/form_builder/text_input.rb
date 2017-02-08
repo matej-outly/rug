@@ -28,6 +28,7 @@ module RugBuilder
 				field_options = {}
 				field_options[:class] = klass.join(" ")
 				field_options[:id] = options[:id] if !options[:id].nil?
+				field_options[:data] = options[:data] if !options[:data].nil?
 				field_options[:value] = options[:value] if !options[:value].nil?
 				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 				field_options[:min] = options[:min] if !options[:min].nil?

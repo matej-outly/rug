@@ -25,6 +25,17 @@ module RugBuilder
 			#
 			# Render tree
 			#
+			# Options:
+			# - actions (array) - which actions should be displayed for each node
+			# - paths - paths to different actions
+			# - closed_icon (string) - icon to be used for closed node
+			# - open_icon (string) - icon to be used for open node
+			# - type_icon_attr (string) - name of attribute containing type icon
+			# - show_event (string) - use double_click or single_click for triggering show
+			# - clipboard_attrs (array of string) - name/s of attribute/s used for clipboard save
+			# - clipboard_template (string) - template used for constructing clipboard value (user :attr for substitution)
+			# - clipboard_icon (string) - icon to be used for clipboard button
+			#
 			def tree(data_path, options = {})
 				result = ""
 
@@ -85,9 +96,9 @@ module RugBuilder
 				end
 
 				# Icon
-				if options[:type_icon]
+				if options[:type_icon_attr]
 					icon_js = %{
-						var icon = node.#{options[:type_icon]}
+						var icon = node.#{options[:type_icon_attr]}
 						if (!icon) {
 							icon = 'file-o';
 						}
@@ -97,14 +108,26 @@ module RugBuilder
 				end
 
 				# Clipboard
-				if options[:clipboard]
-					clipboard_text_js = "node.#{options[:clipboard]}"
-					if options[:clipboard_label]
-						clipboard_text_js = "<a href='\" + #{clipboard_text_js} + \"'>\" + node.#{options[:clipboard_label]} + \"</a>"
+				if options[:clipboard_attrs]
+
+					# Ensure array
+					options[:clipboard_attrs] = [options[:clipboard_attrs]] if !options[:clipboard_attrs].is_a?(Array)
+
+					# Template defined
+					if options[:clipboard_template]
+						clipboard_text_js = '"' + options[:clipboard_template].gsub('"', "'") + '"'
+						options[:clipboard_attrs].each do |clipboard_attr|
+							clipboard_text_js += ".replace(/:#{clipboard_attr}/, node.#{clipboard_attr})"
+						end
+						options[:clipboard_template]
+					
+					# No template defined
+					else
+						clipboard_text_js = "node.#{options[:clipboard_attrs].first}"
 					end
 
 					clipboard_js = %{
-						var clipboard_html = "<div class=\\\"btn btn-default btn-xs jqtree-clipboard\\\" data-clipboard-text=\\\"#{clipboard_text_js}\\\">#{@icon_builder.render(options[:clipboard_icon] ? options[:clipboard_icon] : "clipboard").gsub('"', '\"')}</div>";
+						var clipboard_html = '<div class="btn btn-default btn-xs jqtree-clipboard" data-clipboard-text="' + (#{clipboard_text_js}) + '">#{@icon_builder.render(options[:clipboard_icon] ? options[:clipboard_icon] : "clipboard").gsub('"', '\"')}</div>';
 						$li.find('.jqtree-title').after(clipboard_html);
 					}
 					enable_clipboard_js = %{

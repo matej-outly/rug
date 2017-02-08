@@ -32,6 +32,7 @@ module RugBuilder
 				end
 				field_options[:class] = klass.join(" ")
 				field_options[:id] = options[:id] if !options[:id].nil?
+				field_options[:data] = options[:data] if !options[:data].nil?
 
 				# Localization
 				if options[:localization].nil? || options[:localization] == false
