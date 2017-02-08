@@ -13,11 +13,7 @@ require "action_controller"
 
 module RugController
 	module Concerns
-		module Referrer extend ActiveSupport::Concern
-
-			# *********************************************************************
-			# Request referrer
-			# *********************************************************************
+		module SessionReferrer extend ActiveSupport::Concern
 
 			def save_referrer
 				session["referrer"] = request.referrer
@@ -43,4 +39,4 @@ module RugController
 	end
 end
 
-ActionController::Base.send(:include, RugController::Concerns::Referrer)
+ActionController::Base.send(:include, RugController::Concerns::SessionReferrer)
