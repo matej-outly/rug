@@ -18,8 +18,9 @@ module RugBuilder
 
 		def self.file(column)
 			return OpenStruct.new({
-				url: ":#{column_url}_url",
-				exists?: true
+				url: ":#{column}_url",
+				original_filename: ":#{column}_file_name",
+				exists?: true,
 			})
 		end
 
@@ -32,6 +33,7 @@ module RugBuilder
 			def o.column=(column) @column = column end
 			o.column = column	
 			def o.url(style = nil) (style ? ":#{@column}_url_#{style}" : ":#{@column}_url") end
+			def o.original_filename() ":#{column}_file_name" end
 			def o.exists?() true end
 			return o
 		end

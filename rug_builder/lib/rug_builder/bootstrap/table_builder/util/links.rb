@@ -23,7 +23,7 @@ module RugBuilder
 				url = @path_resolver.resolve(path, object)
 				if url
 					label = I18n.t("general.action.show").upcase_first if label.blank?
-					return @template.link_to(label, url) + " "
+					return (@template.link_to(label.html_safe, url, class: "link-show") + " ")
 				else
 					return label
 				end
@@ -41,7 +41,7 @@ module RugBuilder
 				label = get_link_label(object, options, I18n.t("general.action.new").upcase_first)
 				if url
 					link_tag_options = {}
-					link_tag_options[:class] = "new"
+					link_tag_options[:class] = "link-new"
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
@@ -63,7 +63,7 @@ module RugBuilder
 				label = get_link_label(object, options, I18n.t("general.action.edit").upcase_first)
 				if url
 					link_tag_options = {}
-					link_tag_options[:class] = "edit"
+					link_tag_options[:class] = "link-edit"
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
@@ -85,7 +85,7 @@ module RugBuilder
 				label = get_link_label(object, options, I18n.t("general.action.create").upcase_first)
 				if url
 					link_tag_options = {}
-					link_tag_options[:class] = "create"
+					link_tag_options[:class] = "link-create"
 					if options[:disable_button] != true
 						link_tag_options[:class] += " btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "primary"}"
 					end
@@ -107,7 +107,7 @@ module RugBuilder
 				label = get_link_label(object, options, I18n.t("general.action.destroy").upcase_first)
 				if url
 					link_tag_options = {}
-					link_tag_options[:class] = "destroy"
+					link_tag_options[:class] = "link-destroy"
 					if !check_inline_destroy(@options) # If inline destroy enabled, method and confirm cannot be set because it activates jquery_ujs handling which breaks destroyable...
 						if options[:disable_method_and_notification] != true
 							link_tag_options[:method] = :delete
@@ -126,7 +126,7 @@ module RugBuilder
 			def get_inline_destroy_data(object, path, options = {})
 				result = ""
 				result += "data-destroy-url=\"#{url = @path_resolver.resolve(path, object)}\" "
-				result += "data-destroy=\"a.destroy\" "
+				result += "data-destroy=\"a.link-destroy\" "
 				return result
 			end
 

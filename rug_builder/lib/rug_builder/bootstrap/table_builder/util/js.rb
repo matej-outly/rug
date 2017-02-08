@@ -49,6 +49,9 @@ module RugBuilder
 
 							// Hide empty message
 							container.find(".empty-message").hide();
+
+							// Init destroyable if necessary
+							this.inlineDestroyReady();
 						},
 						removeItem: function(id)
 						{

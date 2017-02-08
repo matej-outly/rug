@@ -30,6 +30,9 @@ module RugBuilder
 					raise "Given object is nil."
 				end
 
+				# Options
+				@options = options
+
 				# Normalize columns to Columns object
 				columns = normalize_columns(columns)
 

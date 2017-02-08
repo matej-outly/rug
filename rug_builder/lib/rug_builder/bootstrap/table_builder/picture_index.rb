@@ -189,11 +189,39 @@ module RugBuilder
 			def picture_index_layout_2(object, columns_blocks, actions_block, moving_handle_block)
 				actions = actions_block.call.trim
 				first_column_block = columns_blocks.shift
-				col_sm = 6
-				col_md = 12 / @grid_columns
+				case @grid_columns
+				when 1
+					col_xs = 12
+					col_sm = 12
+					col_md = 12
+				when 2
+					col_xs = 6
+					col_sm = 6
+					col_md = 6
+				when 3
+					col_xs = 6
+					col_sm = 6
+					col_md = 4
+				when 4
+					col_xs = 4
+					col_sm = 4
+					col_md = 3
+				when 5
+					col_xs = 4
+					col_sm = 4
+					col_md = 3
+				when 6
+					col_xs = 4
+					col_sm = 4
+					col_md = 2
+				else
+					col_xs = 6
+					col_sm = 6
+					col_md = 4
+				end
 				result = ""
 				result += %{
-					<div class="item col-sm-#{col_sm} col-md-#{col_md} #{check_inline_destroy(@options) ? "destroyable" : ""}" data-id=\"#{object.id}\" #{check_inline_destroy(@options) ? get_inline_destroy_data(object, @options[:paths][:destroy]) : ""}>
+					<div class="item col-xs-#{col_xs} col-sm-#{col_sm} col-md-#{col_md} #{check_inline_destroy(@options) ? "destroyable" : ""}" data-id=\"#{object.id}\" #{check_inline_destroy(@options) ? get_inline_destroy_data(object, @options[:paths][:destroy]) : ""}>
 						#{moving_handle_block.call}
 						<div class="thumbnail">
 				}

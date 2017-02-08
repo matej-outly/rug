@@ -213,9 +213,6 @@ module RugBuilder
 					raise "Please define collection class."
 				end
 
-				# Move to
-				move_to = (options[:move_to] ? options[:move_to] : nil)
-
 				# URLs
 				show_url = options[:show_url]
 				create_url = options[:create_url]
@@ -223,10 +220,10 @@ module RugBuilder
 				if create_url.nil?
 					raise "Please define create URL."
 				end
-				if move_to && show_url.nil?
+				if options[:move_to] && show_url.nil?
 					raise "Please define show URL."
 				end
-				if !move_to && destroy_url.nil?
+				if !options[:move_to] && destroy_url.nil?
 					raise "Please define destroy URL."
 				end
 
@@ -286,11 +283,13 @@ module RugBuilder
 								if (!isNaN(response_id)) {
 									file.record_id = response_id;
 									if (_this.options.moveTo) {
-										eval('var move_to = ' + _this.options.moveTo + ';');
 										var show_url = _this.options.showUrl.replace(':id', file.record_id);
 										$.get(show_url, function(data) {
 											_this.dropzone.removeFile(file);
-											move_to.addItem(data);
+											_this.options.moveTo.forEach(function(item) {
+												eval('var move_to = ' + item + ';');
+												move_to.addItem(data);
+											});
 										});
 									}
 								} else { /* Error saving image */
@@ -322,6 +321,15 @@ module RugBuilder
 					end
 				end
 				append_columns_js += "}"
+
+				# Move to
+				if options[:move_to] 
+					move_to = options[:move_to]
+					move_to = [move_to] if !move_to.is_a?(Array)
+					move_to_js = "[" + move_to.map { |item| "'#{item}'" }.join(",") + "]"
+				else
+					move_to_js = "[]"
+				end
 
 				# Default files
 				defaut_files_js = ""
@@ -356,7 +364,7 @@ module RugBuilder
 
 							// Options
 							appendColumns: #{append_columns_js},
-							moveTo: '#{move_to.to_s}',
+							moveTo: #{move_to_js},
 						});
 						rug_dropzone_many_#{hash}.ready();
 						#{move_to.nil? && defaut_files_js}
