@@ -109,8 +109,9 @@ class String
 	#
 	def to_url
 		return I18n.transliterate(self).
-			gsub("&nbsp;", " ").
 			strip_tags.
+			gsub("&nbsp;", " ").
+			gsub("&amp;", " ").
 			downcase.
 			gsub(/[^a-z0-9\.\s,\-_]/, "").
 			gsub(/[\.\s,\-_]+/, "-").
