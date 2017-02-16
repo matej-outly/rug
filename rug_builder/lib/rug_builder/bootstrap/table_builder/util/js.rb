@@ -80,17 +80,17 @@ module RugBuilder
 										$item.removeClass(container.group.options.draggedClass).removeAttr('style');
 										$('body').removeClass(container.group.options.bodyClass);
 										var id = $item.data('id');
-										var prev_id = $item.prev().data('id') ? $item.prev().data('id') : undefined;
-										var next_id = $item.next().data('id') ? $item.next().data('id') : undefined;
-										if (prev_id || next_id) {
-											var destination_id = prev_id;
+										var prevId = $item.prev().data('id') ? $item.prev().data('id') : undefined;
+										var nextId = $item.next().data('id') ? $item.next().data('id') : undefined;
+										if (prevId || nextId) {
+											var destinationId = prevId;
 											var relation = 'right';
-											if (!destination_id) {
-												destination_id = next_id;
+											if (!destinationId) {
+												destinationId = nextId;
 												relation = 'left';
 											}
-											var move_url = _this.options.movingUrl.replace(':id', id).replace(':relation', relation).replace(':destination_id', destination_id);
-											$.ajax({url: move_url, method: 'PUT', dataType: 'json'});
+											var moveUrl = _this.options.movingUrl.replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
+											$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
 										}
 									}
 								});

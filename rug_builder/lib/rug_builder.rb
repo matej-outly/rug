@@ -15,7 +15,7 @@ require "rug_builder/formatter"
 require "rug_builder/templater"
 
 # Railtie
-require 'rug_builder/railtie' if defined?(Rails)
+require "rug_builder/railtie" if defined?(Rails)
 
 module RugBuilder
 

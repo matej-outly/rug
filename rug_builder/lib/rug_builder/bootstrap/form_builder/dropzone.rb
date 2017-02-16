@@ -54,20 +54,18 @@ module RugBuilder
 					}
 					RugDropzone.prototype = {
 						constructor: RugDropzone,
-						addFile: function(file_name, file_size, thumb_url)
+						addFile: function(fileName, fileSize, thumbUrl)
 						{
-							var mock_file = { name: file_name, size: file_size };
-							this.dropzone.emit('addedfile', mock_file);
-							this.dropzone.emit('thumbnail', mock_file, thumb_url);
-							this.dropzone.files.push(mock_file);
-							this.dropzone.emit('complete', mock_file);
+							var mockFile = { name: fileName, size: fileSize };
+							this.dropzone.emit('addedfile', mockFile);
+							this.dropzone.emit('thumbnail', mockFile, thumbUrl);
+							this.dropzone.files.push(mockFile);
+							this.dropzone.emit('complete', mockFile);
 							this.dropzone.options.maxFiles = this.dropzone.options.maxFiles - 1;
 						},
 						ready: function()
 						{
 							var _this = this;
-
-							console.log(this.options.defaultUrl);
 
 							// Dropzone	
 							Dropzone.autoDiscover = false;
@@ -95,19 +93,19 @@ module RugBuilder
 								this.addFile(file);
 							});
 							this.dropzone.on('success', function(file, response) {
-								var response_id = parseInt(response);
-								if (!isNaN(response_id)) {
+								var responseId = parseInt(response);
+								if (!isNaN(responseId)) {
 									var form = $(_this.options.formSelector);
-									var update_url = _this.options.updateUrl.replace(':id', response_id);
-									if (form.attr('action') != update_url) {
-										form.attr('action', update_url); /* Form */
+									var updateUrl = _this.options.updateUrl.replace(':id', responseId);
+									if (form.attr('action') != updateUrl) {
+										form.attr('action', updateUrl); /* Form */
 										form.prepend('<input type="hidden" name="_method" value="patch" />');
 									}
-									this.options.url = update_url; /* Dropzone - this causes that only one dropzone is supported for creating */
+									this.options.url = updateUrl; /* Dropzone - this causes that only one dropzone is supported for creating */
 									this.options.method = 'put';
 									if (_this.options.crop) {
 										eval('var crop = ' + _this.options.crop + ';');
-										crop.reload(response_id);
+										crop.reload(responseId);
 									}
 								} else { /* Error saving image */ 
 								}
@@ -243,13 +241,13 @@ module RugBuilder
 					}
 					RugDropzoneMany.prototype = {
 						constructor: RugDropzoneMany,
-						addFile: function(file_name, file_size, thumb_url, record_id)
+						addFile: function(fileName, fileSize, thumbUrl, recordId)
 						{
-							var mock_file = { name: file_name, size: file_size, record_id: record_id };
-							this.dropzone.emit('addedfile', mock_file);
-							this.dropzone.emit('thumbnail', mock_file, thumb_url);
-							this.dropzone.files.push(mock_file);
-							this.dropzone.emit('complete', mock_file);
+							var mockFile = { name: fileName, size: fileSize, record_id: recordId };
+							this.dropzone.emit('addedfile', mockFile);
+							this.dropzone.emit('thumbnail', mockFile, thumbUrl);
+							this.dropzone.files.push(mockFile);
+							this.dropzone.emit('complete', mockFile);
 						},
 						ready: function()
 						{
@@ -279,16 +277,16 @@ module RugBuilder
 								}
 							});
 							this.dropzone.on('success', function(file, response) {
-								var response_id = parseInt(response);
-								if (!isNaN(response_id)) {
-									file.record_id = response_id;
+								var responseId = parseInt(response);
+								if (!isNaN(responseId)) {
+									file.record_id = responseId;
 									if (_this.options.moveTo) {
-										var show_url = _this.options.showUrl.replace(':id', file.record_id);
-										$.get(show_url, function(data) {
+										var showUrl = _this.options.showUrl.replace(':id', file.record_id);
+										$.get(showUrl, function(data) {
 											_this.dropzone.removeFile(file);
 											_this.options.moveTo.forEach(function(item) {
-												eval('var move_to = ' + item + ';');
-												move_to.addItem(data);
+												eval('var moveTo = ' + item + ';');
+												moveTo.addItem(data);
 											});
 										});
 									}
@@ -298,9 +296,9 @@ module RugBuilder
 							if (!this.options.moveTo) {
 								this.dropzone.on('removedfile', function(file) {
 									if (file.record_id) {
-										var destroy_url = _this.options.destroyUrl.replace(':id', file.record_id);
+										var destroyUrl = _this.options.destroyUrl.replace(':id', file.record_id);
 										$.ajax({
-											url: destroy_url,
+											url: destroyUrl,
 											dataType: 'json',
 											type: 'DELETE'
 										});

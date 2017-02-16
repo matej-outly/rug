@@ -29,7 +29,7 @@ module RugBuilder
 			# - actions (array) - which actions should be displayed for each node
 			# - paths - paths to different actions
 			# - closed_icon (string) - icon to be used for closed node
-			# - open_icon (string) - icon to be used for open node
+			# - opened_icon (string) - icon to be used for open node
 			# - type_icon_attr (string) - name of attribute containing type icon
 			# - show_event (string) - use double_click or single_click for triggering show
 			# - clipboard_attrs (array of string) - name/s of attribute/s used for clipboard save
@@ -40,131 +40,221 @@ module RugBuilder
 				result = ""
 
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(data_path.to_s)
+				@hash = Digest::SHA1.hexdigest(data_path.to_s)
 
-				# Moving
-				if check_moving(options)
-					moving_js = %{
-						$('#tree_#{hash}').bind('tree.move', function(event) {
-							var relation = null;
-							if (event.move_info.position.toString() == 'inside') {
-								relation = 'child';
-							} else if (event.move_info.position.toString() == 'after') {
-								relation = 'right';
-							} else if (event.move_info.position.toString() == 'before') {
-								relation = 'left';
-							}
-							var move_url = '#{@path_resolver.resolve(options[:paths][:move], ":id", ":relation", ":destination_id")}'.replace(':id', event.move_info.moved_node.id).replace(':relation', relation).replace(':destination_id', event.move_info.target_node.id);
-							$.ajax({url: move_url, method: 'PUT', dataType: 'json'});
-						});
-					}
-				end
+				# Options
+				@options = options
 
-				# Show
-				if check_show_link(options)
-					event = (options[:show_event] && options[:show_event].to_sym == :double_click ? "dblclick" : "click")
-					show_js = %{
-						$('#tree_#{hash}').bind('tree.#{event}', function(event) {
-							if (event.node) {
-								var node = event.node;
-								var show_url = '#{@path_resolver.resolve(options[:paths][:show], ":id")}'.replace(':id', event.node.id);
-								window.location.href = show_url;
-							}
-						});
+				# Library JS
+				result += @template.javascript_tag(%{
+					function RugTree(hash, options)
+					{
+						this.hash = hash;
+						this.tree = null;
+						this.storageKey = 'rug_tree_' + hash;
+						this.options = (typeof options !== 'undefined' ? options : {});
 					}
+					RugTree.prototype = {
+						constructor: RugTree,
+						onCreateLi: function(node, $li) 
+						{
+							var _this = this;
+
+							// Type
+							if (this.options.typeIconAttr && this.options.typeIconAttr.length > 0) {
+								var typeIcon = node[this.options.typeIconAttr];
+								if (!typeIcon) {
+									typeIcon = 'file-o';
+								}
+								var type_icon_html = '#{@icon_builder.render(":icon", class: "jqtree-icon")}'.replace(':icon', typeIcon);
+								$li.find('.jqtree-title').before(type_icon_html);
+							}
+
+							// Actions
+							if (this.options.actions && this.options.actions.length > 0) {
+								var actionsHtml = '';
+								actionsHtml += '<div class="jqtree-actions">';
+								actionsHtml += '	<div class="btn-group">';
+								actionsHtml += '		<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+								actionsHtml += '			<span class="caret"></span>';
+								actionsHtml += '		</button>';
+								actionsHtml += '		<ul class="dropdown-menu dropdown-menu-right">';
+								this.options.actions.forEach(function(action) {
+									var path = action.url.replace('%3Aid', node.id);
+									actionsHtml += '			<li><a href="' + path + '">' + _this.options.actionsIconTemplate.replace(':icon', action.icon) + '&nbsp;&nbsp;' + action.label + '</a></li>';
+								});
+								actionsHtml += '		</ul>';
+								actionsHtml += '	</div>';
+								actionsHtml += '</div>';
+								$li.find('.jqtree-title').after(actionsHtml);
+							}
+
+							// Clipboard
+							if (this.options.clipboard) {
+								var clipboardText = this.options.clipboardTemplate;
+								this.options.clipboardAttrs.forEach(function(clipboard_attr) {
+									clipboardText = clipboardText.replace(':' + clipboard_attr, node[clipboard_attr])
+								});
+								var clipboardHtml = '<div class="btn btn-default btn-xs jqtree-clipboard" data-clipboard-text="' + clipboardText + '">' + this.options.clipboardIcon + '</div>';
+								$li.find('.jqtree-title').after(clipboardHtml);
+							}
+						},
+						getData: function() {
+							return this.tree.tree('getTree').getData();
+						},
+						loadData: function(data) {
+							return this.tree.tree('loadData', data);
+						},
+						getJson: function() {
+							return this.tree.tree('toJson');
+						},
+						loadJson: function(dataAsJson) {
+							var data = JSON.parse(dataAsJson);
+							return this.loadData(data);
+						},
+						ready: function()
+						{
+							var _this = this;
+							this.tree = $('#tree-' + this.hash);
+
+							this.tree.tree({
+								dragAndDrop: this.options.moving,
+								saveState: (this.options.saveState == 'simple' ? this.storageKey : null),
+								closedIcon: $(this.options.closedIcon),
+								openedIcon: $(this.options.openedIcon),
+								onCreateLi: this.onCreateLi.bind(this),
+							});
+
+							// Moving
+							if (this.options.moving == true) {
+								this.tree.bind('tree.move', function(event) {
+									var relation = null;
+									if (event.move_info.position.toString() == 'inside') {
+										relation = 'child';
+									} else if (event.move_info.position.toString() == 'after') {
+										relation = 'right';
+									} else if (event.move_info.position.toString() == 'before') {
+										relation = 'left';
+									}
+									var moveUrl = _this.options.movingUrl.replace(':id', event.move_info.moved_node.id).replace(':relation', relation).replace(':destination_id', event.move_info.target_node.id);
+									$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
+								});
+							}
+
+							// Show
+							if (this.options.show == true) {
+								this.tree.bind('tree.' + this.options.showEvent, function(event) {
+									if (event.node) {
+										var node = event.node;
+										var showUrl = _this.options.showUrl.replace(':id', event.node.id);
+										window.location.href = showUrl;
+									}
+								});
+							}
+
+							// Clipboard
+							if (this.options.clipboard) {
+								new Clipboard('#tree-' + this.hash + ' .jqtree-clipboard');
+							}
+
+							// Save state
+							if (this.options.saveState == 'complex') {
+								this.tree.bind('tree.open', function(event) {
+									var dataAsJson = _this.getJson();
+									localStorage.setItem(this.storageKey, dataAsJson);
+								});
+								this.tree.bind('tree.close', function(event) {
+									var dataAsJson = _this.getJson();
+									localStorage.setItem(this.storageKey, dataAsJson);
+								});
+								this.tree.bind('tree.init', function() {
+									var dataAsJson = localStorage.getItem(this.storageKey);
+									if (dataAsJson) {
+										_this.loadJson(dataAsJson);
+									}
+								});
+							}
+						}
+					}
+				})
+
+				# Clipboard
+				if @options[:clipboard_attrs]
+					clipboard = true
+					@options[:clipboard_attrs] = [@options[:clipboard_attrs]] if !@options[:clipboard_attrs].is_a?(Array)
+					clipboard_attrs_js = "[" + @options[:clipboard_attrs].map { |item| "'#{item}'" }.join(",") + "]"
+				else
+					clipboard = false
+					clipboard_attrs_js = "[]"
 				end
 
 				# Actions
-				if options[:actions]
-					actions_js = ""
-					actions_js += "var actions_html = '';\n"
-					actions_js += "actions_html += '<div class=\"jqtree-actions\">';\n"
-					actions_js += "actions_html += '	<div class=\"btn-group\">';\n"
-					actions_js += "actions_html += '		<button type=\"button\" class=\"btn btn-default btn-xs dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">';\n"
-					actions_js += "actions_html += '			<span class=\"caret\"></span>';\n"
-					actions_js += "actions_html += '		</button>';\n"
-					actions_js += "actions_html += '		<ul class=\"dropdown-menu dropdown-menu-right\">';\n"
-					actions_js += "var path = null;\n"
+				if @options[:actions]
+					actions_js = "["
 					options[:actions].each do |key, action|
-						actions_js += "path = '#{@path_resolver.resolve(action[:path], ":id")}'.replace('%3Aid', node.id);\n"
-						actions_js += "actions_html += '			<li><a href=\"' + path + '\">#{@icon_builder.render(action[:icon])}&nbsp;&nbsp;#{action[:label]}</a></li>';\n"
-					end
-					actions_js += "actions_html += '		</ul>';\n"
-					actions_js += "actions_html += '	</div>';\n"
-					actions_js += "actions_html += '</div>';\n"
-					actions_js += "$li.find('.jqtree-title').after(actions_html);\n"
-				end
-
-				# Icon
-				if options[:type_icon_attr]
-					icon_js = %{
-						var icon = node.#{options[:type_icon_attr]}
-						if (!icon) {
-							icon = 'file-o';
+						actions_js += %{
+							{
+								url: '#{@path_resolver.resolve(action[:path], ":id")}',
+								icon: '#{action[:icon]}',
+								label: '#{action[:label]}',
+							},
 						}
-						var icon_html = '#{@icon_builder.render(":icon", class: "jqtree-icon")}'.replace(':icon', icon);
-						$li.find('.jqtree-title').before(icon_html);
-					}
-				end
-
-				# Clipboard
-				if options[:clipboard_attrs]
-
-					# Ensure array
-					options[:clipboard_attrs] = [options[:clipboard_attrs]] if !options[:clipboard_attrs].is_a?(Array)
-
-					# Template defined
-					if options[:clipboard_template]
-						clipboard_text_js = '"' + options[:clipboard_template].gsub('"', "'") + '"'
-						options[:clipboard_attrs].each do |clipboard_attr|
-							clipboard_text_js += ".replace(/:#{clipboard_attr}/, node.#{clipboard_attr})"
-						end
-						options[:clipboard_template]
-					
-					# No template defined
-					else
-						clipboard_text_js = "node.#{options[:clipboard_attrs].first}"
 					end
-
-					clipboard_js = %{
-						var clipboard_html = '<div class="btn btn-default btn-xs jqtree-clipboard" data-clipboard-text="' + (#{clipboard_text_js}) + '">#{@icon_builder.render(options[:clipboard_icon] ? options[:clipboard_icon] : "clipboard").gsub('"', '\"')}</div>';
-						$li.find('.jqtree-title').after(clipboard_html);
-					}
-					enable_clipboard_js = %{
-					    new Clipboard('#tree_#{hash} .jqtree-clipboard');
-					}
+					actions_js += "]"
+				else
+					actions_js += "[]"
 				end
 
-				js = %{
-					function tree_#{hash}_ready()
-					{
-						$('#tree_#{hash}').tree({
-							#{check_moving(options) ? "dragAndDrop: true," : ""}
-							saveState: true,
-							closedIcon: $('#{@icon_builder.render(options[:closed_icon] ? options[:closed_icon] : "chevron-right")}'),
-							openedIcon: $('#{@icon_builder.render(options[:opened_icon] ? options[:opened_icon] : "chevron-down")}'),
-							onCreateLi: function(node, $li) {
-								#{icon_js && icon_js}
-								#{actions_js && actions_js}
-								#{clipboard_js && clipboard_js}
-							}
-						});
-						#{check_show_link(options) && show_js}
-						#{check_moving(options) && moving_js}
-						#{enable_clipboard_js && enable_clipboard_js}
-					}
-					$(document).ready(tree_#{hash}_ready);
-				}
-				result += @template.javascript_tag(js)
+				# Application JS
+				result += @template.javascript_tag(%{
+					var rug_tree_#{@hash} = null;
+					$(document).ready(function() {
+						rug_tree_#{@hash} = new RugTree('#{@hash}', {
+							
+							// State
+							saveState: 'complex',
 
-				result += %{<div id="tree_#{hash}" data-url="#{data_path.to_s}"></div>}
+							// Icons
+							closedIcon: '#{@icon_builder.render(@options[:closed_icon] ? @options[:closed_icon] : "chevron-right")}',
+							openedIcon: '#{@icon_builder.render(@options[:opened_icon] ? @options[:opened_icon] : "chevron-down")}',
+							
+							// Moving
+							moving: #{check_moving(@options) ? 'true' : 'false'},
+							movingUrl: '#{@path_resolver.resolve(@options[:paths][:move], ":id", ":relation", ":destination_id")}',
+						
+							// Show
+							show: #{check_show(@options) ? 'true' : 'false'},
+							showEvent: '#{@options[:show_event] && @options[:show_event].to_sym == :double_click ? "dblclick" : "click"}',
+							showUrl: '#{@path_resolver.resolve(@options[:paths][:show], ":id")}',
+
+							// Type
+							typeIconTemplate: '#{@icon_builder.render(":icon", class: "jqtree-icon")}',
+							typeIconAttr: '#{@options[:type_icon_attr]}',
+
+							// Actions
+							actions: #{actions_js},
+							actionsIconTemplate: '#{@icon_builder.render(":icon")}',
+
+							// Clipboard
+							clipboard: #{clipboard ? 'true' : 'false'},
+							clipboardIcon: '#{@icon_builder.render(@options[:clipboard_icon] ? @options[:clipboard_icon] : "clipboard")}',
+							clipboardTemplate: "#{clipboard ? (@options[:clipboard_template] ? @options[:clipboard_template].gsub('"', "'") : ":" + @options[:clipboard_attrs].first) : ""}",
+							clipboardAttrs: #{clipboard_attrs_js},
+						});
+						rug_tree_#{@hash}.ready();
+					});
+				})
+
+				result += %{
+					<div id="tree-#{@hash}" data-url="#{data_path.to_s}"></div>
+				}
 
 				return result.html_safe
 			end
 
 		protected
 
-			def check_show_link(options)
+			def check_show(options)
 				return options[:paths] && options[:paths][:show]
 			end
 

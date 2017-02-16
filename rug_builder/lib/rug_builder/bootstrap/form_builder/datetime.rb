@@ -208,14 +208,14 @@ module RugBuilder
 					}
 					function duration_#{hash}_update_inputs()
 					{
-						var date_and_time = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });
-						if (date_and_time.length >= 2) {
-							var days = duration_#{hash}_days(date_and_time[0]);
-							var hours_and_minutes_and_seconds = date_and_time[1].split(':');
+						var dateAndTime = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });
+						if (dateAndTime.length >= 2) {
+							var days = duration_#{hash}_days(dateAndTime[0]);
+							var hoursAndMinutesAndSeconds = dateAndTime[1].split(':');
 							$('#duration_#{hash} .days').val(days);
-							$('#duration_#{hash} .hours').val(hours_and_minutes_and_seconds[0]);
-							$('#duration_#{hash} .minutes').val(hours_and_minutes_and_seconds[1]);
-							$('#duration_#{hash} .seconds').val(hours_and_minutes_and_seconds[2]);
+							$('#duration_#{hash} .hours').val(hoursAndMinutesAndSeconds[0]);
+							$('#duration_#{hash} .minutes').val(hoursAndMinutesAndSeconds[1]);
+							$('#duration_#{hash} .seconds').val(hoursAndMinutesAndSeconds[2]);
 						} else {
 							$('#duration_#{hash} .days').val('');
 							$('#duration_#{hash} .hours').val('');
