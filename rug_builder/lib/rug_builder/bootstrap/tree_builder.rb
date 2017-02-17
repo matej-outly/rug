@@ -35,6 +35,8 @@ module RugBuilder
 			# - clipboard_attrs (array of string) - name/s of attribute/s used for clipboard save
 			# - clipboard_template (string) - template used for constructing clipboard value (user :attr for substitution)
 			# - clipboard_icon (string) - icon to be used for clipboard button
+			# - save_state (:none, :simple, :complex) - which method should be used for state saving
+			# - parent (string) - name of JavaScript variable implementing reload function which is called when tree is initialized
 			#
 			def tree(data_path, options = {})
 				result = ""
@@ -61,8 +63,8 @@ module RugBuilder
 							var _this = this;
 
 							// Type
-							if (this.options.typeIconAttr && this.options.typeIconAttr.length > 0) {
-								var typeIcon = node[this.options.typeIconAttr];
+							if (_this.options.typeIconAttr && _this.options.typeIconAttr.length > 0) {
+								var typeIcon = node[_this.options.typeIconAttr];
 								if (!typeIcon) {
 									typeIcon = 'file-o';
 								}
@@ -71,7 +73,7 @@ module RugBuilder
 							}
 
 							// Actions
-							if (this.options.actions && this.options.actions.length > 0) {
+							if (_this.options.actions && _this.options.actions.length > 0) {
 								var actionsHtml = '';
 								actionsHtml += '<div class="jqtree-actions">';
 								actionsHtml += '	<div class="btn-group">';
@@ -79,7 +81,7 @@ module RugBuilder
 								actionsHtml += '			<span class="caret"></span>';
 								actionsHtml += '		</button>';
 								actionsHtml += '		<ul class="dropdown-menu dropdown-menu-right">';
-								this.options.actions.forEach(function(action) {
+								_this.options.actions.forEach(function(action) {
 									var path = action.url.replace('%3Aid', node.id);
 									actionsHtml += '			<li><a href="' + path + '">' + _this.options.actionsIconTemplate.replace(':icon', action.icon) + '&nbsp;&nbsp;' + action.label + '</a></li>';
 								});
@@ -90,9 +92,9 @@ module RugBuilder
 							}
 
 							// Clipboard
-							if (this.options.clipboard) {
-								var clipboardText = this.options.clipboardTemplate;
-								this.options.clipboardAttrs.forEach(function(clipboard_attr) {
+							if (_this.options.clipboard) {
+								var clipboardText = _this.options.clipboardTemplate;
+								_this.options.clipboardAttrs.forEach(function(clipboard_attr) {
 									clipboardText = clipboardText.replace(':' + clipboard_attr, node[clipboard_attr])
 								});
 								var clipboardHtml = '<div class="btn btn-default btn-xs jqtree-clipboard" data-clipboard-text="' + clipboardText + '">' + this.options.clipboardIcon + '</div>';
@@ -115,19 +117,36 @@ module RugBuilder
 						ready: function()
 						{
 							var _this = this;
-							this.tree = $('#tree-' + this.hash);
+							_this.tree = $('#tree-' + _this.hash);
 
-							this.tree.tree({
-								dragAndDrop: this.options.moving,
-								saveState: (this.options.saveState == 'simple' ? this.storageKey : null),
-								closedIcon: $(this.options.closedIcon),
-								openedIcon: $(this.options.openedIcon),
-								onCreateLi: this.onCreateLi.bind(this),
+							_this.tree.tree({
+								dragAndDrop: _this.options.moving,
+								saveState: (_this.options.saveState == 'simple' ? _this.storageKey : null),
+								closedIcon: $(_this.options.closedIcon),
+								openedIcon: $(_this.options.openedIcon),
+								onCreateLi: _this.onCreateLi.bind(_this),
+							});
+
+							_this.tree.bind('tree.init', function() {
+								
+								// Save state
+								if (_this.options.saveState == 'complex') {
+									var dataAsJson = localStorage.getItem(_this.storageKey);
+									if (dataAsJson) {
+										_this.loadJson(dataAsJson);
+									}
+								}
+
+								// Reload parent
+								if (_this.options.parent) {
+									eval('var parent = ' + _this.options.parent + ';');
+									parent.reload();
+								}
 							});
 
 							// Moving
-							if (this.options.moving == true) {
-								this.tree.bind('tree.move', function(event) {
+							if (_this.options.moving == true) {
+								_this.tree.bind('tree.move', function(event) {
 									var relation = null;
 									if (event.move_info.position.toString() == 'inside') {
 										relation = 'child';
@@ -138,12 +157,17 @@ module RugBuilder
 									}
 									var moveUrl = _this.options.movingUrl.replace(':id', event.move_info.moved_node.id).replace(':relation', relation).replace(':destination_id', event.move_info.target_node.id);
 									$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
+
+									// Save state
+									if (_this.options.saveState == 'complex') {
+										localStorage.setItem(_this.storageKey, _this.getJson());
+									}
 								});
 							}
 
 							// Show
-							if (this.options.show == true) {
-								this.tree.bind('tree.' + this.options.showEvent, function(event) {
+							if (_this.options.show == true) {
+								_this.tree.bind('tree.' + _this.options.showEvent, function(event) {
 									if (event.node) {
 										var node = event.node;
 										var showUrl = _this.options.showUrl.replace(':id', event.node.id);
@@ -153,25 +177,17 @@ module RugBuilder
 							}
 
 							// Clipboard
-							if (this.options.clipboard) {
-								new Clipboard('#tree-' + this.hash + ' .jqtree-clipboard');
+							if (_this.options.clipboard) {
+								new Clipboard('#tree-' + _this.hash + ' .jqtree-clipboard');
 							}
 
 							// Save state
-							if (this.options.saveState == 'complex') {
-								this.tree.bind('tree.open', function(event) {
-									var dataAsJson = _this.getJson();
-									localStorage.setItem(this.storageKey, dataAsJson);
+							if (_this.options.saveState == 'complex') {
+								_this.tree.bind('tree.open', function(event) {
+									localStorage.setItem(_this.storageKey, _this.getJson());
 								});
-								this.tree.bind('tree.close', function(event) {
-									var dataAsJson = _this.getJson();
-									localStorage.setItem(this.storageKey, dataAsJson);
-								});
-								this.tree.bind('tree.init', function() {
-									var dataAsJson = localStorage.getItem(this.storageKey);
-									if (dataAsJson) {
-										_this.loadJson(dataAsJson);
-									}
+								_this.tree.bind('tree.close', function(event) {
+									localStorage.setItem(_this.storageKey, _this.getJson());
 								});
 							}
 						}
@@ -205,6 +221,12 @@ module RugBuilder
 					actions_js += "[]"
 				end
 
+				# Parent
+				parent = (options[:parent] ? options[:parent] : nil)
+
+				# Save state
+				save_state = (options[:save_state] ? options[:save_state] : :simple)
+
 				# Application JS
 				result += @template.javascript_tag(%{
 					var rug_tree_#{@hash} = null;
@@ -212,7 +234,10 @@ module RugBuilder
 						rug_tree_#{@hash} = new RugTree('#{@hash}', {
 							
 							// State
-							saveState: 'complex',
+							saveState: '#{save_state.to_s}',
+
+							// Parent element
+							parent: '#{parent.to_s}',
 
 							// Icons
 							closedIcon: '#{@icon_builder.render(@options[:closed_icon] ? @options[:closed_icon] : "chevron-right")}',
