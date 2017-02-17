@@ -80,7 +80,7 @@ module RugBuilder
 								actionsHtml += '		<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 								actionsHtml += '			<span class="caret"></span>';
 								actionsHtml += '		</button>';
-								actionsHtml += '		<ul class="dropdown-menu dropdown-menu-right">';
+								actionsHtml += '		<ul class="dropdown-menu">';
 								_this.options.actions.forEach(function(action) {
 									var path = action.url.replace('%3Aid', node.id);
 									actionsHtml += '			<li><a href="' + path + '">' + _this.options.actionsIconTemplate.replace(':icon', action.icon) + '&nbsp;&nbsp;' + action.label + '</a></li>';
