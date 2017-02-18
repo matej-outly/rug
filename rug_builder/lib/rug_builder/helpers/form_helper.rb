@@ -14,6 +14,7 @@ module RugBuilder
 		module FormHelper
 
 			def rug_form_for(object, options = {}, &block)
+				result = ""
 
 				# Builder
 				options[:builder] = RugBuilder::FormBuilder
@@ -34,7 +35,19 @@ module RugBuilder
 					object = object.new
 				end
 
-				form_for(object, options, &block)
+				# Form itself
+				result += form_for(object, options, &block)
+
+				# Ajax form
+				if options[:ajax] == true
+					result += javascript_tag(%{
+						$(document).ready(function() {
+							$("##{options[:html][:id]}").ajaxForm();
+						});
+					})
+				end
+
+				return result.html_safe
 			end
 
 		end
