@@ -36,117 +36,118 @@ module RugBuilder
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 	
-				# Java Script
-				js = ""
-				
-				js += "function RugFormMapLocation(hash, options)\n"
-				js += "{\n"
-				js += "	this.DEFAULT_LATITUDE = 50.0596696; /* Prague */\n"
-				js += "	this.DEFAULT_LONGITUDE = 14.4656239;\n"
-				js += "	this.DEFAULT_ZOOM = 9;\n"
-				js += "	this.map = null;\n"
-				js += "	this.marker = null;\n"
-				js += "	this.hash = hash;\n"
-				js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
-				js += "}\n"
-				js += "RugFormMapLocation.prototype = {\n"
-				js += "	constructor: RugFormMapLocation,\n"
-				js += "	updateInputs: function()\n"
-				js += "	{\n"
-				js += "		if (this.marker != null) {\n"
-				js += "			$('#map_location_' + this.hash + ' input.latitude').val(this.marker.getPosition().lat());\n"
-				js += "			$('#map_location_' + this.hash + ' input.longitude').val(this.marker.getPosition().lng());\n"
-				js += "		} else {\n"
-				js += "			$('#map_location_' + this.hash + ' input.latitude').val(null);\n"
-				js += "			$('#map_location_' + this.hash + ' input.longitude').val(null);\n"
-				js += "		}\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	updateMap: function()\n"
-				js += "	{\n"
-				js += "		var latitude = parseFloat($('#map_location_' + this.hash + ' input.latitude').val());\n"
-				js += "		var longitude = parseFloat($('#map_location_' + this.hash + ' input.longitude').val());\n"
-				js += "		if (latitude && longitude) {\n"
-				js += "			this.setMarker(latitude, longitude);\n"
-				js += "		} else {\n"
-				js += "			this.removeMarker();\n"
-				js += "		}\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	setMarker: function(latitude, longitude)\n"
-				js += "	{\n"
-				js += "		var _this = this;\n"
-				js += "		if (this.marker == null) {\n"
-				js += "			this.marker = new google.maps.Marker({\n"
-				js += "				map: this.map,\n"
-				js += "				draggable: true,\n"
-				js += "				position: {lat: latitude, lng: longitude}\n"
-				js += "			});\n"
-				js += "			this.marker.addListener('dragend', function(event) {\n"
-				js += "				_this.updateInputs();\n"
-				js += "			});\n"
-				js += "			this.marker.addListener('click', function() {\n"
-				js += "				_this.removeMarker();\n"
-				js += "				_this.updateInputs();\n"
-				js += "			});\n"
-				js += "		} else {\n"
-				js += "			this.marker.setPosition({lat: latitude, lng: longitude});\n"
-				js += "		}\n"
-				js += "		this.map.panTo({lat: latitude, lng: longitude});\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	removeMarker: function()\n"
-				js += "	{\n"
-				js += "		if (this.marker != null) {\n"
-				js += "			this.marker.setMap(null);\n"
-				js += "			this.marker = null;\n"
-				js += "		}\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	ready: function()\n"
-				js += "	{\n"
-				js += "		var _this = this;\n"
-				js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
-				js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
-				js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
-				js += "		var map_canvas = $('#map_location_' + this.hash + ' .mapbox').get(0);\n"
-				js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
-				js += "		var map_options = {\n"
-				js += "			center: map_position,\n"
-				js += "			zoom: zoom,\n"
-				js += "			mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
-				js += "		}\n"
-				js += "		this.map = new google.maps.Map(map_canvas, map_options);\n"
-				js += "		google.maps.event.addListener(this.map, 'click', function(event) {\n"
-				js += "			_this.setMarker(event.latLng.lat(), event.latLng.lng());\n"
-				js += "			_this.updateInputs();\n"
-				js += "		});\n"
-				js += "		$('#map_location_' + this.hash + ' input.latitude').on('change', function() { _this.updateMap(); });\n"
-				js += "		$('#map_location_' + this.hash + ' input.longitude').on('change', function() { _this.updateMap(); });\n"
-				js += "		this.updateMap();\n"
-				js += "	},\n"
-				js += "	repair: function()\n"
-				js += "	{\n"
-				js += "		google.maps.event.trigger(this.map, 'resize');\n"
-				js += "		this.updateMap();\n"
-				js += "	}\n"
-				js += "}\n"
-
-				js += "var rug_form_map_location_#{hash} = null;\n"
-				js += "$(document).ready(function() {\n"
-				js += "	rug_form_map_location_#{hash} = new RugFormMapLocation('#{hash}', {\n"
-				js += "		latitude: #{@options[:latitude]},\n" if @options[:latitude]
-				js += "		longitude: #{@options[:longitude]},\n" if @options[:longitude]
-				js += "		zoom: #{@options[:zoom]}\n" if @options[:zoom]
-				js += "	});\n"
-				js += "	rug_form_map_location_#{hash}.ready();\n"
-				js += "});\n"
-
+				# Library JS
+				result += @template.javascript_tag(%{
+					function RugFormMapLocation(hash, options)
+					{
+						this.DEFAULT_LATITUDE = 50.0596696; /* Prague */
+						this.DEFAULT_LONGITUDE = 14.4656239;
+						this.DEFAULT_ZOOM = 9;
+						this.map = null;
+						this.marker = null;
+						this.hash = hash;
+						this.options = (typeof options !== 'undefined' ? options : {});
+					}
+					RugFormMapLocation.prototype = {
+						constructor: RugFormMapLocation,
+						updateInputs: function()
+						{
+							if (this.marker != null) {
+								$('#map_location_' + this.hash + ' input.latitude').val(this.marker.getPosition().lat());
+								$('#map_location_' + this.hash + ' input.longitude').val(this.marker.getPosition().lng());
+							} else {
+								$('#map_location_' + this.hash + ' input.latitude').val(null);
+								$('#map_location_' + this.hash + ' input.longitude').val(null);
+							}
+							return true;
+						},
+						updateMap: function()
+						{
+							var latitude = parseFloat($('#map_location_' + this.hash + ' input.latitude').val());
+							var longitude = parseFloat($('#map_location_' + this.hash + ' input.longitude').val());
+							if (latitude && longitude) {
+								this.setMarker(latitude, longitude);
+							} else {
+								this.removeMarker();
+							}
+							return true;
+						},
+						setMarker: function(latitude, longitude)
+						{
+							var _this = this;
+							if (this.marker == null) {
+								this.marker = new google.maps.Marker({
+									map: this.map,
+									draggable: true,
+									position: {lat: latitude, lng: longitude}
+								});
+								this.marker.addListener('dragend', function(event) {
+									_this.updateInputs();
+								});
+								this.marker.addListener('click', function() {
+									_this.removeMarker();
+									_this.updateInputs();
+								});
+							} else {
+								this.marker.setPosition({lat: latitude, lng: longitude});
+							}
+							this.map.panTo({lat: latitude, lng: longitude});
+							return true;
+						},
+						removeMarker: function()
+						{
+							if (this.marker != null) {
+								this.marker.setMap(null);
+								this.marker = null;
+							}
+							return true;
+						},
+						ready: function()
+						{
+							var _this = this;
+							var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);
+							var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);
+							var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);
+							var mapCanvas = $('#map_location_' + this.hash + ' .mapbox').get(0);
+							var mapPosition = new google.maps.LatLng(latitude, longitude);
+							var mapOptions = {
+								center: mapPosition,
+								zoom: zoom,
+								mapTypeId: google.maps.MapTypeId.ROADMAP,
+							}
+							this.map = new google.maps.Map(mapCanvas, mapOptions);
+							google.maps.event.addListener(this.map, 'click', function(event) {
+								_this.setMarker(event.latLng.lat(), event.latLng.lng());
+								_this.updateInputs();
+							});
+							$('#map_location_' + this.hash + ' input.latitude').on('change', function() { _this.updateMap(); });
+							$('#map_location_' + this.hash + ' input.longitude').on('change', function() { _this.updateMap(); });
+							this.updateMap();
+						},
+						repair: function()
+						{
+							google.maps.event.trigger(this.map, 'resize');
+							this.updateMap();
+						}
+					}
+				})
 				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
-				result += @template.javascript_tag(js)
+				
+				# Application JS
+				result += @template.javascript_tag(%{
+					var rug_form_map_location_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_map_location_#{hash} = new RugFormMapLocation('#{hash}', {
+							latitude: #{@options[:latitude] ? @options[:latitude] : "null"},
+							longitude: #{@options[:longitude] ? @options[:longitude] : "null"},
+							zoom: #{@options[:zoom] ? @options[:zoom] : "null"}
+						});
+						rug_form_map_location_#{hash}.ready();
+					});
+				})
 				
 				# Form group
-				result += "<div id=\"map_location_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div id=\"map_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Text inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
@@ -165,12 +166,8 @@ module RugBuilder
 				result += "</div>"
 
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
-
+				result += errors(name, class: "col-sm-12")
+				
 				# Form group
 				result += "</div>"
 
@@ -190,158 +187,159 @@ module RugBuilder
 				# Part values
 				value = object.send(name)
 				
-				# Java Script
-				js = ""
-
-				js += "function RugFormMapPolygon(hash, options)\n"
-				js += "{\n"
-				js += "	this.DEFAULT_LATITUDE = 50.0596696; /* Prague */\n"
-				js += "	this.DEFAULT_LONGITUDE = 14.4656239;\n"
-				js += "	this.DEFAULT_ZOOM = 9;\n"
-				js += "	this.map = null;\n"
-				js += "	this.markers = [];\n"
-				js += "	this.polygon = null;\n"
-				js += "	this.hash = hash;\n"
-				js += "	this.options = (typeof options !== 'undefined' ? options : {});\n"
-				js += "}\n"
-				js += "RugFormMapPolygon.prototype = {\n"
-				js += "	constructor: RugFormMapPolygon,\n"
-				js += "	updateInput: function()\n"
-				js += "	{\n"
-				js += "		var value = null;\n"
-				js += "		if (this.markers.length > 0) {\n"
-				js += "			value = [];\n"
-				js += "			for (var i = 0; i < this.markers.length; i++) {\n"
-				js += "				var marker = this.markers[i];\n"
-				js += "				value.push([marker.getPosition().lat(),marker.getPosition().lng()]);\n"
-				js += "			}\n"
-				js += "			value = JSON.stringify(value);\n"
-				js += "		} else {\n"
-				js += "			value = '';\n"
-				js += "		}\n"
-				js += "		$('#map_polygon_' + this.hash + ' input').val(value);\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	updateMap: function()\n"
-				js += "	{\n"
-				js += "		var value = $('#map_polygon_' + this.hash + ' input').val();\n"
-				js += "		value = JSON.parse(value);\n"
-				js += "		this.clearMarkers();\n"
-				js += "		if (value instanceof Array) {\n"
-				js += "			for (var i = 0; i < value.length; i++) {\n"
-				js += "				if (value[i] instanceof Array && value[i].length == 2) {\n"
-				js += "					this.addMarker(parseFloat(value[i][0]), parseFloat(value[i][1]));\n"
-				js += "				} else {\n"
-				js += "					this.clearMarkers();\n"
-				js += "					return false;\n"
-				js += "				}\n"
-				js += "			}\n"
-				js += "		}\n"
-				js += "		this.redrawPolygon();\n"
-				js += "		return true;\n"
-				js += "	},\n"
-				js += "	addMarker: function(latitude, longitude)\n"
-				js += "	{\n"
-				js += "		var _this = this;\n"
-				js += "		var marker = new google.maps.Marker({\n"
-				js += "			map: this.map,\n"
-				js += "			draggable: true,\n"
-				js += "			position: {lat: latitude, lng: longitude}\n"
-				js += "		});\n"
-				js += "		marker.addListener('dragend', function(event) {\n"
-				js += "			_this.redrawPolygon();\n"
-				js += "			_this.updateInput();\n"
-				js += "		});\n"
-				js += "		marker.addListener('click', function() {\n"
-				js += "			_this.removeMarker(marker);\n"
-				js += "			_this.redrawPolygon();\n"
-				js += "			_this.updateInput();\n"
-				js += "		});\n"
-				js += "		this.markers.push(marker);\n"
-				js += "		this.map.panTo({lat: latitude, lng: longitude});\n"
-				js += "	},\n"
-				js += "	removeMarker: function(marker)\n"
-				js += "	{\n"
-				js += "		marker.setMap(null);\n"
-				js += "		for (var i = 0; i < this.markers.length; i++) {\n"
-				js += "			if (marker == this.markers[i]) {\n"
-				js += "				this.markers.splice(i, 1);\n"
-				js += "				break;\n"
-				js += "			}\n"
-				js += "		}\n"
-				js += "	},\n"
-				js += "	clearMarkers: function()\n"
-				js += "	{\n"
-				js += "		for (var i = 0; i < this.markers.length; i++) {\n"
-				js += "			var marker = this.markers[i];\n"
-				js += "			marker.setMap(null);\n"
-				js += "		}\n"
-				js += "		this.markers = [];\n"
-				js += "	},\n"
-				js += "	redrawPolygon: function() \n"
-				js += "	{\n"
-				js += "		if (this.polygon != null) {\n"
-				js += "			this.polygon.setMap(null);\n"
-				js += "			this.polygon = null;\n"
-				js += "		}\n"
-				js += "		var points = [];\n"
-				js += "		for (var i = 0; i < this.markers.length; i++) {\n"
-				js += "			var marker = this.markers[i];\n"
-				js += "			points.push({lat: marker.getPosition().lat(), lng: marker.getPosition().lng()});\n"
-				js += "		}\n"
-				js += "		this.polygon = new google.maps.Polygon({\n"
-				js += "			paths: points,\n"
-				js += "			strokeColor: '#FF0000',\n"
-				js += "			strokeOpacity: 0.8,\n"
-				js += "			strokeWeight: 2,\n"
-				js += "			fillColor: '#FF0000',\n"
-				js += "			fillOpacity: 0.2\n"
-				js += "		});\n"
-				js += "		this.polygon.setMap(this.map);\n"
-				js += "	},\n"
-				js += "	ready: function()\n"
-				js += "	{\n"
-				js += "		var _this = this;\n"
-				js += "		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);\n"
-				js += "		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);\n"
-				js += "		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);\n"
-				js += "		var map_canvas = $('#map_polygon_' + this.hash + ' .mapbox').get(0);\n"
-				js += "		var map_position = new google.maps.LatLng(latitude, longitude);\n"
-				js += "		var map_options = {\n"
-				js += "			center: map_position,\n"
-				js += "			zoom: zoom,\n"
-				js += "			mapTypeId: google.maps.MapTypeId.ROADMAP,\n"
-				js += "		}\n"
-				js += "		this.map = new google.maps.Map(map_canvas, map_options);\n"
-				js += "		google.maps.event.addListener(this.map, 'click', function(event) {\n"
-				js += "			_this.addMarker(event.latLng.lat(), event.latLng.lng());\n"
-				js += "			_this.redrawPolygon();\n"
-				js += "			_this.updateInput();\n"
-				js += "		});\n"
-				js += "		this.updateMap();\n"
-				js += "	},\n"
-				js += "	repair: function()\n"
-				js += "	{\n"
-				js += "		google.maps.event.trigger(this.map, 'resize');\n"
-				js += "		this.updateMap();\n"
-				js += "	}\n"
-				js += "}\n"
-
-				js += "var rug_form_map_polygon_#{hash} = null;\n"
-				js += "$(document).ready(function() {\n"
-				js += "	rug_form_map_polygon_#{hash} = new RugFormMapPolygon('#{hash}', {\n"
-				js += "		latitude: #{@options[:latitude]},\n" if @options[:latitude]
-				js += "		longitude: #{@options[:longitude]},\n" if @options[:longitude]
-				js += "		zoom: #{@options[:zoom]}\n" if @options[:zoom]
-				js += "	});\n"
-				js += "	rug_form_map_polygon_#{hash}.ready();\n"
-				js += "});\n"
-
+				# Library JS
+				result += @template.javascript_tag(%{
+					function RugFormMapPolygon(hash, options)
+					{
+						this.DEFAULT_LATITUDE = 50.0596696; /* Prague */
+						this.DEFAULT_LONGITUDE = 14.4656239;
+						this.DEFAULT_ZOOM = 9;
+						this.map = null;
+						this.markers = [];
+						this.polygon = null;
+						this.hash = hash;
+						this.options = (typeof options !== 'undefined' ? options : {});
+					}
+					RugFormMapPolygon.prototype = {
+						constructor: RugFormMapPolygon,
+						updateInput: function()
+						{
+							var value = null;
+							if (this.markers.length > 0) {
+								value = [];
+								for (var i = 0; i < this.markers.length; i++) {
+									var marker = this.markers[i];
+									value.push([marker.getPosition().lat(),marker.getPosition().lng()]);
+								}
+								value = JSON.stringify(value);
+							} else {
+								value = '';
+							}
+							$('#map_polygon_' + this.hash + ' input').val(value);
+							return true;
+						},
+						updateMap: function()
+						{
+							var value = $('#map_polygon_' + this.hash + ' input').val();
+							value = JSON.parse(value);
+							this.clearMarkers();
+							if (value instanceof Array) {
+								for (var i = 0; i < value.length; i++) {
+									if (value[i] instanceof Array && value[i].length == 2) {
+										this.addMarker(parseFloat(value[i][0]), parseFloat(value[i][1]));
+									} else {
+										this.clearMarkers();
+										return false;
+									}
+								}
+							}
+							this.redrawPolygon();
+							return true;
+						},
+						addMarker: function(latitude, longitude)
+						{
+							var _this = this;
+							var marker = new google.maps.Marker({
+								map: this.map,
+								draggable: true,
+								position: {lat: latitude, lng: longitude}
+							});
+							marker.addListener('dragend', function(event) {
+								_this.redrawPolygon();
+								_this.updateInput();
+							});
+							marker.addListener('click', function() {
+								_this.removeMarker(marker);
+								_this.redrawPolygon();
+								_this.updateInput();
+							});
+							this.markers.push(marker);
+							this.map.panTo({lat: latitude, lng: longitude});
+						},
+						removeMarker: function(marker)
+						{
+							marker.setMap(null);
+							for (var i = 0; i < this.markers.length; i++) {
+								if (marker == this.markers[i]) {
+									this.markers.splice(i, 1);
+									break;
+								}
+							}
+						},
+						clearMarkers: function()
+						{
+							for (var i = 0; i < this.markers.length; i++) {
+								var marker = this.markers[i];
+								marker.setMap(null);
+							}
+							this.markers = [];
+						},
+						redrawPolygon: function() 
+						{
+							if (this.polygon != null) {
+								this.polygon.setMap(null);
+								this.polygon = null;
+							}
+							var points = [];
+							for (var i = 0; i < this.markers.length; i++) {
+								var marker = this.markers[i];
+								points.push({lat: marker.getPosition().lat(), lng: marker.getPosition().lng()});
+							}
+							this.polygon = new google.maps.Polygon({
+								paths: points,
+								strokeColor: '#FF0000',
+								strokeOpacity: 0.8,
+								strokeWeight: 2,
+								fillColor: '#FF0000',
+								fillOpacity: 0.2
+							});
+							this.polygon.setMap(this.map);
+						},
+						ready: function()
+						{
+							var _this = this;
+							var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);
+							var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);
+							var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);
+							var mapCanvas = $('#map_polygon_' + this.hash + ' .mapbox').get(0);
+							var mapPosition = new google.maps.LatLng(latitude, longitude);
+							var mapOptions = {
+								center: mapPosition,
+								zoom: zoom,
+								mapTypeId: google.maps.MapTypeId.ROADMAP,
+							}
+							this.map = new google.maps.Map(mapCanvas, mapOptions);
+							google.maps.event.addListener(this.map, 'click', function(event) {
+								_this.addMarker(event.latLng.lat(), event.latLng.lng());
+								_this.redrawPolygon();
+								_this.updateInput();
+							});
+							this.updateMap();
+						},
+						repair: function()
+						{
+							google.maps.event.trigger(this.map, 'resize');
+							this.updateMap();
+						}
+					}
+				})
 				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
-				result += @template.javascript_tag(js)
+
+				# Application JS
+				result += @template.javascript_tag(%{
+					var rug_form_map_polygon_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_map_polygon_#{hash} = new RugFormMapPolygon('#{hash}', {
+							latitude: #{@options[:latitude] ? @options[:latitude] : "null"},
+							longitude: #{@options[:longitude] ? @options[:longitude] : "null"},
+							zoom: #{@options[:zoom] ? @options[:zoom] : "null"}
+						});
+						rug_form_map_polygon_#{hash}.ready();
+					});
+				})
 				
 				# Form group
-				result += "<div id=\"map_polygon_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div id=\"map_polygon_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
@@ -352,12 +350,8 @@ module RugBuilder
 				result += "</div>"
 
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
-
+				result += errors(name, class: "col-sm-12")
+				
 				# Form group
 				result += "</div>"
 
@@ -397,7 +391,7 @@ module RugBuilder
 				#result += @template.javascript_tag(js)
 				
 				# Form group
-				result += "<div id=\"address_location_#{hash}\" class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div id=\"address_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Level input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")
@@ -412,12 +406,8 @@ module RugBuilder
 				result += "</div>"
 				
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
-
+				result += errors(name, class: "col-sm-12")
+				
 				# Form group
 				result += "</div>"
 

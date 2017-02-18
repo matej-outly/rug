@@ -46,14 +46,14 @@ module RugBuilder
 
 				# Library JS code
 				result += @template.javascript_tag(%{
-					function RugDropzone(hash, options)
+					function RugFormDropzone(hash, options)
 					{
 						this.hash = hash;
 						this.dropzone = null;
 						this.options = (typeof options !== 'undefined' ? options : {});
 					}
-					RugDropzone.prototype = {
-						constructor: RugDropzone,
+					RugFormDropzone.prototype = {
+						constructor: RugFormDropzone,
 						addFile: function(fileName, fileSize, thumbUrl)
 						{
 							var mockFile = { name: fileName, size: fileSize };
@@ -74,7 +74,7 @@ module RugBuilder
 								method: this.options.defaultMethod, /* method given by function not working, that's why we do it by changing static options in success event */
 								paramName: this.options.objectParamKey + '[' + this.options.name + ']',
 								maxFiles: 1,
-								dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',
+								dictDefaultMessage: this.options.defaultMessage,
 							});
 
 							// Events
@@ -129,14 +129,14 @@ module RugBuilder
 				defaut_file_js = ""
 				value = object.send(name)
 				if value && value.exists?
-					defaut_file_js = "rug_dropzone_#{hash}.addFile('#{object.send(name.to_s + "_file_name")}', #{object.send(name.to_s + "_file_size")}, '#{value.url}');\n"
+					defaut_file_js = "rug_form_dropzone_#{hash}.addFile('#{object.send(name.to_s + "_file_name")}', #{object.send(name.to_s + "_file_size")}, '#{value.url}');\n"
 				end
 
 				# Application JS code
 				result += @template.javascript_tag(%{
-					var rug_dropzone_#{hash} = null;
+					var rug_form_dropzone_#{hash} = null;
 					$(document).ready(function() {
-						rug_dropzone_#{hash} = new RugDropzone('#{hash}', {
+						rug_form_dropzone_#{hash} = new RugFormDropzone('#{hash}', {
 
 							// Columns names
 							name: '#{name}',
@@ -153,11 +153,14 @@ module RugBuilder
 							formSelector: '##{self.options[:html][:id]}',
 							formAuthenticityToken: '#{@template.form_authenticity_token}',
 
+							// Messages
+							defaultMessage: '#{I18n.t("general.drop_file_here")}',
+
 							// Options
 							appendColumns: #{append_columns_js},
 							crop: '#{crop.to_s}',
 						});
-						rug_dropzone_#{hash}.ready();
+						rug_form_dropzone_#{hash}.ready();
 						#{defaut_file_js}
 					});
 				})
@@ -260,10 +263,10 @@ module RugBuilder
 								method: 'post',
 								paramName: this.options.collectionParamKey + '[' + this.options.attachmentName + ']',
 								addRemoveLinks: true,
-								dictDefaultMessage: '#{I18n.t("general.drop_file_here")}',
-								dictRemoveFile: '#{I18n.t("general.action.destroy")}',
-								dictCancelUpload: '#{I18n.t("general.action.cancel")}',
-								dictCancelUploadConfirmation: '#{I18n.t("general.are_you_sure")}',
+								dictDefaultMessage: this.options.defaultMessage,
+								dictRemoveFile: this.options.removeFileMessage,
+								dictCancelUpload: this.options.cancelUploadMessage,
+								dictCancelUploadConfirmation: this.options.cancelUploadConfirmationMessage,
 							});
 
 							// Events
@@ -359,6 +362,12 @@ module RugBuilder
 							
 							// Form
 							formAuthenticityToken: '#{@template.form_authenticity_token}',
+
+							// Messages
+							defaultMessage: '#{I18n.t("general.drop_file_here")}',
+							removeFileMessage: '#{I18n.t("general.action.destroy")}',
+							cancelUploadMessage: '#{I18n.t("general.action.cancel")}',
+							cancelUploadConfirmationMessage: '#{I18n.t("general.are_you_sure")}',
 
 							// Options
 							appendColumns: #{append_columns_js},

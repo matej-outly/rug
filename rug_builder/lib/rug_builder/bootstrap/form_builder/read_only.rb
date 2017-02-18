@@ -20,10 +20,8 @@ module RugBuilder
 				result += compose_label(name, options)
 
 				# Content
-				if content.nil?
-					content = object.send(name).to_s
-				end
-
+				content = object.send(name).to_s if content.nil?
+				
 				# Format
 				if options[:format]
 					format = options[:format]
@@ -37,7 +35,7 @@ module RugBuilder
 				klass << "form-control"
 				
 				# Form group
-				result += "<div class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 			
 				# Field
 				if format == :input
@@ -47,9 +45,7 @@ module RugBuilder
 				end
 				
 				# Errors
-				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-				end
+				result += errors(name)
 
 				# Form group
 				result += "</div>"

@@ -20,10 +20,8 @@ module RugBuilder
 				result += compose_label(name, options)
 
 				# Collection
-				if collection.nil?
-					collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
-				end
-
+				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call if collection.nil?
+				
 				# Enable null option
 				if options[:enable_null] == true || options[:enable_null].is_a?(String)
 					null_label = options[:enable_null].is_a?(String) ? options[:enable_null] : I18n.t("general.null_option") 
@@ -31,14 +29,10 @@ module RugBuilder
 				end
 
 				# Enable Bootstrap (Bootstrap is disabled by default)
-				if options[:enable_bootstrap] == true
-					enable_bootstrap = true
-				else
-					enable_bootstrap = false
-				end
-
+				enable_bootstrap = (options[:enable_bootstrap] == true)
+				
 				# Form group
-				result += "<div class=\"form-group #{( object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				result += collection_radio_buttons(name, collection, value_attr, label_attr) do |b|
 					b_result = "<div class=\"#{enable_bootstrap ? "radio" : "radio-no-bootstrap"}\">"
@@ -50,9 +44,7 @@ module RugBuilder
 				end
 				
 				# Errors
-				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-				end
+				result += errors(name)
 
 				# Form group
 				result += "</div>"

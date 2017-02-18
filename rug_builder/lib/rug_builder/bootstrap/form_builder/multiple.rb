@@ -97,7 +97,7 @@ module RugBuilder
 
 				# Field
 				result += %{
-					<div class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
 						<div class="back" style="display: none;">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
 						</div>
@@ -115,7 +115,7 @@ module RugBuilder
 						<div class="controls text-right">
 							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
 						</div>
-						#{ object.errors[name].size > 0 ? @template.content_tag(:span, object.errors[name][0], :class => "label-danger label") : ""}
+						#{errors(name)}
 					</div>
 				}
 
@@ -213,7 +213,7 @@ module RugBuilder
 
 				# Field
 				result += %{
-					<div class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
 						<div class="back" style="display: none;">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
 						</div>
@@ -234,7 +234,7 @@ module RugBuilder
 						<div class="controls text-right">
 							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
 						</div>
-						#{ object.errors[name].size > 0 ? @template.content_tag(:span, object.errors[name][0], :class => "label-danger label") : ""}
+						#{errors(name)}
 					</div>
 				}
 

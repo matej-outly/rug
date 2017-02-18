@@ -47,7 +47,7 @@ module RugBuilder
 					is_localized = true
 				end
 
-				# Tab header TODO
+				# Tab header TODO do with tab builder
 				if is_localized
 					result += "<section class=\"tabs pill minimal\">"
 					result += "<ul class=\"tab-nav\">"
@@ -68,7 +68,7 @@ module RugBuilder
 					end
 
 					# Form group
-					result += "<div class=\"form-group #{(object.errors[suffixed_name].size > 0 ? "has-error" : "")}\">"
+					result += "<div class=\"form-group #{(has_error?(suffixed_name) ? "has-error" : "")}\">"
 					
 					# Input group
 					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
@@ -130,7 +130,7 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				
 				# Form group
-				result += "<div class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Inputs (first row)
 				result += "<div class=\"col-sm-8\"><div class=\"input-group\">"
@@ -155,11 +155,7 @@ module RugBuilder
 				result += "</div></div>"
 
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
+				result += errors(name, class: "col-sm-12")
 
 				# Form group
 				result += "</div>"
@@ -191,7 +187,7 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 
 				# Form group
-				result += "<div class=\"form-group #{( object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Layout
 				if options[:title] == true
@@ -219,11 +215,7 @@ module RugBuilder
 				result += "</div></div>"
 				
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
+				result += errors(name, class: "col-sm-12")
 
 				# Form group
 				result += "</div>"
@@ -253,7 +245,7 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				
 				# Form group
-				result += "<div class=\"form-group #{( object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
@@ -267,11 +259,7 @@ module RugBuilder
 				result += "</div></div>"
 
 				# Errors
-				if object.errors[name].size > 0
-					result += "<div class=\"col-sm-12\">"
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-					result += "</div>"
-				end
+				result += errors(name, class: "col-sm-12")
 
 				# Form group
 				result += "</div>"

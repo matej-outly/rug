@@ -47,7 +47,7 @@ module RugBuilder
 					is_localized = true
 				end
 
-				# Tab header TODO
+				# Tab header TODO do with tab builder
 				if is_localized
 					result += "<section class=\"tabs pill minimal\">"
 					result += "<ul class=\"tab-nav\">"
@@ -68,15 +68,13 @@ module RugBuilder
 					end
 
 					# Form group
-					result += "<div class=\"form-group #{( object.errors[suffixed_name].size > 0 ? "has-error" : "")}\">"
+					result += "<div class=\"form-group #{(has_error?(suffixed_name) ? "has-error" : "")}\">"
 					
 					# Text area
 					result += text_area(suffixed_name, field_options)
 
 					# Errors
-					if object.errors[suffixed_name].size > 0
-						result += @template.content_tag(:span, object.errors[suffixed_name][0], :class => "label-danger label")
-					end
+					result += errors(suffixed_name)
 
 					# Form group
 					result += "</div>"					

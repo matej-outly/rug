@@ -55,9 +55,7 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-				if !value.blank?
-					value = value.strftime("%k:%M")
-				end
+				value = value.strftime("%k:%M") if !value.blank?
 
 				# Java Script
 				js = %{
@@ -99,9 +97,7 @@ module RugBuilder
 				
 				# Part values
 				value = object.send(name)
-				if !value.blank?
-					value = value.strftime("%Y-%m-%d %k:%M")
-				end
+				value = value.strftime("%Y-%m-%d %k:%M") if !value.blank?
 				
 				# Java Script
 				js = %{
@@ -148,7 +144,7 @@ module RugBuilder
 
 				result += %{
 					<div class="form-horizontal">
-						<div id="datetime_picker_#{hash}" class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+						<div id="datetime_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6">
 								<div class="input-group">
@@ -162,7 +158,7 @@ module RugBuilder
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))}
 								</div>
 							</div>
-							#{ object.errors[name].size > 0 ? '<div class="col-sm-12">' + errors(name) + '</div>': ""}
+							#{errors(name, class: "col-sm-12")}
 						</div>
 					</div>
 				}
@@ -187,9 +183,7 @@ module RugBuilder
 				
 				# Part values
 				value = object.send(name)
-				if !value.blank?
-					value = value.strftime("%Y-%m-%d %k:%M:%S")
-				end
+				value = value.strftime("%Y-%m-%d %k:%M:%S") if !value.blank?
 
 				# Java Script
 				js = %{
@@ -301,13 +295,13 @@ module RugBuilder
 
 				result += %{
 					<div class="form-horizontal">
-						<div id="duration_#{hash}" class="form-group #{(object.errors[name].size > 0 ? "has-error" : "")}">
+						<div id="duration_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							#{ options[:days] != false ? result_days : ""}
 							#{ options[:hours] != false ? result_hours : ""}
 							#{ options[:minutes] != false ? result_minutes : ""}
 							#{ options[:seconds] != false ? result_seconds : ""}
-							#{ object.errors[name].size > 0 ? '<div class="col-sm-12">' + errors(name) + '</div>': ""}
+							#{ errors(name, class: "col-sm-12") }
 						</div>
 					</div>
 				}

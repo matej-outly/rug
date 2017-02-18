@@ -14,28 +14,46 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			#
+			# Decide if some column has at least one error
+			#
+			def has_error?(name)
+				return (object.errors[name].size > 0)
+			end
+
+			#
 			# Render errors associated to some column name
 			#
 			def errors(name, options = {})
 
+				# Format
 				if options[:format]
 					format = options[:format]
 				else
-					format = :label
+					format = :help_block
 				end
-				if ![:label, :alert].include?(format)
+				if ![:help_block, :label, :alert].include?(format)
 					raise "Unknown format #{format}."
 				end
 
-				result = ""
-				if object.errors[name].size > 0
-					if format == :label
+				# CSS class
+				klass = options[:class] if !options[:class].nil?
+
+				# Render
+				result = "<span class=\"errors #{klass}\" id=\"#{self.options[:html][:id]}_#{name}_errors\">"
+				if has_error?(name)
+					if format == :help_block
+						object.errors[name].each do |error_message|
+							result += @template.content_tag(:span, error_message, :class => "help-block")
+						end
+					elsif format == :label
 						result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
 					elsif format == :alert
-						result += @template.content_tag(:div, object.errors[name][0], :class => "alert-danger alert")
+						result += @template.content_tag(:span, object.errors[name][0], :class => "alert-danger alert")
 					end
 				end
+				result += "</span>"
 				return result.html_safe
+
 			end
 
 		end

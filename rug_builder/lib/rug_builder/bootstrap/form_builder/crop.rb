@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - crop
+# * Rug form builder - crop TODO refactor JavaScript to object representation
 # *
 # * Author: Matěj Outlý
 # * Date  : 8. 3. 2015
@@ -133,9 +133,7 @@ module RugBuilder
 
 				# Cropbox (image)
 				result += "<div class=\"cropbox\">"
-				if value.exists?
-					result += @template.image_tag(value.url("#{croppable_style.to_s}"))
-				end
+				result += @template.image_tag(value.url("#{croppable_style.to_s}")) if value.exists?
 				result += "</div>"
 
 				# Container end

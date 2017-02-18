@@ -14,51 +14,72 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def conditional_section(section_name, condition_name, condition_rule, &block)
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(section_name.to_s)
 
-				# Java Script
-				js = ""
-				js += "var conditional_section_#{hash}_ready_in_progress = true;\n"
-				
-				js += "function conditional_section_#{hash}_interpret(value)\n"
-				js += "{\n"
-				js += "		if (" + condition_rule + ") {\n"
-				js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
-				js += "				$('#conditional-section-#{hash}').show();\n"
-				js += "			} else {\n"
-				js += "				$('#conditional-section-#{hash}').slideDown();\n"
-				js += "			}\n"
-				js += "		} else {\n"
-				js += "			if (conditional_section_#{hash}_ready_in_progress) {\n"
-				js += "				$('#conditional-section-#{hash}').hide();\n"
-				js += "			} else {\n"
-				js += "				$('#conditional-section-#{hash}').slideUp();\n"
-				js += "			}\n"
-				js += "		}\n"
-				js += "		conditional_section_#{hash}_ready_in_progress = false;\n"
-				js += "}\n"
+				# Library JS
+				result += @template.javascript_tag(%{
 
-				js += "function conditional_section_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#conditional-section-#{hash}').hide();\n"
-				js += "	$('[name=\\'#{object.class.model_name.param_key}[#{condition_name.to_s}]\\']').on('change', function(e) {\n"
-				js += "		var _this = $(this);\n"
-				js += "		if (_this.is(':radio')) {\n"
-				js += "			if (_this.is(':checked')) {\n"
-				js += "				conditional_section_#{hash}_interpret(_this.val());\n"
-				js += "			}\n"
-				js += "		} else {\n"
-				js += "			conditional_section_#{hash}_interpret(_this.val());\n"
-				js += "		}\n"
-				js += "	}).trigger('change');\n"
-				js += "}\n"
-				js += "$(document).ready(conditional_section_#{hash}_ready);\n"
+					function RugFormConditionalSection(hash, options)
+					{
+						this.hash = hash;
+						this.conditionalSection = $('#conditional-section-' + hash);
+						this.readyInProgress = true;
+						this.options = (typeof options !== 'undefined' ? options : {});
+					}
+					RugFormConditionalSection.prototype = {
+						constructor: RugFormConditionalSection,
+						interpret: function(value)
+						{
+							eval('var conditionRule = (' + this.options.conditionRule + ');');
+							if (conditionRule) {
+								if (this.readyInProgress) {
+									this.conditionalSection.show();
+								} else {
+									this.conditionalSection.slideDown();
+								}
+							} else {
+								if (this.readyInProgress) {
+									this.conditionalSection.hide();
+								} else {
+									this.conditionalSection.slideUp();
+								}
+							}
+							this.readyInProgress = false;
+						},
+						ready: function()
+						{
+							var _this = this;
+							this.conditionalSection.hide();
+							$('[name="' + _this.options.conditionName + '"]').on('change', function(e) {
+								var __this = $(this);
+								if (__this.is(':radio')) {
+									if (__this.is(':checked')) {
+										_this.interpret(__this.val());
+									}
+								} else {
+									_this.interpret(__this.val());
+								}
+							}).trigger('change');
+						}
+					}
+				})
+
+				# Application JS
+				result += @template.javascript_tag(%{
+					var rug_form_conditional_section_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_conditional_section_#{hash} = new RugFormConditionalSection('#{hash}', {
+							conditionName: '#{object.class.model_name.param_key}[#{condition_name.to_s}]',
+							conditionRule: '#{condition_rule.to_s}'
+						});
+						rug_form_conditional_section_#{hash}.ready();
+					});
+				})
 				
 				# Section
-				result = ""
-				result += @template.javascript_tag(js)
 				result += @template.content_tag(:div, { :id => "conditional-section-#{hash}" }, &block)
 				
 				return result.html_safe

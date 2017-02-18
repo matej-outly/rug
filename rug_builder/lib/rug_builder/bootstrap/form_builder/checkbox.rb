@@ -20,14 +20,10 @@ module RugBuilder
 				result += compose_label(name, options)
 
 				# Enable Bootstrap (Bootstrap is disabled by default)
-				if options[:enable_bootstrap] == true
-					enable_bootstrap = true
-				else
-					enable_bootstrap = false
-				end
+				enable_bootstrap = (options[:enable_bootstrap] == true)
 
 				# Form group
-				result += "<div class=\"form-group #{( object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				if collection.nil?
 					collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
@@ -42,10 +38,8 @@ module RugBuilder
 				end
 
 				# Errors
-				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-				end
-
+				result += errors(name)
+				
 				# Form group
 				result += "</div>"
 
@@ -63,7 +57,7 @@ module RugBuilder
 				end
 
 				# Form group
-				result += "<div class=\"form-group #{(object.errors[name].size > 0 ? "has-error" : "")}\">"
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
 				# Label
 				label = !options[:label].nil? ? options[:label] : object.class.human_attribute_name(name)
@@ -76,10 +70,8 @@ module RugBuilder
 				result += "</div>"
 				
 				# Errors
-				if object.errors[name].size > 0
-					result += @template.content_tag(:span, object.errors[name][0], :class => "label-danger label")
-				end
-
+				result += errors(name)
+				
 				# Form group
 				result += "</div>"
 
