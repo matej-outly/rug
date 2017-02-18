@@ -57,7 +57,7 @@ module RugBuilder
 						});
 					}
 					$(document).ready(token_input_#{hash}_ready);
-				}
+				})
 				
 				# Options
 				options[:id] = "token_input_#{hash}"

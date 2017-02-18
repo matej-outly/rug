@@ -14,12 +14,13 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def date_picker_row(name, options = {})
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function date_picker_#{hash}_ready()
 					{
 						$('#date_picker_#{hash}').pikaday({ 
@@ -35,20 +36,19 @@ module RugBuilder
 						});
 					}
 					$(document).ready(date_picker_#{hash}_ready);
-				}
+				})
 				
 				# Options
 				options[:id] = "date_picker_#{hash}"
 
 				# Field
-				result = ""
-				result += @template.javascript_tag(js)
 				result += text_input_row(name, :text_field, options)
 
 				return result.html_safe
 			end
 
 			def time_picker_row(name, options = {})
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -58,7 +58,7 @@ module RugBuilder
 				value = value.strftime("%k:%M") if !value.blank?
 
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function time_picker_#{hash}_ready()
 					{
 						$('#time_picker_#{hash}').clockpicker({
@@ -68,15 +68,13 @@ module RugBuilder
 						});
 					}
 					$(document).ready(time_picker_#{hash}_ready);
-				}
+				})
 
 				# Options
 				options[:id] = "time_picker_#{hash}"
 				options[:value] = value
 				
 				# Field
-				result = ""
-				result += @template.javascript_tag(js)
 				result += text_input_row(name, :text_field, options)
 				
 				return result.html_safe
@@ -100,7 +98,7 @@ module RugBuilder
 				value = value.strftime("%Y-%m-%d %k:%M") if !value.blank?
 				
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function datetime_picker_#{hash}_update_inputs()
 					{
 						var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');
@@ -134,8 +132,7 @@ module RugBuilder
 						datetime_picker_#{hash}_update_inputs();
 					}
 					$(document).ready(datetime_picker_#{hash}_ready);
-				}
-				result += @template.javascript_tag(js)
+				})
 				
 				# Field options
 				klass = []
@@ -186,7 +183,7 @@ module RugBuilder
 				value = value.strftime("%Y-%m-%d %k:%M:%S") if !value.blank?
 
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function duration_#{hash}_days(date)
 					{
 						var date = new Date(date);
@@ -242,8 +239,7 @@ module RugBuilder
 						duration_#{hash}_update_inputs();
 					}
 					$(document).ready(duration_#{hash}_ready);
-				}
-				result += @template.javascript_tag(js)
+				})
 				
 				# Field options
 				klass = []

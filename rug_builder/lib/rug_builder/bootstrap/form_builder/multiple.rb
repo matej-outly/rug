@@ -23,7 +23,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function array_#{hash}_update_back()
 					{
 						var form_group = $('#array_#{hash}').closest('.form-group');
@@ -71,9 +71,8 @@ module RugBuilder
 						array_#{hash}_update_front();
 					}
 					$(document).ready(array_#{hash}_ready);
-				}
-				result += @template.javascript_tag(js)
-
+				})
+				
 				# Back field options
 				back_field_options = {}
 				back_field_options[:id] = "array_" + hash
@@ -132,7 +131,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Java Script
-				js = %{
+				result += @template.javascript_tag(%{
 					function store_#{hash}_update_back()
 					{
 						var form_group = $('#store_#{hash}').closest('.form-group');
@@ -185,8 +184,7 @@ module RugBuilder
 						store_#{hash}_update_front();
 					}
 					$(document).ready(store_#{hash}_ready);
-				}
-				result += @template.javascript_tag(js)
+				})
 
 				# Back field options
 				back_field_options = {}
