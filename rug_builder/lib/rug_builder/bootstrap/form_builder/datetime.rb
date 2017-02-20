@@ -247,7 +247,7 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				
 				# number of columns
-				colums_count = 0
+				columns_count = 0
 				columns_count += 1 if options[:days] != false
 				columns_count += 1 if options[:hours] != false
 				columns_count += 1 if options[:minutes] != false
@@ -255,7 +255,7 @@ module RugBuilder
 
 				result_days = %{
 					<div class="col-sm-#{12 / columns_count}">
-						<div class="input-group\>
+						<div class="input-group">
 							<div class="input-group-addon">#{label_days.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))}
 						</div>
@@ -264,8 +264,8 @@ module RugBuilder
 
 				result_hours = %{
 					<div class="col-sm-#{12 / columns_count}">
-						<div class="input-group\>
-							<div class="input-group-addon">#{label_days.upcase_first}</div>
+						<div class="input-group">
+							<div class="input-group-addon">#{label_hours.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))}
 						</div>
 					</div>
@@ -273,8 +273,8 @@ module RugBuilder
 
 				result_minutes = %{
 					<div class="col-sm-#{12 / columns_count}">
-						<div class="input-group\>
-							<div class="input-group-addon">#{label_days.upcase_first}</div>
+						<div class="input-group">
+							<div class="input-group-addon">#{label_minutes.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))}
 						</div>
 					</div>
@@ -282,8 +282,8 @@ module RugBuilder
 
 				result_seconds = %{
 					<div class="col-sm-#{12 / columns_count}">
-						<div class="input-group\>
-							<div class="input-group-addon">#{label_days.upcase_first}</div>
+						<div class="input-group">
+							<div class="input-group-addon">#{label_seconds.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))}
 						</div>
 					</div>
