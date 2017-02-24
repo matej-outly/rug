@@ -171,4 +171,12 @@ module RugRecord
 	mattr_accessor :enable_type_state
 	@@enable_type_state = true
 
+	#
+	# Enable type store
+	#
+	# Add 'hstore' Postgres extension if enabled
+	#
+	mattr_accessor :enable_type_store
+	@@enable_type_store = false
+
 end
