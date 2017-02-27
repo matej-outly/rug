@@ -41,10 +41,10 @@ module RugRecord
 							
 							if value.blank?
 								send("#{store_values_attr}=", nil)
-								#send("#{store_order_attr}=", nil) # TMP
+								send("#{store_order_attr}=", nil)
 							elsif value.is_a?(Hash)
 								send("#{store_values_attr}=", value)
-								#send("#{store_order_attr}=", value.keys) # TMP
+								send("#{store_order_attr}=", value.keys)
 							else
 								raise "Wrong value format, expecting Hash or nil."
 							end
@@ -54,21 +54,22 @@ module RugRecord
 						define_method(new_column.to_sym) do
 							column = new_column
 
-							return send(store_values_attr) # TMP
-#							values = send(store_values_attr)
-#							order = send(store_order_attr)
-#							if values.blank? || order.blank?
-#								return nil
-#							else
-#								if !order.is_a?(Array) || !values.is_a?(Hash)
-#									raise "Data in DB corrupted - values must be hstore and order must be array." 
-#								end
-#								result = {}
-#								order.each do |key| # Give result in correct order
-#									result[key] = values[key]
-#								end
-#								return result
-#							end
+							store_values = send(store_values_attr)
+							store_order = send(store_order_attr)
+							if store_values.blank? || store_order.blank?
+								return nil
+							else
+
+								# For some fucking weird reason is_a?(Array) method don't work correctly...
+								if !(store_order.class.name == "Array") || !store_values.is_a?(Hash)
+									raise "Data in DB corrupted - values must be hstore and order must be array." 
+								end
+								result = {}
+								store_order.each do |key| # Give result in correct order
+									result[key] = store_values[key]
+								end
+								return result
+							end
 						end
 
 					end
