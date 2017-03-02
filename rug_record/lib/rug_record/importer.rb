@@ -173,8 +173,8 @@ module RugRecord
 									instance_exec(key, import_options, &import_options[:custom_block])
 								elsif [:pgsql, :mysql].include?(get_driver)
 									import_sql(key, import_options) 
-								elsif [:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
-									import_xml(key, import_options) 
+								else
+									import_common(key, import_options) 
 								end
 							end
 						end
@@ -302,7 +302,7 @@ module RugRecord
 			return true
 		end
 
-		def import_xml(key, options)
+		def import_common(key, options)
 			return false if options[:url].blank?
 
 			# Progres logging
@@ -488,8 +488,12 @@ module RugRecord
 		end
 
 		def xml_load(url, options = {})
-			if ![:xml, :xml_gzip, :xml_folder_zip].include?(get_driver)
-				raise "Can't call xml_load for driver '#{get_driver}'."
+
+			# Possibly override driver
+			driver = options[:driver] ? options[:driver] : get_driver
+
+			if ![:xml, :xml_gzip, :xml_folder_zip].include?(driver)
+				raise "Can't call xml_load for driver '#{driver}'."
 			end
 
 			# Require
@@ -499,12 +503,12 @@ module RugRecord
 			response = load_from_url(url)
 			
 			# Parse data into nokogiri document
-			if get_driver == :xml
+			if driver == :xml
 				xml_parse(response, options) do |root_element|
 					yield root_element
 				end
 				
-			elsif get_driver == :xml_gzip
+			elsif driver == :xml_gzip
 				require "zlib" 
 				
 				# Create temp file
@@ -522,7 +526,7 @@ module RugRecord
 				tmp_file.close
 				tmp_file.unlink 
 
-			elsif get_driver == :xml_folder_zip
+			elsif driver == :xml_folder_zip
 				require "zip"
 
 				# Batch
@@ -594,6 +598,105 @@ module RugRecord
 			else
 				return ""
 			end
+		end
+
+		# *************************************************************************
+		# TXT
+		# *************************************************************************
+
+		def txt_load(url, options = {})
+
+			# Possibly override driver
+			driver = options[:driver] ? options[:driver] : get_driver
+
+			if ![:txt, :txt_gzip, :txt_folder_zip].include?(driver)
+				raise "Can't call txt_load for driver '#{get_driver}'."
+			end
+
+			# Load content of ZIP file
+			response = load_from_url(url)
+
+			# Table delimiter
+			table_delimiter = options[:table_delimiter] ? options[:table_delimiter] : nil
+
+			if driver == :txt
+				raise "Not implemented yet"
+
+			elsif driver == :txt_gzip
+				require "zlib" 
+				
+				# Create temp file
+				tmp_file = Tempfile.new("import")
+				tmp_file.binmode
+				tmp_file.write(response)
+				
+				# Extract gzip
+				table_index = 0
+				line_index = 0
+				Zlib::GzipReader.open(tmp_file.path).each_line do |data|
+					if table_delimiter && data.include?(table_delimiter)
+						table_index += 1
+						line_index = 0
+					else
+						yield nil, table_index, line_index, data
+						line_index += 1
+					end
+				end
+				
+				# Delete tempfile
+				tmp_file.close
+				tmp_file.unlink 
+
+			elsif driver == :txt_folder_zip
+				require "zip"
+
+				# Create temp file
+				tmp_file = Tempfile.new("import")
+				tmp_file.binmode
+				tmp_file.write(response)
+				
+				# Extract ZIP file
+				Zip::File.open(tmp_file.path) do |zip_file|
+					if options[:filenames]
+						options[:filenames].each_with_index do |filename, file_index|
+							entry = zip_file.find_entry(filename)
+							if entry
+								table_index = 0
+								line_index = 0
+								entry.get_input_stream.each_line do |data|
+									if table_delimiter && data.include?(table_delimiter)
+										table_index += 1
+										line_index = 0
+									else
+										yield file_index, table_index, line_index, data
+										line_index += 1
+									end
+								end
+							end
+						end
+					else
+						zip_file.each do |entry|
+							table_index = 0
+							line_index = 0
+							entry.get_input_stream.each_line do |data|
+								if table_delimiter && data.include?(table_delimiter)
+									table_index += 1
+									line_index = 0
+								else
+									yield nil, table_index, line_index, data
+									line_index += 1
+								end
+							end
+						end
+					end
+				end
+
+				# Delte tempfile
+				tmp_file.close
+				tmp_file.unlink
+			end
+			
+			return true
 		end
 
 		# *************************************************************************
