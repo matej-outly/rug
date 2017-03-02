@@ -132,6 +132,13 @@ class String
 		return ActionController::Base.helpers.strip_tags(self)
 	end
 
+	#
+	# Sanitize tags
+	#
+	def sanitize(options = {})
+		return ActionController::Base.helpers.sanitize(self, options)
+	end
+
 	# 
 	# Convert coordinate in degree format to decimal format
 	#
