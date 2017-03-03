@@ -91,7 +91,23 @@ module RugRecord
 		end
 
 		def self.validate_driver(value)
-			return [:pgsql, :mysql, :xml, :xml_gzip, :xml_folder_zip].include?(value.to_sym)
+			return [
+
+				# DB
+				:pgsql, 
+				:mysql, 
+
+				# XML
+				:xml, 
+				:xml_gzip, 
+				:xml_folder_zip,
+
+				# TXT
+				:txt, 
+				:txt_gzip, 
+				:txt_folder_zip
+
+			].include?(value.to_sym)
 		end
 
 		def self.validate_logging(value)
@@ -515,6 +531,7 @@ module RugRecord
 				tmp_file = Tempfile.new("import")
 				tmp_file.binmode
 				tmp_file.write(response)
+				tmp_file.seek(0)
 				
 				# Extract gzip
 				extracted_response = Zlib::GzipReader.open(tmp_file.path).read
@@ -537,6 +554,7 @@ module RugRecord
 				tmp_file = Tempfile.new("import")
 				tmp_file.binmode
 				tmp_file.write(response)
+				tmp_file.seek(0)
 
 				# Get current batch state
 				if batch_enabled
@@ -610,7 +628,7 @@ module RugRecord
 			driver = options[:driver] ? options[:driver] : get_driver
 
 			if ![:txt, :txt_gzip, :txt_folder_zip].include?(driver)
-				raise "Can't call txt_load for driver '#{get_driver}'."
+				raise "Can't call txt_load for driver '#{driver}'."
 			end
 
 			# Load content of ZIP file
@@ -629,6 +647,7 @@ module RugRecord
 				tmp_file = Tempfile.new("import")
 				tmp_file.binmode
 				tmp_file.write(response)
+				tmp_file.seek(0)
 				
 				# Extract gzip
 				table_index = 0
@@ -646,7 +665,7 @@ module RugRecord
 				# Delete tempfile
 				tmp_file.close
 				tmp_file.unlink 
-
+			
 			elsif driver == :txt_folder_zip
 				require "zip"
 
@@ -654,6 +673,7 @@ module RugRecord
 				tmp_file = Tempfile.new("import")
 				tmp_file.binmode
 				tmp_file.write(response)
+				tmp_file.seek(0)
 				
 				# Extract ZIP file
 				Zip::File.open(tmp_file.path) do |zip_file|
