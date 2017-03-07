@@ -13,97 +13,98 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def text_input_row_old_tabs(name, method = :text_field, options = {})
-				result = ""
+#			def text_input_row_old_tabs(name, method = :text_field, options = {})
+#				result = ""#
 
-				# Label
-				result += compose_label(name, options)
+#				# Label
+#				result += compose_label(name, options)#
 
-				# CSS class
-				klass = []
-				klass << "form-control"
-				klass << options[:class] if !options[:class].nil?
-				
-				# Field options
-				field_options = {}
-				field_options[:class] = klass.join(" ")
-				field_options[:id] = options[:id] if !options[:id].nil?
-				field_options[:data] = options[:data] if !options[:data].nil?
-				field_options[:value] = options[:value] if !options[:value].nil?
-				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
-				field_options[:min] = options[:min] if !options[:min].nil?
-				field_options[:max] = options[:max] if !options[:max].nil?
-				
-				# Localization
-				if options[:localization].nil? || options[:localization] == false
-					localization = [nil]
-					is_localized = false
-				else
-					if options[:localization].is_a?(Array)
-						localization = options[:localization]
-					else
-						localization = I18n.available_locales
-					end
-					is_localized = true
-				end
+#				# CSS class
+#				klass = []
+#				klass << "form-control"
+#				klass << options[:class] if !options[:class].nil?
+#				
+#				# Field options
+#				field_options = {}
+#				field_options[:class] = klass.join(" ")
+#				field_options[:id] = options[:id] if !options[:id].nil?
+#				field_options[:data] = options[:data] if !options[:data].nil?
+#				field_options[:value] = options[:value] if !options[:value].nil?
+#				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
+#				field_options[:min] = options[:min] if !options[:min].nil?
+#				field_options[:max] = options[:max] if !options[:max].nil?
+#				field_options[:step] = options[:step] if !options[:step].nil?
+#				
+#				# Localization
+#				if options[:localization].nil? || options[:localization] == false
+#					localization = [nil]
+#					is_localized = false
+#				else
+#					if options[:localization].is_a?(Array)
+#						localization = options[:localization]
+#					else
+#						localization = I18n.available_locales
+#					end
+#					is_localized = true
+#				end#
 
-				# Tab header TODO do with tab builder
-				if is_localized
-					result += "<section class=\"tabs pill minimal\">"
-					result += "<ul class=\"tab-nav\">"
-					localization.each_with_index do |locale, index|
-						result += "<li class=\"#{(index == 0 ? "active" : "")}\"><a href=\"#\">#{locale.to_s.upcase}</a></li>"
-					end
-					result += "</ul>"
-				end
+#				# Tab header TODO do with tab builder
+#				if is_localized
+#					result += "<section class=\"tabs pill minimal\">"
+#					result += "<ul class=\"tab-nav\">"
+#					localization.each_with_index do |locale, index|
+#						result += "<li class=\"#{(index == 0 ? "active" : "")}\"><a href=\"#\">#{locale.to_s.upcase}</a></li>"
+#					end
+#					result += "</ul>"
+#				end#
 
-				localization.each_with_index do |locale, index|
-					
-					# Tab content
-					if is_localized
-						result += "<div class=\"tab-content #{(index == 0 ? "active" : "")}\">"
-						suffixed_name = (name.to_s + "_#{locale.to_s}").to_sym
-					else
-						suffixed_name = name
-					end
+#				localization.each_with_index do |locale, index|
+#					
+#					# Tab content
+#					if is_localized
+#						result += "<div class=\"tab-content #{(index == 0 ? "active" : "")}\">"
+#						suffixed_name = (name.to_s + "_#{locale.to_s}").to_sym
+#					else
+#						suffixed_name = name
+#					end#
 
-					# Form group
-					result += "<div class=\"form-group #{(has_error?(suffixed_name) ? "has-error" : "")}\">"
-					
-					# Input group
-					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
-					
-					# Prefix
-					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
-					
-					# Field
-					result += self.method(method).call(suffixed_name, field_options)
-					
-					# Suffix
-					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
-					
-					# Input group
-					result += "</div>" if options[:prefix] || options[:suffix]
-				
-					# Errors
-					result += errors(suffixed_name)
-					
-					# Form group
-					result += "</div>"
+#					# Form group
+#					result += "<div class=\"form-group #{(has_error?(suffixed_name) ? "has-error" : "")}\">"
+#					
+#					# Input group
+#					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
+#					
+#					# Prefix
+#					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
+#					
+#					# Field
+#					result += self.method(method).call(suffixed_name, field_options)
+#					
+#					# Suffix
+#					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
+#					
+#					# Input group
+#					result += "</div>" if options[:prefix] || options[:suffix]
+#				
+#					# Errors
+#					result += errors(suffixed_name)
+#					
+#					# Form group
+#					result += "</div>"#
 
-					# Tab content
-					if is_localized
-						result += "</div>"
-					end
+#					# Tab content
+#					if is_localized
+#						result += "</div>"
+#					end#
 
-				end
+#				end#
 
-				if is_localized
-					result += "</section>"
-				end
+#				if is_localized
+#					result += "</section>"
+#				end#
 
-				return result.html_safe
-			end
+#				return result.html_safe
+#			end
 
 			def text_input_row(name, method = :text_field, options = {})
 				result = ""
@@ -125,6 +126,7 @@ module RugBuilder
 				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 				field_options[:min] = options[:min] if !options[:min].nil?
 				field_options[:max] = options[:max] if !options[:max].nil?
+				field_options[:step] = options[:step] if !options[:step].nil?
 				
 				# Unit => suffix
 				options[:suffix] = options[:unit] if options[:unit]
