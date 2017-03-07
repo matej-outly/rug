@@ -63,7 +63,31 @@ module RugBuilder
 			if value.nil?
 				return ""
 			else
-				return value.to_i.to_s
+				result = value.to_i.to_s
+				result += " " + options[:unit].to_s if options[:unit]
+				return result
+			end
+		end
+
+		# *********************************************************************
+		# Float
+		# *********************************************************************
+
+		def self.float(value, options = {})
+			if value.nil?
+				return ""
+			else
+
+				# Locale
+				if options[:locale]
+					locale = options[:locale]
+				else
+					locale = :cs
+				end
+
+				result = @template.number_with_delimiter(value.to_f, locale: locale) 
+				result += " " + options[:unit].to_s if options[:unit]
+				return result
 			end
 		end
 
@@ -72,17 +96,21 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.currency(value, options = {})
-			
-			# Locale
-			if options[:locale]
-				locale = options[:locale]
-			elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
-				locale = options[:object].currency_as_locale
+			if value.nil?
+				return ""
 			else
-				locale = :cs
-			end
 
-			return @template.number_to_currency(value, locale: locale).to_s
+				# Locale
+				if options[:locale]
+					locale = options[:locale]
+				elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
+					locale = options[:object].currency_as_locale
+				else
+					locale = :cs
+				end
+
+				return @template.number_to_currency(value, locale: locale).to_s
+			end
 		end
 
 		# *********************************************************************

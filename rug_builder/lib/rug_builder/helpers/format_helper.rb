@@ -19,6 +19,7 @@ module RugBuilder
 				:string, 
 				:text, 
 				:integer, 
+				:float,
 				:currency, 
 				:url, 
 				:date, 
