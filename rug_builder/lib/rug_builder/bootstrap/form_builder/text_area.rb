@@ -13,7 +13,7 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def text_area_row(name, options = {})
+			def text_area_row_old_tabs(name, options = {})
 				result = ""
 				
 				# Label
@@ -89,6 +89,42 @@ module RugBuilder
 				if is_localized
 					result += "</section>"
 				end
+
+				return result.html_safe
+			end
+
+			def text_area_row(name, options = {})
+				result = ""
+				
+				# Label
+				result += compose_label(name, options)
+
+				# Field options
+				field_options = {}
+				klass = []
+				klass << options[:class] if !options[:class].nil?
+				if options[:tinymce] == false
+					klass << "form-control"
+				elsif !options[:tinymce].nil?
+					klass << options[:tinymce]
+				else
+					klass << "tinymce"
+				end
+				field_options[:class] = klass.join(" ")
+				field_options[:id] = options[:id] if !options[:id].nil?
+				field_options[:data] = options[:data] if !options[:data].nil?
+
+				# Form group
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				
+				# Text area
+				result += text_area(name, field_options)
+
+				# Errors
+				result += errors(name)
+
+				# Form group
+				result += "</div>"
 
 				return result.html_safe
 			end

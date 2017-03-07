@@ -13,7 +13,7 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def text_input_row(name, method = :text_field, options = {})
+			def text_input_row_old_tabs(name, method = :text_field, options = {})
 				result = ""
 
 				# Label
@@ -101,6 +101,57 @@ module RugBuilder
 				if is_localized
 					result += "</section>"
 				end
+
+				return result.html_safe
+			end
+
+			def text_input_row(name, method = :text_field, options = {})
+				result = ""
+
+				# Label
+				result += compose_label(name, options)
+
+				# CSS class
+				klass = []
+				klass << "form-control"
+				klass << options[:class] if !options[:class].nil?
+				
+				# Field options
+				field_options = {}
+				field_options[:class] = klass.join(" ")
+				field_options[:id] = options[:id] if !options[:id].nil?
+				field_options[:data] = options[:data] if !options[:data].nil?
+				field_options[:value] = options[:value] if !options[:value].nil?
+				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
+				field_options[:min] = options[:min] if !options[:min].nil?
+				field_options[:max] = options[:max] if !options[:max].nil?
+				
+				# Unit => suffix
+				options[:suffix] = options[:unit] if options[:unit]
+
+				# Form group
+				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				
+				# Input group
+				result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
+				
+				# Prefix
+				result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
+				
+				# Field
+				result += self.method(method).call(name, field_options)
+				
+				# Suffix
+				result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
+				
+				# Input group
+				result += "</div>" if options[:prefix] || options[:suffix]
+			
+				# Errors
+				result += errors(name)
+				
+				# Form group
+				result += "</div>"
 
 				return result.html_safe
 			end
