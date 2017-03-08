@@ -200,7 +200,7 @@ module RugBuilder
 						#{ !@options[:scrollwheel].nil? && "scrollwheel: #{@options[:scrollwheel] ? "true" : "false"}," }
 					});
 					rug_map_#{@hash}.ready();
-					#{ template.capture(self, &block).to_s }
+					#{ @template.capture(self, &block).to_s }
 				});
 			}
 			return js
