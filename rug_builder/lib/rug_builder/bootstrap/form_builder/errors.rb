@@ -42,7 +42,7 @@ module RugBuilder
 				result = "<span class=\"errors #{klass}\" id=\"#{self.options[:html][:id]}_#{name}_errors\">"
 				if has_error?(name)
 					if format == :help_block
-						object.errors[name].each do |error_message|
+						object.errors[name].uniq.each do |error_message|
 							result += @template.content_tag(:span, error_message, :class => "help-block")
 						end
 					elsif format == :label

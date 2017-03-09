@@ -41,18 +41,12 @@ RugFormRater.prototype = {
 			step_size: (_this.options.step ? _this.options.step : 0.5),
 			symbols: {
 				custom: {
-					base: '',
+					base: _this.options.symbolBase,
 					hover: _this.options.symbolHover,
 					selected: _this.options.symbolSelected,
 				},
-				utf8_hexagon: {
-					base: '\u2B21',
-					hover: '\u2B22',
-					selected: '\u2B22',
-				},
 			},
-			selected_symbol_type: 'utf8_hexagon',
-			convert_to_utf8: true
+			selected_symbol_type: 'custom',
 		});
 
 		// On change

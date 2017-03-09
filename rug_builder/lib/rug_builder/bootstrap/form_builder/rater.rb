@@ -19,6 +19,9 @@ module RugBuilder
 			# Options:
 			# - max (integer)
 			# - step (:fullstar|:halfstar|float)
+			# - icon_base (string)
+			# - icon_hover (string)
+			# - icon_selected (string)
 			#
 			def rater_row(name, options = {})
 				result = ""
@@ -67,9 +70,9 @@ module RugBuilder
 						rug_form_rater_#{hash} = new RugFormRater('#{hash}', {
 							#{ max ? "max: " + max.to_s + "," : "" }
 							#{ step ? "step: " + step.to_s + "," : "" }
-							symbolBase: '<i class="fa fa-star-o" aria-hidden="true"></i>',
-							symbolHover: '<i class="fa fa-star" aria-hidden="true"></i>',
-							symbolSelected: '<i class="fa fa-star" aria-hidden="true"></i>',
+							symbolBase: '#{@template.rug_icon((options[:icon_base] ? options[:icon_base] : "star-o"), class: "symbol-base")}',
+							symbolHover: '#{@template.rug_icon((options[:icon_hover] ? options[:icon_hover] : "star"), class: "symbol-hover")}',
+							symbolSelected: '#{@template.rug_icon((options[:icon_selected] ? options[:icon_selected] : "star"), class: "symbol-selected")}',
 						});
 						rug_form_rater_#{hash}.ready();
 					});
