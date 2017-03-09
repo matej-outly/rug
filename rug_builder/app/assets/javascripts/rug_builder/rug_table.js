@@ -89,7 +89,7 @@ RugTable.prototype = {
 			});
 		}
 	},
-	inlineDestroyReady()
+	inlineDestroyReady: function()
 	{
 		if (this.options.inlineDestroy == true) {
 			this.table.find(".destroyable").destroyable({

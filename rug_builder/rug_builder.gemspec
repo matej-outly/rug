@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://www.clockstar.cz"
   spec.license       = "MIT"
 
-  spec.files         = Dir["README.md", "LICENSE.txt", "lib/**/*"]
+  spec.files         = Dir["README.md", "LICENSE.txt", "{app,lib}/**/*"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "actionview", "~> 4.2"

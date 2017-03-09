@@ -19,11 +19,11 @@ function RugFormRater(hash, options)
 
 RugFormRater.prototype = {
 	constructor: RugFormRater,
-	updateRater()
+	updateRater: function()
 	{
 		this.rater.rate("setValue", this.input.val());
 	},
-	updateInput()
+	updateInput: function()
 	{
 		this.input.val(this.rater.rate("getValue"));
 	},
