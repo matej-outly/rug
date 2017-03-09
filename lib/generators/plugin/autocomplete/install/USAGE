@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of AutoComplete library.
-
-Example:
-    rails generate plugin:autocomplete:install

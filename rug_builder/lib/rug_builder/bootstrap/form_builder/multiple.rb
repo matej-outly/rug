@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - multiple
+# * Rug form builder - multiple TODO library JS code
 # *
 # * Author: Matěj Outlý
 # * Date  : 8. 3. 2015

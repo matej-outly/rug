@@ -118,11 +118,8 @@ module RugBuilder
 					lambda { resolve_summary(objects, @model_class, @options) }
 				)
 
-				# Table JS library
-				result += @template.javascript_tag(js_library)
-
 				# Table JS application
-				result += @template.javascript_tag(js_application({
+				result += @template.javascript_tag(render_js({
 					container_selector: ".list",
 					item_selector: ".item",
 					item_template: picture_index_object(@columns.template_object),

@@ -1,6 +1,6 @@
 # RugBuilder
 
-TODO: Write a gem description
+This gem provides usefull functions and objects (builders) for producing standardized HTML content. It contains builders for HTML forms, data tables and trees, buttons, icons, labels, tabs, charts, maps and others.
 
 ## Installation
 

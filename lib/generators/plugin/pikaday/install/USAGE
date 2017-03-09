@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Pikaday library.
-
-Example:
-    rails generate plugin:pikaday:install

@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Fancybox library.
-
-Example:
-    rails generate plugin:fancybox:install

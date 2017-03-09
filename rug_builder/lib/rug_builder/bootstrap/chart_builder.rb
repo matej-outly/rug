@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug chart builder
+# * Rug chart builder TODO refactor JS to object
 # *
 # * Author: Matěj Outlý
 # * Date  : 19. 9. 2016

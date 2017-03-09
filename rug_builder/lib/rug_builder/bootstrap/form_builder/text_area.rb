@@ -113,6 +113,7 @@ module RugBuilder
 				field_options[:class] = klass.join(" ")
 				field_options[:id] = options[:id] if !options[:id].nil?
 				field_options[:data] = options[:data] if !options[:data].nil?
+				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"

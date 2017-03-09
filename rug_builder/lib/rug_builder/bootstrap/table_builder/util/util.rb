@@ -169,6 +169,51 @@ module RugBuilder
 				return result
 			end
 
+			# *********************************************************************
+			# Java Script
+			# *********************************************************************
+
+			#
+			# Markup:
+			# - container_selector
+			# - item_selector
+			# - item_selector_path
+			# - item_template
+			# - moving_placeholder
+			#
+			def render_js(markup)
+				js = %{
+					var rug_table_#{@hash} = null;
+					$(document).ready(function() {
+						rug_table_#{@hash} = new RugTable('#{@hash}', {
+							
+							// Common
+							containerSelector: '#{markup[:container_selector].to_s}',
+							itemSelectorPath: '#{markup[:item_selector_path].to_s}',
+							itemSelector: '#{markup[:item_selector].to_s}',
+							itemTemplate: `
+								#{markup[:item_template].to_s}
+							`,
+
+							// Moving
+							moving: #{check_moving(@options) ? 'true' : 'false' },
+							movingPlaceholder: '#{markup[:moving_placeholder].to_s}',
+							movingUrl: '#{check_moving(@options) && @path_resolver.resolve(@options[:paths][:move], ":id", ":relation", ":destination_id")}',
+
+							// Inline destroy
+							inlineDestroy: #{check_inline_destroy(@options) ? 'true' : 'false'},
+							inlineDestroyConfirmTitle: '#{I18n.t("general.are_you_sure")}',
+							inlineDestroyConfirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
+							inlineDestroySuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
+							inlineDestroyErrorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
+
+						});
+						rug_table_#{@hash}.ready();
+					});
+				}
+				return js
+			end
+
 		end
 	#end
 end

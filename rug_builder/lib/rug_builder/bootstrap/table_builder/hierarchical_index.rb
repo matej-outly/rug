@@ -196,9 +196,6 @@ module RugBuilder
 						lambda { resolve_summary(objects, @model_class, @options) }
 					)
 					
-					# Inline edit JS
-					#result += resolve_inline_edit_js(hash, @options)
-
 				end
 
 				return result.html_safe

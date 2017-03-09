@@ -157,11 +157,8 @@ module RugBuilder
 						lambda { resolve_summary(objects, @model_class, @options) }
 					)
 
-					# Table JS library
-					result += @template.javascript_tag(js_library)
-
 					# Table JS application
-					result += @template.javascript_tag(js_application({
+					result += @template.javascript_tag(render_js({
 						container_selector: "table",
 						item_selector_path: "> tbody",
 						item_selector: "tr",
@@ -242,115 +239,6 @@ module RugBuilder
 				}
 				result
 			end
-
-			# *********************************************************************
-			# Inline editation
-			# *********************************************************************
-
-#			def resolve_inline_edit_js(hash, options)
-#				if check_inline_edit(options)#
-
-#					js = ""
-#					js += "function index_table_#{hash}_inline_edit_ready()\n"
-#					js += "{\n"
-#					js += "	$('#index-table-#{hash} a.inline-edit.edit').on('click', function(e) {\n"
-#					js += "		e.preventDefault();\n"
-#					js += "		var row = $(this).closest('tr');\n"
-#					js += "		row.find('a.inline-edit.edit').hide();\n"
-#					js += "		row.find('a.inline-edit.edit').parent('.btn').hide();\n"
-#					js += "		row.find('.inline-edit.value').hide();\n"
-#					js += "		row.find('a.inline-edit.save').show();\n"
-#					js += "		row.find('a.inline-edit.save').parent('.btn').show();\n"
-#					js += "		row.find('.inline-edit.field').show();\n"
-#					js += "	});\n"#
-
-#					js += "	$('#index-table-#{hash} a.inline-edit.save').on('click', function(e) {\n"
-#					js += "		e.preventDefault();\n"
-#					js += "		var _this = $(this);\n"
-#					js += "		var row = _this.closest('tr');\n"
-#					js += "		var url = _this.attr('href');\n"
-#					js += "		$.ajax({\n"
-#					js += "			url: url,\n"
-#					js += "			dataType: 'json',\n"
-#					js += "			type: 'PUT',\n"
-#					js += "			data: row.find('input').serialize(),\n"
-#					js += "			success: function(callback) \n"
-#					js += "			{\n"
-#					js += "				row.find('.inline-edit.field').removeClass('danger');\n"
-#					js += "				if (callback === true) {\n"
-#					js += "					row.find('.inline-edit.value').each(function () {\n"
-#					js += "						$(this).html($(this).next().find('input').val());\n"
-#					js += "					});\n"
-#					js += "					row.find('a.inline-edit.save').hide();\n"
-#					js += "					row.find('a.inline-edit.save').parent('.btn').hide();\n"
-#					js += "					row.find('.inline-edit.field').hide();\n"
-#					js += "					row.find('a.inline-edit.edit').show();\n"
-#					js += "					row.find('a.inline-edit.edit').parent('.btn').show();\n"
-#					js += "					row.find('.inline-edit.value').show();\n"
-#					js += "				} else {\n"
-#					js += "					for (var column in callback) {\n"
-#					js += "						form.find('.field.' + column).addClass('danger');\n"
-#					js += "					}\n"
-#					js += "				}\n"
-#					js += "				$(document).trigger('rug:index_table:inline_edit');\n"
-#					js += "			},\n"
-#					js += "			error: function(callback) \n"
-#					js += "			{\n"
-#					js += "				console.log('error');\n"
-#					js += "			}\n"
-#					js += "		});\n"
-#					js += "	});\n"
-#					js += "}\n"#
-
-#					js += "$(document).ready(index_table_#{hash}_inline_edit_ready);\n"
-#					js += "$(document).on('page:load', index_table_#{hash}_inline_edit_ready);\n"#
-
-#					return @template.javascript_tag(js)
-#				else
-#					return ""
-#				end
-#			end#
-
-#			def check_inline_edit(options, column = nil)
-#				if column.nil?
-#					return options[:paths] && options[:paths][:update] && options[:inline_edit]
-#				else
-#					return options[:paths] && options[:paths][:update] && options[:inline_edit] && (options[:inline_edit] == true || options[:inline_edit].include?(column.to_sym))
-#				end
-#			end#
-
-#			def get_inline_edit_link(object, options)
-#				result = ""
-#				if !options[:label_edit].nil?
-#					if options[:label_edit] != false
-#						label_edit = options[:label_edit]
-#					else
-#						label_edit = ""
-#					end
-#				else
-#					label_edit = I18n.t("general.action.edit")
-#				end
-#				if !options[:label_save].nil?
-#					if options[:label_save] != false
-#						label_save = options[:label_save]
-#					else
-#						label_save = ""
-#					end
-#				else
-#					label_save = I18n.t("general.action.save")
-#				end
-#				link_tag_class = ""
-#				if options[:disable_button] != true
-#					link_tag_class = "btn btn-xs btn-primary"
-#				end
-#				result += @template.link_to(RugBuilder::IconBuilder.render("pencil") + label_edit, "#", class: "inline-edit edit " + link_tag_class)
-#				result += @template.link_to(RugBuilder::IconBuilder.render("check") + label_save, RugSupport::PathResolver.new(@template).resolve(options[:paths][:update], object), class: "inline-edit save " + link_tag_class, style: "display: none;")
-#				return result
-#			end#
-
-#			def get_inline_edit_field(object, column, value, model_class)
-#				return "<input name=\"#{model_class.model_name.param_key}[#{column.to_s}]\" type=\"text\" class=\"text input\" value=\"#{value}\"/>"
-#			end
 			
 		end
 #	end

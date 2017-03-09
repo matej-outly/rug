@@ -19,7 +19,8 @@ module RugBuilder
 			# Options:
 			# - create_url (string of lamba function)
 			# - update_url (string of lamba function)
-			# - crop (string) ... JS object implementing reload() function
+			# - notify_to_object (string) ... JS object implementing reload() function
+			#                            which will be notified when file is uploaded
 			#
 			def dropzone_row(name, options = {})
 				result = ""
@@ -35,85 +36,14 @@ module RugBuilder
 				default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_url) : RugSupport::PathResolver.new(@template).resolve(update_url, object))
 				default_method = (object.new_record? ? "post" : "put")
 
-				# Crop
-				crop = (options[:crop] ? options[:crop] : nil)
+				# Notifi object
+				notify_to_object = (options[:notify_to_object] ? options[:notify_to_object] : nil)
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
 				result += compose_label(name, options)
-
-				# Library JS code
-				result += @template.javascript_tag(%{
-					function RugFormDropzone(hash, options)
-					{
-						this.hash = hash;
-						this.dropzone = null;
-						this.options = (typeof options !== 'undefined' ? options : {});
-					}
-					RugFormDropzone.prototype = {
-						constructor: RugFormDropzone,
-						addFile: function(fileName, fileSize, thumbUrl)
-						{
-							var mockFile = { name: fileName, size: fileSize };
-							this.dropzone.emit('addedfile', mockFile);
-							this.dropzone.emit('thumbnail', mockFile, thumbUrl);
-							this.dropzone.files.push(mockFile);
-							this.dropzone.emit('complete', mockFile);
-							this.dropzone.options.maxFiles = this.dropzone.options.maxFiles - 1;
-						},
-						ready: function()
-						{
-							var _this = this;
-
-							// Dropzone	
-							Dropzone.autoDiscover = false;
-							this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
-								url: this.options.defaultUrl,
-								method: this.options.defaultMethod, /* method given by function not working, that's why we do it by changing static options in success event */
-								paramName: this.options.objectParamKey + '[' + this.options.name + ']',
-								maxFiles: 1,
-								dictDefaultMessage: this.options.defaultMessage,
-							});
-
-							// Events
-							this.dropzone.on('sending', function(file, xhr, data) {
-								data.append('authenticity_token', _this.options.formAuthenticityToken);
-								if (_this.options.appendColumns) {
-									for (appendColumn in _this.options.appendColumns) {
-										var asColumn = _this.options.appendColumns[appendColumn];
-										data.append(_this.options.objectParamKey + '[' + asColumn + ']', $('#' + _this.options.objectParamKey + '_' + appendColumn).val());
-									}
-								}
-							});
-							this.dropzone.on('maxfilesexceeded', function(file) {
-								this.options.maxFiles = 1;
-								this.removeAllFiles(true);
-								this.addFile(file);
-							});
-							this.dropzone.on('success', function(file, response) {
-								var responseId = parseInt(response);
-								if (!isNaN(responseId)) {
-									var form = $(_this.options.formSelector);
-									var updateUrl = _this.options.updateUrl.replace(':id', responseId);
-									if (form.attr('action') != updateUrl) {
-										form.attr('action', updateUrl); /* Form */
-										form.prepend('<input type="hidden" name="_method" value="patch" />');
-									}
-									this.options.url = updateUrl; /* Dropzone - this causes that only one dropzone is supported for creating */
-									this.options.method = 'put';
-									if (_this.options.crop) {
-										eval('var crop = ' + _this.options.crop + ';');
-										crop.reload(responseId);
-									}
-								} else { /* Error saving image */ 
-								}
-							});
-
-						}
-					}
-				})
 
 				# Append columns
 				append_columns_js = "{"
@@ -158,7 +88,7 @@ module RugBuilder
 
 							// Options
 							appendColumns: #{append_columns_js},
-							crop: '#{crop.to_s}',
+							notifyToObject: '#{notify_to_object.to_s}',
 						});
 						rug_form_dropzone_#{hash}.ready();
 						#{defaut_file_js}
@@ -183,7 +113,8 @@ module RugBuilder
 			# - show_url (string of lamba function)
 			# - collection
 			# - collection_class
-			# - move_to (string) ... JS object implementing addItem() function
+			# - move_to_object (string) ... JS object implementing addItem() function
+			#                               where uploaded file will be moved
 			#
 			def dropzone_many_row(name, options = {})
 				result = ""
@@ -221,10 +152,10 @@ module RugBuilder
 				if create_url.nil?
 					raise "Please define create URL."
 				end
-				if options[:move_to] && show_url.nil?
+				if options[:move_to_object] && show_url.nil?
 					raise "Please define show URL."
 				end
-				if !options[:move_to] && destroy_url.nil?
+				if !options[:move_to_object] && destroy_url.nil?
 					raise "Please define destroy URL."
 				end
 
@@ -283,20 +214,20 @@ module RugBuilder
 								var responseId = parseInt(response);
 								if (!isNaN(responseId)) {
 									file.record_id = responseId;
-									if (_this.options.moveTo) {
+									if (_this.options.moveToObject) {
 										var showUrl = _this.options.showUrl.replace(':id', file.record_id);
 										$.get(showUrl, function(data) {
 											_this.dropzone.removeFile(file);
-											_this.options.moveTo.forEach(function(item) {
-												eval('var moveTo = ' + item + ';');
-												moveTo.addItem(data);
+											_this.options.moveToObject.forEach(function(item) {
+												eval('var moveToObject = ' + item + ';');
+												moveToObject.addItem(data);
 											});
 										});
 									}
 								} else { /* Error saving image */
 								}
 							});
-							if (!this.options.moveTo) {
+							if (!this.options.moveToObject) {
 								this.dropzone.on('removedfile', function(file) {
 									if (file.record_id) {
 										var destroyUrl = _this.options.destroyUrl.replace(':id', file.record_id);
@@ -323,13 +254,13 @@ module RugBuilder
 				end
 				append_columns_js += "}"
 
-				# Move to
-				if options[:move_to] 
-					move_to = options[:move_to]
-					move_to = [move_to] if !move_to.is_a?(Array)
-					move_to_js = "[" + move_to.map { |item| "'#{item}'" }.join(",") + "]"
+				# Move to object...
+				if options[:move_to_object] 
+					move_to_object = options[:move_to_object]
+					move_to_object = [move_to_object] if !move_to_object.is_a?(Array)
+					move_to_object_js = "[" + move_to_object.map { |item| "'#{item}'" }.join(",") + "]"
 				else
-					move_to_js = "[]"
+					move_to_object_js = "[]"
 				end
 
 				# Default files
@@ -371,10 +302,10 @@ module RugBuilder
 
 							// Options
 							appendColumns: #{append_columns_js},
-							moveTo: #{move_to_js},
+							moveToObject: #{move_to_object_js},
 						});
 						rug_dropzone_many_#{hash}.ready();
-						#{move_to.nil? && defaut_files_js}
+						#{move_to_object.nil? && defaut_files_js}
 					});
 				})
 

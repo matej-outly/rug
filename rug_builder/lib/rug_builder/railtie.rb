@@ -15,6 +15,7 @@ require "rug_builder/helpers/form_helper"
 require "rug_builder/helpers/format_helper"
 require "rug_builder/helpers/icon_helper"
 require "rug_builder/helpers/label_helper"
+require "rug_builder/helpers/list_helper"
 require "rug_builder/helpers/map_helper"
 require "rug_builder/helpers/menu_helper"
 require "rug_builder/helpers/nested_helper"
@@ -33,6 +34,7 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::FormatHelper
 			ActionView::Base.send :include, Helpers::IconHelper
 			ActionView::Base.send :include, Helpers::LabelHelper
+			ActionView::Base.send :include, Helpers::ListHelper
 			ActionView::Base.send :include, Helpers::MapHelper
 			ActionView::Base.send :include, Helpers::MenuHelper
 			ActionView::Base.send :include, Helpers::NestedHelper
@@ -61,6 +63,7 @@ module RugBuilder
 			require "rug_builder/#{RugBuilder.frontend_framework}/form_builder"
 			require "rug_builder/#{RugBuilder.icon_framework}/icon_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/label_builder"
+			require "rug_builder/#{RugBuilder.frontend_framework}/list_builder"
 			require "rug_builder/#{RugBuilder.map_framework}/map_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/table_builder"

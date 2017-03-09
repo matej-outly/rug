@@ -93,9 +93,6 @@ protected
 	# Model setters
 	# *************************************************************************
 
-	#
-	# Set model
-	#
 	def set_<%= model_name.to_snake.singularize %>
 		@<%= model_name.to_snake.singularize %> = <%= model_path.to_camel.singularize %>.find_by_id(params[:id])
 		if @<%= model_name.to_snake.singularize %>.nil?
@@ -104,49 +101,13 @@ protected
 	end
 
 	# *************************************************************************
-	# Session
-	# *************************************************************************
-
-	#
-	# Get session key unique for the controller
-	#
-	def session_key
-		return "<%= model_name.to_snake.pluralize %>"
-	end
-
-	#
-	# Save given params to session
-	#
-	def save_params_to_session(params)
-		session[session_key] = {} if session[session_key].nil?
-		session[session_key]["params"] = params if !params.nil?
-	end
-
-	#
-	# Load last saved params from session
-	#
-	def load_params_from_session
-		if !session[session_key].nil? && !session[session_key]["params"].nil?
-			return session[session_key]["params"]
-		else
-			return {}
-		end
-	end
-
-	# *************************************************************************
 	# Param filters
 	# *************************************************************************
 
-	# 
-	# Never trust parameters from the scary internet, only allow the white list through.
-	#
 	def <%= model_name.to_snake.singularize %>_params
 		params.require(:<%= model_name.to_snake.singularize %>).permit(<%= model_path.to_camel.singularize %>.permitted_columns)
 	end
 
-	# 
-	# Never trust parameters from the scary internet, only allow the white list through.
-	#
 	def filter_params
 		return params[:<%= model_name.to_snake.singularize %>].permit(<%= model_path.to_camel.singularize %>.filter_columns)
 	end

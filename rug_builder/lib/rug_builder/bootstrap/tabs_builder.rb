@@ -114,20 +114,19 @@ module RugBuilder
 				result += "</div>"
 
 				# Render JavaScript
-				js = ""
-				js += "function tabs_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#tabs_#{hash} a[data-toggle=\"tab\"]').on('shown.bs.tab', function() {\n"
-				js += "		localStorage.setItem('tabs_#{hash}_active', $(this).attr('href'));\n"
-				js += "	});\n"
-				js += "	var tab_to_show = localStorage.getItem('tabs_#{hash}_active');\n"
-				js += "	if (tab_to_show) {\n"
-				js += "		$('#tabs_#{hash} a[href=\"' + tab_to_show + '\"]').tab('show');\n"
-				js += "	}\n"
-				js += "}\n"
-				js += "$(document).ready(tabs_#{hash}_ready);\n"
-
-				result += @template.javascript_tag(js)
+				result += @template.javascript_tag(%{
+					function tabs_#{hash}_ready()
+					{
+						$('#tabs_#{hash} a[data-toggle="tab"]').on('shown.bs.tab', function() {
+							localStorage.setItem('tabs_#{hash}_active', $(this).attr('href'));
+						});
+						var tab_to_show = localStorage.getItem('tabs_#{hash}_active');
+						if (tab_to_show) {
+							$('#tabs_#{hash} a[href="' + tab_to_show + '"]').tab('show');
+						}
+					}
+					$(document).ready(tabs_#{hash}_ready);
+				})
 
 				return result.html_safe
 			end

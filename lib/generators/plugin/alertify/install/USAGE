@@ -1,5 +1,0 @@
-Description:
-    Integrate latest version of Alertify.js library.
-
-Example:
-    rails generate plugin:alertify:install

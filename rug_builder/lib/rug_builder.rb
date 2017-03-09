@@ -14,6 +14,9 @@ require "rug_builder/columns"
 require "rug_builder/formatter"
 require "rug_builder/templater"
 
+# Engine
+require "rug_builder/engine"
+
 # Railtie
 require "rug_builder/railtie" if defined?(Rails)
 
