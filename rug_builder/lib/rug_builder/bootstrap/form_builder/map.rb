@@ -37,16 +37,16 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 	
 				# Google Map API
-				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
+				result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
 				
 				# Application JS
 				result += @template.javascript_tag(%{
 					var rug_form_map_location_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_map_location_#{hash} = new RugFormMapLocation('#{hash}', {
-							latitude: #{@options[:latitude] ? @options[:latitude] : "null"},
-							longitude: #{@options[:longitude] ? @options[:longitude] : "null"},
-							zoom: #{@options[:zoom] ? @options[:zoom] : "null"}
+							latitude: #{options[:latitude] ? options[:latitude] : "null"},
+							longitude: #{options[:longitude] ? options[:longitude] : "null"},
+							zoom: #{options[:zoom] ? options[:zoom] : "null"}
 						});
 						rug_form_map_location_#{hash}.ready();
 					});
@@ -94,16 +94,16 @@ module RugBuilder
 				value = object.send(name)
 
 				# Google Map API
-				result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
-
+				result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
+				
 				# Application JS
 				result += @template.javascript_tag(%{
 					var rug_form_map_polygon_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_map_polygon_#{hash} = new RugFormMapPolygon('#{hash}', {
-							latitude: #{@options[:latitude] ? @options[:latitude] : "null"},
-							longitude: #{@options[:longitude] ? @options[:longitude] : "null"},
-							zoom: #{@options[:zoom] ? @options[:zoom] : "null"}
+							latitude: #{options[:latitude] ? options[:latitude] : "null"},
+							longitude: #{options[:longitude] ? options[:longitude] : "null"},
+							zoom: #{options[:zoom] ? options[:zoom] : "null"}
 						});
 						rug_form_map_polygon_#{hash}.ready();
 					});
@@ -158,7 +158,7 @@ module RugBuilder
 				
 				# TODO sofar must be done in application JS
 
-				#result += "<script src=\"https://maps.googleapis.com/maps/api/js\"></script>"
+				#result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
 				#result += @template.javascript_tag(js)
 				
 				# Form group
