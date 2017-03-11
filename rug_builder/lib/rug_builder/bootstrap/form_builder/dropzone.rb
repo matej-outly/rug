@@ -43,7 +43,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Append columns
 				append_columns_js = "{"
@@ -163,7 +163,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 				
 				# Library JS code
 				result += @template.javascript_tag(%{

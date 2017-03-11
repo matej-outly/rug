@@ -17,7 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Content
 				content = object.send(name).to_s if content.nil?

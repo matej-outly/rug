@@ -17,7 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Enable Bootstrap (Bootstrap is disabled by default)
 				enable_bootstrap = (options[:enable_bootstrap] == true)

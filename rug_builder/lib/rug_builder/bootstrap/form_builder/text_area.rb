@@ -17,7 +17,7 @@ module RugBuilder
 #				result = ""
 #				
 #				# Label
-#				result += compose_label(name, options)#
+#				result += label_for(name, options)#
 
 #				# Field options
 #				field_options = {}
@@ -97,7 +97,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Field options
 				field_options = {}

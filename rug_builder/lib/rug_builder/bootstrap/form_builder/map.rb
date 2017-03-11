@@ -20,7 +20,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part labels
 				label_latitude = (options[:label_latitude] ? options[:label_latitude] : I18n.t("general.attribute.geolocation.latitude"))
@@ -88,7 +88,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part values
 				value = object.send(name)
@@ -137,7 +137,7 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part values
 				value = object.send(name)

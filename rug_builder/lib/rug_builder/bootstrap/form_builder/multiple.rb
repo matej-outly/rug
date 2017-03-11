@@ -17,7 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
@@ -125,7 +125,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)

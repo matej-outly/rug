@@ -24,13 +24,15 @@ module RugBuilder
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
 				# Label
-				if !options[:label].nil?
-					if options[:label] != false
-						result += label(name, options[:label])
-					end
-				else
-					result += label("#{name.to_s}_crop".to_sym)
-				end
+				result += label_for(name, options)
+
+				#if !options[:label].nil?
+				#	if options[:label] != false
+				#		result += label(name, options[:label])
+				#	end
+				#else
+				#	result += label("#{name.to_s}_crop".to_sym)
+				#end
 
 				# Value
 				value = object.send(name)

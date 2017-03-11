@@ -33,7 +33,7 @@ module RugBuilder
 				value = object.send(name)
 
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 				
 				if options[:max]
 					max = options[:max].to_i

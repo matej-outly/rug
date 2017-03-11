@@ -17,7 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Collection
 				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call if collection.nil?
