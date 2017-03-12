@@ -162,7 +162,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part labels
 				label_street = (options[:label_street] ? options[:label_street] : I18n.t("general.attribute.address.street"))
@@ -221,7 +221,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part labels
 				label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title")) if options[:title] == true
@@ -281,7 +281,7 @@ module RugBuilder
 				result = "<div class=\"form-horizontal\">"
 				
 				# Label
-				result += compose_label(name, options)
+				result += label_for(name, options)
 
 				# Part labels
 				label_min = (options[:label_min] ? options[:label_min] : I18n.t("general.attribute.range.min"))
