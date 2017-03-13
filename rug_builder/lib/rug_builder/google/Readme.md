@@ -13,13 +13,13 @@ Google Maps is now protected by an API key, which can be easily obtained from [t
 To create simple map focused on given point, just include this piece of code into
 your template:
 
-```ruby
+```erb
 <%= rug_map "gmap", latitude: 50.0596696, longitude: 14.4656239, zoom: 9, api_key: "YOUR_GOOGLE_MAPS_API_KEY", scrollwheel: true %>
 ```
 
 If you want to display also maker in the center of the map, just add another line of code:
 
-```ruby
+```erb
 <%= rug_map "gmap", latitude: 50.0596696, longitude: 14.4656239, zoom: 9, api_key: "YOUR_GOOGLE_MAPS_API_KEY", scrollwheel: true do |m| %>
 	<%= m.marker "Roja", lat, lon %>
 <% end %>
