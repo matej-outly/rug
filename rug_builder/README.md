@@ -1,4 +1,4 @@
-# RugBuilder
+# Rug Builder
 
 This gem provides usefull functions and objects (builders) for producing standardized HTML content. It contains builders for HTML forms, data tables and trees, buttons, icons, labels, tabs, charts, maps and others.
 
@@ -10,39 +10,34 @@ Add this line to your application's Gemfile:
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install rug_builder
+    $ bundle install
 
 ## Usage
 
-module ApplicationHelper
+Rug Builder contains of several independent parts. See usage details in designated documentation pages.
 
-	def rug_form_for(object, options = {}, &block)
-		options[:builder] = RugBuilder::FormBuilder
-		form_for(object, options, &block)
-	end
+This module is aware of different frontend frameworks. We consider Bootstrap framework a standard for creating modern HTML content. However there is a possibility to incorporate different approaches to generate some specific content or completely switch the framework for something even cooler. For example, FontAwesome is pretty great library to render icons and Rug Builder makes it very easy to switch this specific builder to use this library.
 
-	def rug_index_table_for(objects, columns, paths)
-		RugBuilder::TableBuilder.new(self).index(objects, columns, paths)
-	end
+Global module configuration is done in config/initializers/rug_builder.rb file:
 
-	def rug_show_table_for(object, columns)
-		RugBuilder::TableBuilder.new(self).show(object, columns)
-	end
-
-	def rug_menu_for(object, options = {}, &block)
-		RugBuilder::MenuBuilder.new(self).render(object, options, &block)
-	end
-	
+```ruby
+RugBuilder.setup do |config|
+	config.frontend_framework = "bootstrap"
+	config.icon_framework = "font_awesome"
+	config.map_framework = "google"
 end
+```
+
+Currently, there is possible to set the following values:
+- `frontend_framework` option
+  - `bootstrap` (default) - Use Bootstrap 3 for rendering.
+  - `gumby` - This value is very obsolete and probably not working correctly.
+- `icon_framework` option
+  - `bootstrap` (default) - Use Bootstrap Glyphicons for icons rendering.
+  - `font_awesome` - Use FontAwesome for icons rendering.
+- `map_framework` option
+  - `google` (default) - Use Google Maps API to render maps.
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Send your proposal to matej.outly@clockstar.cz. We will consider and integrate it to the project.
