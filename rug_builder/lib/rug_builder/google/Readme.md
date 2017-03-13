@@ -6,6 +6,8 @@ Google Maps helper provides an easy way to integrate Google Maps into your websi
 
 ## Dependencies
 
+Add into your `Gemfile`:
+
 ```ruby
 gem "rug_support"
 gem "rug_builder"
