@@ -31,8 +31,8 @@ Template helper `rug_map` generates this HTML markup:
 </div>
 ```
 
-The identifier `map_23887fb53d507d57b07b5e614f2257749c8dd6f9` is unique generated id of the map, which is generated
-on every page reload.
+The identifier `map_23887fb53d507d57b07b5e614f2257749c8dd6f9` is unique generated id of the map. This id is generated
+from given name (first parameter of `rug_map` helper)
 
 Google Map is inserted into `mapbox` element. It is important to *set at least height* of
 `mapbox`, like:
