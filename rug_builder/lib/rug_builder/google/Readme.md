@@ -42,3 +42,8 @@ Google Map is inserted into `mapbox` element. It is important to *set at least h
 	height: 300px;
 }
 ```
+
+## Known bugs
+
+- Is is not possible to use single line `rug_map` without block
+- The `scrollwheel` attribute must be presented
