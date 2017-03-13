@@ -8,3 +8,5 @@ This builder is currently implemented for:
 
 - Bootstrap framework
 - Gumby framework - Obsolete, DO NOT USE!
+
+## Known bugs and issues
