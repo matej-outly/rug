@@ -5,5 +5,6 @@ This page describes part of Rug Builder module used for generating standardized 
 ## Implementations
 
 This builder is currently implemented for:
+
 - Bootstrap framework
-- Gumby framework - Obsole, DO NOT USE!
+- Gumby framework - Obsolete, DO NOT USE!
