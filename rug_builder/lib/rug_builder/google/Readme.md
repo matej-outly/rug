@@ -4,6 +4,13 @@ Google Maps helper provides an easy way to integrate Google Maps into your websi
 
 - [Documentation of Google Maps API](https://developers.google.com/maps/documentation/javascript/tutorial).
 
+## Dependencies
+
+```ruby
+gem "rug_support"
+gem "rug_builder"
+```
+
 ## Obtain Google Maps API key
 
 Google Maps is now protected by an API key, which can be easily obtained from this page:
