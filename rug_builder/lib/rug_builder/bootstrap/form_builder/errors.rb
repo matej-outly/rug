@@ -39,7 +39,8 @@ module RugBuilder
 				klass = options[:class] if !options[:class].nil?
 
 				# Render
-				result = "<span class=\"errors #{klass}\" id=\"#{self.options[:html][:id]}_#{name}_errors\">"
+				id = (self.options && self.options[:html]) ? "#{self.options[:html][:id]}_#{name}_errors" : ""
+				result = "<span class=\"errors #{klass}\" id=\"#{id}\">"
 				if has_error?(name)
 					if format == :help_block
 						object.errors[name].uniq.each do |error_message|
