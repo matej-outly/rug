@@ -25,7 +25,7 @@ module RugBuilder
 					$(document).ready(function() {
 						rug_form_conditional_section_#{hash} = new RugFormConditionalSection('#{hash}', {
 							conditionName: '#{object.class.model_name.param_key}[#{condition_name.to_s}]',
-							conditionRule: '#{condition_rule.to_s}'
+							conditionRule: "#{condition_rule.to_s}" // " used before ' should be used inside condition rule to interpret string value
 						});
 						rug_form_conditional_section_#{hash}.ready();
 					});
