@@ -55,7 +55,10 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-				value = value.strftime("%k:%M") if !value.blank?
+				if !value.blank?
+					value = DateTime.parse(value) if !value.is_a?(DateTime) && !value.is_a?(Time)
+					value = value.strftime("%k:%M") 
+				end
 
 				# Java Script
 				result += @template.javascript_tag(%{
@@ -95,7 +98,10 @@ module RugBuilder
 				
 				# Part values
 				value = object.send(name)
-				value = value.strftime("%Y-%m-%d %k:%M") if !value.blank?
+				if !value.blank?
+					value = DateTime.parse(value) if !value.is_a?(DateTime) && !value.is_a?(Time)
+					value = value.strftime("%Y-%m-%d %k:%M")
+				end
 				
 				# Java Script
 				result += @template.javascript_tag(%{
