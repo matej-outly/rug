@@ -19,46 +19,72 @@ function RugFormConditionalSection(hash, options)
 
 RugFormConditionalSection.prototype = {
 	constructor: RugFormConditionalSection,
+
 	interpret: function(value)
 	{
 		eval('var conditionRule = (' + this.options.conditionRule + ');');
+
 		if (conditionRule) {
-			if (this.readyInProgress) {
-				this.conditionalSection.show();
-			} else {
-				this.conditionalSection.slideDown();
-			}
+			this.showSection(!this.readyInProgress);
 		} else {
-			if (this.readyInProgress) {
-				this.conditionalSection.hide();
-			} else {
-				this.conditionalSection.slideUp();
-			}
+			this.hideSection(!this.readyInProgress);
 		}
+
 		this.readyInProgress = false;
 	},
+
+	showSection: function(animate) {
+		if (!animate) {
+			this.conditionalSection.show();
+		} else {
+			this.conditionalSection.slideDown();
+		}
+	},
+
+	hideSection: function(animate) {
+		if (!animate) {
+			this.conditionalSection.hide();
+		} else {
+			this.conditionalSection.slideUp();
+		}
+	},
+
+	onElementChange: function(element) {
+		var $element = $(element);
+
+		if ($element.is(':radio')) {
+			// Interpret value only if radio button is selected
+			if ($element.is(':checked')) {
+				this.interpret($element.val());
+			}
+
+		} else if ($element.is(':checkbox')) {
+			// Convert checkbox checked/unchecked to true/false boolean values
+			this.interpret($element.is(":checked"));
+
+		} else {
+			// Pass value for other elements
+			this.interpret($element.val());
+		}
+	},
+
 	ready: function()
 	{
 		var self = this;
-		self.conditionalSection.hide();
-		$('[name="' + self.options.conditionName + '"]').change(function() {
-			var $element = $(this);
 
-			if ($element.is(':radio')) {
-				// Interpret value only if radio button is selected
-				if ($element.is(':checked')) {
-					self.interpret($element.val());
-				}
+		// Get only those elements, which have "id" attribute. This will
+		// skip special Rails hidden inputs for checkboxes.
+		var $elements = $('[name="' + this.options.conditionName + '"][id!=""][id]');
 
-			} else if ($element.is(':checkbox')) {
-				// Convert checkbox checked/unchecked to true/false boolean values
-				self.interpret($element.is(":checked"));
+		// Initialize
+		this.conditionalSection.hide();
+		$elements.each(function() {
+			self.onElementChange(this);
+		});
 
-			} else {
-				// Pass value for other elements
-				self.interpret($element.val());
-			}
-
-		}).trigger('change');
-	}
+		// Set up change callback
+		$elements.change(function() {
+			self.onElementChange(this);
+		});
+	},
 }
