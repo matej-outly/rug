@@ -39,17 +39,26 @@ RugFormConditionalSection.prototype = {
 	},
 	ready: function()
 	{
-		var _this = this;
-		this.conditionalSection.hide();
-		$('[name="' + _this.options.conditionName + '"]').on('change', function(e) {
-			var __this = $(this);
-			if (__this.is(':radio')) {
-				if (__this.is(':checked')) {
-					_this.interpret(__this.val());
+		var self = this;
+		self.conditionalSection.hide();
+		$('[name="' + self.options.conditionName + '"]').change(function() {
+			var $element = $(this);
+
+			if ($element.is(':radio')) {
+				// Interpret value only if radio button is selected
+				if ($element.is(':checked')) {
+					self.interpret($element.val());
 				}
+
+			} else if ($element.is(':checkbox')) {
+				// Convert checkbox checked/unchecked to true/false boolean values
+				self.interpret($element.is(":checked"));
+
 			} else {
-				_this.interpret(__this.val());
+				// Pass value for other elements
+				self.interpret($element.val());
 			}
+
 		}).trigger('change');
 	}
 }
