@@ -16,9 +16,6 @@ module RugBuilder
 			def read_only_row(name, content = nil, options = {})
 				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Content
 				content = object.send(name).to_s if content.nil?
 				
@@ -36,18 +33,13 @@ module RugBuilder
 				
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-			
-				# Field
+				result += label_for(name, options)
 				if format == :input
 					result += "<input class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
 				elsif format == :textarea
 					result += "<textarea class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 				end
-				
-				# Errors
 				result += errors(name)
-
-				# Form group
 				result += "</div>"
 
 				return result.html_safe

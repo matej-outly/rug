@@ -41,10 +41,7 @@ module RugBuilder
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
-
+				
 				# Append columns
 				append_columns_js = "{"
 				if options[:append_columns]
@@ -97,6 +94,7 @@ module RugBuilder
 
 				# HTML
 				result += "<div class=\"form-group\">"
+				result += label_for(name, options)
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"><div class=\"dz-message\">#{I18n.t("general.drop_file_here")}</div></div>"
 				result += "</div>"
 
@@ -161,9 +159,6 @@ module RugBuilder
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
 
 				# Append columns
 				append_columns_js = "{"
@@ -232,6 +227,7 @@ module RugBuilder
 
 				# HTML
 				result += "<div class=\"form-group\">"
+				result += label_for(name, options)
 				result += "<div id=\"#{object.class.model_name.param_key}_#{name.to_s}\" class=\"dropzone\"></div>"
 				result += "</div>"
 

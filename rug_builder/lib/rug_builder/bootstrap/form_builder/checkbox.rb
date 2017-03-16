@@ -16,15 +16,15 @@ module RugBuilder
 			def checkboxes_row(name, collection = nil, value_attr = :value, label_attr = :label, options = {})
 				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Enable Bootstrap (Bootstrap is disabled by default)
 				enable_bootstrap = (options[:enable_bootstrap] == true)
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
+
+				# Label
+				result += label_for(name, options)
+
 				if collection.nil?
 					collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
 				end
@@ -50,11 +50,7 @@ module RugBuilder
 				result = ""
 				
 				# Enable Bootstrap (Bootstrap is disabled by default)
-				if options[:enable_bootstrap] == true
-					enable_bootstrap = true
-				else
-					enable_bootstrap = false
-				end
+				enable_bootstrap = (options[:enable_bootstrap] == true)
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"

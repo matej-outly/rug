@@ -14,14 +14,11 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def map_location_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
-
+				
 				# Part labels
 				label_latitude = (options[:label_latitude] ? options[:label_latitude] : I18n.t("general.attribute.geolocation.latitude"))
 				label_longitude = (options[:label_longitude] ? options[:label_longitude] : I18n.t("general.attribute.geolocation.longitude"))
@@ -54,6 +51,12 @@ module RugBuilder
 				
 				# Form group
 				result += "<div id=\"map_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+
+				# Label
+				result += label_for(name, options)
+
+				# Form horizontal
+				result += "<div class=\"form-horizontal\">"
 				
 				# Text inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
@@ -74,21 +77,20 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 				
-				# Form group
+				# Form hotrizontal
 				result += "</div>"
 
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 
 			def map_polygon_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
 
 				# Part values
 				value = object.send(name)
@@ -112,6 +114,12 @@ module RugBuilder
 				# Form group
 				result += "<div id=\"map_polygon_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
+				# Label
+				result += label_for(name, options)
+
+				# Form horizontal
+				result += "<div class=\"form-horizontal\">"
+				
 				# Input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
 
@@ -123,21 +131,20 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 				
-				# Form group
+				# Form horizontal
 				result += "</div>"
 
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 
 			def address_location_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
 
 				# Part values
 				value = object.send(name)
@@ -164,6 +171,12 @@ module RugBuilder
 				# Form group
 				result += "<div id=\"address_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
+				# Label
+				result += label_for(name, options)
+				
+				# Form horizontal
+				result += "<div class=\"form-horizontal\">"
+				
 				# Level input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")
 				
@@ -179,10 +192,12 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 				
-				# Form group
+				# Form horizontal
 				result += "</div>"
 
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 

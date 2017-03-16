@@ -109,9 +109,6 @@ module RugBuilder
 			def text_input_row(name, method = :text_field, options = {})
 				result = ""
 
-				# Label
-				result += label_for(name, options)
-
 				# CSS class
 				klass = []
 				klass << "form-control"
@@ -133,7 +130,10 @@ module RugBuilder
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
+
+				# Label
+				result += label_for(name, options)
+
 				# Input group
 				result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
 				
@@ -159,11 +159,8 @@ module RugBuilder
 			end
 
 			def address_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Part labels
 				label_street = (options[:label_street] ? options[:label_street] : I18n.t("general.attribute.address.street"))
 				label_number = (options[:label_number] ? options[:label_number] : I18n.t("general.attribute.address.number"))
@@ -184,7 +181,10 @@ module RugBuilder
 				
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
+
+				# Label
+				result += label_for(name, options)
+
 				# Inputs (first row)
 				result += "<div class=\"col-sm-8\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_street.upcase_first}</div>"
@@ -210,19 +210,18 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 
+				# Form horizontal
+				result += "</div>"
+				
 				# Form group
 				result += "</div>"
 
-				result += "</div>"
 				return result.html_safe
 			end
 
 			def name_row(name, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Part labels
 				label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title")) if options[:title] == true
 				label_firstname = (options[:label_firstname] ? options[:label_firstname] : I18n.t("general.attribute.name.firstname"))
@@ -241,6 +240,12 @@ module RugBuilder
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				
+				# Label
+				result += label_for(name, options)
+
+				# Form horizontal
+				result += "<div class=\"form-horizontal\">"
 				
 				# Layout
 				if options[:title] == true
@@ -270,19 +275,18 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 
-				# Form group
+				# Form horizontal
 				result += "</div>"
 
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 
 			def range_row(name, method = :number_field, options = {})
-				result = "<div class=\"form-horizontal\">"
+				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Part labels
 				label_min = (options[:label_min] ? options[:label_min] : I18n.t("general.attribute.range.min"))
 				label_max = (options[:label_max] ? options[:label_max] : I18n.t("general.attribute.range.max"))
@@ -300,6 +304,12 @@ module RugBuilder
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
 				
+				# Label
+				result += label_for(name, options)
+
+				# Form horizontal
+				result += "<div class=\"form-horizontal\">"
+
 				# Inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_min.upcase_first}</div>"
@@ -314,10 +324,12 @@ module RugBuilder
 				# Errors
 				result += errors(name, class: "col-sm-12")
 
-				# Form group
+				# Form horizontal
 				result += "</div>"
 
+				# Form group
 				result += "</div>"
+				
 				return result.html_safe
 			end
 

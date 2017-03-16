@@ -31,10 +31,8 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-
-				# Label
-				result += label_for(name, options)
 				
+				# Max				
 				if options[:max]
 					max = options[:max].to_i
 					if max <= 0 
@@ -81,9 +79,10 @@ module RugBuilder
 				# Form group
 				result += %{
 					<div id="rater_#{hash}" class="rater form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{ @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value) }
+						#{label_for(name, options)}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value)}
 						<div class="canvas"></div>
-						#{ errors(name) }
+						#{errors(name)}
 					</div>
 				}
 

@@ -16,9 +16,6 @@ module RugBuilder
 			def array_row(name, method = :text_field, options = {})
 				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
@@ -97,6 +94,7 @@ module RugBuilder
 				# Field
 				result += %{
 					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
 						<div class="back" style="display: none;">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
 						</div>
@@ -124,9 +122,6 @@ module RugBuilder
 			def store_row(name, method = :text_field, options = {})
 				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
@@ -212,6 +207,7 @@ module RugBuilder
 				# Field
 				result += %{
 					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
 						<div class="back" style="display: none;">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
 						</div>
