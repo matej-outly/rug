@@ -23,17 +23,6 @@ module RugBuilder
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
-				# Label
-				result += label_for(name, options)
-
-				#if !options[:label].nil?
-				#	if options[:label] != false
-				#		result += label(name, options[:label])
-				#	end
-				#else
-				#	result += label("#{name.to_s}_crop".to_sym)
-				#end
-
 				# Value
 				value = object.send(name)
 
@@ -126,6 +115,16 @@ module RugBuilder
 
 				# Container
 				result += "<div id=\"crop_#{hash}\" class=\"form-group\">"
+
+				# Label
+				result += label_for(name, options)
+				#if !options[:label].nil? # ????
+				#	if options[:label] != false
+				#		result += label(name, options[:label])
+				#	end
+				#else
+				#	result += label("#{name.to_s}_crop".to_sym)
+				#end
 
 				# Crop attributes
 				for attribute in [:crop_x, :crop_y, :crop_w, :crop_h]

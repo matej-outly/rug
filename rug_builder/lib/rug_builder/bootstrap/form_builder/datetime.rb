@@ -89,9 +89,6 @@ module RugBuilder
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
-				# Label
-				result += label_for(name, options)
-
 				# Part labels
 				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime.date"))
 				label_time = (options[:label_time] ? options[:label_time] : I18n.t("general.attribute.datetime.time"))
@@ -146,8 +143,9 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 
 				result += %{
-					<div class="form-horizontal">
-						<div id="datetime_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+					<div id="datetime_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						<div class="form-horizontal">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6">
 								<div class="input-group">
@@ -174,9 +172,6 @@ module RugBuilder
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
 
 				# Part labels
 				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime_range.date"))
@@ -283,8 +278,9 @@ module RugBuilder
 				end
 
 				result += %{
-					<div class="form-horizontal">
-						<div id="datetime_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+					<div id="datetime_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						<div class="form-horizontal">
 							#{result_date}
 							#{result_from}
 							#{result_to}
@@ -301,9 +297,6 @@ module RugBuilder
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
-
-				# Label
-				result += label_for(name, options)
 
 				# Part labels
 				label_days = (options[:label_days] ? options[:label_days] : I18n.t("general.attribute.duration.days"))
@@ -423,14 +416,15 @@ module RugBuilder
 				}
 
 				result += %{
-					<div class="form-horizontal">
-						<div id="duration_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+					<div id="duration_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						<div class="form-horizontal">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
-							#{ options[:days] != false ? result_days : ""}
-							#{ options[:hours] != false ? result_hours : ""}
-							#{ options[:minutes] != false ? result_minutes : ""}
-							#{ options[:seconds] != false ? result_seconds : ""}
-							#{ errors(name, class: "col-sm-12") }
+							#{options[:days] != false ? result_days : ""}
+							#{options[:hours] != false ? result_hours : ""}
+							#{options[:minutes] != false ? result_minutes : ""}
+							#{options[:seconds] != false ? result_seconds : ""}
+							#{errors(name, class: "col-sm-12") }
 						</div>
 					</div>
 				}

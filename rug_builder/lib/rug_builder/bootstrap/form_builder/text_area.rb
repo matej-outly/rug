@@ -96,9 +96,6 @@ module RugBuilder
 			def text_area_row(name, options = {})
 				result = ""
 				
-				# Label
-				result += label_for(name, options)
-
 				# Field options
 				field_options = {}
 				klass = []
@@ -117,14 +114,9 @@ module RugBuilder
 
 				# Form group
 				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
-				# Text area
+				result += label_for(name, options)
 				result += text_area(name, field_options)
-
-				# Errors
 				result += errors(name)
-
-				# Form group
 				result += "</div>"
 
 				return result.html_safe
