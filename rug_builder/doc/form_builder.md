@@ -83,4 +83,109 @@ Available options:
 
 ### Checkboxes
 
+`checkboxes_row`
+
+Available options:
+
+- `label`
+- `enable_bootstrap`
+
+---
+
+`checkbox_row`
+
+Available options:
+
+- `label`
+- `enable_bootstrap`
+
+### Date / Time
+
+`date_picker_row`
+
+Available options:
+
+- options similar to `text_input_row`
+
+---
+
+`time_picker_row`
+
+Available options:
+
+- options similar to `text_input_row`
+
+---
+
+`datetime_picker_row`
+
+Available options:
+
+- `label`
+- `label_date`
+- `label_time`
+- `class`
+
+---
+
+`datetime_range_picker_row`
+
+Available options:
+
+- `label`
+- `label_date_from`
+- `label_date_to`
+- `label_time_from`
+- `label_time_to`
+- `class`
+- `date_from`
+- `date_to`
+- `time_from`
+- `time_to`
+
+---
+
+`duration_picker_row`
+
+Available options:
+
+- `label`
+- `label_days`
+- `label_hours`
+- `label_minutes`
+- `label_seconds`
+- `class`
+- `days`
+- `hours`
+- `minutes`
+- `seconds`
+
+### Dropzone
+
+`dropzone_row`
+
+Available options:
+
+- `label`
+- `create_url`
+- `update_url`
+- `notify_to_object`
+- `append_columns`
+
+---
+
+`dropzone_many_row`
+
+Available options:
+
+- `label`
+- `attachment_name`
+- `create_url`
+- `destroy_url`
+- `show_url`
+- `move_to_object`
+- `append_columns`
+- `collection`
+- `collection_class`
+
 ## Known bugs and issues
