@@ -34,7 +34,7 @@ module RugBuilder
 			column = options[:column]
 
 			# Get value
-			value_obj = object.send("#{column.to_s}_obj".to_sym)
+			value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
 
 			if value_obj
 				return value_obj.label
@@ -84,8 +84,8 @@ module RugBuilder
 			column = options[:column]
 
 			# Get value, color and icon
-			if object.respond_to?("#{column.to_s}_obj".to_sym)	
-				value_obj = object.send("#{column.to_s}_obj".to_sym)
+			if object.class.respond_to?("available_#{column.to_s.pluralize}".to_sym)	
+				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
 				return "" if value_obj.blank?
 				value = value_obj.value
 				label = value_obj.label

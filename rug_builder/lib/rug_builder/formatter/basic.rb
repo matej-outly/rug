@@ -92,6 +92,28 @@ module RugBuilder
 		end
 
 		# *********************************************************************
+		# Double
+		# *********************************************************************
+
+		def self.double(value, options = {})
+			if value.nil?
+				return ""
+			else
+
+				# Locale
+				if options[:locale]
+					locale = options[:locale]
+				else
+					locale = :cs
+				end
+
+				result = @template.number_with_delimiter(value.to_f, locale: locale) 
+				result += " " + options[:unit].to_s if options[:unit]
+				return result
+			end
+		end
+
+		# *********************************************************************
 		# Currency
 		# *********************************************************************
 

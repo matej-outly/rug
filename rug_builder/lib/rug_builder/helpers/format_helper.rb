@@ -15,11 +15,11 @@ module RugBuilder
 
 			[
 				:address, 
-				:string_array, 
 				:string, 
 				:text, 
 				:integer, 
 				:float,
+				:double,
 				:currency, 
 				:url, 
 				:date, 
@@ -37,7 +37,10 @@ module RugBuilder
 				:name, 
 				:range, 
 				:integer_range, 
+				:float_range, 
 				:double_range, 
+				:string_array, 
+				:enum_array,
 				:belongs_to, 
 				:has_many
 			].each do |new_type|

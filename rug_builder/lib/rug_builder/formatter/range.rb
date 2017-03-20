@@ -45,11 +45,33 @@ module RugBuilder
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
-					return value_max
+					return self.integer(value_max)
 				elsif value_max.blank?
-					return value_min
+					return self.integer(value_min)
 				else
-					return "#{value_min} - #{value_max}"
+					return "#{self.integer(value_min)} - #{self.integer(value_max)}"
+				end
+			else
+				return ""
+			end
+		end
+
+		# *********************************************************************
+		# Float range
+		# *********************************************************************
+		
+		def self.float_range(value, options = {})
+			if !value.nil?
+				value_min = value[:min]
+				value_max = value[:max]
+				if value_min.blank? && value_max.blank?
+					return ""
+				elsif value_min.blank?
+					return self.float(value_max)
+				elsif value_max.blank?
+					return self.float(value_min)
+				else
+					return "#{self.float(value_min)} - #{self.float(value_max)}"
 				end
 			else
 				return ""
@@ -67,11 +89,11 @@ module RugBuilder
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
-					return value_max
+					return self.double(value_max)
 				elsif value_max.blank?
-					return value_min
+					return self.double(value_min)
 				else
-					return "#{value_min} - #{value_max}"
+					return "#{self.double(value_min)} - #{self.double(value_max)}"
 				end
 			else
 				return ""
