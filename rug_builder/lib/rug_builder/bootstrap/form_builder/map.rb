@@ -56,7 +56,7 @@ module RugBuilder
 				result += label_for(name, options)
 
 				# Form horizontal
-				result += "<div class=\"form-horizontal\">"
+				result += "<div class=\"row\">"
 				
 				# Text inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
@@ -118,7 +118,7 @@ module RugBuilder
 				result += label_for(name, options)
 
 				# Form horizontal
-				result += "<div class=\"form-horizontal\">"
+				result += "<div class=\"row\">"
 				
 				# Input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
@@ -175,7 +175,7 @@ module RugBuilder
 				result += label_for(name, options)
 				
 				# Form horizontal
-				result += "<div class=\"form-horizontal\">"
+				result += "<div class=\"row\">"
 				
 				# Level input
 				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")

@@ -185,6 +185,9 @@ module RugBuilder
 				# Label
 				result += label_for(name, options)
 
+				# Form horizontal
+				result += "<div class=\"row\">"
+
 				# Inputs (first row)
 				result += "<div class=\"col-sm-8\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_street.upcase_first}</div>"
@@ -245,7 +248,7 @@ module RugBuilder
 				result += label_for(name, options)
 
 				# Form horizontal
-				result += "<div class=\"form-horizontal\">"
+				result += "<div class=\"row\">"
 				
 				# Layout
 				if options[:title] == true
@@ -308,7 +311,7 @@ module RugBuilder
 				result += label_for(name, options)
 
 				# Form horizontal
-				result += "<div class=\"form-horizontal\">"
+				result += "<div class=\"row\">"
 
 				# Inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"

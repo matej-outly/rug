@@ -145,7 +145,7 @@ module RugBuilder
 				result += %{
 					<div id="datetime_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
 						#{label_for(name, options)}
-						<div class="form-horizontal">
+						<div class="row">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6">
 								<div class="input-group">
@@ -280,7 +280,7 @@ module RugBuilder
 				result += %{
 					<div id="datetime_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
 						#{label_for(name, options)}
-						<div class="form-horizontal">
+						<div class="row">
 							#{result_date}
 							#{result_from}
 							#{result_to}
@@ -418,7 +418,7 @@ module RugBuilder
 				result += %{
 					<div id="duration_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
 						#{label_for(name, options)}
-						<div class="form-horizontal">
+						<div class="row">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							#{options[:days] != false ? result_days : ""}
 							#{options[:hours] != false ? result_hours : ""}
