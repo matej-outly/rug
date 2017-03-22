@@ -49,8 +49,9 @@ module RugBuilder
 							hintText: '#{I18n.t("views.autocomplete.hint")}',
 							noResultsText: '#{I18n.t("views.autocomplete.no_results")}',
 							searchingText: '#{I18n.t("views.autocomplete.search_in_progress")}',
-							minChars: 3,
+							minChars: #{options[:min_chars] ? options[:min_chars] : "3"},
 							tokenLimit: #{options[:limit] ? options[:limit] : "null"},
+							allowFreeTagging: #{options[:free_tagging] == true ? "true" : "false"},
 							propertyToSearch: '#{label_attr ? label_attr : ""}',
 							tokenValue: '#{value_attr ? value_attr : ""}',
 							#{value_as_json ? "prePopulate: " + value_as_json + "," : ""}
