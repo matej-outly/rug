@@ -68,9 +68,9 @@ module RugBuilder
 						rug_form_rater_#{hash} = new RugFormRater('#{hash}', {
 							#{ max ? "max: " + max.to_s + "," : "" }
 							#{ step ? "step: " + step.to_s + "," : "" }
-							symbolBase: '#{@template.rug_icon((options[:icon_base] ? options[:icon_base] : "star-o"), class: "symbol-base")}',
-							symbolHover: '#{@template.rug_icon((options[:icon_hover] ? options[:icon_hover] : "star"), class: "symbol-hover")}',
-							symbolSelected: '#{@template.rug_icon((options[:icon_selected] ? options[:icon_selected] : "star"), class: "symbol-selected")}',
+							symbolBase: '#{@template.rug_icon((options[:icon_base] ? options[:icon_base] : "star-o"), class: "symbol-base").trim}',
+							symbolHover: '#{@template.rug_icon((options[:icon_hover] ? options[:icon_hover] : "star"), class: "symbol-hover").trim}',
+							symbolSelected: '#{@template.rug_icon((options[:icon_selected] ? options[:icon_selected] : "star"), class: "symbol-selected").trim}',
 						});
 						rug_form_rater_#{hash}.ready();
 					});

@@ -35,10 +35,13 @@ RugFormRater.prototype = {
 		_this.rater = $('#rater_' + _this.hash + ' .canvas');
 		_this.input = $('#rater_' + _this.hash + ' input');
 
+		var max = (_this.options.max ? _this.options.max : 5);
+		var step = (_this.options.step ? _this.options.step : 5);
+
 		// Init
 		_this.rater.rate({ 
-			max_value: (_this.options.max ? _this.options.max : 5),
-			step_size: (_this.options.step ? _this.options.step : 0.5),
+			max_value: max,
+			step_size: step,
 			symbols: {
 				custom: {
 					base: _this.options.symbolBase,
@@ -54,6 +57,9 @@ RugFormRater.prototype = {
 			_this.updateInput();
 		});
 
+		// HACK to ensure canvas width (not working correctlly sometimes)
+		_this.rater.width(max * 33.4);
+		
 		// Initial value
 		_this.updateRater();
 	}
