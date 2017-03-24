@@ -13,6 +13,18 @@ module RugBuilder
 	class Formatter
 
 		# *********************************************************************
+		# Boolean
+		# *********************************************************************
+
+		def self.boolean(value, options = {})
+			if value == true
+				return I18n.t("general.attribute.boolean.bool_yes")
+			else
+				return I18n.t("general.attribute.boolean.bool_no")
+			end
+		end
+
+		# *********************************************************************
 		# Enum
 		# *********************************************************************
 		
@@ -40,18 +52,6 @@ module RugBuilder
 				return value_obj.label
 			else
 				return ""
-			end
-		end
-
-		# *********************************************************************
-		# Boolean
-		# *********************************************************************
-
-		def self.boolean(value, options = {})
-			if value == true
-				return I18n.t("general.attribute.boolean.bool_yes")
-			else
-				return I18n.t("general.attribute.boolean.bool_no")
 			end
 		end
 
@@ -92,16 +92,18 @@ module RugBuilder
 				color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
 				icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
 			
-			else # Bool
+			else # Bool or different data type => act as bool
 				value = object.send(column.to_sym)
 				if value == true # Special value TRUE
 					value = "yes"
 				elsif value == false # Special value FALSE
 					value = "no"
+				elsif !value.blank? # Not blank value
+					value = "yes"
 				else
 					return ""
 				end
-				if options[:bool_as_enum] == true
+				if options[:use_translation] == true
 					label = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.bool_#{value}", default: "")
 					color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.bool_#{value}", default: "")
 					icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.bool_#{value}", default: "")
