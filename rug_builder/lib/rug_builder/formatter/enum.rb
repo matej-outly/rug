@@ -83,9 +83,12 @@ module RugBuilder
 			end
 			column = options[:column]
 
+			# Normalize value
+			value = value.to_s
+
 			# Get value, color and icon
 			if object.class.respond_to?("available_#{column.to_s.pluralize}".to_sym)	
-				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
+				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).find { |obj| obj.value == value }
 				return "" if value_obj.blank?
 				value = value_obj.value
 				label = value_obj.label
