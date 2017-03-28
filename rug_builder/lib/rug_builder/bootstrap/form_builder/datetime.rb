@@ -19,13 +19,20 @@ module RugBuilder
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(name.to_s)
 
+				# Value
+				value = object.send(name)
+				if !value.blank?
+					value = Date.parse(value) if !value.is_a?(Date)
+					value = value.strftime("%-d. %-m. %Y") 
+				end
+
 				# Java Script
 				result += @template.javascript_tag(%{
 					function date_picker_#{hash}_ready()
 					{
 						$('#date_picker_#{hash}').pikaday({ 
 							firstDay: 1,
-							format: 'YYYY-MM-DD',
+							format: 'D. M. YYYY',
 							i18n: {
 								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
@@ -40,6 +47,7 @@ module RugBuilder
 				
 				# Options
 				options[:id] = "date_picker_#{hash}"
+				options[:value] = value
 
 				# Field
 				result += text_input_row(name, :text_field, options)
@@ -97,7 +105,7 @@ module RugBuilder
 				value = object.send(name)
 				if !value.blank?
 					value = DateTime.parse(value) if !value.is_a?(DateTime) && !value.is_a?(Time)
-					value = value.strftime("%Y-%m-%d %k:%M")
+					value = value.strftime("%-d. %-m. %Y %k:%M")
 				end
 				
 				# Java Script
@@ -105,8 +113,10 @@ module RugBuilder
 					function datetime_picker_#{hash}_update_inputs()
 					{
 						var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');
-						$('#datetime_picker_#{hash} .date').val(date_and_time[0]);
-						$('#datetime_picker_#{hash} .time').val(date_and_time[1]);
+						if (date_and_time.length == 4) {
+							$('#datetime_picker_#{hash} .date').val(date_and_time[0] + ' ' + date_and_time[1] + ' ' + date_and_time[2]);
+							$('#datetime_picker_#{hash} .time').val(date_and_time[3]);
+						}
 					}
 					function datetime_picker_#{hash}_update_datetime()
 					{
@@ -116,7 +126,7 @@ module RugBuilder
 					{
 						$('#datetime_picker_#{hash} .date').pikaday({ 
 							firstDay: 1,
-							format: 'YYYY-MM-DD',
+							format: 'D. M. YYYY',
 							i18n: {
 								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
@@ -181,12 +191,18 @@ module RugBuilder
 				# Part values
 				value = object.send(name)
 				value_date = value && value[:date] ? value[:date] : nil
+				if !value_date.blank?
+					value_date = Date.parse(value_date) if !value_date.is_a?(Date)
+					value_date = value_date.strftime("%-d. %-m. %Y") 
+				end
 				value_from = value && value[:from] ? value[:from] : nil
 				if !value_from.blank?
+					value_from = DateTime.parse(value_from) if !value_from.is_a?(DateTime) && !value_from.is_a?(Time)
 					value_from = value_from.strftime("%k:%M")
 				end
 				value_to = value && value[:to] ? value[:to] : nil
 				if !value_to.blank?
+					value_to = DateTime.parse(value_to) if !value_to.is_a?(DateTime) && !value_to.is_a?(Time)
 					value_to = value_to.strftime("%k:%M")
 				end
 				
@@ -196,7 +212,7 @@ module RugBuilder
 					{
 						$('#datetime_range_picker_#{hash} .date').pikaday({ 
 							firstDay: 1,
-							format: 'YYYY-MM-DD',
+							format: 'D. M. YYYY',
 							i18n: {
 								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
@@ -382,8 +398,8 @@ module RugBuilder
 				result_days = %{
 					<div class="col-sm-#{12 / columns_count}">
 						<div class="input-group">
-							<div class="input-group-addon">#{label_days.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))}
+							<div class="input-group-addon">#{label_days.upcase_first}</div>
 						</div>
 					</div>
 				}
@@ -391,8 +407,8 @@ module RugBuilder
 				result_hours = %{
 					<div class="col-sm-#{12 / columns_count}">
 						<div class="input-group">
-							<div class="input-group-addon">#{label_hours.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))}
+							<div class="input-group-addon">#{label_hours.upcase_first}</div>
 						</div>
 					</div>
 				}
@@ -400,8 +416,8 @@ module RugBuilder
 				result_minutes = %{
 					<div class="col-sm-#{12 / columns_count}">
 						<div class="input-group">
-							<div class="input-group-addon">#{label_minutes.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))}
+							<div class="input-group-addon">#{label_minutes.upcase_first}</div>
 						</div>
 					</div>
 				}
@@ -409,8 +425,8 @@ module RugBuilder
 				result_seconds = %{
 					<div class="col-sm-#{12 / columns_count}">
 						<div class="input-group">
-							<div class="input-group-addon">#{label_seconds.upcase_first}</div>
 							#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))}
+							<div class="input-group-addon">#{label_seconds.upcase_first}</div>
 						</div>
 					</div>
 				}
