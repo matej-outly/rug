@@ -37,10 +37,10 @@ module RugBuilder
 				file_name = value.original_filename
 				
 				result = %{
-					<div class="file-preview">
-						#{content_type.starts_with?("image/") ? picture(value, options) : ""}
+					<#{ options[:download] == true ? "a href=\"" + value.url + "\"" : "div" } class="file-preview">
+						#{ options[:picture] != false && content_type.starts_with?("image/") ? picture(value, options) : ""}
 						<span class="inner-box">#{RugBuilder::IconBuilder.render(icon)}#{file_name}</span>
-					</div>
+					</#{ options[:download] == true ? "a" : "div"}>
 				}
 						
 			else

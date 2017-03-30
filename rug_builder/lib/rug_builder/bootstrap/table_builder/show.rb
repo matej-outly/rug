@@ -116,7 +116,7 @@ module RugBuilder
 			# Single column
 			#
 			def show_layout_2(label_block, value_block, type)
-				if type == :text
+				if type == :text || type == :picture
 					result = %{
 						<tr>
 							<td colspan="2" class="show-table-label">#{label_block.call}</td>
