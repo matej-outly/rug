@@ -127,9 +127,9 @@ module RugBuilder
 								
 								# Moving
 								if check_moving(@options, hierarchical: true)
-									result_1 += "<td class=\"standard action\">" 
+									result_1 += "<td class=\"actions\">" 
 									result_1 += get_moving_up_link(object, @options[:paths][:move_up])
-									result_1 += "</td><td class=\"standard action\">" 
+									result_1 += "</td><td class=\"actions\">" 
 									result_1 += get_moving_down_link(object, @options[:paths][:move_down])
 									result_1 += "</td>" 
 								end
@@ -174,7 +174,7 @@ module RugBuilder
 
 								# Actions
 								if @actions
-									result_1 += "<td class=\"custom action\">"
+									result_1 += "<td class=\"actions\">"
 									@actions.each do |action, action_spec|
 										result_1 += action_spec[:block].call(object)
 									end

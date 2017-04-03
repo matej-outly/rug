@@ -89,6 +89,14 @@ RugTable.prototype = {
 			});
 		}
 	},
+	tilesReady: function()
+	{
+		if (this.options.tiles == true) {
+			this.table.find('.item').tileResizer({
+				resize: ['.caption'],
+			});
+		}
+	},
 	inlineDestroyReady: function()
 	{
 		if (this.options.inlineDestroy == true) {
@@ -106,6 +114,7 @@ RugTable.prototype = {
 		this.table = $('#index-table-' + this.hash);
 
 		this.movingReady();
+		this.tilesReady();
 		this.inlineDestroyReady();
 	}
 }

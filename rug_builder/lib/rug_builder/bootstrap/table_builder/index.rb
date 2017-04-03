@@ -121,7 +121,7 @@ module RugBuilder
 						objects.each do |object|
 							
 							result_1 += "<tr data-id=\"#{object.id}\" #{check_inline_destroy(@options) ? get_inline_destroy_data(object, @options[:paths][:destroy]) : ""} class=\"#{check_inline_destroy(@options) ? "destroyable" : ""}\">"
-							result_1 += "<td class=\"standard action\">#{get_moving_link}</td>" if check_moving(@options)
+							result_1 += "<td class=\"actions\">#{get_moving_link}</td>" if check_moving(@options)
 							@columns.headers.each_with_index do |column, idx|
 								result_1 += "<td>"
 								
@@ -136,7 +136,7 @@ module RugBuilder
 								result_1 += "</td>"
 							end
 							if @actions
-								result_1 += "<td class=\"custom action\">"
+								result_1 += "<td class=\"actions\">"
 								@actions.each do |action, action_spec|
 									result_1 += action_spec[:block].call(object)
 								end

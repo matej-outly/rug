@@ -169,6 +169,10 @@ module RugBuilder
 				return result
 			end
 
+			def check_tiles(options)
+				return options[:tiles] == true
+			end
+
 			# *********************************************************************
 			# Java Script
 			# *********************************************************************
@@ -207,6 +211,8 @@ module RugBuilder
 							inlineDestroySuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
 							inlineDestroyErrorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
 
+							// Tiles
+							tiles: #{check_tiles(@options)},
 						});
 						rug_table_#{@hash}.ready();
 					});

@@ -36,6 +36,7 @@ module RugBuilder
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table header
 			# - grid_columns (integer) - Number of columns in the grid (default 3)
 			# - thumbanail_crop (indeger) - Height of thumbnail in px if it should be cropped (default no crop)
+			# - tiles (boolean) - Whether to use tile resizer to caption
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -56,7 +57,7 @@ module RugBuilder
 				@global_actions = prepare_actions(@options, :global_actions, [:new], size: "sm")
 
 				# Prepare actions
-				@actions = prepare_actions(@options, :actions, [:edit, :destroy], size: "sm")
+				@actions = prepare_actions(@options, :actions, [:edit, :destroy], size: "sm", label: false)
 
 				# Show link column
 				if @options[:show_link_column]
@@ -222,33 +223,38 @@ module RugBuilder
 						#{moving_handle_block.call}
 						<div class="thumbnail">
 				}
-				if !@thumbnail_crop.nil?
-					result += %{
-							<span class="thumbnail-crop thumbnail-crop-horizontal" style="height: #{@thumbnail_crop}px; width: 100%;">
-					}
-				end
 				
 				# Picture
-				result += first_column_block.call if first_column_block
-				
-				if !@thumbnail_crop.nil?	
-					result += %{		
-							</span>
-					}
+				if !@thumbnail_crop.nil?
+					result += %{<span class="thumbnail-crop thumbnail-crop-horizontal" style="height: #{@thumbnail_crop}px; width: 100%;">}
 				end
-				result += %{
-							<div class="caption">
-				}
+				result += first_column_block.call if first_column_block
+				if !@thumbnail_crop.nil?	
+					result += %{</span>}
+				end
+
+				# Caption
+				caption = ""
 				columns_blocks.each_with_index do |column_block, index|
-					if index == 0 
-						result += "<h5>" + column_block.call + "</h5>"
-					else
-						result += column_block.call
+					content = column_block.call
+					if !content.blank?
+						if index == 0 
+							caption += "<h5>" + content + "</h5>"
+						else
+							caption += content
+						end
 					end
 				end
+				if !caption.blank?
+					result += %{<div class="caption inner-box">#{caption}</div>}
+				end
+
+				# Actions
+				if !actions.blank?
+					result += %{<div class="actions">#{actions}</div>}
+				end
+
 				result += %{
-								#{!actions.blank? ? "<hr/>" + actions : ""}
-							</div>
 						</div>	
 					</div>
 				}
