@@ -113,9 +113,9 @@ module RugBuilder
 					function datetime_picker_#{hash}_update_inputs()
 					{
 						var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');
-						if (date_and_time.length == 4) {
+						if (date_and_time.length >= 4) {
 							$('#datetime_picker_#{hash} .date').val(date_and_time[0] + ' ' + date_and_time[1] + ' ' + date_and_time[2]);
-							$('#datetime_picker_#{hash} .time').val(date_and_time[3]);
+							$('#datetime_picker_#{hash} .time').val(date_and_time[date_and_time.length-1]);
 						}
 					}
 					function datetime_picker_#{hash}_update_datetime()
