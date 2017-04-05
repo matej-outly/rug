@@ -2,7 +2,7 @@
 /* Copyright (c) Clockstar s.r.o. All rights reserved.                       */
 /*****************************************************************************/
 /*                                                                           */
-/* Rug Crop                                                                  */
+/* Rug Form Crop                                                             */
 /*                                                                           */
 /* Author:                                                                   */
 /* Date  : 4. 4. 2017                                                        */
@@ -10,10 +10,11 @@
 /*****************************************************************************/
 
 
-function RugCrop(hash, options)
+function RugFormCrop(hash, options)
 {
 	this.hash = hash;
-	this.$crop = null;
+	this.$cropBox = null;
+	this.$cropImg = null;
 	this.$cropX = null;
 	this.$cropY = null;
 	this.$cropW = null;
@@ -24,13 +25,13 @@ function RugCrop(hash, options)
 		initial: null,
 	}, options);
 }
-RugCrop.prototype = {
-	constructor: RugCrop,
+RugFormCrop.prototype = {
+	constructor: RugFormCrop,
 
 	//
 	// Cropped area has been changed
 	//
-	onCropUpdate: function(coords)
+	onUpdate: function(coords)
 	{
 		this.$cropX.val(coords.x);
 		this.$cropY.val(coords.y);
@@ -39,11 +40,16 @@ RugCrop.prototype = {
 	},
 
 	//
-	// Reload plugin
+	// Reload plugin with different image src
 	//
-	reload: function()
+	reload: function(src)
 	{
-		console.log("RugCrop::reload not implemented");
+		// Replace original src with croppable style (Paperclip dependency)
+		src = src.replace('/original/', '/#{croppable_style.to_s}/');
+
+		// New image and plugin reload
+		this.$cropbox.html('<img src="' + src + '" />');
+		this.ready();
 	},
 
 	//
@@ -51,16 +57,17 @@ RugCrop.prototype = {
 	//
 	ready: function()
 	{
-		this.$crop = $('#crop_' + this.hash + ' .cropbox img');
-		this.$cropX = $('#crop_' + this.hash + ' .crop_x');
-		this.$cropY = $('#crop_' + this.hash + ' .crop_y');
-		this.$cropW = $('#crop_' + this.hash + ' .crop_w');
-		this.$cropH = $('#crop_' + this.hash + ' .crop_h');
+		this.$cropBox = $('#crop_' + this.hash + ' .cropbox');
+		this.$cropImg = $('#crop_' + this.hash + ' .cropbox img');
+		this.$cropX   = $('#crop_' + this.hash + ' .crop_x');
+		this.$cropY   = $('#crop_' + this.hash + ' .crop_y');
+		this.$cropW   = $('#crop_' + this.hash + ' .crop_w');
+		this.$cropH   = $('#crop_' + this.hash + ' .crop_h');
 
-		this.$crop.croppable({
+		this.$cropImg.croppable({
 			aspectRatio: this.options.aspectRatio,
 			initial: this.options.initial,
-			cropUpdated: this.onCropUpdate.bind(this),
+			updated: this.onUpdate.bind(this),
 		});
 	},
 }

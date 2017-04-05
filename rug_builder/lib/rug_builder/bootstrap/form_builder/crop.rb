@@ -112,13 +112,14 @@ module RugBuilder
 				# js += "$(document).ready(crop_#{hash}_ready);\n"
 
 				result += @template.javascript_tag(%{
-					var rug_crop_#{hash} = null;
+					var rug_form_crop_#{hash} = null;
 					$(document).ready(function() {
-						rug_crop_#{hash} = new RugCrop('#{hash}', {
+						rug_form_crop_#{hash} = new RugFormCrop('#{hash}', {
 							aspectRatio: #{cropped_style_aspect_ratio ? cropped_style_aspect_ratio : "null"},
 							initial: #{!already_cropped ? "{ x: " + crop_x + ", y: " + crop_y + ", width: " + crop_w + ", height: " + crop_h + "}" : "null"},
+							croppableStyle: '#{croppable_style.to_s}',
 						});
-						rug_crop_#{hash}.ready();
+						rug_form_crop_#{hash}.ready();
 					});
 				})
 
