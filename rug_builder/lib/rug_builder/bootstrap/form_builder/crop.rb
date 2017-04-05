@@ -116,12 +116,7 @@ module RugBuilder
 					$(document).ready(function() {
 						rug_crop_#{hash} = new RugCrop('#{hash}', {
 							aspectRatio: #{cropped_style_aspect_ratio ? cropped_style_aspect_ratio : "null"},
-							initial: {
-								x: #{already_cropped ? crop_x : 0},
-								y: #{already_cropped ? crop_y : 0},
-								width: #{already_cropped ? crop_w : cropped_style_width},
-								height: #{already_cropped ? crop_h : cropped_style_height},
-							}
+							initial: #{!already_cropped ? "{ x: " + crop_x + ", y: " + crop_y + ", width: " + crop_w + ", height: " + crop_h + "}" : "null"},
 						});
 						rug_crop_#{hash}.ready();
 					});

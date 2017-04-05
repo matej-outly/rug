@@ -30,7 +30,7 @@ RugCrop.prototype = {
 	//
 	// Cropped area has been changed
 	//
-	onUpdate: function(coords)
+	onCropUpdate: function(coords)
 	{
 		this.$cropX.val(coords.x);
 		this.$cropY.val(coords.y);
@@ -60,7 +60,7 @@ RugCrop.prototype = {
 		this.$crop.croppable({
 			aspectRatio: this.options.aspectRatio,
 			initial: this.options.initial,
-			updated: this.onUpdate.bind(this),
+			cropUpdated: this.onCropUpdate.bind(this),
 		});
 	},
 }
