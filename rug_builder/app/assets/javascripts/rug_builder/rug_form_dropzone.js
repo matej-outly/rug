@@ -69,8 +69,8 @@ RugFormDropzone.prototype = {
 				if (_this.options.notifyToObject) {
 					var showUrl = updateUrl; /* Update URL is similar to show URL (it differs in method) */
 					$.get(showUrl, function(callback) {
-						if (callback && callback[this.options.name + "_url"]) {
-							var src = callback[this.options.name + "_url"];							
+						if (callback && callback[_this.options.name + "_url"]) {
+							var src = callback[_this.options.name + "_url"];							
 							eval('var notifyToObject = ' + _this.options.notifyToObject + ';');
 							notifyToObject.reload(src);
 						}

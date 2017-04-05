@@ -45,10 +45,11 @@ RugFormCrop.prototype = {
 	reload: function(src)
 	{
 		// Replace original src with croppable style (Paperclip dependency)
-		src = src.replace('/original/', '/#{croppable_style.to_s}/');
+		src = src.replace('/original/', '/' + this.options.croppableStyle + '/');
 
 		// New image and plugin reload
-		this.$cropbox.html('<img src="' + src + '" />');
+		this.$cropBox.html('<img src="' + src + '" />');
+		this.options.initial = null;
 		this.ready();
 	},
 
