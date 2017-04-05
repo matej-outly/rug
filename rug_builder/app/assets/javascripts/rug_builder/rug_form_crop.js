@@ -49,8 +49,13 @@ RugFormCrop.prototype = {
 
 		// New image and plugin reload
 		this.$cropBox.html('<img src="' + src + '" />');
-		this.options.initial = null;
-		this.ready();
+		this.$cropImg = $('#crop_' + this.hash + ' .cropbox img');
+
+		var self = this;
+		this.$cropImg.load(function() {
+			self.options.initial = null;
+			self.ready();
+		});
 	},
 
 	//
