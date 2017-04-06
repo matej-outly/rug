@@ -50,38 +50,27 @@ module RugBuilder
 				})
 				
 				# Form group
-				result += "<div id=\"map_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += %{
+					<div id="map_location_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						<div class="row">
+						
+							<div class="col-sm-6"><div class="input-group">
+								<div class="input-group-addon">#{label_latitude.upcase_first}</div>
+								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))}
+								<div class="input-group-addon exchange" style="cursor: pointer;">#{@template.rug_icon("exchange")}</div>
+							</div></div>
 
-				# Label
-				result += label_for(name, options)
+							<div class="col-sm-6"><div class="input-group">
+								<div class="input-group-addon">#{label_longitude.upcase_first}</div>
+								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))}
+							</div></div>
 
-				# Form horizontal
-				result += "<div class=\"row\">"
-				
-				# Text inputs
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_latitude.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))
-				result += "</div></div>"
-
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_longitude.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))
-				result += "</div></div>"
-
-				# Mapbox (canvas)
-				result += "<div class=\"col-sm-12\">"
-				result += "<div class=\"mapbox\"></div>"
-				result += "</div>"
-
-				# Errors
-				result += errors(name, class: "col-sm-12")
-				
-				# Form hotrizontal
-				result += "</div>"
-
-				# Form group
-				result += "</div>"
+							<div class="col-sm-12"><div class="mapbox"></div></div>
+							#{errors(name, class: "col-sm-12")}
+						</div>
+					</div>
+				}
 				
 				return result.html_safe
 			end
@@ -112,30 +101,16 @@ module RugBuilder
 				})
 				
 				# Form group
-				result += "<div id=\"map_polygon_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
-				# Label
-				result += label_for(name, options)
-
-				# Form horizontal
-				result += "<div class=\"row\">"
-				
-				# Input
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)
-
-				# Mapbox (canvas)
-				result += "<div class=\"col-sm-12\">"
-				result += "<div class=\"mapbox\"></div>"
-				result += "</div>"
-
-				# Errors
-				result += errors(name, class: "col-sm-12")
-				
-				# Form horizontal
-				result += "</div>"
-
-				# Form group
-				result += "</div>"
+				result += %{
+					<div id="map_polygon_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						<div class="row">
+							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)}
+							<div class="col-sm-12"><div class="mapbox"></div></div>
+							#{errors(name, class: "col-sm-12")}
+						</div>
+					</div>
+				}
 				
 				return result.html_safe
 			end
@@ -169,35 +144,17 @@ module RugBuilder
 				#result += @template.javascript_tag(js)
 				
 				# Form group
-				result += "<div id=\"address_location_#{hash}\" class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				
-				# Label
-				result += label_for(name, options)
-				
-				# Form horizontal
-				result += "<div class=\"row\">"
-				
-				# Level input
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")
-				
-				# Location inputs
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")
-				result += @template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "longitude")
-				
-				# Address input
-				result += "<div class=\"col-sm-12\">"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)
-				result += "</div>"
-				
-				# Errors
-				result += errors(name, class: "col-sm-12")
-				
-				# Form horizontal
-				result += "</div>"
+				result += %{
+					<div id="address_location_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "longitude")}
+						#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)}
+						#{errors(name)}
+					</div>
+				}
 
-				# Form group
-				result += "</div>"
-				
 				return result.html_safe
 			end
 
