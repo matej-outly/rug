@@ -72,6 +72,24 @@ module RugRecord
 							end
 						end
 
+						# Get method
+						define_method("#{new_column}_formatted".to_sym) do
+							column = new_column
+							return RugBuilder::Formatter.address(self.send(column))
+						end
+
+						# Set method
+						define_method("#{new_column}_formatted=".to_sym) do |value|
+							column = new_column
+							parsed_value = self.class.parse_address(value.to_s)
+							self.send("#{column}=".to_sym, {
+								street: parsed_value[3],
+								number: parsed_value[4],
+								city: parsed_value[2],
+								postcode: parsed_value[1],
+							})
+						end
+
 					end
 
 					#
@@ -90,18 +108,18 @@ module RugRecord
 						if address_parts.length >= 1
 							city = address_parts.pop
 							city_parts = []
-							zipcode_parts = []
-							zipcode_prefix = true
+							postcode_parts = []
+							postcode_prefix = true
 							city.split(" ").each do |part|
-								if zipcode_prefix && /\A\d+\z/.match(part) # Is a positive number
-									zipcode_parts << part
+								if postcode_prefix && /\A\d+\z/.match(part) # Is a positive number
+									postcode_parts << part
 								else
 									city_parts << part
-									zipcode_prefix = false
+									postcode_prefix = false
 								end
 							end
 							city = city_parts.join(" ")
-							zipcode = zipcode_parts.join(" ")
+							postcode = postcode_parts.join(" ")
 						end
 						if address_parts.length >= 1
 							street = address_parts.join(", ")
@@ -121,7 +139,7 @@ module RugRecord
 							end
 							street = street_parts.join(" ")
 						end
-						return [country, zipcode, city, street, number]
+						return [country, postcode, city, street, number]
 					end
 
 				end

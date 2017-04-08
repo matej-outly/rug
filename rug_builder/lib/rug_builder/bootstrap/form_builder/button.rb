@@ -21,11 +21,8 @@ module RugBuilder
 				# CSS class
 				klass = []
 				klass << "btn"
-				if !options[:style].nil?
-					klass << "btn-#{options[:style]}"
-				else
-					klass << "btn-primary"
-				end
+				klass << (!options[:style].nil? ? "btn-#{options[:style]}" : "btn-primary")
+				klass << "btn-#{options[:size]}" if !options[:size].nil?
 				klass << options[:class] if !options[:class].nil?
 				
 				# Field options
@@ -43,11 +40,8 @@ module RugBuilder
 				# CSS class
 				klass = []
 				klass << "btn"
-				if !options[:style].nil?
-					klass << "btn-#{options[:style]}"
-				else
-					klass << "btn-default"
-				end
+				klass << (!options[:style].nil? ? "btn-#{options[:style]}" : "btn-default")
+				klass << "btn-#{options[:size]}" if !options[:size].nil?
 				klass << options[:class] if !options[:class].nil?
 				
 				# Field options
