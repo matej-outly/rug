@@ -105,10 +105,17 @@ class String
 	end
 
 	#
+	# Remove all accents
+	#
+	def unaccent
+		return I18n.transliterate(self)
+	end
+
+	#
 	# Convert string to URL suitable format (= url-suitable-format)
 	#
 	def to_url
-		return I18n.transliterate(self).
+		return self.unaccent.
 			strip_tags.
 			gsub("&nbsp;", " ").
 			gsub("&amp;", " ").

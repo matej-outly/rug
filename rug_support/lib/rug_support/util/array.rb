@@ -56,4 +56,47 @@ class Array
 		return result
 	end
 
+	def diff(array_2, options = {}, &block)
+		Array.diff(self, array_2, options, &block)
+		return self
+	end
+
+	#
+	# Find differencied between array 1 and array 2
+	#
+	def self.diff(array_1, array_2, options = {}, &block)
+		
+		# Arrays for compare
+		compare_array_1 = array_1
+		compare_array_1 = array_1.map { |item| item.send(options[:compare_attr_1]) } if options[:compare_attr_1]
+		compare_array_2 = array_2
+		compare_array_2 = array_2.map { |item| item.send(options[:compare_attr_2]) } if options[:compare_attr_2]
+		
+		# Items to remove
+		items_to_remove = []
+		array_1.each do |item|
+			compare_item = item
+			compare_item = item.send(options[:compare_attr_1]) if options[:compare_attr_1]
+			items_to_remove << item if !compare_array_2.include?(compare_item)
+		end
+
+		# Items to add
+		items_to_add = []
+		array_2.each do |item|
+			compare_item = item
+			compare_item = item.send(options[:compare_attr_2]) if options[:compare_attr_2]
+			items_to_add << item if !compare_array_1.include?(compare_item)
+		end
+
+		# Perform actions
+		items_to_remove.each do |item|
+			block.call(:remove, item)
+		end
+		items_to_add.each do |item|
+			block.call(:add, item)
+		end
+
+		return array_1
+	end
+
 end
