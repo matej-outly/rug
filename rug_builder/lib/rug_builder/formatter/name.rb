@@ -25,9 +25,32 @@ module RugBuilder
 					return ""
 				else
 					result = ""
-					result += "#{value_title.to_s} " if !value_title.blank?
-					result += "#{value_firstname.to_s} " if !value_firstname.blank?
-					result += value_lastname.to_s
+
+					# Title
+					if !value_title.blank?
+						if options[:strong_title] == true
+							result += "<strong>#{value_title}</strong> "
+						else
+							result += "#{value_title} "
+						end
+					end
+					
+					# Firstname
+					if !value_firstname.blank?
+						if options[:strong_firstname] == true
+							result += "<strong>#{value_firstname}</strong> "
+						else
+							result += "#{value_firstname} "
+						end
+					end
+					
+					# Lastname
+					if options[:strong_lastname] == true
+						result += "<strong>#{value_lastname}</strong>"
+					else
+						result += "#{value_lastname}"
+					end
+					
 					return result
 				end
 			else
