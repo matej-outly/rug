@@ -60,82 +60,80 @@ module RugBuilder
 
 				# Unique hash
 				hash = Digest::SHA1.hexdigest(options[:id].to_s)
-				from_hash = Digest::SHA1.hexdigest(hash + "_from")
-				to_hash = Digest::SHA1.hexdigest(hash + "_to")
-
+				
 				# Google API
 				result += @template.javascript_include_tag("https://www.google.com/jsapi")
 
-				# JavaScript
-				js = ""
+				# Application JS
+				result += @template.javascript_tag(%{
+					var rug_chart_#{hash} = null;
+					RugChart.setup({
+						language: '#{I18n.locale.to_s}',
+					});
+					$(document).ready(function() {
+						rug_chart_#{hash} = new RugChart('#{hash}', {
+							id: '#{options[:id]}',
+							path: '#{path}',
+							type: '#{type}',
+							i18n: {
+								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
+								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
+								months        : [
+									'#{I18n.t("date.month_names")[1]}',
+									'#{I18n.t("date.month_names")[2]}',
+									'#{I18n.t("date.month_names")[3]}',
+									'#{I18n.t("date.month_names")[4]}',
+									'#{I18n.t("date.month_names")[5]}',
+									'#{I18n.t("date.month_names")[6]}',
+									'#{I18n.t("date.month_names")[7]}',
+									'#{I18n.t("date.month_names")[8]}',
+									'#{I18n.t("date.month_names")[9]}',
+									'#{I18n.t("date.month_names")[10]}',
+									'#{I18n.t("date.month_names")[11]}',
+									'#{I18n.t("date.month_names")[12]}'
+								],
+								weekdays      : [
+									'#{I18n.t("date.day_names")[0]}',
+									'#{I18n.t("date.day_names")[1]}',
+									'#{I18n.t("date.day_names")[2]}',
+									'#{I18n.t("date.day_names")[3]}',
+									'#{I18n.t("date.day_names")[4]}',
+									'#{I18n.t("date.day_names")[5]}',
+									'#{I18n.t("date.day_names")[6]}'
+								],
+								weekdaysShort : [
+									'#{I18n.t("date.abbr_day_names")[0]}',
+									'#{I18n.t("date.abbr_day_names")[1]}',
+									'#{I18n.t("date.abbr_day_names")[2]}',
+									'#{I18n.t("date.abbr_day_names")[3]}',
+									'#{I18n.t("date.abbr_day_names")[4]}',
+									'#{I18n.t("date.abbr_day_names")[5]}',
+									'#{I18n.t("date.abbr_day_names")[6]}'
+								]
+							}
+						});
+						rug_chart_#{hash}.ready();
+					});
+				})
 
-				# Chartkick config
-				js += "Chartkick.configure({'language': '#{I18n.locale.to_s}'});\n"
-
-				# Reload function
-				js += "function time_flexible_#{type.to_s}_chart_#{hash}_reload()\n"
-				js += "{\n"
-				js += "	var from_date = $('#date_picker_#{from_hash}').val();\n"
-				js += "	var to_date = $('#date_picker_#{to_hash}').val();\n"
-				js += "	var path = '#{path}';\n"
-				js += "	var params = [];\n"
-				js += "	if (from_date) {\n"
-				js += "		params.push('from=' + from_date)\n"
-				js += "	}\n"
-				js += "	if (to_date) {\n"
-				js += "		params.push('to=' + to_date)\n"
-				js += "	}\n"
-				js += "	var chart_options = Chartkick.charts['#{options[:id]}'].getOptions();\n"
-				js += "	new Chartkick.#{type.to_s.to_snake.upcase_first}Chart('#{options[:id]}', path + '?' + params.join('&'), chart_options);\n"
-				js += "}\n"
-
-				# Ready function
-				js += "function time_flexible_#{type.to_s}_chart_#{hash}_ready()\n"
-				js += "{\n"
-				js += "	$('#date_picker_#{from_hash}, #date_picker_#{to_hash}').pikaday({ \n"
-				js += "		firstDay: 1,\n"
-				js += "		format: 'YYYY-MM-DD',\n"
-				js += "		i18n: {\n"
-				js += "			previousMonth : '#{I18n.t("views.calendar.prev_month")}',\n"
-				js += "			nextMonth     : '#{I18n.t("views.calendar.next_month")}',\n"
-				js += "			months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],\n"
-				js += "			weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],\n"
-				js += "			weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']\n"
-				js += "		}\n"
-				js += "	});\n"
-				js += "	$('#date_picker_#{from_hash}, #date_picker_#{to_hash}').on('change', time_flexible_#{type.to_s}_chart_#{hash}_reload);\n"
-				js += "}\n"
-				js += "$(document).ready(time_flexible_#{type.to_s}_chart_#{hash}_ready);\n"
-
-				# Add JavaScript to result
-				result += @template.javascript_tag(js)
-
-				# Panel
-				result += "<div class=\"panel panel-default\">"
-				result += "<div class=\"panel-body\">"
-
-				# Chart
-				result += @template.send("#{type.to_s}_chart".to_sym, path + "?from=#{default_from.to_s}&to=#{default_to.to_s}", options)
-
-				# Row
-				result += "<div class=\"row\">"
-				
-				# From
-				result += "<div class=\"col-sm-3\">"
-				result += @template.text_field_tag("time_flexible_#{type.to_s}_chart_#{hash}_from", default_from.to_s, class: "form-control", id: "date_picker_#{from_hash}")
-				result += "</div>"
-
-				# To
-				result += "<div class=\"col-sm-3 col-sm-offset-6\">"
-				result += @template.text_field_tag("time_flexible_#{type.to_s}_chart_#{hash}_to", default_to.to_s, class: "form-control", id: "date_picker_#{to_hash}")
-				result += "</div>"
-				
-				# Row end
-				result += "</div>"
-
-				# Panel end
-				result += "</div>"
-				result += "</div>"
+				# HTML
+				result += %{
+					<div class="panel panel-default" id="chart-#{hash}">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-12">
+									#{@template.send("#{type.to_s}_chart".to_sym, path + "?from=#{default_from.to_s}&to=#{default_to.to_s}", options)}
+								</div>
+								<div class="col-sm-3">
+									#{@template.text_field_tag("chart_#{hash}_date_from", default_from.to_s, class: "form-control date-from")}
+								</div>
+								<div class="col-sm-3 col-sm-offset-6">
+									#{@template.text_field_tag("chart_#{hash}_date_to", default_to.to_s, class: "form-control date-to")}
+								</div>
+							</div>
+						</div>
+					</div>
+				}
 
 				return result.html_safe
 			end

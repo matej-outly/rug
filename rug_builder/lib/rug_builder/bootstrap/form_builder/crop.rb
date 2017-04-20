@@ -53,64 +53,6 @@ module RugBuilder
 					raise "Unknown style geometry format '#{cropped_style_geometry}'"
 				end
 
-				# Java Script
-				# js = ""
-
-				# js += "function crop_#{hash}_update_coords(coords) \n"
-				# js += "{\n"
-				# js += "	$('#crop_#{hash} .crop_x').val(coords.x);\n"
-				# js += "	$('#crop_#{hash} .crop_y').val(coords.y);\n"
-				# js += "	$('#crop_#{hash} .crop_w').val(coords.width);\n"
-				# js += "	$('#crop_#{hash} .crop_h').val(coords.height);\n"
-				# js += "}\n"
-
-				# js += "function crop_#{hash}_reload_jcrop()\n"
-				# js += "{\n"
-				# js += "	var img = $('#crop_#{hash} .cropbox img');\n"
-				# js += "	var jcrop_api = img.data('Jcrop');\n"
-				# js += "	if (jcrop_api) {\n"
-				# js += "		jcrop_api.destroy();\n"
-				# js += "	}\n"
-				# js += "	var natural_width = img.get(0).naturalWidth;\n"
-				# js += "	var natural_height = img.get(0).naturalHeight;\n"
-				# js += "	img.Jcrop({\n"
-				# js += "		trueSize: [natural_width, natural_height],\n"
-				# js += "		onChange: crop_#{hash}_update_coords,\n"
-				# js += "		onSelect: crop_#{hash}_update_coords,\n"
-				# if already_cropped # TODO Dynamic from hidden inputs
-				# 	js += "		setSelect: [#{(crop_x <= crop_w ? crop_x : crop_x + crop_w)}, #{(crop_y <= crop_h ? crop_y : crop_y + crop_h)}, #{crop_w}, #{crop_h}],\n" # crop_x+crop_w / crop_y+crop_h: Hack overriding bug in jCrop
-				# else
-				# 	js += "		setSelect: [0, 0, #{cropped_style_width}, #{cropped_style_height}],\n"
-				# end
-				# if cropped_style_aspect_ratio
-				# 	js += "		aspectRatio: #{cropped_style_aspect_ratio},\n"
-				# end
-				# js += "	});\n"
-				# js += "}\n"
-
-				# js += "function crop_#{hash}_reload(id)\n"
-				# js += "{\n"
-				# js += "	$.ajax({\n"
-				# js += "		dataType: 'json',\n"
-				# js += "		url: '#{RugSupport::PathResolver.new(@template).resolve(self.options[:update_url], ":id")}'.replace(':id', id),\n" # Update URL is similar to show URL
-				# js += "		success: function(callback) {\n"
-				# js += "			if (callback && callback.#{name.to_s}_url) {\n"
-				# js += "				var src = callback.#{name.to_s}_url.replace('/original/', '/#{croppable_style.to_s}/');\n"
-				# js += "				$('#crop_#{hash} .cropbox').html('<img src=\\'' + src + '\\' />');\n"
-				# js += "				$('#crop_#{hash} .cropbox img').load(crop_#{hash}_reload_jcrop);\n"
-				# js += "			}\n"
-				# js += "		}\n"
-				# js += "	});\n"
-				# js += "}\n"
-
-				# js += "function crop_#{hash}_ready()\n"
-				# js += "{\n"
-				# js += "	$('#crop_#{hash} .cropbox img').load(crop_#{hash}_reload_jcrop);\n"
-				# js += "	if ($('#crop_#{hash} .cropbox img').length > 0) crop_#{hash}_reload_jcrop();\n"
-				# js += "}\n"
-
-				# js += "$(document).ready(crop_#{hash}_ready);\n"
-
 				result += @template.javascript_tag(%{
 					var rug_form_crop_#{hash} = null;
 					$(document).ready(function() {

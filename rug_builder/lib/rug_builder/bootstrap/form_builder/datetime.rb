@@ -34,11 +34,40 @@ module RugBuilder
 							firstDay: 1,
 							format: 'D. M. YYYY',
 							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
+								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],
-								weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],
-								weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']
+								months        : [
+									'#{I18n.t("date.month_names")[1]}',
+									'#{I18n.t("date.month_names")[2]}',
+									'#{I18n.t("date.month_names")[3]}',
+									'#{I18n.t("date.month_names")[4]}',
+									'#{I18n.t("date.month_names")[5]}',
+									'#{I18n.t("date.month_names")[6]}',
+									'#{I18n.t("date.month_names")[7]}',
+									'#{I18n.t("date.month_names")[8]}',
+									'#{I18n.t("date.month_names")[9]}',
+									'#{I18n.t("date.month_names")[10]}',
+									'#{I18n.t("date.month_names")[11]}',
+									'#{I18n.t("date.month_names")[12]}'
+								],
+								weekdays      : [
+									'#{I18n.t("date.day_names")[0]}',
+									'#{I18n.t("date.day_names")[1]}',
+									'#{I18n.t("date.day_names")[2]}',
+									'#{I18n.t("date.day_names")[3]}',
+									'#{I18n.t("date.day_names")[4]}',
+									'#{I18n.t("date.day_names")[5]}',
+									'#{I18n.t("date.day_names")[6]}'
+								],
+								weekdaysShort : [
+									'#{I18n.t("date.abbr_day_names")[0]}',
+									'#{I18n.t("date.abbr_day_names")[1]}',
+									'#{I18n.t("date.abbr_day_names")[2]}',
+									'#{I18n.t("date.abbr_day_names")[3]}',
+									'#{I18n.t("date.abbr_day_names")[4]}',
+									'#{I18n.t("date.abbr_day_names")[5]}',
+									'#{I18n.t("date.abbr_day_names")[6]}'
+								]
 							}
 						});
 					}
@@ -128,11 +157,40 @@ module RugBuilder
 							firstDay: 1,
 							format: 'D. M. YYYY',
 							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
+								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],
-								weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],
-								weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']
+								months        : [
+									'#{I18n.t("date.month_names")[1]}',
+									'#{I18n.t("date.month_names")[2]}',
+									'#{I18n.t("date.month_names")[3]}',
+									'#{I18n.t("date.month_names")[4]}',
+									'#{I18n.t("date.month_names")[5]}',
+									'#{I18n.t("date.month_names")[6]}',
+									'#{I18n.t("date.month_names")[7]}',
+									'#{I18n.t("date.month_names")[8]}',
+									'#{I18n.t("date.month_names")[9]}',
+									'#{I18n.t("date.month_names")[10]}',
+									'#{I18n.t("date.month_names")[11]}',
+									'#{I18n.t("date.month_names")[12]}'
+								],
+								weekdays      : [
+									'#{I18n.t("date.day_names")[0]}',
+									'#{I18n.t("date.day_names")[1]}',
+									'#{I18n.t("date.day_names")[2]}',
+									'#{I18n.t("date.day_names")[3]}',
+									'#{I18n.t("date.day_names")[4]}',
+									'#{I18n.t("date.day_names")[5]}',
+									'#{I18n.t("date.day_names")[6]}'
+								],
+								weekdaysShort : [
+									'#{I18n.t("date.abbr_day_names")[0]}',
+									'#{I18n.t("date.abbr_day_names")[1]}',
+									'#{I18n.t("date.abbr_day_names")[2]}',
+									'#{I18n.t("date.abbr_day_names")[3]}',
+									'#{I18n.t("date.abbr_day_names")[4]}',
+									'#{I18n.t("date.abbr_day_names")[5]}',
+									'#{I18n.t("date.abbr_day_names")[6]}'
+								]
 							}
 						});
 						$('#datetime_picker_#{hash} .time').clockpicker({
@@ -214,11 +272,40 @@ module RugBuilder
 							firstDay: 1,
 							format: 'D. M. YYYY',
 							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.prev_month")}',
+								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
 								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : ['#{I18n.t("views.calendar.months.january")}','#{I18n.t("views.calendar.months.february")}','#{I18n.t("views.calendar.months.march")}','#{I18n.t("views.calendar.months.april")}','#{I18n.t("views.calendar.months.may")}','#{I18n.t("views.calendar.months.june")}','#{I18n.t("views.calendar.months.july")}','#{I18n.t("views.calendar.months.august")}','#{I18n.t("views.calendar.months.september")}','#{I18n.t("views.calendar.months.october")}','#{I18n.t("views.calendar.months.november")}','#{I18n.t("views.calendar.months.december")}'],
-								weekdays      : ['#{I18n.t("views.calendar.days.sunday")}','#{I18n.t("views.calendar.days.monday")}','#{I18n.t("views.calendar.days.tuesday")}','#{I18n.t("views.calendar.days.wednesday")}','#{I18n.t("views.calendar.days.thursday")}','#{I18n.t("views.calendar.days.friday")}','#{I18n.t("views.calendar.days.saturday")}'],
-								weekdaysShort : ['#{I18n.t("views.calendar.short_days.sunday")}','#{I18n.t("views.calendar.short_days.monday")}','#{I18n.t("views.calendar.short_days.tuesday")}','#{I18n.t("views.calendar.short_days.wednesday")}','#{I18n.t("views.calendar.short_days.thursday")}','#{I18n.t("views.calendar.short_days.friday")}','#{I18n.t("views.calendar.short_days.saturday")}']
+								months        : [
+									'#{I18n.t("date.month_names")[1]}',
+									'#{I18n.t("date.month_names")[2]}',
+									'#{I18n.t("date.month_names")[3]}',
+									'#{I18n.t("date.month_names")[4]}',
+									'#{I18n.t("date.month_names")[5]}',
+									'#{I18n.t("date.month_names")[6]}',
+									'#{I18n.t("date.month_names")[7]}',
+									'#{I18n.t("date.month_names")[8]}',
+									'#{I18n.t("date.month_names")[9]}',
+									'#{I18n.t("date.month_names")[10]}',
+									'#{I18n.t("date.month_names")[11]}',
+									'#{I18n.t("date.month_names")[12]}'
+								],
+								weekdays      : [
+									'#{I18n.t("date.day_names")[0]}',
+									'#{I18n.t("date.day_names")[1]}',
+									'#{I18n.t("date.day_names")[2]}',
+									'#{I18n.t("date.day_names")[3]}',
+									'#{I18n.t("date.day_names")[4]}',
+									'#{I18n.t("date.day_names")[5]}',
+									'#{I18n.t("date.day_names")[6]}'
+								],
+								weekdaysShort : [
+									'#{I18n.t("date.abbr_day_names")[0]}',
+									'#{I18n.t("date.abbr_day_names")[1]}',
+									'#{I18n.t("date.abbr_day_names")[2]}',
+									'#{I18n.t("date.abbr_day_names")[3]}',
+									'#{I18n.t("date.abbr_day_names")[4]}',
+									'#{I18n.t("date.abbr_day_names")[5]}',
+									'#{I18n.t("date.abbr_day_names")[6]}'
+								]
 							}
 						});
 						$('#datetime_range_picker_#{hash} .from').clockpicker({
