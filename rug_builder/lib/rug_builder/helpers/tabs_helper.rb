@@ -13,8 +13,8 @@ module RugBuilder
 	module Helpers
 		module TabsHelper
 
-			def rug_tabs
-				RugBuilder::TabsBuilder.new(self)
+			def rug_tabs(options = {}, &block)
+				RugBuilder::TabsBuilder.new(self).render(options, &block)
 			end
 
 			def rug_tabs_header(tabs = [], options = {})

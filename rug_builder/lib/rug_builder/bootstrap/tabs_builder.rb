@@ -73,14 +73,17 @@ module RugBuilder
 			#
 			# Main render method
 			#
-			def render(options = {})
+			def render(options = {}, &block)
 
 				# Hash
 				hash = Digest::SHA1.hexdigest(@tabs.map{ |tab| tab[:name] }.join("_"))
 
+				# Call nested block to capture tabs and its options
+				unused = @template.capture(self, &block).to_s
+
 				# Wrapper
 				result = ""
-				result += "<div id=\"tabs_#{hash}\">"
+				result += "<div id=\"tabs-#{hash}\">"
 				
 				# Header options
 				header_options = {}
@@ -117,12 +120,12 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function tabs_#{hash}_ready()
 					{
-						$('#tabs_#{hash} a[data-toggle="tab"]').on('shown.bs.tab', function() {
+						$('#tabs-#{hash} a[data-toggle="tab"]').on('shown.bs.tab', function() {
 							localStorage.setItem('tabs_#{hash}_active', $(this).attr('href'));
 						});
 						var tab_to_show = localStorage.getItem('tabs_#{hash}_active');
 						if (tab_to_show) {
-							$('#tabs_#{hash} a[href="' + tab_to_show + '"]').tab('show');
+							$('#tabs-#{hash} a[href="' + tab_to_show + '"]').tab('show');
 						}
 					}
 					$(document).ready(tabs_#{hash}_ready);
