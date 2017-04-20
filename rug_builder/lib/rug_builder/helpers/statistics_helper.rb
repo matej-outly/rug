@@ -5,16 +5,16 @@
 # * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 8. 3. 2017
+# * Date  : 20. 4. 2017
 # *
 # *****************************************************************************
 
 module RugBuilder
 	module Helpers
-		module ListHelper
+		module StatisticsHelper
 
-			def rug_list_for(objects, options = {}, &block)
-				RugBuilder::ListBuilder.new(self).list(objects, options, &block)
+			def rug_statistics(options = {}, &block)
+				RugBuilder::StatisticsBuilder.new(self).render(options, &block)
 			end
 
 		end
