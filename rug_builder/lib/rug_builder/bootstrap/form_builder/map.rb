@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - map TODO Google API with key...
+# * Rug form builder - map
 # *
 # * Author: Matěj Outlý
 # * Date  : 8. 3. 2015
@@ -32,9 +32,6 @@ module RugBuilder
 				klass = []
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
-	
-				# Google Map API
-				result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
 				
 				# Application JS
 				result += @template.javascript_tag(%{
@@ -83,9 +80,6 @@ module RugBuilder
 
 				# Part values
 				value = object.send(name)
-
-				# Google Map API
-				result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
 				
 				# Application JS
 				result += @template.javascript_tag(%{
@@ -140,7 +134,6 @@ module RugBuilder
 				
 				# TODO sofar must be done in application JS
 
-				#result += "<script src=\"https://maps.googleapis.com/maps/api/js?key=#{options[:api_key]}\"></script>"
 				#result += @template.javascript_tag(js)
 				
 				# Form group

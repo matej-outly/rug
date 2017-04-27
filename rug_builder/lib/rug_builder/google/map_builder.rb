@@ -37,10 +37,6 @@ module RugBuilder
 			# Mapbox (canvas)
 			result += "<div class=\"mapbox\"></div>"
 			
-			# Google API
-			api_key_html = (options[:api_key] ? "?key=" + options[:api_key] : "")
-			result += "<script src=\"https://maps.googleapis.com/maps/api/js#{api_key_html}\"></script>"
-			
 			# Map library
 			result += @template.javascript_tag(js_library)
 
