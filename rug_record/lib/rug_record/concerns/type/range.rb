@@ -66,6 +66,12 @@ module RugRecord
 							end
 						end
 
+						# Get method
+						define_method("#{new_column}_formatted".to_sym) do
+							column = new_column
+							return RugBuilder::Formatter.range(self.send(column))
+						end
+
 					end
 
 				end
