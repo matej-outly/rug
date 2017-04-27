@@ -74,6 +74,9 @@ module RugBuilder
 				@thumbnail_crop = nil
 				@thumbnail_crop = @options[:thumbnail_crop] if @options[:thumbnail_crop]
 
+				# Wrapper
+				result += %{<div class="picture-index-table">}
+				
 				# Table heading
 				result += picture_index_layout_3(
 					@options[:class], 
@@ -126,6 +129,9 @@ module RugBuilder
 					item_template: picture_index_object(@columns.template_object),
 					moving_placeholder: picture_index_layout_5,
 				}))
+
+				# Wrapper
+				result += %{</div>}
 				
 				return result.html_safe
 			end
@@ -174,7 +180,7 @@ module RugBuilder
 			#
 			def picture_index_layout_1(klass, &block)
 				result = %{
-					<div id="index-table-#{@hash}" class="list picture-index-table row #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
+					<div id="index-table-#{@hash}" class="list picture-index-table-body row #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
 						#{block.call}
 					</div>
 				}
@@ -305,7 +311,7 @@ module RugBuilder
 			#
 			def picture_index_layout_6(klass, &block)
 				result = %{
-					<div class="empty-message picture-index-table-empty #{klass.to_s}">
+					<div class="empty-message picture-index-table-body empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}

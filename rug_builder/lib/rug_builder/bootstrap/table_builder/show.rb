@@ -42,6 +42,9 @@ module RugBuilder
 				# Show panel parts
 				#show_panel_heading = !actions.empty?
 				
+				# Wrapper
+				result += %{<div class="show-table">}
+
 				# Table heading
 				result += show_layout_3(
 					options[:class], 
@@ -93,6 +96,9 @@ module RugBuilder
 					result += table_result
 				end
 
+				# Wrapper
+				result += %{</div>}
+
 				return result.html_safe
 			end
 
@@ -103,7 +109,7 @@ module RugBuilder
 			#
 			def show_layout_1(klass, &block)
 				result = %{
-					<table class="table table-curved show-table #{klass.to_s}">
+					<table class="table table-curved show-table-body #{klass.to_s}">
 						<tbody>
 							#{block.call}
 						</tbody>
@@ -158,7 +164,7 @@ module RugBuilder
 			#
 			def show_layout_6(klass, &block)
 				result = %{
-					<div class="show-table-empty #{klass.to_s}">
+					<div class="show-table-body empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}

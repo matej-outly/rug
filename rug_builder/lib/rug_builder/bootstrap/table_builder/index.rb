@@ -64,6 +64,9 @@ module RugBuilder
 				# Prepare actions
 				@actions = prepare_actions(@options, :actions, [:edit, :destroy], label: false)
 
+				# Wrapper
+				result += %{<div class="index-table">}
+				
 				# Table heading
 				result += index_layout_3(
 					@options[:class], 
@@ -167,6 +170,9 @@ module RugBuilder
 
 				end
 
+				# Wrapper
+				result += %{</div>}
+
 				return result.html_safe
 			end
 
@@ -178,7 +184,7 @@ module RugBuilder
 
 			def index_layout_1(klass, &block)
 				result = %{
-					<table id="index-table-#{@hash}" class="table index-table #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
+					<table id="index-table-#{@hash}" class="table index-table-body #{(check_moving(@options) ? "moving" : "")} #{klass.to_s}">
 						#{block.call}
 					</table>
 				}
@@ -233,7 +239,7 @@ module RugBuilder
 			#
 			def index_layout_6(klass, &block)
 				result = %{
-					<div class="empty-message index-table-empty #{klass.to_s}">
+					<div class="empty-message index-table-body empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}

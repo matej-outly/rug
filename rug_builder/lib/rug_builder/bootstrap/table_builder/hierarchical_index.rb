@@ -67,6 +67,9 @@ module RugBuilder
 				open_siblings = {}
 				open_levels = {}
 
+				# Wrapper
+				result += %{<div class="hierarchical-index-table">}
+				
 				# Table heading
 				result += hierarchical_index_layout_3(
 					@options[:class], 
@@ -198,6 +201,9 @@ module RugBuilder
 					
 				end
 
+				# Wrapper
+				result += %{</div>}
+
 				return result.html_safe
 			end
 
@@ -209,7 +215,7 @@ module RugBuilder
 
 			def hierarchical_index_layout_1(klass, &block)
 				result = %{
-					<table id="index-table-#{@hash}" class="table hierarchical-index-table #{klass.to_s}">
+					<table id="index-table-#{@hash}" class="table hierarchical-index-table-body #{klass.to_s}">
 						#{block.call}
 					</table>
 				}
@@ -262,7 +268,7 @@ module RugBuilder
 			#
 			def hierarchical_index_layout_6(klass, &block)
 				result = %{
-					<div class="empty-message hierarchical-index-table-empty #{klass.to_s}">
+					<div class="empty-message hierarchical-index-table-body empty #{klass.to_s}">
 						#{block.call}
 					</div>
 				}
