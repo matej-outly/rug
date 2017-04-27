@@ -323,7 +323,11 @@ RugTree.prototype = {
 				if (event.node && !_this.inEditation) {
 					var node = event.node;
 					var showUrl = _this.options.showUrl.replace(':id', event.node.id);
-					window.location.href = showUrl;
+					if (typeof Turbolinks != "undefined") {
+						Turbolinks.visit(showUrl);
+					} else {
+						window.location.href = showUrl;
+					}
 				}
 			});
 		}

@@ -253,6 +253,9 @@ RugFormMapLocation.prototype = {
 		// Exchange button
 		_this.$exchangeButton = $('#map_location_' + _this.hash + ' .exchange');
 		_this.$exchangeButton.on('click', function(e) { e.preventDefault(); _this.exchangeInputs(); });
+
+		// Repair map on tab change
+		$('a[data-toggle="tab"]').on('shown.bs.tab', this.repair.bind(this));
 	},
 	repair: function()
 	{

@@ -136,6 +136,9 @@ RugFormMapPolygon.prototype = {
 			_this.updateInput();
 		});
 		this.updateMap();
+
+		// Repair map on tab change
+		$('a[data-toggle="tab"]').on('shown.bs.tab', this.repair.bind(this));
 	},
 	repair: function()
 	{
