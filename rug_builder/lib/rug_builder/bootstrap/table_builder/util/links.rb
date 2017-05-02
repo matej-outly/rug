@@ -125,7 +125,7 @@ module RugBuilder
 
 			def get_inline_destroy_data(object, path, options = {})
 				result = ""
-				result += "data-destroy-url=\"#{url = @path_resolver.resolve(path, object)}\" "
+				result += "data-destroy-url=\"#{@path_resolver.resolve(path, object)}\" "
 				result += "data-destroy=\"a.link-destroy\" "
 				return result
 			end

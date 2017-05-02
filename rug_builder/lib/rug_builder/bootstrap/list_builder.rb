@@ -28,6 +28,8 @@ module RugBuilder
 			# Options:
 			# - item_template (hash|object)
 			# - add_position (:append|:prepend)
+			# - list_class
+			# - item_class
 			#
 			def list(objects, options = {}, &block)
 				result = ""
@@ -44,12 +46,15 @@ module RugBuilder
 				# Block
 				@block = block
 
+				# List CSS class
+				list_class = !@options[:list_class].blank? ? @options[:list_class] : "row"
+
 				# Render
-				result += "<div id=\"list-#{@hash}\" class=\"list row\">"
+				result += %{<div id="list-#{@hash}" class="list #{list_class}">}
 				objects.each do |object|
 					result += render_item(object)
 				end
-				result += "</div>"
+				result += %{</div>}
 
 				# List JS application
 				result += @template.javascript_tag(render_js)
@@ -105,6 +110,13 @@ module RugBuilder
 							// Adding
 							addPosition: '#{@options[:add_position] ? @options[:add_position].to_s : "append" }',
 
+							// Inline destroy
+							inlineDestroy: #{@options[:inline_destroy] == true ? 'true' : 'false'},
+							inlineDestroyConfirmTitle: '#{I18n.t("general.are_you_sure")}',
+							inlineDestroyConfirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
+							inlineDestroySuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
+							inlineDestroyErrorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
+
 						});
 						rug_list_#{@hash}.ready();
 					});
@@ -117,8 +129,22 @@ module RugBuilder
 			# *****************************************************************
 
 			def render_item(object)
+				
+				# Item CSS class
+				item_class = (!@options[:item_class].blank? ? @options[:item_class] : "col-md-12")
+				item_class += " destroyable" if @options[:inline_destroy] == true
+				
+				# Data
+				data_id = %{data-id="#{object.id}"}
+				if @options[:inline_destroy] == true && @options[:inline_destroy_path]
+					data_destroy = %{
+						data-destroy-url="#{@path_resolver.resolve(@options[:inline_destroy_path], object)}\"
+						data-destroy="a.link-destroy"
+					}
+				end
+
 				return %{
-					<div class="item col-md-12" data-id="#{object.id}">
+					<div class="item #{item_class}" #{data_id} #{data_destroy}>
 						#{@template.capture(object, &@block).to_s}
 					</div>
 				}

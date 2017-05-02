@@ -74,7 +74,7 @@ RugFormDropzone.prototype = {
 							eval('var notifyToObject = ' + _this.options.notifyToObject + ';');
 							notifyToObject.reload(src);
 						}
-					});					
+					}, 'json');					
 				}
 			} else { /* Error saving image */ 
 			}

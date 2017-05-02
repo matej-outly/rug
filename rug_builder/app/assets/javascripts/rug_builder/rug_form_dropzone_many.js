@@ -64,7 +64,7 @@ RugDropzoneMany.prototype = {
 							eval('var moveToObject = ' + item + ';');
 							moveToObject.addItem(data);
 						});
-					});
+					}, 'json');
 				}
 			} else { /* Error saving image */
 			}

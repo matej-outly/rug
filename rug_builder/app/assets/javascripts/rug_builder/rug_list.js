@@ -46,6 +46,9 @@ RugList.prototype = {
 
 		// Hide empty message
 		container.find(".empty-message").hide();
+
+		// Init destroyable if necessary
+		this.inlineDestroyReady();
 	},
 	changeItem: function(id, data, options)
 	{
@@ -94,9 +97,22 @@ RugList.prototype = {
 		item = container.find(this.options.itemSelector + '[data-id="' + id + '"]');
 		item.remove();
 	},
+	inlineDestroyReady: function()
+	{
+		if (this.options.inlineDestroy == true) {
+			this.list.find(".destroyable").destroyable({
+				confirmTitle: this.options.inlineDestroyConfirmTitle,
+				confirmMessage: this.options.inlineDestroyConfirmMessage,
+				successMessage: this.options.inlineDestroySuccessMessage,
+				errorMessage: this.options.inlineDestroyErrorMessage,
+			});
+		}
+	},
 	ready: function()
 	{
 		var _this = this;
 		this.list = $('#list-' + this.hash);
+
+		this.inlineDestroyReady();
 	}
 }
