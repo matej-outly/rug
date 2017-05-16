@@ -45,6 +45,9 @@ module RugBuilder
 			end
 			column = options[:column]
 
+			# Normalize value
+			value = value.to_s
+
 			# Get value
 			value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
 
@@ -91,9 +94,9 @@ module RugBuilder
 				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).find { |obj| obj.value == value }
 				return "" if value_obj.blank?
 				value = value_obj.value
-				label = value_obj.label
-				color = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
-				icon = I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
+				label = value_obj.label ? value_obj.label : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.#{value}", default: "")
+				color = value_obj.color ? value_obj.color : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
+				icon = value_obj.icon ? value_obj.icon : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
 			
 			else # Bool or different data type => act as bool
 				value = object.send(column.to_sym)
