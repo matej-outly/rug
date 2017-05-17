@@ -31,15 +31,35 @@ module RugRecord
 
 						# Fill out internal structure
 						spec.each do |item|
+
+							# Value check
 							if !item.is_a? Hash
 								item = { value: item.to_s }
 							end
 							if !item[:value]
 								raise "State definition cannot be empty."
 							end
+
+							# Identify special type
+							special_type = nil
+							if item[:value].is_a?(Integer)
+								special_type = "integer"
+							end
+
+							# Label
 							if !item[:label]
 								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{item[:value]}")
 							end
+
+							# Other attributes
+							if options[:attributes]
+								options[:attributes].each do |attribute|
+									singular_attribute_name = attribute.to_s.singularize
+									plural_attribute_name = attribute.to_s.pluralize
+									item[singular_attribute_name.to_sym] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_#{plural_attribute_name}.#{special_type ? special_type + "_" : ""}#{item[:value]}")
+								end
+							end
+
 							@states[new_column][item[:value].to_s] = OpenStruct.new(item)
 						end
 
