@@ -71,6 +71,17 @@ module RugBuilder
 
 			# Get value and format it
 			if !collection.blank?
+				
+				# Order
+				if options[:order]
+					collection = collection.order(options[:order])
+				end
+
+				# Limit
+				if options[:limit]
+					collection = collection.limit(options[:limit])
+				end
+
 				arr = []
 				collection.each do |item|
 

@@ -20,6 +20,9 @@ module RugBuilder
 			# *********************************************************************
 
 			def get_show_link(object, label, path, options = {})
+				if !options[:show_if].nil? && options[:show_if].call(object) != true
+					return label
+				end
 				url = @path_resolver.resolve(path, object)
 				if url
 					label = I18n.t("general.action.show").upcase_first if label.blank?

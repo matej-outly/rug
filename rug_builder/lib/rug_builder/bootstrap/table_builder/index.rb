@@ -35,6 +35,7 @@ module RugBuilder
 			# - inline_destroy (boolean) - Turn on destroy by ajax request
 			# - show_link_column (integer) - Column index used for show link
 			# - header (string | [string,:h1|:h2|:h3|:h4|:h5|:h6] - optional header displayed in table heading
+			# - follow_if (lambda) - display show link only under some condition
 			#
 			def index(objects, columns, options = {})
 				result = ""
@@ -131,7 +132,7 @@ module RugBuilder
 								# Standard read only value
 								value = @columns.render(column, object).to_s
 								if idx == @show_link_column && check_show(@options)
-									result_1 += get_show_link(object, value, @options[:paths][:show])
+									result_1 += get_show_link(object, value, @options[:paths][:show], show_if: @options[:follow_if])
 								else
 									result_1 += value
 								end

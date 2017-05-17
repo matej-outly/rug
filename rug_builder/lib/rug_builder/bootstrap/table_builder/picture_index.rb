@@ -37,6 +37,7 @@ module RugBuilder
 			# - grid_columns (integer) - Number of columns in the grid (default 3)
 			# - thumbanail_crop (indeger) - Height of thumbnail in px if it should be cropped (default no crop)
 			# - tiles (boolean) - Whether to use tile resizer to caption
+			# - follow_if (lambda) - display show link only under some condition
 			#
 			def picture_index(objects, columns, options = {})
 				result = ""
@@ -146,7 +147,7 @@ module RugBuilder
 					columns_blocks << lambda {
 						value = @columns.render(column, object)
 						if idx == @show_link_column && check_show(@options)
-							get_show_link(object, value, @options[:paths][:show])
+							get_show_link(object, value, @options[:paths][:show], show_if: @options[:follow_if])
 						else
 							value
 						end
