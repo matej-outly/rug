@@ -50,6 +50,7 @@ RugTree.prototype = {
 	{
 		var _this = this;
 		var $title = $li.find('.jqtree-title');
+		var auhorized_for_write = (!node['authorization'] || node['authorization'] == 'write')
 
 		// Type
 		if (_this.options.typeIconAttr && _this.options.typeIconAttr.length > 0) {
@@ -81,7 +82,7 @@ RugTree.prototype = {
 		var dropdownActionsCount = 0;
 
 		// Create
-		if (_this.options.create) {
+		if (_this.options.create && auhorized_for_write) {
 			var $createAction = null;
 			if (_this.options.createActionCollapsed) {
 				$createAction = $('<li><a href="#">' + _this.options.createIcon + '&nbsp;&nbsp;' + _this.options.createLabel + '</a></li>');
@@ -99,7 +100,7 @@ RugTree.prototype = {
 		}
 
 		// Update
-		if (_this.options.update) {
+		if (_this.options.update && auhorized_for_write) {
 			var $updateAction = null;
 			if (_this.options.updateActionCollapsed) {
 				$updateAction = $('<li><a href="#">' + _this.options.updateIcon + '&nbsp;&nbsp;' + _this.options.updateLabel + '</a></li>');
@@ -132,7 +133,7 @@ RugTree.prototype = {
 		}
 
 		// Destroy
-		if (_this.options.destroy) {
+		if (_this.options.destroy && auhorized_for_write) {
 			var $destroyAction = null;
 			if (_this.options.destroyActionCollapsed) {
 				$destroyAction = $('<li><a href="#">' + _this.options.destroyIcon + '&nbsp;&nbsp;' + _this.options.destroyLabel + '</a></li>');
