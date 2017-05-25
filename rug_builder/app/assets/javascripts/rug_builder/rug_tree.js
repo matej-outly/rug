@@ -180,6 +180,11 @@ RugTree.prototype = {
 		$title.after($actions);
 		$title.closest('.jqtree-element').css('padding-right', (actionsCount * 30) + 'px');
 
+		// Style
+		if (node['style']) {
+			$title.closest('.jqtree-element').addClass('jqtree-element-' + node['style']);
+		}
+
 		// New record
 		node.new_record = false
 	},
