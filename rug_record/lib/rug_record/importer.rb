@@ -186,7 +186,7 @@ module RugRecord
 							import_options = import_options.merge(options)
 							if import_options[:disabled] != true
 								if import_options[:custom_block] 
-									instance_exec(key, import_options, &import_options[:custom_block])
+									import_custom(key, import_options) 
 								elsif [:pgsql, :mysql].include?(get_driver)
 									import_sql(key, import_options) 
 								else
@@ -285,6 +285,14 @@ module RugRecord
 		# Process
 		# *************************************************************************
 
+		def import_custom(key, options)
+			return false if options[:custom_block].blank?
+
+			instance_exec(key, options, &options[:custom_block])
+
+			return true
+		end
+
 		def import_sql(key, options)
 			return false if options[:query].nil?
 
@@ -297,7 +305,7 @@ module RugRecord
 			# Progres logging
 			init_progress(data.count, key)
 
-			# For each found studentprop
+			# Slice to batches per 50 DB calls (transactions is commited from time to time so RAM is not depleated in long imports)
 			data.each_slice(50) do |slice|
 				ActiveRecord::Base.transaction do
 					slice.each do |data|
@@ -831,6 +839,16 @@ module RugRecord
 				self.subject.last_import_batch_state = batch_state
 				self.subject.save
 			end
+		end
+
+		def self.reset_subjects(subjects)
+			subjects.update_all(
+				last_import_at: nil,
+				last_import_state: nil,
+				last_import_duration: nil,
+				last_import_message: nil,
+				last_import_batch_state: nil
+			)
 		end
 
 		# *************************************************************************
