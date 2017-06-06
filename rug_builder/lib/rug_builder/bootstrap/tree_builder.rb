@@ -150,6 +150,9 @@ module RugBuilder
 						});
 						rug_tree_#{@hash}.ready();
 					});
+					$(document).on('turbolinks:load', function() {
+						rug_tree_#{@hash}.repair();
+					});
 				})
 
 				result += %{

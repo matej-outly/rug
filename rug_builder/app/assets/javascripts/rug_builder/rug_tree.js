@@ -372,5 +372,12 @@ RugTree.prototype = {
 		if (globalActionsCount > 0) {
 			_this.tree.before($globalActions);
 		}
+	},
+	repair: function()
+	{
+		var _this = this;
+		if (_this.options.clipboard) {
+			new Clipboard('#tree-' + _this.hash + ' .jqtree-clipboard');
+		}
 	}
 }
