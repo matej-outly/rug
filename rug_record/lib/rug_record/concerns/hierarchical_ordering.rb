@@ -32,6 +32,13 @@ module RugRecord
 					#
 					# Move object to relation with other object
 					#
+					# Relations:
+					# - right ... move right of destination object
+					# - left  ... move left of destination object
+					# - child ... move as FIRST child of destination object
+					# - child_first ... move as first child of destination object
+					# - child_last  ... move as last child of destination object
+					#
 					define_singleton_method(:move) do |moved_id, relation, destination_id|
 						moved_object = find_by_id(moved_id)
 						destination_object = find_by_id(destination_id)
@@ -40,7 +47,14 @@ module RugRecord
 								return moved_object.move_to_right_of(destination_object)
 							elsif relation.to_sym == :left
 								return moved_object.move_to_left_of(destination_object)
-							elsif relation.to_sym == :child
+							elsif relation.to_sym == :child || relation.to_sym == :child_first
+								first_child = destination_object.children.first
+								if first_child
+									return moved_object.move_to_left_of(first_child)
+								else
+									return moved_object.move_to_child_of(destination_object)
+								end
+							elsif relation.to_sym == :child_last
 								return moved_object.move_to_child_of(destination_object)
 							else
 								return false

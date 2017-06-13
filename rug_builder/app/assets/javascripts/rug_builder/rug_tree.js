@@ -309,7 +309,7 @@ RugTree.prototype = {
 			_this.tree.bind('tree.move', function(event) {
 				var relation = null;
 				if (event.move_info.position.toString() == 'inside') {
-					relation = 'child';
+					relation = 'child_first';
 				} else if (event.move_info.position.toString() == 'after') {
 					relation = 'right';
 				} else if (event.move_info.position.toString() == 'before') {
