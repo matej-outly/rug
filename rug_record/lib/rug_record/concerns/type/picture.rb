@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Croppable picture definition
+# * Picture definition
 # *
 # * Author: Matěj Outlý
 # * Date  : 17. 8. 2015
@@ -10,17 +10,28 @@
 # *****************************************************************************
 
 require "active_record"
-require "rug_record/concerns/type/croppable_picture/cropper"
+require "rug_record/concerns/type/picture/cropper"
 
 module RugRecord
 	module Concerns
 		module Type
-			module CroppablePicture extend ActiveSupport::Concern
+			module Picture extend ActiveSupport::Concern
 
 				module ClassMethods
 					
 					#
-					# Add new enum column
+					# Add new picture column
+					#
+					def picture_column(new_column, options = {})
+						
+						# Define attachment
+						has_attached_file new_column.to_sym, styles: options[:styles]
+						validates_attachment_content_type new_column.to_sym, content_type: /\Aimage\/.*\Z/
+
+					end
+
+					#
+					# Add new croppable picture column
 					#
 					def croppable_picture_column(new_column, options = {})
 						
@@ -127,4 +138,4 @@ module RugRecord
 	end
 end
 
-ActiveRecord::Base.send(:include, RugRecord::Concerns::Type::CroppablePicture)
+ActiveRecord::Base.send(:include, RugRecord::Concerns::Type::Picture)

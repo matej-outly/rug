@@ -10,7 +10,7 @@
 # *****************************************************************************
 
 # Railtie
-require 'rug_record/railtie' if defined?(Rails)
+require "rug_record/railtie" if defined?(Rails)
 
 # Importer
 require "rug_record/importer"
@@ -99,14 +99,6 @@ module RugRecord
 	@@enable_type_array = true
 
 	#
-	# Enable type croppable picture
-	#
-	# Use gem 'paperclip', '~> 4.2' if enabled
-	#
-	mattr_accessor :enable_type_croppable_picture
-	@@enable_type_croppable_picture = false
-
-	#
 	# Enable type currency
 	#
 	mattr_accessor :enable_type_currency
@@ -158,6 +150,14 @@ module RugRecord
 	#
 	mattr_accessor :enable_type_name
 	@@enable_type_name = true
+
+	#
+	# Enable type picture
+	#
+	# Use gem 'paperclip', '~> 4.2' if enabled
+	#
+	mattr_accessor :enable_type_picture
+	@@enable_type_picture = false
 
 	#
 	# Enable type range
