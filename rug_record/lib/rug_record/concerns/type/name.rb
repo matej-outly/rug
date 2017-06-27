@@ -43,17 +43,19 @@ module RugRecord
 							end
 
 							# Filter
-							value = value.symbolize_keys.select { |key, value| [:title, :firstname, :lastname].include?(key) } if !value.nil?
+							value = value.symbolize_keys.select { |key, value| [:title, :firstname, :lastname, :title_after].include?(key) } if !value.nil?
 							
 							# Store
 							if value.blank?
 								self.send("#{column.to_s}_title=", nil) if options[:title] == true
 								self.send("#{column.to_s}_firstname=", nil)
 								self.send("#{column.to_s}_lastname=", nil)
+								self.send("#{column.to_s}_title_after=", nil) if options[:title_after] == true
 							else
 								self.send("#{column.to_s}_title=", value[:title]) if options[:title] == true
 								self.send("#{column.to_s}_firstname=", value[:firstname])
 								self.send("#{column.to_s}_lastname=", value[:lastname])
+								self.send("#{column.to_s}_title_after=", value[:title_after]) if options[:title_after] == true
 							end
 						end
 
@@ -64,6 +66,7 @@ module RugRecord
 							value_title = self.send("#{column.to_s}_title") if options[:title] == true
 							value_firstname = self.send("#{column.to_s}_firstname")
 							value_lastname = self.send("#{column.to_s}_lastname")
+							value_title_after = self.send("#{column.to_s}_title_after") if options[:title_after] == true
 							if value_firstname.blank? && value_lastname.blank?
 								return nil
 							else
@@ -71,6 +74,7 @@ module RugRecord
 								result[:title] = value_title if options[:title] == true
 								result[:firstname] = value_firstname
 								result[:lastname] = value_lastname
+								result[:title_after] = value_title_after if options[:title_after] == true
 								return result
 							end
 						end
@@ -88,7 +92,8 @@ module RugRecord
 							self.send("#{column}=".to_sym, {
 								title: parsed_value[0],
 								firstname: parsed_value[1],
-								lastname: parsed_value[2]
+								lastname: parsed_value[2],
+								title_after: parsed_value[3]
 							})
 						end
 
@@ -104,6 +109,7 @@ module RugRecord
 						title = nil
 						firstname = nil
 						lastname = nil
+						title_after = nil
 						name_parts = name.to_s.split(" ")
 						if name_parts.length == 0 # Nothing to do
 						elsif name_parts.length == 1 # Only one part => it's firstname
@@ -118,7 +124,7 @@ module RugRecord
 							lastname = name_parts.pop
 							firstname = name_parts.join(" ")
 						end
-						return [title, firstname, lastname]	
+						return [title, firstname, lastname, title_after]	
 					end
 
 				end

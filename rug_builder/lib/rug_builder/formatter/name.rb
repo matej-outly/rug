@@ -21,6 +21,7 @@ module RugBuilder
 				value_title = value[:title]
 				value_firstname = value[:firstname]
 				value_lastname = value[:lastname]
+				value_title_after = value[:title_after]
 				if value_firstname.blank? && value_lastname.blank?
 					return ""
 				else
@@ -46,9 +47,18 @@ module RugBuilder
 					
 					# Lastname
 					if options[:strong_lastname] == true
-						result += "<strong>#{value_lastname}</strong>"
+						result += "<strong>#{value_lastname}</strong> "
 					else
-						result += "#{value_lastname}"
+						result += "#{value_lastname} "
+					end
+
+					# Title after
+					if !value_title_after.blank?
+						if options[:strong_title_after] == true
+							result += "<strong>#{value_title_after}</strong> "
+						else
+							result += "#{value_title_after} "
+						end
 					end
 					
 					return result

@@ -229,12 +229,14 @@ module RugBuilder
 				label_title = (options[:label_title] ? options[:label_title] : I18n.t("general.attribute.name.title")) if options[:title] == true
 				label_firstname = (options[:label_firstname] ? options[:label_firstname] : I18n.t("general.attribute.name.firstname"))
 				label_lastname = (options[:label_lastname] ? options[:label_lastname] : I18n.t("general.attribute.name.lastname"))
-				
+				label_title_after = (options[:label_title_after] ? options[:label_title_after] : I18n.t("general.attribute.name.title_after")) if options[:title_after] == true
+
 				# Part values
 				value = object.send(name)
 				value_title = value && value[:title] ? value[:title] : nil if options[:title] == true
 				value_firstname = value && value[:firstname] ? value[:firstname] : nil
 				value_lastname = value && value[:lastname] ? value[:lastname] : nil
+				value_title_after = value && value[:title_after] ? value[:title_after] : nil if options[:title_after] == true
 				
 				# CSS class
 				klass = []
@@ -251,10 +253,12 @@ module RugBuilder
 				result += "<div class=\"row\">"
 				
 				# Layout
-				if options[:title] == true
-					columns_layout = [4, 4, 4]
+				if options[:title] == true || options[:title_after] == true
+					columns_layout = [2, 5, 5, nil] if options[:title] == true && options[:title_after] != true
+					columns_layout = [nil, 5, 5, 2] if options[:title] != true && options[:title_after] == true
+					columns_layout = [2, 4, 4, 2] if options[:title] == true && options[:title_after] == true
 				else
-					columns_layout = [nil, 6, 6]
+					columns_layout = [nil, 6, 6, nil]
 				end
 
 				# Inputs
@@ -274,6 +278,13 @@ module RugBuilder
 				result += "<div class=\"input-group-addon\">#{label_lastname.upcase_first}</div>"
 				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass)
 				result += "</div></div>"
+
+				if options[:title_after] == true
+					result += "<div class=\"col-sm-#{columns_layout[3]}\"><div class=\"input-group\">"
+					result += "<div class=\"input-group-addon\">#{label_title_after.upcase_first}</div>"
+					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title_after]", value_title_after, class: klass)
+					result += "</div></div>"
+				end
 				
 				# Errors
 				result += errors(name, class: "col-sm-12")
