@@ -17,6 +17,7 @@ module RugBuilder
 			# Render label 
 			#
 			def self.render(label, options = {})
+				options = options.nil? ? {} : options
 				style = options[:style] ? options[:style] : "default"
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""

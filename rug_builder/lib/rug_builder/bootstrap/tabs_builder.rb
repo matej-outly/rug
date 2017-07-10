@@ -34,6 +34,9 @@ module RugBuilder
 			#
 			def self.render_header(tabs = [], options = {})
 				result = ""
+
+				# Options
+				options = options.nil? ? {} : options
 				
 				# Class and container class
 				klass = options[:class] ? options[:class] : ""
@@ -78,6 +81,9 @@ module RugBuilder
 				# Hash
 				hash = Digest::SHA1.hexdigest(@tabs.map{ |tab| tab[:name] }.join("_"))
 
+				# Options
+				@options = options.nil? ? {} : options
+
 				# Call nested block to capture tabs and its options
 				unused = @template.capture(self, &block).to_s
 
@@ -87,7 +93,7 @@ module RugBuilder
 				
 				# Header options
 				header_options = {}
-				options.each do |key, value|
+				@options.each do |key, value|
 					if key.to_s.starts_with?("header_")
 						header_options[key.to_s[7..-1].to_sym] = value
 					end

@@ -47,7 +47,7 @@ module RugBuilder
 				@hash = get_model_class_hash(@model_class)
 
 				# Options
-				@options = options
+				@options = options.nil? ? {} : options
 
 				# Normalize columns
 				@columns = normalize_columns(columns)

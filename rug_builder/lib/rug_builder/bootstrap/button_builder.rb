@@ -24,6 +24,7 @@ module RugBuilder
 			# Render button 
 			#
 			def button(label, url = nil, options = {})
+				options = options.nil? ? {} : options
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
@@ -81,6 +82,7 @@ module RugBuilder
 			# Render dropdown button with some options # TODO maybe some combination with menu builder...???
 			#
 			def dropdown_button(label = nil, options = {}, &block)
+				options = options.nil? ? {} : options
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
@@ -109,6 +111,7 @@ module RugBuilder
 			# Render button group
 			#
 			def button_group(options = {}, &block)
+				options = options.nil? ? {} : options
 				klass = options[:class] ? options[:class] : ""
 
 				result = ""

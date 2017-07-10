@@ -31,7 +31,7 @@ module RugBuilder
 				
 				# Set context
 				@object = object
-				@options = options
+				@options = options.nil? ? {} : options
 
 				# Class
 				klass = @options[:class] ? @options[:class] : ""

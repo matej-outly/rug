@@ -31,7 +31,7 @@ module RugBuilder
 				end
 
 				# Options
-				@options = options
+				@options = options.nil? ? {} : options
 
 				# Normalize columns to Columns object
 				columns = normalize_columns(columns)

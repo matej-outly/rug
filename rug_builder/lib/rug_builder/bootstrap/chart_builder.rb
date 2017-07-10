@@ -41,6 +41,7 @@ module RugBuilder
 			#
 			def time_flexible_chart(type, path, options = {})
 				result = ""
+				options = options.nil? ? {} : options
 			
 				# ID check
 				if options[:id].blank?

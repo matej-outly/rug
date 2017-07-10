@@ -45,7 +45,7 @@ module RugBuilder
 				@hash = Digest::SHA1.hexdigest(data_path.to_s)
 
 				# Options
-				@options = options
+				@options = options.nil? ? {} : options
 
 				# Clipboard
 				if @options[:clipboard_attrs]

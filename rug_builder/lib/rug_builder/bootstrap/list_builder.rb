@@ -41,7 +41,7 @@ module RugBuilder
 				@hash = get_model_class_hash(@model_class)
 
 				# Options
-				@options = options
+				@options = options.nil? ? {} : options
 
 				# Block
 				@block = block

@@ -42,7 +42,8 @@ module RugBuilder
 			#
 			# Render icon 
 			#
-			def self.render(icon)
+			def self.render(icon, options = {})
+				options = options.nil? ? {} : options
 				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
 				if !icon.blank?
