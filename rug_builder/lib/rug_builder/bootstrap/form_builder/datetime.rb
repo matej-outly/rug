@@ -22,60 +22,49 @@ module RugBuilder
 				# Value
 				value = object.send(name)
 				if !value.blank?
-					value = Date.parse(value) if !value.is_a?(Date)
-					value = value.strftime("%-d. %-m. %Y") 
+					value = Date.parse(value) if !value.is_a?(Date) && !value.is_a?(DateTime) && !value.is_a?(Time)
+					value = value.strftime(I18n.t("date.formats.default")) 
 				end
 
 				# Java Script
 				result += @template.javascript_tag(%{
 					function date_picker_#{hash}_ready()
 					{
-						$('#date_picker_#{hash}').pikaday({ 
-							firstDay: 1,
-							format: 'D. M. YYYY',
-							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
-								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : [
-									'#{I18n.t("date.month_names")[1]}',
-									'#{I18n.t("date.month_names")[2]}',
-									'#{I18n.t("date.month_names")[3]}',
-									'#{I18n.t("date.month_names")[4]}',
-									'#{I18n.t("date.month_names")[5]}',
-									'#{I18n.t("date.month_names")[6]}',
-									'#{I18n.t("date.month_names")[7]}',
-									'#{I18n.t("date.month_names")[8]}',
-									'#{I18n.t("date.month_names")[9]}',
-									'#{I18n.t("date.month_names")[10]}',
-									'#{I18n.t("date.month_names")[11]}',
-									'#{I18n.t("date.month_names")[12]}'
-								],
-								weekdays      : [
-									'#{I18n.t("date.day_names")[0]}',
-									'#{I18n.t("date.day_names")[1]}',
-									'#{I18n.t("date.day_names")[2]}',
-									'#{I18n.t("date.day_names")[3]}',
-									'#{I18n.t("date.day_names")[4]}',
-									'#{I18n.t("date.day_names")[5]}',
-									'#{I18n.t("date.day_names")[6]}'
-								],
-								weekdaysShort : [
-									'#{I18n.t("date.abbr_day_names")[0]}',
-									'#{I18n.t("date.abbr_day_names")[1]}',
-									'#{I18n.t("date.abbr_day_names")[2]}',
-									'#{I18n.t("date.abbr_day_names")[3]}',
-									'#{I18n.t("date.abbr_day_names")[4]}',
-									'#{I18n.t("date.abbr_day_names")[5]}',
-									'#{I18n.t("date.abbr_day_names")[6]}'
-								]
-							}
-						});
+						#{date_js("#date_picker_#{hash}")}
 					}
 					$(document).ready(date_picker_#{hash}_ready);
 				})
 				
 				# Options
 				options[:id] = "date_picker_#{hash}"
+				options[:value] = value
+
+				# Field
+				result += text_input_row(name, :text_field, options)
+
+				return result.html_safe
+			end
+
+			def date_range_picker_row(name, options = {})
+				result = ""
+				
+				# Unique hash
+				hash = Digest::SHA1.hexdigest(name.to_s)
+
+				# Value
+				value = object.send(name)
+				
+				# Java Script
+				result += @template.javascript_tag(%{
+					function date_range_picker_#{hash}_ready()
+					{
+						#{date_range_js("#date_range_picker_#{hash}")}
+					}
+					$(document).ready(date_range_picker_#{hash}_ready);
+				})
+				
+				# Options
+				options[:id] = "date_range_picker_#{hash}"
 				options[:value] = value
 
 				# Field
@@ -101,11 +90,7 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function time_picker_#{hash}_ready()
 					{
-						$('#time_picker_#{hash}').clockpicker({
-							placement: 'bottom',
-							align: 'left',
-							autoclose: true
-						});
+						#{time_js("#time_picker_#{hash}")}
 					}
 					$(document).ready(time_picker_#{hash}_ready);
 				})
@@ -153,51 +138,8 @@ module RugBuilder
 					}
 					function datetime_picker_#{hash}_ready()
 					{
-						$('#datetime_picker_#{hash} .date').pikaday({ 
-							firstDay: 1,
-							format: 'D. M. YYYY',
-							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
-								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : [
-									'#{I18n.t("date.month_names")[1]}',
-									'#{I18n.t("date.month_names")[2]}',
-									'#{I18n.t("date.month_names")[3]}',
-									'#{I18n.t("date.month_names")[4]}',
-									'#{I18n.t("date.month_names")[5]}',
-									'#{I18n.t("date.month_names")[6]}',
-									'#{I18n.t("date.month_names")[7]}',
-									'#{I18n.t("date.month_names")[8]}',
-									'#{I18n.t("date.month_names")[9]}',
-									'#{I18n.t("date.month_names")[10]}',
-									'#{I18n.t("date.month_names")[11]}',
-									'#{I18n.t("date.month_names")[12]}'
-								],
-								weekdays      : [
-									'#{I18n.t("date.day_names")[0]}',
-									'#{I18n.t("date.day_names")[1]}',
-									'#{I18n.t("date.day_names")[2]}',
-									'#{I18n.t("date.day_names")[3]}',
-									'#{I18n.t("date.day_names")[4]}',
-									'#{I18n.t("date.day_names")[5]}',
-									'#{I18n.t("date.day_names")[6]}'
-								],
-								weekdaysShort : [
-									'#{I18n.t("date.abbr_day_names")[0]}',
-									'#{I18n.t("date.abbr_day_names")[1]}',
-									'#{I18n.t("date.abbr_day_names")[2]}',
-									'#{I18n.t("date.abbr_day_names")[3]}',
-									'#{I18n.t("date.abbr_day_names")[4]}',
-									'#{I18n.t("date.abbr_day_names")[5]}',
-									'#{I18n.t("date.abbr_day_names")[6]}'
-								]
-							}
-						});
-						$('#datetime_picker_#{hash} .time').clockpicker({
-							placement: 'bottom',
-							align: 'left',
-							autoclose: true
-						});
+						#{date_js("#datetime_picker_#{hash} .date")}
+						#{time_js("#datetime_picker_#{hash} .time")}
 						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_datetime);
 						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_datetime);
 						datetime_picker_#{hash}_update_inputs();
@@ -251,7 +193,7 @@ module RugBuilder
 				value_date = value && value[:date] ? value[:date] : nil
 				if !value_date.blank?
 					value_date = Date.parse(value_date) if !value_date.is_a?(Date)
-					value_date = value_date.strftime("%-d. %-m. %Y") 
+					value_date = value_date.strftime(I18n.t("date.formats.default")) 
 				end
 				value_from = value && value[:from] ? value[:from] : nil
 				if !value_from.blank?
@@ -268,56 +210,9 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function datetime_range_picker_#{hash}_ready()
 					{
-						$('#datetime_range_picker_#{hash} .date').pikaday({ 
-							firstDay: 1,
-							format: 'D. M. YYYY',
-							i18n: {
-								previousMonth : '#{I18n.t("views.calendar.previous_month")}',
-								nextMonth     : '#{I18n.t("views.calendar.next_month")}',
-								months        : [
-									'#{I18n.t("date.month_names")[1]}',
-									'#{I18n.t("date.month_names")[2]}',
-									'#{I18n.t("date.month_names")[3]}',
-									'#{I18n.t("date.month_names")[4]}',
-									'#{I18n.t("date.month_names")[5]}',
-									'#{I18n.t("date.month_names")[6]}',
-									'#{I18n.t("date.month_names")[7]}',
-									'#{I18n.t("date.month_names")[8]}',
-									'#{I18n.t("date.month_names")[9]}',
-									'#{I18n.t("date.month_names")[10]}',
-									'#{I18n.t("date.month_names")[11]}',
-									'#{I18n.t("date.month_names")[12]}'
-								],
-								weekdays      : [
-									'#{I18n.t("date.day_names")[0]}',
-									'#{I18n.t("date.day_names")[1]}',
-									'#{I18n.t("date.day_names")[2]}',
-									'#{I18n.t("date.day_names")[3]}',
-									'#{I18n.t("date.day_names")[4]}',
-									'#{I18n.t("date.day_names")[5]}',
-									'#{I18n.t("date.day_names")[6]}'
-								],
-								weekdaysShort : [
-									'#{I18n.t("date.abbr_day_names")[0]}',
-									'#{I18n.t("date.abbr_day_names")[1]}',
-									'#{I18n.t("date.abbr_day_names")[2]}',
-									'#{I18n.t("date.abbr_day_names")[3]}',
-									'#{I18n.t("date.abbr_day_names")[4]}',
-									'#{I18n.t("date.abbr_day_names")[5]}',
-									'#{I18n.t("date.abbr_day_names")[6]}'
-								]
-							}
-						});
-						$('#datetime_range_picker_#{hash} .from').clockpicker({
-							placement: 'bottom',
-							align: 'left',
-							autoclose: true
-						});
-						$('#datetime_range_picker_#{hash} .to').clockpicker({
-							placement: 'bottom',
-							align: 'left',
-							autoclose: true
-						});
+						#{date_js("#datetime_range_picker_#{hash} .date")}
+						#{time_js("#datetime_range_picker_#{hash} .from")}
+						#{time_js("#datetime_range_picker_#{hash} .to")}
 					}
 					$(document).ready(datetime_range_picker_#{hash}_ready);
 				})
@@ -533,6 +428,103 @@ module RugBuilder
 				}
 
 				return result.html_safe
+			end
+
+		protected
+
+			def date_js(selector)
+				return %{
+					$('#{selector}').daterangepicker({ 
+						singleDatePicker: true,
+						showDropdowns: true,
+						autoApply: true,
+						autoUpdateInput: false,
+						locale: {
+							format: '#{I18n.t("date.formats.moment")}',
+							applyLabel: '#{I18n.t("helpers.submit.ok")}',
+							cancelLabel: '#{I18n.t("helpers.submit.cancel")}',
+							daysOfWeek: [
+								'#{I18n.t("date.abbr_day_names")[0]}',
+								'#{I18n.t("date.abbr_day_names")[1]}',
+								'#{I18n.t("date.abbr_day_names")[2]}',
+								'#{I18n.t("date.abbr_day_names")[3]}',
+								'#{I18n.t("date.abbr_day_names")[4]}',
+								'#{I18n.t("date.abbr_day_names")[5]}',
+								'#{I18n.t("date.abbr_day_names")[6]}'
+							],
+							monthNames: [
+								'#{I18n.t("date.month_names")[1]}',
+								'#{I18n.t("date.month_names")[2]}',
+								'#{I18n.t("date.month_names")[3]}',
+								'#{I18n.t("date.month_names")[4]}',
+								'#{I18n.t("date.month_names")[5]}',
+								'#{I18n.t("date.month_names")[6]}',
+								'#{I18n.t("date.month_names")[7]}',
+								'#{I18n.t("date.month_names")[8]}',
+								'#{I18n.t("date.month_names")[9]}',
+								'#{I18n.t("date.month_names")[10]}',
+								'#{I18n.t("date.month_names")[11]}',
+								'#{I18n.t("date.month_names")[12]}'
+							],
+							firstDay: 1
+						},
+					});
+					$('#{selector}').on('apply.daterangepicker', function(ev, picker) {
+						$(this).val(picker.startDate.format('#{I18n.t("date.formats.moment")}'));
+					});
+					$('#{selector}').on('cancel.daterangepicker', function(ev, picker) {
+						$(this).val('');
+					});
+				}
+			end
+
+			def date_range_js(selector)
+				return %{
+					$('#{selector}').daterangepicker({ 
+						locale: {
+							format: '#{I18n.t("date.formats.moment")}',
+							applyLabel: '#{I18n.t("helpers.submit.ok")}',
+							cancelLabel: '#{I18n.t("helpers.submit.cancel")}',
+							separator: ' - ',
+							daysOfWeek: [
+								'#{I18n.t("date.abbr_day_names")[0]}',
+								'#{I18n.t("date.abbr_day_names")[1]}',
+								'#{I18n.t("date.abbr_day_names")[2]}',
+								'#{I18n.t("date.abbr_day_names")[3]}',
+								'#{I18n.t("date.abbr_day_names")[4]}',
+								'#{I18n.t("date.abbr_day_names")[5]}',
+								'#{I18n.t("date.abbr_day_names")[6]}'
+							],
+							monthNames: [
+								'#{I18n.t("date.month_names")[1]}',
+								'#{I18n.t("date.month_names")[2]}',
+								'#{I18n.t("date.month_names")[3]}',
+								'#{I18n.t("date.month_names")[4]}',
+								'#{I18n.t("date.month_names")[5]}',
+								'#{I18n.t("date.month_names")[6]}',
+								'#{I18n.t("date.month_names")[7]}',
+								'#{I18n.t("date.month_names")[8]}',
+								'#{I18n.t("date.month_names")[9]}',
+								'#{I18n.t("date.month_names")[10]}',
+								'#{I18n.t("date.month_names")[11]}',
+								'#{I18n.t("date.month_names")[12]}'
+							],
+							firstDay: 1
+						},
+						cancelClass: 'btn-danger',
+						applyClass: 'btn-primary',
+					});
+				}
+			end
+
+			def time_js(selector)
+				return %{
+					$('#{selector}').clockpicker({
+						placement: 'bottom',
+						align: 'left',
+						autoclose: true
+					});
+				}
 			end
 
 		end
