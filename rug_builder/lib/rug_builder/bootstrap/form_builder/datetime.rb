@@ -53,22 +53,55 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
+				value_min = value && value[:min] ? value[:min] : nil
+				value_max = value && value[:max] ? value[:max] : nil
 				
 				# Java Script
 				result += @template.javascript_tag(%{
+					function date_range_picker_#{hash}_update_backend()
+					{
+						var valueDates = $('#date_range_picker_#{hash} .dates').val().split(' - ');
+						if (valueDates.length >= 2) {
+							$('#date_range_picker_#{hash} .min').val(valueDates[0]);
+							$('#date_range_picker_#{hash} .max').val(valueDates[1]);
+						} else {
+							$('#date_range_picker_#{hash} .min').val('');
+							$('#date_range_picker_#{hash} .max').val('');
+						}
+					}
+					function date_range_picker_#{hash}_update_frontend()
+					{
+						var valueMin = $('#date_range_picker_#{hash} .min').val();
+						var valueMax = $('#date_range_picker_#{hash} .max').val();
+						if (valueMin && valueMax) {
+							$('#date_range_picker_#{hash} .dates').val(valueMin + ' - ' + valueMax);
+						} else {
+							$('#date_range_picker_#{hash} .dates').val('');
+						}
+					}
 					function date_range_picker_#{hash}_ready()
 					{
-						#{date_range_js("#date_range_picker_#{hash}")}
+						#{date_range_js("#date_range_picker_#{hash} .dates")}
+						$('#date_range_picker_#{hash} .dates').on('change', date_range_picker_#{hash}_update_backend);
+						date_range_picker_#{hash}_update_frontend();
 					}
 					$(document).ready(date_range_picker_#{hash}_ready);
 				})
 				
-				# Options
-				options[:id] = "date_range_picker_#{hash}"
-				options[:value] = value
+				# Field options
+				klass = []
+				klass << "form-control"
+				klass << options[:class] if !options[:class].nil?
 
-				# Field
-				result += text_input_row(name, :text_field, options)
+				result += %{
+					<div id="date_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
+						#{label_for(name, options)}
+						#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["dates"]))}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: "min")}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: "max")}
+						#{errors(name)}
+					</div>
+				}
 
 				return result.html_safe
 			end
@@ -83,7 +116,7 @@ module RugBuilder
 				value = object.send(name)
 				if !value.blank?
 					value = DateTime.parse(value) if !value.is_a?(DateTime) && !value.is_a?(Time)
-					value = value.strftime("%k:%M") 
+					value = value.strftime(I18n.t("time.formats.hour_min")) 
 				end
 
 				# Java Script
@@ -119,20 +152,20 @@ module RugBuilder
 				value = object.send(name)
 				if !value.blank?
 					value = DateTime.parse(value) if !value.is_a?(DateTime) && !value.is_a?(Time)
-					value = value.strftime("%-d. %-m. %Y %k:%M")
+					value = value.strftime(I18n.t("time.formats.default"))
 				end
 				
 				# Java Script
 				result += @template.javascript_tag(%{
-					function datetime_picker_#{hash}_update_inputs()
+					function datetime_picker_#{hash}_update_frontend()
 					{
-						var date_and_time = $('#datetime_picker_#{hash} .datetime').val().split(' ');
-						if (date_and_time.length >= 4) {
-							$('#datetime_picker_#{hash} .date').val(date_and_time[0] + ' ' + date_and_time[1] + ' ' + date_and_time[2]);
-							$('#datetime_picker_#{hash} .time').val(date_and_time[date_and_time.length-1]);
+						var dateAndTime = $('#datetime_picker_#{hash} .datetime').val().split(' ');
+						if (dateAndTime.length >= 4) {
+							$('#datetime_picker_#{hash} .date').val(dateAndTime[0] + ' ' + dateAndTime[1] + ' ' + dateAndTime[2]);
+							$('#datetime_picker_#{hash} .time').val(dateAndTime[dateAndTime.length-1]);
 						}
 					}
-					function datetime_picker_#{hash}_update_datetime()
+					function datetime_picker_#{hash}_update_backend()
 					{
 						$('#datetime_picker_#{hash} .datetime').val($('#datetime_picker_#{hash} .date').val() + ' ' + $('#datetime_picker_#{hash} .time').val());
 					}
@@ -140,9 +173,9 @@ module RugBuilder
 					{
 						#{date_js("#datetime_picker_#{hash} .date")}
 						#{time_js("#datetime_picker_#{hash} .time")}
-						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_datetime);
-						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_datetime);
-						datetime_picker_#{hash}_update_inputs();
+						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_backend);
+						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_backend);
+						datetime_picker_#{hash}_update_frontend();
 					}
 					$(document).ready(datetime_picker_#{hash}_ready);
 				})
@@ -198,12 +231,12 @@ module RugBuilder
 				value_from = value && value[:from] ? value[:from] : nil
 				if !value_from.blank?
 					value_from = DateTime.parse(value_from) if !value_from.is_a?(DateTime) && !value_from.is_a?(Time)
-					value_from = value_from.strftime("%k:%M")
+					value_from = value_from.strftime(I18n.t("date.formats.hour_min"))
 				end
 				value_to = value && value[:to] ? value[:to] : nil
 				if !value_to.blank?
 					value_to = DateTime.parse(value_to) if !value_to.is_a?(DateTime) && !value_to.is_a?(Time)
-					value_to = value_to.strftime("%k:%M")
+					value_to = value_to.strftime(I18n.t("date.formats.hour_min"))
 				end
 				
 				# Java Script
@@ -304,7 +337,7 @@ module RugBuilder
 				
 				# Part values
 				value = object.send(name)
-				value = value.strftime("%Y-%m-%d %k:%M:%S") if !value.blank?
+				value = value.strftime(I18n.t("time.formats.full")) if !value.blank?
 
 				# Java Script
 				result += @template.javascript_tag(%{
