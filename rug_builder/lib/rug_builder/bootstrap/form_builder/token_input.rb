@@ -17,7 +17,7 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				hash = Digest::SHA1.hexdigest("#{name}_#{object.id}")
 
 				# Value
 				value = object.send(options[:as] ? options[:as] : name)
