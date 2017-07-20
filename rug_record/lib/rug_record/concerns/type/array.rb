@@ -19,9 +19,9 @@ module RugRecord
 				module ClassMethods
 					
 					#
-					# Add new enum column
+					# Add new array column
 					#
-					def array_column(new_column)
+					def array_column(new_column, options = {})
 					
 						# Set method
 						define_method((new_column.to_s + "=").to_sym) do |value|
@@ -57,6 +57,37 @@ module RugRecord
 								return nil
 							else
 								return JSON.parse(value)
+							end
+						end
+
+					end
+
+					#
+					# Add new enum array column
+					#
+					def enum_array_column(new_column, spec, options = {})
+						
+						# Define it using array and enum
+						array_column(new_column, options)
+						enum_column(new_column, spec, options)
+
+						# Objs method
+						define_method((new_column.to_s + "_objs").to_sym) do
+							column = new_column
+							values = self.send(column)
+							if values
+								result = []
+								values.each do |value|
+									obj = self.class.enums[column][value.to_s]
+									result << obj if obj
+								end
+								if result.empty?
+									return nil
+								else
+									return result
+								end
+							else
+								return nil
 							end
 						end
 

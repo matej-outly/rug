@@ -21,7 +21,7 @@ module RugRecord
 					#
 					# Add new enum column
 					#
-					def currency_column(new_column)
+					def currency_column(new_column, options = {})
 					
 						# All method
 						define_singleton_method(("available_" + new_column.to_s.pluralize).to_sym) do

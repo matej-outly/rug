@@ -21,7 +21,7 @@ module RugRecord
 					#
 					# Add new geolocation column
 					#
-					def geolocation_column(new_column)
+					def geolocation_column(new_column, options = {})
 					
 						# Set method
 						define_method((new_column.to_s + "=").to_sym) do |value|
