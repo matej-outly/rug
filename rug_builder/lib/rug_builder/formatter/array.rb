@@ -42,6 +42,35 @@ module RugBuilder
 		end
 
 		# *********************************************************************
+		# Integer array
+		# *********************************************************************
+
+		def self.integer_array(value, options = {})
+			
+			# Check format
+			if options[:format]
+				format = options[:format]
+			else
+				format = :comma
+			end
+			if ![:comma, :br].include?(format)
+				raise "Unknown format #{format}."
+			end
+
+			# Get join string according to format
+			join_string = case format
+				when :comma then ", "
+				when :br then "<br/>"
+			end
+
+			if !value.blank?
+				return value.map { |value_part| self.integer(value_part, options) }.join(join_string)
+			else
+				return ""
+			end
+		end
+
+		# *********************************************************************
 		# Enum array
 		# *********************************************************************
 

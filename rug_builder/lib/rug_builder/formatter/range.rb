@@ -35,6 +35,28 @@ module RugBuilder
 		end
 
 		# *********************************************************************
+		# String range
+		# *********************************************************************
+		
+		def self.string_range(value, options = {})
+			if !value.nil?
+				value_min = value[:min]
+				value_max = value[:max]
+				if value_min.blank? && value_max.blank?
+					return ""
+				elsif value_min.blank?
+					return self.string(value_max)
+				elsif value_max.blank?
+					return self.string(value_min)
+				else
+					return "#{self.string(value_min)} - #{self.string(value_max)}"
+				end
+			else
+				return ""
+			end
+		end
+
+		# *********************************************************************
 		# Integer range
 		# *********************************************************************
 		
@@ -94,6 +116,50 @@ module RugBuilder
 					return self.double(value_min)
 				else
 					return "#{self.double(value_min)} - #{self.double(value_max)}"
+				end
+			else
+				return ""
+			end
+		end
+
+		# *********************************************************************
+		# Currency range
+		# *********************************************************************
+		
+		def self.currency_range(value, options = {})
+			if !value.nil?
+				value_min = value[:min]
+				value_max = value[:max]
+				if value_min.blank? && value_max.blank?
+					return ""
+				elsif value_min.blank?
+					return self.currency(value_max)
+				elsif value_max.blank?
+					return self.currency(value_min)
+				else
+					return "#{self.currency(value_min)} - #{self.currency(value_max)}"
+				end
+			else
+				return ""
+			end
+		end
+
+		# *********************************************************************
+		# Date range
+		# *********************************************************************
+		
+		def self.date_range(value, options = {})
+			if !value.nil?
+				value_min = value[:min]
+				value_max = value[:max]
+				if value_min.blank? && value_max.blank?
+					return ""
+				elsif value_min.blank?
+					return self.date(value_max)
+				elsif value_max.blank?
+					return self.date(value_min)
+				else
+					return "#{self.date(value_min)} - #{self.date(value_max)}"
 				end
 			else
 				return ""

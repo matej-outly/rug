@@ -56,7 +56,11 @@ module RugRecord
 							if value.blank?
 								return nil
 							else
-								return JSON.parse(value)
+								begin
+									return JSON.parse(value)
+								rescue JSON::ParserError
+									return nil
+								end
 							end
 						end
 
