@@ -54,7 +54,6 @@ module RugBuilder
 						js_options += "copyToObject: '#{options[:ajax][:copy_to_object]}', " if options[:ajax][:copy_to_object]
 						js_options += "redirectUrl: '#{options[:ajax][:redirect_url]}', " if options[:ajax][:redirect_url]
 						js_options += "showUrl: '#{options[:ajax][:show_url]}', " if options[:ajax][:show_url]
-						js_options += "showUrl: '#{options[:ajax][:show_url]}', " if options[:ajax][:show_url]
 						js_options += "invisibleRecaptcha: #{options[:ajax][:invisible_recaptcha] == true ? "true" : "false"}, " if !options[:ajax][:invisible_recaptcha].nil?
 						js_options += "logCallback: #{options[:ajax][:log_callback] == true ? "true" : "false"}, " if !options[:ajax][:log_callback].nil?
 					end
