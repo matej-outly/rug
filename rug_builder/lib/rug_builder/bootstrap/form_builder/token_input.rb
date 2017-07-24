@@ -17,7 +17,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest("#{name}_#{object.id}")
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Value
 				value = object.send(options[:as] ? options[:as] : name)
@@ -74,7 +78,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 				
 				# Java Script
 				result += @template.javascript_tag(%{

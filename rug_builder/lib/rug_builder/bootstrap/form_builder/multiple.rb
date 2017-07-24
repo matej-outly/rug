@@ -17,7 +17,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Java Script
 				result += @template.javascript_tag(%{
@@ -93,10 +97,10 @@ module RugBuilder
 
 				# Field
 				result += %{
-					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="back" style="display: none;">
-							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
+							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, back_field_options)}
 						</div>
 						<div class="template" style="display: none;">
 							<div class="row">
@@ -112,7 +116,7 @@ module RugBuilder
 						<div class="controls text-right">
 							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
 						</div>
-						#{errors(name)}
+						#{errors(name, errors: options[:errors])}
 					</div>
 				}
 
@@ -123,7 +127,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Java Script
 				result += @template.javascript_tag(%{
@@ -206,10 +214,10 @@ module RugBuilder
 
 				# Field
 				result += %{
-					<div class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="back" style="display: none;">
-							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, back_field_options)}
+							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, back_field_options)}
 						</div>
 						<div class="template" style="display: none;">
 							<div class="row">
@@ -228,7 +236,7 @@ module RugBuilder
 						<div class="controls text-right">
 							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
 						</div>
-						#{errors(name)}
+						#{errors(name, errors: options[:errors])}
 					</div>
 				}
 

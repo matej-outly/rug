@@ -19,11 +19,11 @@ function RugFormRater(hash, options)
 
 RugFormRater.prototype = {
 	constructor: RugFormRater,
-	updateRater: function()
+	updateFrontend: function()
 	{
 		this.rater.rate("setValue", this.input.val());
 	},
-	updateInput: function()
+	updateBackend: function()
 	{
 		this.input.val(this.rater.rate("getValue"));
 	},
@@ -54,13 +54,18 @@ RugFormRater.prototype = {
 
 		// On change
 		_this.rater.on('change', function(e, data){
-			_this.updateInput();
+			_this.updateBackend();
 		});
 
-		// HACK to ensure canvas width (not working correctlly sometimes)
-		_this.rater.width(max * 33.4);
+		// In case of FontAwesone icons used as symbols width must be manually set
+		if (_this.options['itemWidth']) {
+			_this.rater.width(max * _this.options['itemWidth']);
+			_this.rater.find('.rate-base-layer > span').css({ display: 'inline-block', width: _this.options['itemWidth'] + 'px' });
+			_this.rater.find('.rate-select-layer > span').css({ display: 'inline-block', width: _this.options['itemWidth'] + 'px' });
+			_this.rater.find('.rate-hover-layer > span').css({ display: 'inline-block', width: _this.options['itemWidth'] + 'px' });
+		}
 		
 		// Initial value
-		_this.updateRater();
+		_this.updateFrontend();
 	}
 }

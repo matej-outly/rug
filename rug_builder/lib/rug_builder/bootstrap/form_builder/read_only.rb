@@ -32,14 +32,14 @@ module RugBuilder
 				klass << "form-control"
 				
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				result += label_for(name, options)
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
+				result += label_for(name, label: options[:label])
 				if format == :input
 					result += "<input class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
 				elsif format == :textarea
 					result += "<textarea class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 				end
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				result += "</div>"
 
 				return result.html_safe

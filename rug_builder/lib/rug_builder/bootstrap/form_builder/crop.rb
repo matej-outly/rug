@@ -21,7 +21,11 @@ module RugBuilder
 				end
 
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Value
 				value = object.send(name)
@@ -65,25 +69,21 @@ module RugBuilder
 					});
 				})
 
-				# Container
-				result += "<div id=\"crop_#{hash}\" class=\"form-group\">"
-
-				# Label
-				result += label_for(name, options)
-
 				# Crop attributes
+				crop_attributes = ""
 				for attribute in [:crop_x, :crop_y, :crop_w, :crop_h]
-					result += hidden_field("#{name.to_s}_#{attribute.to_s}".to_sym, class: attribute)
+					crop_attributes += hidden_field("#{name.to_s}_#{attribute.to_s}".to_sym, class: attribute)
 				end
-				result += hidden_field("#{name.to_s}_perform_cropping".to_sym, value: "1")
 
-				# Cropbox (image)
-				result += "<div class=\"cropbox\">"
-				result += @template.image_tag(value.url("#{croppable_style.to_s}")) if value.exists?
-				result += "</div>"
-
-				# Container end
-				result += "</div>"
+				# Container
+				result += %{
+					<div id="crop_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""}">
+						#{label_for(name, label: options[:label])}
+						#{crop_attributes}
+						#{hidden_field("#{name.to_s}_perform_cropping".to_sym, value: "1")}
+						<div class="cropbox">#{@template.image_tag(value.url("#{croppable_style.to_s}")) if value.exists?}</div>
+					</div>
+				}
 
 				return result.html_safe
 			end

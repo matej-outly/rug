@@ -20,10 +20,10 @@ module RugBuilder
 				enable_bootstrap = (options[:enable_bootstrap] == true)
 
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 
 				# Label
-				result += label_for(name, options)
+				result += label_for(name, label: options[:label])
 
 				if collection.nil?
 					collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
@@ -38,7 +38,7 @@ module RugBuilder
 				end
 
 				# Errors
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				
 				# Form group
 				result += "</div>"
@@ -53,7 +53,7 @@ module RugBuilder
 				enable_bootstrap = (options[:enable_bootstrap] == true)
 
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 				
 				# Label
 				label = !options[:label].nil? ? options[:label] : object.class.human_attribute_name(name)
@@ -66,7 +66,7 @@ module RugBuilder
 				result += "</div>"
 				
 				# Errors
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				
 				# Form group
 				result += "</div>"

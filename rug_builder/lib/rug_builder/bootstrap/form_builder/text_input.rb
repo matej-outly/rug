@@ -129,10 +129,10 @@ module RugBuilder
 				options[:suffix] = options[:unit] if options[:unit]
 
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 
 				# Label
-				result += label_for(name, options)
+				result += label_for(name, label: options[:label])
 
 				# Input group
 				result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
@@ -150,7 +150,7 @@ module RugBuilder
 				result += "</div>" if options[:prefix] || options[:suffix]
 			
 				# Errors
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				
 				# Form group
 				result += "</div>"
@@ -180,10 +180,10 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 
 				# Label
-				result += label_for(name, options)
+				result += label_for(name, label: options[:label])
 
 				# Form horizontal
 				result += "<div class=\"row\">"
@@ -191,27 +191,27 @@ module RugBuilder
 				# Inputs (first row)
 				result += "<div class=\"col-sm-8\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_street.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][street]", value_street, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, class: klass)
 				result += "</div></div>"
 
 				result += "<div class=\"col-sm-4\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_number.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][number]", value_number, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: klass)
 				result += "</div></div>"
 
 				# Inputs (second row)
 				result += "<div class=\"col-sm-8\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_city.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][city]", value_city, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, class: klass)
 				result += "</div></div>"
 
 				result += "<div class=\"col-sm-4\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_postcode.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][postcode]", value_postcode, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][postcode]", value_postcode, class: klass)
 				result += "</div></div>"
 
 				# Errors
-				result += errors(name, class: "col-sm-12")
+				result += errors(name, errors: options[:errors], class: "col-sm-12")
 
 				# Form horizontal
 				result += "</div>"
@@ -244,10 +244,10 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 				
 				# Label
-				result += label_for(name, options)
+				result += label_for(name, label: options[:label])
 
 				# Form horizontal
 				result += "<div class=\"row\">"
@@ -265,29 +265,29 @@ module RugBuilder
 				if options[:title] == true
 					result += "<div class=\"col-sm-#{columns_layout[0]}\"><div class=\"input-group\">"
 					result += "<div class=\"input-group-addon\">#{label_title.upcase_first}</div>"
-					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title]", value_title, class: klass)
+					result += @template.text_field_tag("#{object_name}[#{name.to_s}][title]", value_title, class: klass)
 					result += "</div></div>"
 				end
 				
 				result += "<div class=\"col-sm-#{columns_layout[1]}\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_firstname.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][firstname]", value_firstname, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][firstname]", value_firstname, class: klass)
 				result += "</div></div>"
 
 				result += "<div class=\"col-sm-#{columns_layout[2]}\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_lastname.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][lastname]", value_lastname, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][lastname]", value_lastname, class: klass)
 				result += "</div></div>"
 
 				if options[:title_after] == true
 					result += "<div class=\"col-sm-#{columns_layout[3]}\"><div class=\"input-group\">"
 					result += "<div class=\"input-group-addon\">#{label_title_after.upcase_first}</div>"
-					result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][title_after]", value_title_after, class: klass)
+					result += @template.text_field_tag("#{object_name}[#{name.to_s}][title_after]", value_title_after, class: klass)
 					result += "</div></div>"
 				end
 				
 				# Errors
-				result += errors(name, class: "col-sm-12")
+				result += errors(name, errors: options[:errors], class: "col-sm-12")
 
 				# Form horizontal
 				result += "</div>"
@@ -316,10 +316,10 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 				
 				# Label
-				result += label_for(name, options)
+				result += label_for(name, label: options[:label])
 
 				# Form horizontal
 				result += "<div class=\"row\">"
@@ -327,16 +327,16 @@ module RugBuilder
 				# Inputs
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_min.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][min]", value_min, class: klass)
 				result += "</div></div>"
 
 				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
 				result += "<div class=\"input-group-addon\">#{label_max.upcase_first}</div>"
-				result += @template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: klass)
+				result += @template.text_field_tag("#{object_name}[#{name.to_s}][max]", value_max, class: klass)
 				result += "</div></div>"
 
 				# Errors
-				result += errors(name, class: "col-sm-12")
+				result += errors(name, errors: options[:errors], class: "col-sm-12")
 
 				# Form horizontal
 				result += "</div>"

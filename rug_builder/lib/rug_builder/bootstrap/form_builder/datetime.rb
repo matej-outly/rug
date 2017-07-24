@@ -17,7 +17,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Value
 				value = object.send(name)
@@ -49,7 +53,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Value
 				value = object.send(name)
@@ -82,6 +90,10 @@ module RugBuilder
 					function date_range_picker_#{hash}_ready()
 					{
 						#{date_range_js("#date_range_picker_#{hash} .dates")}
+						$('#date_range_picker_#{hash} .dates').on('cancel.daterangepicker', function(ev, picker) {
+							$(this).val('');
+							date_range_picker_#{hash}_update_backend();
+						});
 						$('#date_range_picker_#{hash} .dates').on('change', date_range_picker_#{hash}_update_backend);
 						date_range_picker_#{hash}_update_frontend();
 					}
@@ -94,12 +106,12 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 
 				result += %{
-					<div id="date_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="date_range_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["dates"]))}
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][min]", value_min, class: "min")}
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][max]", value_max, class: "max")}
-						#{errors(name)}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][min]", value_min, class: "min")}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][max]", value_max, class: "max")}
+						#{errors(name, errors: options[:errors])}
 					</div>
 				}
 
@@ -110,7 +122,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Value
 				value = object.send(name)
@@ -142,7 +158,11 @@ module RugBuilder
 				result = ""
 
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Part labels
 				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime.date"))
@@ -186,10 +206,10 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 
 				result += %{
-					<div id="datetime_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="datetime_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="row">
-							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
+							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6">
 								<div class="input-group">
 									<div class="input-group-addon">#{label_date.upcase_first}</div>
@@ -202,7 +222,7 @@ module RugBuilder
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))}
 								</div>
 							</div>
-							#{errors(name, class: "col-sm-12")}
+							#{errors(name, errors: options[:errors], class: "col-sm-12")}
 						</div>
 					</div>
 				}
@@ -214,7 +234,11 @@ module RugBuilder
 				result = ""
 
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Part labels
 				label_date = (options[:label_date] ? options[:label_date] : I18n.t("general.attribute.datetime_range.date"))
@@ -268,13 +292,13 @@ module RugBuilder
 						<div class="col-sm-#{column_width}">
 							<div class="input-group">
 								<div class="input-group-addon">#{label_date.upcase_first}</div>
-								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][date]", value_date, class: klass.dup.concat(["date"]))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][date]", value_date, class: klass.dup.concat(["date"]))}
 							</div>
 						</div>
 					}
 				else
 					result_date = %{
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][date]", value_date)}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][date]", value_date)}
 					}
 				end
 
@@ -283,13 +307,13 @@ module RugBuilder
 						<div class="col-sm-#{column_width}">
 							<div class="input-group">
 								<div class="input-group-addon">#{label_from.upcase_first}</div>
-								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][from]", value_from, class: klass.dup.concat(["from"]))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][from]", value_from, class: klass.dup.concat(["from"]))}
 							</div>
 						</div>
 					}
 				else
 					result_from = %{
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][from]", value_from)}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][from]", value_from)}
 					}
 				end
 
@@ -298,24 +322,24 @@ module RugBuilder
 						<div class="col-sm-#{column_width}">
 							<div class="input-group">
 								<div class="input-group-addon">#{label_to.upcase_first}</div>
-								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][to]", value_to, class: klass.dup.concat(["to"]))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][to]", value_to, class: klass.dup.concat(["to"]))}
 							</div>
 						</div>
 					}
 				else
 					result_to = %{
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][to]", value_to)}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][to]", value_to)}
 					}
 				end
 
 				result += %{
-					<div id="datetime_range_picker_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="datetime_range_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{result_date}
 							#{result_from}
 							#{result_to}
-							#{errors(name, class: "col-sm-12")}
+							#{errors(name, errors: options[:errors], class: "col-sm-12")}
 						</div>
 					</div>
 				}
@@ -327,7 +351,11 @@ module RugBuilder
 				result = ""
 
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Part labels
 				label_days = (options[:label_days] ? options[:label_days] : I18n.t("general.attribute.duration.days"))
@@ -447,15 +475,15 @@ module RugBuilder
 				}
 
 				result += %{
-					<div id="duration_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="duration_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							#{options[:days] != false ? result_days : ""}
 							#{options[:hours] != false ? result_hours : ""}
 							#{options[:minutes] != false ? result_minutes : ""}
 							#{options[:seconds] != false ? result_seconds : ""}
-							#{errors(name, class: "col-sm-12") }
+							#{errors(name, errors: options[:errors], class: "col-sm-12") }
 						</div>
 					</div>
 				}

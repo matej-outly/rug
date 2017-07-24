@@ -17,7 +17,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 				
 				# Part labels
 				label_latitude = (options[:label_latitude] ? options[:label_latitude] : I18n.t("general.attribute.geolocation.latitude"))
@@ -48,23 +52,23 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="map_location_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="map_location_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="row">
 						
 							<div class="col-sm-6"><div class="input-group">
 								<div class="input-group-addon">#{label_latitude.upcase_first}</div>
-								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))}
 								<div class="input-group-addon exchange" style="cursor: pointer;">#{@template.rug_icon("exchange")}</div>
 							</div></div>
 
 							<div class="col-sm-6"><div class="input-group">
 								<div class="input-group-addon">#{label_longitude.upcase_first}</div>
-								#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))}
 							</div></div>
 
 							<div class="col-sm-12"><div class="mapbox"></div></div>
-							#{errors(name, class: "col-sm-12")}
+							#{errors(name, errors: options[:errors], class: "col-sm-12")}
 						</div>
 					</div>
 				}
@@ -76,7 +80,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Part values
 				value = object.send(name)
@@ -96,12 +104,12 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="map_polygon_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
+					<div id="map_polygon_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
 						<div class="row">
-							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value.to_json)}
+							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value.to_json)}
 							<div class="col-sm-12"><div class="mapbox"></div></div>
-							#{errors(name, class: "col-sm-12")}
+							#{errors(name, errors: options[:errors], class: "col-sm-12")}
 						</div>
 					</div>
 				}
@@ -113,7 +121,11 @@ module RugBuilder
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
 
 				# Part values
 				value = object.send(name)
@@ -138,13 +150,13 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="address_location_#{hash}" class="form-group #{(has_error?(name) ? "has-error" : "")}">
-						#{label_for(name, options)}
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][level]", value_level, class: "level")}
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][latitude]", value_latitude, class: "latitude")}
-						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][longitude]", value_longitude, class: "longitude")}
-						#{@template.text_field_tag("#{object.class.model_name.param_key}[#{name.to_s}][address]", value_address, field_options)}
-						#{errors(name)}
+					<div id="address_location_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][level]", value_level, class: "level")}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: "latitude")}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][longitude]", value_longitude, class: "longitude")}
+						#{@template.text_field_tag("#{object_name}[#{name.to_s}][address]", value_address, field_options)}
+						#{errors(name, errors: options[:errors])}
 					</div>
 				}
 

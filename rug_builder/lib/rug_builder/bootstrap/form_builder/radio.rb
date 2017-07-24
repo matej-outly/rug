@@ -29,8 +29,8 @@ module RugBuilder
 				enable_bootstrap = (options[:enable_bootstrap] == true)
 				
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				result += label_for(name, options)
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
+				result += label_for(name, label: options[:label])
 				result += collection_radio_buttons(name, collection, value_attr, label_attr) do |b|
 					b_result = "<div class=\"#{enable_bootstrap ? "radio" : "radio-no-bootstrap"}\">"
 					b_result += b.label do
@@ -39,7 +39,7 @@ module RugBuilder
 					b_result += "</div>"
 					b_result.html_safe
 				end
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				result += "</div>"
 				
 				return result.html_safe

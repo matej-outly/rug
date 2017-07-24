@@ -26,10 +26,10 @@ module RugBuilder
 				end
 
 				# Form group
-				result += "<div class=\"form-group #{(has_error?(name) ? "has-error" : "")}\">"
-				result += label_for(name, options)
+				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
+				result += label_for(name, label: options[:label])
 				result += collection_select(name, collection, value_attr, label_attr, {}, class: "form-control")
-				result += errors(name)
+				result += errors(name, errors: options[:errors])
 				result += "</div>"
 				
 				return result.html_safe

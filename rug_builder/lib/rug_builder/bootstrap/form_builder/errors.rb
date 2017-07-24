@@ -16,7 +16,14 @@ module RugBuilder
 			#
 			# Decide if some column has at least one error
 			#
-			def has_error?(name)
+			def has_error?(name, options = {})
+				if !options[:errors].nil?
+					if options[:errors] != false
+						name = options[:errors]
+					else
+						return false
+					end
+				end
 				return (object.errors[name].size > 0)
 			end
 
@@ -24,6 +31,13 @@ module RugBuilder
 			# Render errors associated to some column name
 			#
 			def errors(name, options = {})
+				if !options[:errors].nil?
+					if options[:errors] != false
+						name = options[:errors]
+					else
+						return ""
+					end
+				end
 
 				# Format
 				if options[:format]
