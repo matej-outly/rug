@@ -431,7 +431,7 @@ module RugBuilder
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 				
-				# number of columns
+				# Number of columns
 				columns_count = 0
 				columns_count += 1 if options[:days] != false
 				columns_count += 1 if options[:hours] != false

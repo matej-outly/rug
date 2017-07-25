@@ -315,34 +315,39 @@ module RugBuilder
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 				
-				# Form group
-				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
-				
-				# Label
-				result += label_for(name, label: options[:label])
+				# Number of columns
+				columns_count = 0
+				columns_count += 1 if options[:min] != false
+				columns_count += 1 if options[:max] != false
 
-				# Form horizontal
-				result += "<div class=\"row\">"
+				result_min = %{
+					<div class="col-sm-#{12 / columns_count}">
+						#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
+							#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_min.upcase_first + "</div>" : ""}
+							#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][min]", value_min, class: klass.dup.concat(["min"]))}
+						#{options[:addon] != false ? "</div>" : ""}
+					</div>
+				}
 
-				# Inputs
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_min.upcase_first}</div>"
-				result += @template.text_field_tag("#{object_name}[#{name.to_s}][min]", value_min, class: klass)
-				result += "</div></div>"
+				result_max = %{
+					<div class="col-sm-#{12 / columns_count}">
+						#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
+							#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_max.upcase_first + "</div>" : ""}
+							#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][max]", value_max, class: klass.dup.concat(["max"]))}
+						#{options[:addon] != false ? "</div>" : ""}
+					</div>
+				}
 
-				result += "<div class=\"col-sm-6\"><div class=\"input-group\">"
-				result += "<div class=\"input-group-addon\">#{label_max.upcase_first}</div>"
-				result += @template.text_field_tag("#{object_name}[#{name.to_s}][max]", value_max, class: klass)
-				result += "</div></div>"
-
-				# Errors
-				result += errors(name, errors: options[:errors], class: "col-sm-12")
-
-				# Form horizontal
-				result += "</div>"
-
-				# Form group
-				result += "</div>"
+				result += %{
+					<div id="duration_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						<div class="row">
+							#{options[:min] != false ? result_min : ""}
+							#{options[:max] != false ? result_max : ""}
+							#{errors(name, errors: options[:errors], class: "col-sm-12") }
+						</div>
+					</div>
+				}
 				
 				return result.html_safe
 			end
