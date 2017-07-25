@@ -56,16 +56,20 @@ module RugBuilder
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 						
-							<div class="col-sm-6"><div class="input-group">
-								<div class="input-group-addon">#{label_latitude.upcase_first}</div>
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))}
-								<div class="input-group-addon exchange" style="cursor: pointer;">#{@template.rug_icon("exchange")}</div>
-							</div></div>
+							<div class="col-sm-6">
+								<div class="input-group">
+									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_latitude.upcase_first + "</div>" : ""}
+									#{@template.text_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: klass.dup.concat(["latitude"]))}
+									<div class="input-group-addon exchange" style="cursor: pointer;">#{@template.rug_icon("exchange")}</div>
+								</div>
+							</div>
 
-							<div class="col-sm-6"><div class="input-group">
-								<div class="input-group-addon">#{label_longitude.upcase_first}</div>
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))}
-							</div></div>
+							<div class="col-sm-6">
+								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
+									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_longitude.upcase_first + "</div>" : ""}
+									#{@template.text_field_tag("#{object_name}[#{name.to_s}][longitude]", value_longitude, class: klass.dup.concat(["longitude"]))}
+								#{options[:addon] != false ? "</div>" : ""}
+							</div>
 
 							<div class="col-sm-12"><div class="mapbox"></div></div>
 							#{errors(name, errors: options[:errors], class: "col-sm-12")}

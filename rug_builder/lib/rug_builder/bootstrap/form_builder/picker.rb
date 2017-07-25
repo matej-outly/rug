@@ -14,7 +14,6 @@ module RugBuilder
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
 			def picker_row(name, collection = nil, value_attr = :value, label_attr = :label, options = {})
-				result = ""
 				
 				# Collection
 				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call if collection.nil?
@@ -26,11 +25,13 @@ module RugBuilder
 				end
 
 				# Form group
-				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
-				result += label_for(name, label: options[:label])
-				result += collection_select(name, collection, value_attr, label_attr, {}, class: "form-control")
-				result += errors(name, errors: options[:errors])
-				result += "</div>"
+				result = %{
+					<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						#{collection_select(name, collection, value_attr, label_attr, {}, class: "form-control")}
+						#{errors(name, errors: options[:errors])}
+					</div>
+				}
 				
 				return result.html_safe
 			end
