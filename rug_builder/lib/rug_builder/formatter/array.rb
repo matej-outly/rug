@@ -35,7 +35,7 @@ module RugBuilder
 			end
 
 			if !value.blank?
-				return value.map { |value_part| self.string(value_part, options) }.join(join_string)
+				return value.map { |value_part| self.string(value_part, options) }.reject { |item| item.blank? }.join(join_string)
 			else
 				return ""
 			end
@@ -64,7 +64,7 @@ module RugBuilder
 			end
 
 			if !value.blank?
-				return value.map { |value_part| self.integer(value_part, options) }.join(join_string)
+				return value.map { |value_part| self.integer(value_part, options) }.reject { |item| item.blank? }.join(join_string)
 			else
 				return ""
 			end
@@ -93,7 +93,7 @@ module RugBuilder
 			end
 
 			if !value.blank?
-				return value.map { |value_part| self.enum(value_part, options) }.join(join_string)
+				return value.map { |value_part| self.enum(value_part, options) }.reject { |item| item.blank? }.join(join_string)
 			else
 				return ""
 			end

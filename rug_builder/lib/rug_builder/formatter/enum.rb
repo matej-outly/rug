@@ -49,7 +49,11 @@ module RugBuilder
 			value = value.to_s
 
 			# Get value
-			value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
+			if options[:available_values]
+				value_obj = options[:available_values].select { |obj| obj.value == value }.first
+			else
+				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
+			end
 
 			if value_obj
 				return value_obj.label
@@ -90,8 +94,12 @@ module RugBuilder
 			value = value.to_s
 
 			# Get value, color and icon
-			if object.class.respond_to?("available_#{column.to_s.pluralize}".to_sym)	
-				value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).find { |obj| obj.value == value }
+			if options[:available_values] || object.class.respond_to?("available_#{column.to_s.pluralize}".to_sym)
+				if options[:available_values]
+					value_obj = options[:available_values].select { |obj| obj.value == value }.first
+				else
+					value_obj = object.class.send("available_#{column.to_s.pluralize}".to_sym).select { |obj| obj.value == value }.first
+				end
 				return "" if value_obj.blank?
 				value = value_obj.value
 				label = value_obj.label ? value_obj.label : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.#{value}", default: "")
