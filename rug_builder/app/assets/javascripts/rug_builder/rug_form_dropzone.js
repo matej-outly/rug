@@ -9,6 +9,9 @@
 /*                                                                           */
 /*****************************************************************************/
 
+// Global settings
+Dropzone.autoDiscover = false;
+		
 function RugFormDropzone(hash, options)
 {
 	this.hash = hash;
@@ -31,7 +34,6 @@ RugFormDropzone.prototype = {
 		var _this = this;
 
 		// Dropzone	
-		Dropzone.autoDiscover = false;
 		this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
 			url: this.options.defaultUrl,
 			method: this.options.defaultMethod, /* method given by function not working, that's why we do it by changing static options in success event */

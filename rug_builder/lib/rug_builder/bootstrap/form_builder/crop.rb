@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug form builder - crop TODO refactor JavaScript to object representation
+# * Rug form builder - crop
 # *
 # * Author: Matěj Outlý
 # * Date  : 8. 3. 2015

@@ -93,7 +93,12 @@ module RugRecord
 
 						# URL method
 						define_method("#{new_column.to_s}_url".to_sym) do
-							return self.send(new_column.to_sym).url
+							value = self.send(new_column.to_sym)
+							if value && value.present?
+								return self.send(new_column.to_sym).url
+							else
+								return nil
+							end
 						end
 
 						# Reprocess method

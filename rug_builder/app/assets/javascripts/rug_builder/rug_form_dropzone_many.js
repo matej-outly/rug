@@ -9,6 +9,9 @@
 /*                                                                           */
 /*****************************************************************************/
 
+// Global settings
+Dropzone.autoDiscover = false;
+		
 function RugDropzoneMany(hash, options)
 {
 	this.hash = hash;
@@ -30,7 +33,6 @@ RugDropzoneMany.prototype = {
 		var _this = this;
 		
 		// Dropzone init
-		Dropzone.autoDiscover = false;
 		this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
 			url: this.options.createUrl,
 			method: 'post',
