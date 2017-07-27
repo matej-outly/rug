@@ -22,7 +22,11 @@ module RugRecord
 					# Add new range column
 					#
 					def range_column(new_column, options = {})
-					
+						
+						# Column names
+						min_column = options[:min_column] ? options[:min_column] : :min
+						max_column = options[:max_column] ? options[:max_column] : :max
+						
 						# Set method
 						define_method((new_column.to_s + "=").to_sym) do |value|
 							column = new_column
@@ -42,34 +46,34 @@ module RugRecord
 							end
 
 							# Filter and symbolize keys
-							value = value.symbolize_keys.select { |key, value| [:max, :min].include?(key) } 
+							value = value.symbolize_keys.select { |key, value| [min_column, max_column].include?(key) } 
 							
 							# Store
 							if value.blank?
-								self.send("#{column.to_s}_min=", nil)
-								self.send("#{column.to_s}_max=", nil)
+								self.send("#{column.to_s}_#{min_column.to_s}=", nil)
+								self.send("#{column.to_s}_#{max_column.to_s}=", nil)
 							else
-								self.send("#{column.to_s}_min=", value[:min])
-								self.send("#{column.to_s}_max=", value[:max])
+								self.send("#{column.to_s}_#{min_column.to_s}=", value[min_column.to_sym])
+								self.send("#{column.to_s}_#{max_column.to_s}=", value[max_column.to_sym])
 							end
 						end
 
 						# Get method
 						define_method(new_column.to_sym) do
 							column = new_column
-							value_min = self.send("#{column.to_s}_min")
-							value_max = self.send("#{column.to_s}_max")
+							value_min = self.send("#{column.to_s}_#{min_column.to_s}")
+							value_max = self.send("#{column.to_s}_#{max_column.to_s}")
 							if value_min.blank? && value_max.blank?
 								return nil
 							else
-								return { min: value_min, max: value_max }
+								return { min_column.to_sym => value_min, max_column.to_sym => value_max }
 							end
 						end
 
 						# Get method
 						define_method("#{new_column}_formatted".to_sym) do
 							column = new_column
-							return RugBuilder::Formatter.range(self.send(column))
+							return RugBuilder::Formatter.range(self.send(column), min_column: min_column.to_sym, max_column: max_column.to_sym)
 						end
 
 					end

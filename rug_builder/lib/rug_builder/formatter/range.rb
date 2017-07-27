@@ -18,8 +18,8 @@ module RugBuilder
 		
 		def self.range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
@@ -40,8 +40,8 @@ module RugBuilder
 		
 		def self.string_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
@@ -62,13 +62,15 @@ module RugBuilder
 		
 		def self.integer_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
 					return self.integer(value_max)
 				elsif value_max.blank?
+					return self.integer(value_min)
+				elsif value_min == value_max
 					return self.integer(value_min)
 				else
 					return "#{self.integer(value_min)} - #{self.integer(value_max)}"
@@ -84,13 +86,15 @@ module RugBuilder
 		
 		def self.float_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
 					return self.float(value_max)
 				elsif value_max.blank?
+					return self.float(value_min)
+				elsif value_min == value_max
 					return self.float(value_min)
 				else
 					return "#{self.float(value_min)} - #{self.float(value_max)}"
@@ -106,13 +110,15 @@ module RugBuilder
 		
 		def self.double_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
 					return self.double(value_max)
 				elsif value_max.blank?
+					return self.double(value_min)
+				elsif value_min == value_max
 					return self.double(value_min)
 				else
 					return "#{self.double(value_min)} - #{self.double(value_max)}"
@@ -128,13 +134,15 @@ module RugBuilder
 		
 		def self.currency_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
 					return self.currency(value_max)
 				elsif value_max.blank?
+					return self.currency(value_min)
+				elsif value_min == value_max
 					return self.currency(value_min)
 				else
 					return "#{self.currency(value_min)} - #{self.currency(value_max)}"
@@ -150,13 +158,15 @@ module RugBuilder
 		
 		def self.date_range(value, options = {})
 			if !value.nil?
-				value_min = value[:min]
-				value_max = value[:max]
+				value_min = options[:min_column] ? value[options[:min_column]] : value[:min]
+				value_max = options[:max_column] ? value[options[:max_column]] : value[:max]
 				if value_min.blank? && value_max.blank?
 					return ""
 				elsif value_min.blank?
 					return self.date(value_max)
 				elsif value_max.blank?
+					return self.date(value_min)
+				elsif value_min == value_max
 					return self.date(value_min)
 				else
 					return "#{self.date(value_min)} - #{self.date(value_max)}"

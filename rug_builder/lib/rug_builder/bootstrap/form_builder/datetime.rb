@@ -59,10 +59,22 @@ module RugBuilder
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
 				end
 
+				# Column names
+				min_column = options[:min_column] ? options[:min_column] : :min
+				max_column = options[:max_column] ? options[:max_column] : :max
+
 				# Value
 				value = object.send(name)
-				value_min = value && value[:min] ? value[:min] : nil
-				value_max = value && value[:max] ? value[:max] : nil
+				value_min = value && value[min_column.to_sym] ? value[min_column.to_sym] : nil
+				value_max = value && value[max_column.to_sym] ? value[max_column.to_sym] : nil
+				if !value_min.blank?
+					value_min = Date.parse(value_min) if !value_min.is_a?(Date) && !value_min.is_a?(DateTime) && !value_min.is_a?(Time)
+					value_min = value_min.strftime(I18n.t("date.formats.default")) 
+				end
+				if !value_max.blank?
+					value_max = Date.parse(value_max) if !value_max.is_a?(Date) && !value_max.is_a?(DateTime) && !value_max.is_a?(Time)
+					value_max = value_max.strftime(I18n.t("date.formats.default")) 
+				end
 				
 				# Java Script
 				result += @template.javascript_tag(%{
@@ -70,17 +82,17 @@ module RugBuilder
 					{
 						var valueDates = $('#date_range_picker_#{hash} .dates').val().split(' - ');
 						if (valueDates.length >= 2) {
-							$('#date_range_picker_#{hash} .min').val(valueDates[0]);
-							$('#date_range_picker_#{hash} .max').val(valueDates[1]);
+							$('#date_range_picker_#{hash} .#{min_column.to_s}').val(valueDates[0]);
+							$('#date_range_picker_#{hash} .#{max_column.to_s}').val(valueDates[1]);
 						} else {
-							$('#date_range_picker_#{hash} .min').val('');
-							$('#date_range_picker_#{hash} .max').val('');
+							$('#date_range_picker_#{hash} .#{min_column.to_s}').val('');
+							$('#date_range_picker_#{hash} .#{max_column.to_s}').val('');
 						}
 					}
 					function date_range_picker_#{hash}_update_frontend()
 					{
-						var valueMin = $('#date_range_picker_#{hash} .min').val();
-						var valueMax = $('#date_range_picker_#{hash} .max').val();
+						var valueMin = $('#date_range_picker_#{hash} .#{min_column.to_s}').val();
+						var valueMax = $('#date_range_picker_#{hash} .#{max_column.to_s}').val();
 						if (valueMin && valueMax) {
 							$('#date_range_picker_#{hash} .dates').val(valueMin + ' - ' + valueMax);
 						} else {
@@ -109,8 +121,8 @@ module RugBuilder
 					<div id="date_range_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["dates"]))}
-						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][min]", value_min, class: "min")}
-						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][max]", value_max, class: "max")}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{min_column.to_s}]", value_min, class: min_column.to_s)}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{max_column.to_s}]", value_max, class: max_column.to_s)}
 						#{errors(name, errors: options[:errors])}
 					</div>
 				}

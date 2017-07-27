@@ -271,14 +271,18 @@ module RugBuilder
 
 			def range_row(name, method = :number_field, options = {})
 				
+				# Column names
+				min_column = options[:min_column] ? options[:min_column] : :min
+				max_column = options[:max_column] ? options[:max_column] : :max
+				
 				# Part labels
 				label_min = (options[:label_min] ? options[:label_min] : I18n.t("general.attribute.range.min")) if options[:min] != false
 				label_max = (options[:label_max] ? options[:label_max] : I18n.t("general.attribute.range.max")) if options[:max] != false
 				
 				# Part values
 				value = object.send(name)
-				value_min = value && value[:min] ? value[:min] : nil if options[:min] != false
-				value_max = value && value[:max] ? value[:max] : nil if options[:max] != false
+				value_min = value && value[min_column.to_sym] ? value[min_column.to_sym] : nil if options[:min] != false
+				value_max = value && value[max_column.to_sym] ? value[max_column.to_sym] : nil if options[:max] != false
 				
 				# CSS class
 				klass = []
@@ -295,7 +299,7 @@ module RugBuilder
 						<div class="col-sm-#{12 / columns_count}">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_min.upcase_first + "</div>" : ""}
-								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][min]", value_min, class: klass.dup.concat(["min"]))}
+								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][#{min_column.to_s}]", value_min, class: klass.dup.concat([min_column.to_s]))}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -306,7 +310,7 @@ module RugBuilder
 						<div class="col-sm-#{12 / columns_count}">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_max.upcase_first + "</div>" : ""}
-								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][max]", value_max, class: klass.dup.concat(["max"]))}
+								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][#{max_column.to_s}]", value_max, class: klass.dup.concat([max_column.to_s]))}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
