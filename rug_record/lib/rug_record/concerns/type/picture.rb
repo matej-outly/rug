@@ -28,6 +28,15 @@ module RugRecord
 						has_attached_file new_column.to_sym, styles: options[:styles]
 						validates_attachment_content_type new_column.to_sym, content_type: /\Aimage\/.*\Z/
 
+						# URL method
+						define_method("#{new_column.to_s}_url".to_sym) do
+							value = self.send(new_column.to_sym)
+							if value && value.present?
+								return self.send(new_column.to_sym).url
+							else
+								return nil
+							end
+						end
 					end
 
 					#
