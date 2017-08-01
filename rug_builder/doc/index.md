@@ -17,7 +17,9 @@ And then execute:
 Rug Builder contains of several independent parts. See usage details in designated documentation pages:
 
 - [Form Builder](form_builder.md) integrates (mainly) Bootstrap HTML markup into Rails forms
-- [Map Builder](map_builder.md) adds simple interface for Google Maps API
+- [Show Builder](show_builder.md) is a interface for building show views for single model display
+- [Index Builder](index_builder.md) is a interface for building index views for model collection display
+- [Map Builder](map_builder.md) is a simple interface for Google Maps API
 
 This module is aware of different frontend frameworks. We consider Bootstrap framework a standard for creating modern HTML content. However there is a possibility to incorporate different approaches to generate some specific content or completely switch the framework for something even cooler. For example, FontAwesome is pretty great library to render icons and Rug Builder makes it very easy to switch this specific builder to use this library.
 

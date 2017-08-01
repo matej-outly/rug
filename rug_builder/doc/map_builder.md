@@ -1,4 +1,4 @@
-# Google Maps helper
+# Maps Builder
 
 Google Maps helper provides an easy way to integrate Google Maps into your website.
 
