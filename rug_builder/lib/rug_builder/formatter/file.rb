@@ -42,7 +42,7 @@ module RugBuilder
 						<span class="inner-box">#{RugBuilder::IconBuilder.render(icon)}#{file_name}</span>
 					</#{ options[:download] == true ? "a" : "div"}>
 				}
-						
+				
 			else
 				return ""
 			end

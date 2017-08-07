@@ -17,18 +17,14 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.string(value, options = {})
-			
+			return "" if value.blank?
+
 			# No break?
-			if options[:no_break] == true
-				value = value.to_s.gsub(" ", "&nbsp;").html_safe
-			end
-
+			value = value.to_s.gsub(" ", "&nbsp;").html_safe if options[:no_break] == true
+				
 			# Truncate?
-			if !options[:truncate].nil? && options[:truncate] != false
-				truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
-				value = value.to_s.truncate(truncate_options)
-			end
-
+			value = value.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if !options[:truncate].nil? && options[:truncate] != false
+			
 			return value.to_s
 		end
 
@@ -37,22 +33,70 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.text(value, options = {})
-
-			# Blank?
 			return "" if value.blank?
 
-			# Strip tags?
-			if options[:strip_tags] == true
-				value = value.to_s.strip_tags
+			# Check format
+			if options[:format]
+				format = options[:format]
+			else
+				format = :raw
+			end
+			if ![:raw, :text_box].include?(format)
+				raise "Unknown format #{format}."
 			end
 
-			# Truncate?
-			if options[:truncate] != false
-				truncate_options = options[:truncate].is_a?(Hash) ? options[:truncate] : {}
-				value = value.to_s.truncate(truncate_options)
+			if options[:more] == true
+
+				# Object
+				if options[:object].nil?
+					raise "Please, supply object in options."
+				end
+				object = options[:object]
+
+				# Column
+				if options[:column].nil?
+					raise "Please, supply column in options."
+				end
+				column = options[:column]
+
 			end
 
-			return value.html_safe
+			# Value
+			modified_value = value
+
+			# Strip tags
+			modified_value = modified_value.to_s.strip_tags if options[:strip_tags] == true
+
+			# Truncate
+			modified_value = modified_value.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if options[:truncate] != false
+			
+			# More
+			if options[:more] == true
+				more_modal_id = "#{object.class.to_s}_#{object.id.to_s}_#{column.to_s}_modal"
+				more_modal = RugBuilder::ModalBuilder.new(@template).render(more_modal_id) do |m|
+					result = m.header(object.class.human_attribute_name(column))
+					result += m.body { |b| value }
+					result
+				end
+				modified_value += RugBuilder::ButtonBuilder.new(@template).button(I18n.t("general.more"), nil, modal: more_modal_id, style: :raw)
+			end
+
+			# Format
+			if format == :text_box
+				result = %{
+					<div class="text-box">
+						#{modified_value}
+						#{options[:more] == true ? more_modal : ""}
+					</div>
+				}
+			else
+				result = %{
+					#{modified_value}
+					#{options[:more] == true ? more_modal : ""}
+				}
+			end
+
+			return result.html_safe
 		end
 
 		# *********************************************************************
@@ -60,13 +104,12 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.integer(value, options = {})
-			if value.nil?
-				return ""
-			else
-				result = value.to_i.to_s
-				result += " " + options[:unit].to_s if options[:unit]
-				return result
-			end
+			return "" if value.blank?
+
+			# Format
+			result = value.to_i.to_s
+			result += " " + options[:unit].to_s if options[:unit]
+			return result
 		end
 
 		# *********************************************************************
@@ -74,21 +117,19 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.float(value, options = {})
-			if value.nil?
-				return ""
+			return "" if value.blank?
+
+			# Locale
+			if options[:locale]
+				locale = options[:locale]
 			else
-
-				# Locale
-				if options[:locale]
-					locale = options[:locale]
-				else
-					locale = :cs
-				end
-
-				result = @template.number_with_delimiter(value.to_f, locale: locale) 
-				result += " " + options[:unit].to_s if options[:unit]
-				return result
+				locale = :cs
 			end
+
+			# Format
+			result = @template.number_with_delimiter(value.to_f, locale: locale) 
+			result += " " + options[:unit].to_s if options[:unit]
+			return result
 		end
 
 		# *********************************************************************
@@ -96,21 +137,19 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.double(value, options = {})
-			if value.nil?
-				return ""
+			return "" if value.blank?
+
+			# Locale
+			if options[:locale]
+				locale = options[:locale]
 			else
-
-				# Locale
-				if options[:locale]
-					locale = options[:locale]
-				else
-					locale = :cs
-				end
-
-				result = @template.number_with_delimiter(value.to_f, locale: locale) 
-				result += " " + options[:unit].to_s if options[:unit]
-				return result
+				locale = :cs
 			end
+
+			# Format
+			result = @template.number_with_delimiter(value.to_f, locale: locale) 
+			result += " " + options[:unit].to_s if options[:unit]
+			return result
 		end
 
 		# *********************************************************************
@@ -118,21 +157,18 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.currency(value, options = {})
-			if value.nil?
-				return ""
+			return "" if value.blank?
+
+			# Locale
+			if options[:locale]
+				locale = options[:locale]
+			elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
+				locale = options[:object].currency_as_locale
 			else
-
-				# Locale
-				if options[:locale]
-					locale = options[:locale]
-				elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
-					locale = options[:object].currency_as_locale
-				else
-					locale = :cs
-				end
-
-				return @template.number_to_currency(value, locale: locale).to_s
+				locale = :cs
 			end
+
+			return @template.number_to_currency(value, locale: locale).to_s
 		end
 
 		# *********************************************************************
@@ -140,7 +176,8 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.url(value, options = {})
-			
+			return "" if value.blank?
+
 			# Label
 			if options[:label]
 				label = options[:label]

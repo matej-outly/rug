@@ -48,7 +48,7 @@ module RugBuilder
 				if !options[:modal].nil?
 					data = {} if data.nil?
 					data[:toggle] = "modal"
-					data[:target] = "#" + options[:modal].to_s.to_snake.gsub("_", "-")
+					data[:target] = "#" + options[:modal].to_s.to_id
 				end
 
 				# Check format

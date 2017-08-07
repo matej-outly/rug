@@ -27,7 +27,7 @@ module RugBuilder
 			def render(id, options = {}, &block)
 				
 				# ID
-				@id = id.to_s.to_snake.gsub("_", "-")
+				@id = id.to_s.to_id
 
 				# Options
 				@options = options.nil? ? {} : options

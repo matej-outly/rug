@@ -115,7 +115,8 @@ class String
 	# Convert string to URL suitable format (= url-suitable-format)
 	#
 	def to_url
-		return self.unaccent.
+		return self.
+			unaccent.
 			strip_tags.
 			gsub("&nbsp;", " ").
 			gsub("&amp;", " ").
@@ -123,6 +124,18 @@ class String
 			gsub(/[^a-z0-9\.\s,\-_]/, "").
 			gsub(/[\.\s,\-_]+/, "-").
 			trim("-")
+	end
+
+	#
+	# Convert string to HTML ID suitable format
+	#
+	def to_id
+		return self.
+			gsub("::", "").
+			gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+			gsub(/([a-z\d])([A-Z])/,'\1_\2').
+			downcase.
+			gsub("_", "-")
 	end
 
 	#
