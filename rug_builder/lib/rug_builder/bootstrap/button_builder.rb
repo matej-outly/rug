@@ -44,6 +44,13 @@ module RugBuilder
 					title = options[:tooltip]
 				end
 
+				# Modal
+				if !options[:modal].nil?
+					data = {} if data.nil?
+					data[:toggle] = "modal"
+					data[:target] = "#" + options[:modal].to_s.to_snake.gsub("_", "-")
+				end
+
 				# Check format
 				if options[:format]
 					format = options[:format]

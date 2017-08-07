@@ -59,3 +59,6 @@ crop). This option is valid only for `:thumbnails` layout.
 - `tiles` (boolean) - Whether to use tile resizer to caption. This option is valid only for `:thumbnails` layout.
 - `format` - Format of rendered table. Possible values are `:table` (default, standard `table` HTML markup) and `:div` (rendered with `div` HTML markup). This option is valid only for `:table` layout.
 
+# AJAX reload and pagination
+
+

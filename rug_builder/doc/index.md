@@ -37,7 +37,6 @@ Currently, there is possible to set the following values:
 
 - `frontend_framework` option
   * `bootstrap` (default) - Use Bootstrap 3 for rendering.
-  * `gumby` - This value is very obsolete and probably not working correctly.
 - `icon_framework` option
   * `bootstrap` (default) - Use Bootstrap Glyphicons for icons rendering.
   * `font_awesome` - Use FontAwesome for icons rendering.

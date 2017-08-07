@@ -2,30 +2,21 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug label builder
+# * View helper
 # *
 # * Author: Matěj Outlý
-# * Date  : 20. 7. 2016
+# * Date  : 19. 5. 2017
 # *
 # *****************************************************************************
 
 module RugBuilder
-#	module Gumby
-		class LabelBuilder
+	module Helpers
+		module ShowHelper
 
-			#
-			# Render label 
-			#
-			def self.render(label, options = {})
-				style = options[:style] ? options[:style] : "default"
-				
-				if !label.blank?
-					return "".html_safe # TODO
-				else
-					return ""
-				end
+			def rug_show(options = {}, &block)
+				RugBuilder::ShowBuilder.new(self).render(options, &block)
 			end
 
 		end
-#	end
+	end
 end

@@ -1,13 +1,6 @@
 # Form Builder
 
-This page describes part of Rug Builder module used for generating standardized HTML forms. It is implemented as an extension of vanilla Rails form builder. This architecture ensures that all features provided by vanilla builder are still available in Rug Form Builder.
-
-## Implementations
-
-This builder is currently implemented for:
-
-- Bootstrap framework
-- Gumby framework - Obsolete, DO NOT USE!
+Form builder can be used for generating standardized HTML forms. It is implemented as an extension of vanilla Rails form builder. This architecture ensures that all features provided by vanilla builder are still available in Form builder. Currently Bootstrap frontend framework is used as output HTML markup.
 
 ## Basic usage
 
@@ -187,5 +180,9 @@ Available options:
 - `append_columns`
 - `collection`
 - `collection_class`
+
+## Ajax form
+
+
 
 ## Known bugs and issues

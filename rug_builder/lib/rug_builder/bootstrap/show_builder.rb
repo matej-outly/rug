@@ -2,16 +2,16 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug button builder
+# * Rug show builder
 # *
 # * Author: Matěj Outlý
-# * Date  : 20. 7. 2016
+# * Date  : 7. 8. 2017
 # *
 # *****************************************************************************
 
 module RugBuilder
-#	module Gumby
-		class ButtonBuilder
+#	module Bootstrap
+		class ShowBuilder
 
 			#
 			# Constructor
@@ -20,25 +20,11 @@ module RugBuilder
 				@template = template
 			end
 
-			#
-			# Render button 
-			#
-			def button(label, url = nil, options = {})
-				return "".html_safe # TODO
-			end
+			def render(options = {}, &block)
+				
+				# Call nested block to capture rows, headers, heading and footer and its options
+				unused = @template.capture(self, &block).to_s
 
-			#
-			# Render button 
-			#
-			def dropdown_button(label = nil, options = {}, &block)
-				return "".html_safe # TODO
-			end
-
-			#
-			# Render button 
-			#
-			def button_group(options = {}, &block)
-				return "".html_safe # TODO
 			end
 
 		end

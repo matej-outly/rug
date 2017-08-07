@@ -35,6 +35,7 @@ module RugBuilder
 					when :sign_in then "log-in"
 					when :sign_out then "log-out"
 					when :sign_up then "user"
+					when :close then "remove"
 					else nil
 				end
 			end
