@@ -22,12 +22,12 @@ module RugBuilder
 			return "" if value.blank?
 
 			# Check label
-			if options[:label].nil?
-				raise "Please, supply a label column."
+			if options[:label_attr].nil?
+				raise "Please, supply a label attr column."
 			end
 
 			# Get label
-			label = value.send(options[:label])
+			label = value.send(options[:label_attr])
 
 			# Truncate?
 			if !options[:truncate].nil? && options[:truncate] != false
@@ -49,7 +49,7 @@ module RugBuilder
 		def self.has_many(collection, options = {})
 			
 			# Check label
-			if options[:label].nil?
+			if options[:label_attr].nil?
 				raise "Please, supply a label column."
 			end
 
@@ -86,7 +86,7 @@ module RugBuilder
 				collection.each do |item|
 
 					# Get label
-					label = item.send(options[:label])
+					label = item.send(options[:label_attr])
 
 					# Truncate?
 					if !options[:truncate].nil? && options[:truncate] != false

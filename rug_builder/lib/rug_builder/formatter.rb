@@ -24,6 +24,59 @@ require "rug_builder/formatter/relation"
 module RugBuilder
 	class Formatter
 
+		#
+		# Get all available types
+		#
+		def self.types
+			[
+				:address, 
+				
+				:string_array, 
+				:integer_array,
+				:enum_array,
+
+				:string, 
+				:text, 
+				:integer, 
+				:float,
+				:double,
+				:currency, 
+				:url, 
+				
+				:date, 
+				:time, 
+				:datetime, 
+				:duration, 
+				
+				:enum, 
+				:boolean, 
+				:state, 
+				
+				:file, 
+				:picture, 
+				
+				:geolocation, 
+				:georectangle, 
+				:geopolygon, 
+
+				:name, 
+
+				:range, 
+				:string_range,
+				:integer_range, 
+				:float_range, 
+				:double_range,
+				:currency_range,
+				:date_range, 
+
+				:belongs_to, 
+				:has_many
+			]
+		end
+
+		#
+		# Initialize subsystem with template
+		#
 		def self.initialize(template)
 			@template = template
 		end

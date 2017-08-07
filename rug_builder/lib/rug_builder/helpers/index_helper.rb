@@ -13,8 +13,8 @@ module RugBuilder
 	module Helpers
 		module IndexHelper
 
-			def rug_index(options = {}, &block)
-				RugBuilder::IndexBuilder.new(self).render(options, &block)
+			def rug_index(objects, options = {}, &block)
+				RugBuilder::IndexBuilder.new(self).render(objects, options, &block)
 			end
 
 		end

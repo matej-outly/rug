@@ -9,7 +9,7 @@
 # *
 # *****************************************************************************
 
-require 'action_view'
+require "action_view"
 
 # Parts
 require "rug_builder/bootstrap/form_builder/button"

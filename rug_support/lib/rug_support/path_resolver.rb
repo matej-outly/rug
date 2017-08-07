@@ -17,7 +17,7 @@ module RugSupport
 		end
 
 		#
-		# Resolve if path is defined as lambda or as constant and convert it to 
+		# Resolve if path is defined as lambda or as a string or symbol and convert it to valid application URL
 		#
 		def resolve(path, *args)
 			if path.is_a?(Proc)

@@ -25,7 +25,6 @@ require "rug_builder/helpers/nested_helper"
 require "rug_builder/helpers/pagination_helper"
 require "rug_builder/helpers/show_helper"
 require "rug_builder/helpers/statistics_helper"
-require "rug_builder/helpers/table_helper"
 require "rug_builder/helpers/tabs_helper"
 require "rug_builder/helpers/tree_helper"
 
@@ -49,7 +48,6 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::PaginationHelper
 			ActionView::Base.send :include, Helpers::ShowHelper
 			ActionView::Base.send :include, Helpers::StatisticsHelper
-			ActionView::Base.send :include, Helpers::TableHelper
 			ActionView::Base.send :include, Helpers::TabsHelper
 			ActionView::Base.send :include, Helpers::TreeHelper
 		end
@@ -81,7 +79,6 @@ module RugBuilder
 			require "rug_builder/#{RugBuilder.frontend_framework}/modal_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/show_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/statistics_builder"
-			require "rug_builder/#{RugBuilder.frontend_framework}/table_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/tabs_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/tree_builder"
 			

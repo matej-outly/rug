@@ -34,8 +34,8 @@ Index builder can be used in the following way:
         <%= b.action :move, path: "main_app.move_object_path" %>
         <%= b.integer :id, sort: true %>
         <%= b.datetime :created_at, label: "Created", sort: true %>
-        <%= b.string :name, show: { if: lambda { |object| object.presentable? } } %>
-        <%= b.text :description, label: false %>
+        <%= b.string :name, show: { path: "main_app.object_path", if: lambda { |object| object.presentable? } } %>
+        <%= b.text :description, type: { strip_tags: true, truncate: true, more: true }, label: false %>
         <%= b.custom :name_and_email, label: "Name and email" do |object| %>
             <%= object.name %> ( <%= object.email %> )
         <% end %>
@@ -54,10 +54,10 @@ Index builder can be used in the following way:
 Available options:
 
 - `layout` - Layout of rendered table. Possible values are `:table` (default, standard table) and `:thumbnails` (grid layout with thumbnails)
-- `grid` (integer) - Number of columns in the grid (default 3). This option is valid only for `:thumbnails` layout.
-crop). This option is valid only for `:thumbnails` layout.
-- `tiles` (boolean) - Whether to use tile resizer to caption. This option is valid only for `:thumbnails` layout.
-- `format` - Format of rendered table. Possible values are `:table` (default, standard `table` HTML markup) and `:div` (rendered with `div` HTML markup). This option is valid only for `:table` layout.
+- `thumbnails_grid` (integer) - Number of columns in the grid (default 3). This option is valid only for `:thumbnails` layout.
+- `thumbnails_tiles` (boolean) - Whether to use tile resizer to scale rendered items. This option is valid only for `:thumbnails` layout.
+- `thumbnails_crop` (integer) - Crop thumbnails to fixed height. This option is valid only for `:thumbnails` layout.
+- `table_format` - Format of rendered table. Possible values are `:table` (default, standard `table` HTML markup) and `:div` (rendered with `div` HTML markup). This option is valid only for `:table` layout.
 
 # AJAX reload and pagination
 

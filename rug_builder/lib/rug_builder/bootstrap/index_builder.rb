@@ -9,24 +9,55 @@
 # *
 # *****************************************************************************
 
+# Common concerns
+require "rug_builder/bootstrap/concerns/actions"
+require "rug_builder/bootstrap/concerns/columns"
+
+# Concerns
+require "rug_builder/bootstrap/index_builder/concerns/additionals"
+require "rug_builder/bootstrap/index_builder/concerns/headers"
+require "rug_builder/bootstrap/index_builder/concerns/utils"
+
+# Builders
+require "rug_builder/bootstrap/index_builder/builders/header"
+require "rug_builder/bootstrap/index_builder/builders/body"
+require "rug_builder/bootstrap/index_builder/builders/footer"
+
 module RugBuilder
-#	module Bootstrap
-		class IndexBuilder
-
-			#
-			# Constructor
-			#
-			def initialize(template)
-				@template = template
-			end
-
-			def render(options = {}, &block)
-				
-				# Call nested block to capture rows, headers, heading and footer and its options
-				unused = @template.capture(self, &block).to_s
-
-			end
-
+#module Bootstrap
+	class IndexBuilder
+		include RugBuilder::IndexBuilder::Concerns::Utils
+		
+		def initialize(template)
+			@template = template
 		end
-#	end
+
+		def render(objects, options = {}, &block)
+			@objects = objects
+			@options = options
+			result = %{
+				<div class="#{self.css_class}">
+					#{@template.capture(self, &block).to_s}
+				</div>
+			}
+			return result.html_safe
+		end
+
+		def header(options = {}, &block)
+			@header = RugBuilder::IndexBuilder::Builders::Header.new(@template)
+			return @header.render(@objects, @options.merge(options), &block)
+		end
+
+		def body(options = {}, &block)
+			@body = RugBuilder::IndexBuilder::Builders::Body.new(@template)
+			return @body.render(@objects, @options.merge(options), &block)
+		end
+
+		def footer(options = {}, &block)
+			@footer = RugBuilder::IndexBuilder::Builders::Footer.new(@template)
+			return @footer.render(@objects, @options.merge(options), &block)
+		end
+
+	end
+#end
 end

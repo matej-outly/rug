@@ -2,21 +2,29 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * View helper
+# * Rug index builder
 # *
 # * Author: Matěj Outlý
-# * Date  : 19. 5. 2017
+# * Date  : 7. 8. 2017
 # *
 # *****************************************************************************
 
 module RugBuilder
-	module Helpers
-		module ShowHelper
+#module Bootstrap
+	class IndexBuilder
+		module Concerns
+			module Headers extend ActiveSupport::Concern
 
-			def rug_show(object, options = {}, &block)
-				RugBuilder::ShowBuilder.new(self).render(object, options, &block)
+				included do
+					[:h1, :h2, :h3, :h4, :h5, :h6].each do |tag|
+						define_method(tag) do |label|
+							%{<#{tag}>#{label}</#{tag}>}.html_safe
+						end
+					end
+				end
+
 			end
-
 		end
 	end
+#end
 end

@@ -42,7 +42,7 @@ Show builder can be used in the following way:
 
 Available options:
 
-- `show_blank_rows` - turn on rows without any content
+- `blank_rows` - Turn on rows without any content
 
 ## AJAX reload
 

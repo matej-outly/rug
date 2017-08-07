@@ -179,8 +179,8 @@ module RugBuilder
 			return "" if value.blank?
 
 			# Label
-			if options[:label]
-				label = options[:label]
+			if options[:link_label]
+				label = options[:link_label]
 			else
 				label = value.to_s
 			end

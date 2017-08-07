@@ -43,8 +43,8 @@ RugTable.prototype = {
 		// Hide empty message
 		container.find(".empty-message").hide();
 
-		// Init destroyable if necessary
-		this.inlineDestroyReady();
+		// Init destroyableable if necessary
+		this.destroyableReady();
 	},
 	removeItem: function(id)
 	{
@@ -82,7 +82,7 @@ RugTable.prototype = {
 							destinationId = nextId;
 							relation = 'left';
 						}
-						var moveUrl = _this.options.movingUrl.replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
+						var moveUrl = _this.table.data('moveUrl').replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
 						$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
 					}
 				}
@@ -97,14 +97,14 @@ RugTable.prototype = {
 			});
 		}
 	},
-	inlineDestroyReady: function()
+	destroyableReady: function()
 	{
-		if (this.options.inlineDestroy == true) {
+		if (this.options.destroyable == true) {
 			this.table.find(".destroyable").destroyable({
-				confirmTitle: this.options.inlineDestroyConfirmTitle,
-				confirmMessage: this.options.inlineDestroyConfirmMessage,
-				successMessage: this.options.inlineDestroySuccessMessage,
-				errorMessage: this.options.inlineDestroyErrorMessage,
+				confirmTitle: this.options.destroyableConfirmTitle,
+				confirmMessage: this.options.destroyableConfirmMessage,
+				successMessage: this.options.destroyableSuccessMessage,
+				errorMessage: this.options.destroyableErrorMessage,
 			});
 		}
 	},
@@ -115,6 +115,6 @@ RugTable.prototype = {
 
 		this.movingReady();
 		this.tilesReady();
-		this.inlineDestroyReady();
+		this.destroyableReady();
 	}
 }
