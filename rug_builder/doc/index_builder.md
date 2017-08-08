@@ -11,22 +11,7 @@ Index builder can be used in the following way:
 
     <%= t.header do |h| %>
         <%= h.h2 "Objects" %>
-        <%= h.action :new, modal: true do |m| %>
-            <%= rug_form_for(Object.new, url: main_app.new_object_path, ajax: {
-                success_message: "Object created.",
-                error_message: "Object not created.",
-                clear_on_submit: true,
-                move_to_object: t.js_object
-            }) do |f| %>
-                <%= m.body do %>
-                    <%= f.text_input_row :name %>
-                    <%= f.text_area_row :description %>
-                <% end %>
-                <%= m.footer do %>
-                    <%= f.primary_buton_row :submit %>
-                <% end %>
-            <% end %>
-        <% end %>
+        <%= h.action :new, path: main_app.new_object_path %>
         <%= h.action :synchronize_all, label: "Synchronize all objects", icon: "reload", path: "main_app.synchronize_objects_path", method: :put %>
     <% end %>
 
@@ -58,6 +43,49 @@ Available options:
 - `thumbnails_tiles` (boolean) - Whether to use tile resizer to scale rendered items. This option is valid only for `:thumbnails` layout.
 - `thumbnails_crop` (integer) - Crop thumbnails to fixed height. This option is valid only for `:thumbnails` layout.
 - `table_format` - Format of rendered table. Possible values are `:table` (default, standard `table` HTML markup) and `:div` (rendered with `div` HTML markup). This option is valid only for `:table` layout.
+
+## Modal actions
+
+Actions can be used for rendering modal dialogs. This functionality is available in table header, footer and also in body. In the following example there is a new form integrated into the actions modal dialog in table header:
+
+```erb
+<%= h.action :new, modal: true do |m| %>
+    <%= rug_form_for(Object.new, url: main_app.objects_path, ajax: {
+        success_message: "Object created.",
+        error_message: "Object not created.",
+        clear_on_submit: true,
+        move_to_object: t.js_object
+    }) do |f| %>
+        <%= m.body do %>
+            <%= f.text_input_row :name %>
+            <%= f.text_area_row :description %>
+        <% end %>
+        <%= m.footer do %>
+            <%= f.primary_buton_row :submit %>
+        <% end %>
+    <% end %>
+<% end %>
+```
+
+In the following example there is an edit form integrated into the actions modal dialog in table body:
+
+```erb
+<%= b.action :edit, modal: true do |m, object| %>
+    <%= rug_form_for(object, url: main_app.object_path, ajax: {
+        success_message: "Object saved.",
+        error_message: "Object not saved.",
+        clear_on_submit: false,
+    }) do |f| %>
+        <%= m.body do %>
+            <%= f.text_input_row :name %>
+            <%= f.text_area_row :description %>
+        <% end %>
+        <%= m.footer do %>
+            <%= f.primary_buton_row :submit %>
+        <% end %>
+    <% end %>
+<% end %>
+```
 
 # AJAX reload and pagination
 

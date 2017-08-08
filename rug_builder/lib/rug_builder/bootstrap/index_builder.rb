@@ -46,18 +46,18 @@ module RugBuilder
 		end
 
 		def header(options = {}, &block)
-			@header = RugBuilder::IndexBuilder::Builders::Header.new(@template)
-			return @header.render(@objects, @options.merge(options), &block)
+			header = RugBuilder::IndexBuilder::Builders::Header.new(@template)
+			return header.render(@objects, @options.merge(options), &block)
 		end
 
 		def body(options = {}, &block)
-			@body = RugBuilder::IndexBuilder::Builders::Body.new(@template)
-			return @body.render(@objects, @options.merge(options), &block)
+			body = RugBuilder::IndexBuilder::Builders::Body.new(@template)
+			return body.render(@objects, @options.merge(options), &block)
 		end
 
 		def footer(options = {}, &block)
-			@footer = RugBuilder::IndexBuilder::Builders::Footer.new(@template)
-			return @footer.render(@objects, @options.merge(options), &block)
+			footer = RugBuilder::IndexBuilder::Builders::Footer.new(@template)
+			return footer.render(@objects, @options.merge(options), &block)
 		end
 
 	end

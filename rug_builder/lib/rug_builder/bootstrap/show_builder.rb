@@ -45,18 +45,27 @@ module RugBuilder
 		end
 
 		def header(options = {}, &block)
-			@header = RugBuilder::ShowBuilder::Builders::Header.new(@template)
-			return @header.render(@object, @options.merge(options), &block)
+			header = RugBuilder::ShowBuilder::Builders::Header.new(@template)
+			return header.render(@object, @options.merge(options), &block)
 		end
 
 		def body(options = {}, &block)
-			@body = RugBuilder::ShowBuilder::Builders::Body.new(@template)
-			return @body.render(@object, @options.merge(options), &block)
+
+			# Override context
+			if options[:context] && options[:context].is_a?(Proc)
+				context = options[:context].call(@object)
+			else
+				context = @object
+			end
+
+			# Render body
+			body = RugBuilder::ShowBuilder::Builders::Body.new(@template)
+			return body.render(context, @options.merge(options), &block)
 		end
 
 		def footer(options = {}, &block)
-			@footer = RugBuilder::ShowBuilder::Builders::Footer.new(@template)
-			return @footer.render(@object, @options.merge(options), &block)
+			footer = RugBuilder::ShowBuilder::Builders::Footer.new(@template)
+			return footer.render(@object, @options.merge(options), &block)
 		end
 
 	end
