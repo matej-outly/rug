@@ -17,11 +17,10 @@ module RugBuilder
 				include RugBuilder::ShowBuilder::Concerns::Utils
 				include RugBuilder::ShowBuilder::Concerns::Headers
 				include RugBuilder::Concerns::Actions
+				include RugBuilder::Concerns::Builders
 				
 				def initialize(template)
 					@template = template
-					@path_resolver = RugSupport::PathResolver.new(@template)
-					@icon_builder = RugBuilder::IconBuilder
 				end
 
 				def render(object, options = {}, &block)
@@ -49,6 +48,7 @@ module RugBuilder
 						result += self.render_action_link(action, object: @object, size: "sm") + " "
 					end
 					result += %{</div>}
+					result += self.render_actions_modals
 					return result.html_safe
 				end
 				

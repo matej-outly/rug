@@ -45,6 +45,10 @@ module RugBuilder
 					"index-#{@options[:layout] ? @options[:layout] : "table"}"
 				end
 
+				def id
+					"index-table-#{self.hash}"
+				end
+
 			end
 		end
 	end

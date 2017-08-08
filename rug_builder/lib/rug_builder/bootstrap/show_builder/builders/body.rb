@@ -16,11 +16,10 @@ module RugBuilder
 			class Body
 				include RugBuilder::ShowBuilder::Concerns::Utils
 				include RugBuilder::Concerns::Columns
+				include RugBuilder::Concerns::Builders
 
 				def initialize(template)
 					@template = template
-					#@path_resolver = RugSupport::PathResolver.new(@template)
-					#@icon_builder = RugBuilder::IconBuilder
 				end
 
 				# *************************************************************

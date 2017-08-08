@@ -18,7 +18,7 @@ module RugBuilder
 				def render_as_thumbnails(objects)
 					%{
 						<div 
-							id="index-table-#{self.hash}" 
+							id="#{self.id}" 
 							class="list #{self.css_class}-body row #{@moving ? "moving" : ""} #{@options[:class].to_s}"
 							#{@moving ? self.moving_data : ""}
 						>

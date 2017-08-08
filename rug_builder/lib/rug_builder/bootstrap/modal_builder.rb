@@ -9,16 +9,19 @@
 # *
 # *****************************************************************************
 
+# Common concerns
+require "rug_builder/bootstrap/concerns/builders"
+
 module RugBuilder
 #	module Bootstrap
 		class ModalBuilder
+			include RugBuilder::Concerns::Builders
 
 			#
 			# Constructor
 			#
 			def initialize(template)
 				@template = template
-				@icon_builder = RugBuilder::IconBuilder
 			end
 
 			#
@@ -55,7 +58,7 @@ module RugBuilder
 			def header(label, options = {})
 				result = %{
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">#{@icon_builder.render(:close)}</span></button>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">#{self.icon_builder.render(:close)}</span></button>
 						<h4 class="modal-title" id="#{@id}-label">
 							#{label}
 						</h4>

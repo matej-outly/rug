@@ -20,11 +20,10 @@ module RugBuilder
 				include RugBuilder::IndexBuilder::Concerns::Utils
 				include RugBuilder::Concerns::Columns
 				include RugBuilder::Concerns::Actions
+				include RugBuilder::Concerns::Builders
 
 				def initialize(template)
 					@template = template
-					@path_resolver = RugSupport::PathResolver.new(@template)
-					@icon_builder = RugBuilder::IconBuilder
 				end
 
 				# *************************************************************
@@ -45,19 +44,22 @@ module RugBuilder
 					# Capture all columns and actions
 					unused = @template.capture(self, &block) 
 
+					# Render
+					result = ""
 					if objects.empty?
-						result = %{
+						result += %{
 							<div class="#{self.css_class}-body empty empty-message #{@options[:class].to_s}">
 								#{I18n.t("views.index_table.empty")}
 							</div>
 						}
 					else
 						if @options[:layout] == :thumbnails
-							result = render_as_thumbnails(objects)
+							result += render_as_thumbnails(objects)
 						else
-							result = render_as_table(objects)
+							result += render_as_table(objects)
 						end
 					end
+					result += render_actions_modals
 
 					return result.html_safe
 				end
@@ -170,14 +172,14 @@ module RugBuilder
 
 				def destroyable_data(object)
 					result = ""
-					result += "data-destroy-url=\"#{@path_resolver.resolve(@destroyable[:path], object)}\" "
+					result += "data-destroy-url=\"#{self.path_resolver.resolve(@destroyable[:path], object)}\" "
 					result += "data-destroy=\"a.link-destroy\" "
 					return result
 				end
 
 				def moving_data
 					result = ""
-					result += "data-move-url=\"#{@path_resolver.resolve(@moving[:path], ":id", ":relation", ":destination_id")}\" "
+					result += "data-move-url=\"#{self.path_resolver.resolve(@moving[:path], ":id", ":relation", ":destination_id")}\" "
 					return result
 				end
 

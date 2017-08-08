@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug index builder
+# * Rug builder
 # *
 # * Author: Matěj Outlý
 # * Date  : 7. 8. 2017
@@ -18,13 +18,18 @@ module RugBuilder
 			# Definitions
 			# *************************************************************
 			
-			def action(action, options = {})
+			def action(action, options = {}, &block)
 
 				# Merge with builtin actions options if some defined
-				if builtin_actions_options[action.to_sym]
-					options = builtin_actions_options[action.to_sym].merge(options)
-				end
+				options = builtin_actions_options[action.to_sym].merge(options) if builtin_actions_options[action.to_sym]
+				
+				# Save self to options
+				options[:action] = action.to_sym
 
+				# Optional block
+				raise "Block must be defined if modal option enabled." if options[:modal] == true && block.nil?
+				options[:block] = block
+				
 				# Add to internal structures
 				self.actions[action.to_sym] = options
 				self.add_action(action, options) if self.respond_to?(:add_action, true) 
@@ -76,12 +81,18 @@ module RugBuilder
 			# *************************************************************
 
 			def clear_actions
-				@actions.nil?
+				@actions = nil
+				@actions_modals = nil
 			end
 
 			def actions
 				@actions = {} if @actions.nil?
 				return @actions
+			end
+
+			def actions_modals
+				@actions_modals = [] if @actions_modals.nil?
+				return @actions_modals
 			end
 
 			# *************************************************************
@@ -107,15 +118,49 @@ module RugBuilder
 					end
 				end
 
-				# URL
-				if object
-					url = @path_resolver.resolve(options[:path], object)
+				if options[:modal] == true
+
+					# Unique modal ID
+					if object
+						modal_id = "#{self.id}-#{object.id}-#{options[:action]}-modal"
+					else
+						modal_id = "#{self.id}-#{options[:action]}-modal"
+					end
+
+					# Empty URL
+					url = "#"
+
+					# Data for modal opening
+					options[:data] = { 
+						target: "##{modal_id.to_id}",
+						toggle: "modal"
+					}
+
+					# Block
+					block = options[:block]
+
+					# Render modal
+					self.actions_modals << self.modal_builder.render(modal_id) do |modal|
+						if object
+							@template.capture(modal, object, &block)
+						else
+							@template.capture(modal, &block)
+						end
+					end
+
 				else
-					url = @path_resolver.resolve(options[:path])
+					
+					# Resolve URL
+					if object
+						url = self.path_resolver.resolve(options[:path], object)
+					else
+						url = self.path_resolver.resolve(options[:path])
+					end
+					url = "#" if url.blank?
+
 				end
-				url = "#" if url.blank?
-				
-				# Link tag options
+
+				# Common link tag options
 				link_tag_options = {}
 				link_tag_options[:class] = ""
 				link_tag_options[:class] += "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"} " if options[:disable_button] != true
@@ -125,7 +170,7 @@ module RugBuilder
 
 				# Label
 				label = ""
-				label += @icon_builder.render(options[:icon]) if options[:icon]
+				label += self.icon_builder.render(options[:icon]) if options[:icon]
 				if options[:label].nil? || options[:label] == ""
 					label += options[:default_label].to_s
 				else
@@ -144,6 +189,10 @@ module RugBuilder
 				
 				# Render link
 				return @template.link_to(label.html_safe, url, link_tag_options)
+			end
+
+			def render_actions_modals
+				return self.actions_modals.join("\n")
 			end
 
 		end

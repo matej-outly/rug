@@ -12,6 +12,7 @@
 # Common concerns
 require "rug_builder/bootstrap/concerns/actions"
 require "rug_builder/bootstrap/concerns/columns"
+require "rug_builder/bootstrap/concerns/builders"
 
 # Concerns
 require "rug_builder/bootstrap/index_builder/concerns/additionals"
@@ -27,6 +28,7 @@ module RugBuilder
 #module Bootstrap
 	class IndexBuilder
 		include RugBuilder::IndexBuilder::Concerns::Utils
+		include RugBuilder::Concerns::Builders
 		
 		def initialize(template)
 			@template = template

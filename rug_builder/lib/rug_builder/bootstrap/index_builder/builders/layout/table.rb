@@ -18,7 +18,7 @@ module RugBuilder
 				def render_as_table(objects)
 					%{
 						<table 
-							id="index-table-#{self.hash}" 
+							id="#{self.id}" 
 							class="table #{self.css_class}-body #{@moving ? "moving" : ""} #{@options[:class].to_s}"
 							#{@moving ? self.moving_data : ""}
 						>

@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug index builder
+# * Rug builder
 # *
 # * Author: Matěj Outlý
 # * Date  : 7. 8. 2017
@@ -57,7 +57,7 @@ module RugBuilder
 			# *************************************************************
 
 			def clear_columns
-				@columns.nil?
+				@columns = nil
 			end
 
 			def columns
