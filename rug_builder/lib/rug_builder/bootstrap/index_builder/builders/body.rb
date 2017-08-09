@@ -196,7 +196,9 @@ module RugBuilder
 						@destroyable = {
 							path: self.actions[:destroy][:path] # Save mave path for JS handling
 						}
-						self.actions[:destroy][:path] = nil # Move handle has no URL
+						self.actions[:destroy][:path] = nil # Destroy handle has no URL
+						self.actions[:destroy][:data] = nil # Destroy handle has no data
+						self.actions[:destroy][:method] = nil # Destroy handle has no method
 					end
 				end
 
