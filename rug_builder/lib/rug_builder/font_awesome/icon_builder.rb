@@ -22,7 +22,7 @@ module RugBuilder
 					when :cancel then "times"
 					when :index then "list"
 					when :show then "search"
-					when :edit then "pencil"
+					when :edit then "edit"
 					when :new then "plus"
 					when :destroy then "trash"
 					when :move then "arrows"

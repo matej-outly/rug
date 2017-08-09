@@ -19,13 +19,27 @@ module RugBuilder
 		def self.string(value, options = {})
 			return "" if value.blank?
 
+			# Check format
+			if options[:format]
+				format = options[:format]
+			else
+				format = :raw
+			end
+			if ![:raw, :label].include?(format)
+				raise "Unknown format #{format}."
+			end
+
 			# No break?
 			value = value.to_s.gsub(" ", "&nbsp;").html_safe if options[:no_break] == true
 				
 			# Truncate?
 			value = value.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if !options[:truncate].nil? && options[:truncate] != false
 			
-			return value.to_s
+			if format == :label
+				return RugBuilder::LabelBuilder.render(value, options[:label_options] ? options[:label_options] : {})
+			else
+				return value.to_s
+			end
 		end
 
 		# *********************************************************************

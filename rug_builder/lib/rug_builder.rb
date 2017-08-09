@@ -11,7 +11,6 @@
 
 # Common parts
 require "rug_builder/formatter"
-require "rug_builder/templater"
 
 # Engine
 require "rug_builder/engine"

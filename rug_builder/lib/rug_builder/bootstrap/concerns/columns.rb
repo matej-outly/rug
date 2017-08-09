@@ -66,20 +66,6 @@ module RugBuilder
 			end
 
 			# *************************************************************
-			# Template
-			# *************************************************************
-
-			def template_object
-				result = { id: ":id" }
-				self.columns.keys.each do |column|
-					result[column] = Templater.send(self.columns[column.to_sym][:type].to_sym, column)
-				end
-				result = OpenStruct.new(result)
-				def result.to_s() id end
-				return result
-			end
-
-			# *************************************************************
 			# Render
 			# *************************************************************
 

@@ -64,6 +64,7 @@ RugIndex.prototype = {
 		// Reload JS events
 		this.readyTilable();
 		this.readyDestroyable();
+		// TODO activate modals if added...
 	},
 
 	removeItem: function(id)

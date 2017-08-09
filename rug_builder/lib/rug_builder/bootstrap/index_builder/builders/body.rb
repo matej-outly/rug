@@ -106,7 +106,7 @@ module RugBuilder
 					if @options[:reload_path]
 						reloadable_js = %{
 							reloadable: {
-								url: '#{self.path_resolver.resolve(@options[:reload_path]).gsub("%3A", ":")}',
+								url: '#{self.path_resolver.resolve(@options[:reload_path], ":id").gsub("%3A", ":")}',
 							},
 						}
 					else
