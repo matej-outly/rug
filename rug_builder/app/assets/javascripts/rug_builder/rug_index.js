@@ -60,6 +60,10 @@ RugIndex.prototype = {
 
 		// Hide empty message
 		$container.find(".empty-message").hide();
+
+		// Reload JS events
+		this.readyTilable();
+		this.readyDestroyable();
 	},
 
 	removeItem: function(id)
@@ -75,21 +79,21 @@ RugIndex.prototype = {
 	ready: function()
 	{
 		this.$index = $('#index-' + this.hash);
-		this.readyMove();
-		this.readyTiles();
+		this.readyMovable();
+		this.readyTilable();
 		this.readyDestroyable();
 	},
 	
-	readyMove: function()
+	readyMovable: function()
 	{
 		var _this = this;
-		if (this.options.move && this.$index.hasClass('moving')) {
+		if (this.options.movable && this.$index.hasClass('movable')) {
 			this.$index.sortable({
 				containerSelector: this.options.containerSelector,
 				itemPath: this.options.itemPath,
 				itemSelector: this.options.itemSelector,
-				placeholder: this.options.move.placeholder,
-				handle: '.moving-handle',
+				placeholder: this.options.movable.placeholder,
+				handle: '.move-handle',
 				onDrop: function ($item, container, _super, event) {
 					$item.removeClass(container.group.options.draggedClass).removeAttr('style');
 					$('body').removeClass(container.group.options.bodyClass);
@@ -103,7 +107,7 @@ RugIndex.prototype = {
 							destinationId = nextId;
 							relation = 'left';
 						}
-						var moveUrl = _this.options.move.url.replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
+						var moveUrl = _this.options.movable.url.replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
 						$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
 					}
 				}
@@ -111,9 +115,9 @@ RugIndex.prototype = {
 		}
 	},
 	
-	readyTiles: function()
+	readyTilable: function()
 	{
-		if (this.options.tiles == true) {
+		if (this.options.tilable == true) {
 			this.$index.find('.item').tileResizer({
 				resize: ['.caption'],
 			});
