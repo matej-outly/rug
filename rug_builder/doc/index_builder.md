@@ -43,6 +43,9 @@ Available options:
 - `thumbnails_tiles` (boolean) - Whether to use tile resizer to scale rendered items. This option is valid only for `:thumbnails` layout.
 - `thumbnails_crop` (integer) - Crop thumbnails to fixed height. This option is valid only for `:thumbnails` layout.
 - `table_format` - Format of rendered table. Possible values are `:table` (default, standard `table` HTML markup) and `:div` (rendered with `div` HTML markup). This option is valid only for `:table` layout.
+- `partial` (boolean) - Render onlt partial HTML (see chapter below).
+
+As objects can be passed ActiveRecord::Relation, Array or single ActiveRecord::Base object (automaticaly converted to array).
 
 ## Modal actions
 
@@ -54,7 +57,10 @@ Actions can be used for rendering modal dialogs. This functionality is available
         success_message: "Object created.",
         error_message: "Object not created.",
         clear_on_submit: true,
-        move_to_object: t.js_object
+        on_success {
+            reload_object: { name: t.js_object },
+            toggle_modal: { selector: "##{m.id}" }
+        }
     }) do |f| %>
         <%= m.body do %>
             <%= f.text_input_row :name %>
@@ -75,6 +81,10 @@ In the following example there is an edit form integrated into the actions modal
         success_message: "Object saved.",
         error_message: "Object not saved.",
         clear_on_submit: false,
+        on_success {
+            reload_object: { name: t.js_object },
+            toggle_modal: { selector: "##{m.id}" }
+        }
     }) do |f| %>
         <%= m.body do %>
             <%= f.text_input_row :name %>
@@ -87,6 +97,22 @@ In the following example there is an edit form integrated into the actions modal
 <% end %>
 ```
 
-# AJAX reload and pagination
+## Partial rendering
 
+If option partial is set to `true`, builder renders only HTML highly coupled with given objects. Header, footer, JS and other wrapping HTMl is skipped. For table layout output looks like:
 
+```html
+<tr data-id="1"><td>...</td><td>...</td><td>...</td></tr>
+<tr data-id="2"><td>...</td><td>...</td><td>...</td></tr>
+...
+```
+
+For thumbnails layout output looks like:
+
+```html
+<div class="item ..."><div class="thumbnail ...">...</div></div>
+```
+
+## AJAX reload
+
+TODO entire concept of render_to_string from controller, partials, etc.

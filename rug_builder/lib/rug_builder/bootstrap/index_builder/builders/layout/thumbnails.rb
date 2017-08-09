@@ -19,16 +19,14 @@ module RugBuilder
 					%{
 						<div 
 							id="#{self.id}" 
-							class="list #{self.css_class}-body row #{@moving ? "moving" : ""} #{@options[:class].to_s}"
-							#{@moving ? self.moving_data : ""}
+							class="list #{self.css_class}-body row #{@movable ? "movable" : ""} #{@options[:class].to_s}"
 						>
 							#{render_thumbnails(objects)}
 						</div>
 						#{@template.javascript_tag(render_js(
 							container_selector: ".list",
 							item_selector: ".item",
-							item_template: render_thumbnail(self.template_object),
-							moving_placeholder: render_thumbnail_placeholder
+							move_placeholder: render_thumbnail_placeholder
 						))}
 					}
 				end
@@ -36,7 +34,7 @@ module RugBuilder
 				def render_thumbnails(objects)
 					result = ""
 					objects.each do |object| 
-						result += render_thumbnail(object) + "\n"
+						result += self.capture_partial(render_thumbnail(object)) + "\n"
 					end
 					return result
 				end

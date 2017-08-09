@@ -17,27 +17,29 @@ module RugBuilder
 			# Dropzone element to upload single file as attribute of model
 			#
 			# Options:
-			# - create_url (string of lamba function)
-			# - update_url (string of lamba function)
-			# - notify_to_object (string) ... JS object implementing reload() function
-			#                            which will be notified when file is uploaded
+			# - create_path (string or lamba function)
+			# - update_path (string or lamba function)
+			# - append_columns (hash)
+			# - reload_object (string) ... JS object implementing reload() function
+			#                              which will be called with new image src 
+			#                              when file is uploaded.
 			#
 			def dropzone_row(name, options = {})
 				result = ""
 
 				# URLs
-				update_url = self.options[:update_url] || options[:update_url]
-				create_url = self.options[:create_url] || options[:create_url]
-				if !update_url || (object.new_record? && !create_url)
+				update_path = self.options[:update_path] || options[:update_path]
+				create_path = self.options[:create_path] || options[:create_path]
+				if !update_path || (object.new_record? && !create_path)
 					raise "Please define update and create URL in form or row options."
 				end
 				
 				# Default URL and method
-				default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_url) : RugSupport::PathResolver.new(@template).resolve(update_url, object))
+				default_url = (object.new_record? ? RugSupport::PathResolver.new(@template).resolve(create_path) : RugSupport::PathResolver.new(@template).resolve(update_path, object))
 				default_method = (object.new_record? ? "post" : "put")
 
-				# Notifi object
-				notify_to_object = (options[:notify_to_object] ? options[:notify_to_object] : nil)
+				# Reload object
+				reload_object = (options[:reload_object] ? options[:reload_object] : nil)
 
 				# Unique hash
 				if options[:hash]
@@ -78,7 +80,7 @@ module RugBuilder
 							// URLs
 							defaultUrl: '#{default_url}',
 							defaultMethod: '#{default_method}',
-							updateUrl: '#{RugSupport::PathResolver.new(@template).resolve(update_url, ":id")}',
+							updateUrl: '#{RugSupport::PathResolver.new(@template).resolve(update_path, ":id")}',
 							
 							// Form
 							formSelector: '##{self.options[:html][:id]}',
@@ -89,7 +91,7 @@ module RugBuilder
 
 							// Options
 							appendColumns: #{append_columns_js},
-							notifyToObject: '#{notify_to_object.to_s}',
+							reloadObject: '#{reload_object.to_s}',
 						});
 						rug_form_dropzone_#{hash}.ready();
 						#{defaut_file_js}
@@ -114,13 +116,13 @@ module RugBuilder
 			#
 			# Options:
 			# - attachment_name (string)
-			# - create_url (string of lamba function)
-			# - destroy_url (string of lamba function)
-			# - show_url (string of lamba function)
+			# - create_path (string or lamba function)
+			# - destroy_path (string or lamba function)
 			# - collection
 			# - collection_class
-			# - move_to_object (string) ... JS object implementing addItem() function
-			#                               where uploaded file will be moved
+			# - append_columns (hash)
+			# - reload_object (string or array) ... JS object implementing reload() function
+			#                                       which is called when file is uploaded
 			#
 			def dropzone_many_row(name, options = {})
 				result = ""
@@ -152,16 +154,12 @@ module RugBuilder
 				end
 
 				# URLs
-				show_url = options[:show_url]
-				create_url = options[:create_url]
-				destroy_url = options[:destroy_url]
-				if create_url.nil?
+				create_path = options[:create_path]
+				destroy_path = options[:destroy_path]
+				if create_path.nil?
 					raise "Please define create URL."
 				end
-				if options[:move_to_object] && show_url.nil?
-					raise "Please define show URL."
-				end
-				if !options[:move_to_object] && destroy_url.nil?
+				if !options[:reload_object] && destroy_path.nil?
 					raise "Please define destroy URL."
 				end
 
@@ -182,13 +180,13 @@ module RugBuilder
 				end
 				append_columns_js += "}"
 
-				# Move to object...
-				if options[:move_to_object] 
-					move_to_object = options[:move_to_object]
-					move_to_object = [move_to_object] if !move_to_object.is_a?(Array)
-					move_to_object_js = "[" + move_to_object.map { |item| "'#{item}'" }.join(",") + "]"
+				# Reload object...
+				if options[:reload_object] 
+					reload_object = options[:reload_object]
+					reload_object = [reload_object] if !reload_object.is_a?(Array)
+					reload_object_js = "[" + reload_object.map { |item| "'#{item}'" }.join(",") + "]"
 				else
-					move_to_object_js = "[]"
+					reload_object_js = "[]"
 				end
 
 				# Default files
@@ -215,9 +213,8 @@ module RugBuilder
 							objectParamKey: '#{object.class.model_name.param_key}',
 
 							// URLs
-							createUrl: '#{RugSupport::PathResolver.new(@template).resolve(create_url)}',
-							destroyUrl: '#{RugSupport::PathResolver.new(@template).resolve(destroy_url, ":id")}',
-							showUrl: '#{RugSupport::PathResolver.new(@template).resolve(show_url, ":id")}',
+							createUrl: '#{RugSupport::PathResolver.new(@template).resolve(create_path)}',
+							destroyUrl: '#{RugSupport::PathResolver.new(@template).resolve(destroy_path, ":id")}',
 							
 							// Form
 							formAuthenticityToken: '#{@template.form_authenticity_token}',
@@ -230,10 +227,10 @@ module RugBuilder
 
 							// Options
 							appendColumns: #{append_columns_js},
-							moveToObject: #{move_to_object_js},
+							reloadObjects: #{reload_object_js},
 						});
 						rug_dropzone_many_#{hash}.ready();
-						#{move_to_object.nil? && defaut_files_js}
+						#{reload_object.nil? && defaut_files_js}
 					});
 				})
 

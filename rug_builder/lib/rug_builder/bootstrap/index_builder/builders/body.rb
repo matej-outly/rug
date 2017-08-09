@@ -18,6 +18,7 @@ module RugBuilder
 		module Builders
 			class Body
 				include RugBuilder::IndexBuilder::Concerns::Utils
+				include RugBuilder::IndexBuilder::Concerns::Partial
 				include RugBuilder::Concerns::Columns
 				include RugBuilder::Concerns::Actions
 				include RugBuilder::Concerns::Builders
@@ -44,7 +45,7 @@ module RugBuilder
 					# Capture all columns and actions
 					unused = @template.capture(self, &block) 
 
-					# Render
+					# Render entire body
 					result = ""
 					if objects.empty?
 						result += %{
@@ -61,44 +62,77 @@ module RugBuilder
 					end
 					result += render_actions_modals
 
-					return result.html_safe
+					# Render body or partial
+					if @options[:partial] == true
+						return self.render_partial
+					else
+						return result.html_safe
+					end
 				end
 
 				#
 				# Markup:
 				# - container_selector
 				# - item_selector
-				# - item_selector_path
-				# - item_template
-				# - moving_placeholder
+				# - item_path
+				# - move_placeholder
 				#
 				def render_js(markup)
+					
+					if @movable
+						movable_js = %{
+							movable: {
+								placeholder: '#{markup[:move_placeholder].to_s}',
+								url: '#{self.path_resolver.resolve(@movable[:path], ":id", ":relation", ":destination_id")}',
+							},
+						}
+					else
+						movable_js = ""
+					end
+
+					if @destroyable
+						destroyable_js = %{
+							destroyable: {
+								confirmTitle: '#{I18n.t("general.are_you_sure")}',
+								confirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
+								successMessage: '#{I18n.t("general.action.messages.destroy.success")}',
+								errorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
+							},
+						}
+					else
+						destroyable_js = ""
+					end
+
+					if @options[:reload_path]
+						reloadable_js = %{
+							reloadable: {
+								url: '#{self.path_resolver.resolve(@options[:reload_path]).gsub("%3A", ":")}',
+							},
+						}
+					else
+						reloadable_js = ""
+					end
+
+					if @options[:layout] == :thumbnails && @options[:thumbnails_tiles]
+						tilable_js = %{
+							tilable: true,
+						}
+					else
+						tilable_js = ""
+					end
+
 					js = %{
 						var #{self.js_object} = null;
 						$(document).ready(function() {
-							#{self.js_object} = new RugTable('#{self.hash}', {
-								
-								// Common
+							#{self.js_object} = new RugIndex('#{self.hash}', {
 								containerSelector: '#{markup[:container_selector].to_s}',
-								itemSelectorPath: '#{markup[:item_selector_path].to_s}',
-								itemSelector: '#{markup[:item_selector].to_s}',
-								itemTemplate: `
-									#{markup[:item_template].to_s}
-								`,
-
-								// Moving
-								moving: #{@moving ? "true" : "false"},
-								movingPlaceholder: '#{markup[:moving_placeholder].to_s}',
-								
-								// Destroyable
-								destroyable: #{@destroyable ? "true" : "false"},
-								destroyableConfirmTitle: '#{I18n.t("general.are_you_sure")}',
-								destroyableConfirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
-								destroyableSuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
-								destroyableErrorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
-
-								// Tiles
-								tiles: #{@options[:thumbnails_tiles] ? "true" : "false"},
+								itemPath:          '#{markup[:item_path].to_s}',
+								itemSelector:      '#{markup[:item_selector].to_s}',
+								addPosition:       '#{@options[:add_position] ? @options[:add_position].to_s : "prepend"}',
+								#{reloadable_js}
+								#{movable_js}
+								#{destroyable_js}
+								#{tilable_js}
 							});
 							#{self.js_object}.ready();
 						});
@@ -116,7 +150,7 @@ module RugBuilder
 					@verticals = nil
 					@sorts = nil
 					@shows = nil
-					@moving = nil
+					@move = nil
 					@destroyable = nil
 				end
 
@@ -148,13 +182,13 @@ module RugBuilder
 				def add_action(action, options)
 					self.verticals << { type: :action, action: action.to_sym }
 					
-					# Moving
+					# Movable
 					if action.to_sym == :move
-						@moving = {
+						@movable = {
 							path: self.actions[:move][:path] # Save mave path for JS handling
 						}
-						self.actions[:move][:path] = nil # Moving handle has no URL
-						self.actions[:move][:class] = "moving-handle" # Necessary nof JS to work
+						self.actions[:move][:path] = nil # Move handle has no URL
+						self.actions[:move][:class] = "move-handle" # Necessary nof JS to work
 					end
 
 					# Destroyable
@@ -162,7 +196,7 @@ module RugBuilder
 						@destroyable = {
 							path: self.actions[:destroy][:path] # Save mave path for JS handling
 						}
-						self.actions[:destroy][:path] = nil # Moving handle has no URL
+						self.actions[:destroy][:path] = nil # Move handle has no URL
 					end
 				end
 
@@ -174,12 +208,6 @@ module RugBuilder
 					result = ""
 					result += "data-destroy-url=\"#{self.path_resolver.resolve(@destroyable[:path], object)}\" "
 					result += "data-destroy=\"a.link-destroy\" "
-					return result
-				end
-
-				def moving_data
-					result = ""
-					result += "data-move-url=\"#{self.path_resolver.resolve(@moving[:path], ":id", ":relation", ":destination_id")}\" "
 					return result
 				end
 

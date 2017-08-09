@@ -68,15 +68,15 @@ RugFormDropzone.prototype = {
 				}
 				this.options.url = updateUrl; /* Dropzone - this causes that only one dropzone is supported for creating */
 				this.options.method = 'put';
-				if (_this.options.notifyToObject) {
+				if (_this.options.reloadObject) {
 					var showUrl = updateUrl; /* Update URL is similar to show URL (it differs in method) */
 					$.get(showUrl, function(callback) {
 						if (callback && callback[_this.options.name + "_url"]) {
-							var src = callback[_this.options.name + "_url"];							
-							eval('var notifyToObject = ' + _this.options.notifyToObject + ';');
-							notifyToObject.reload(src);
+							var src = callback[_this.options.name + "_url"];
+							eval('var object = ' + _this.options.reloadObject + ';');
+							object.reload(src);
 						}
-					}, 'json');					
+					}, 'json');
 				}
 			} else { /* Error saving image */ 
 			}

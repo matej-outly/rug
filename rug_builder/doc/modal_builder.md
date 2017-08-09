@@ -35,7 +35,9 @@ Modal builder can be easily combined with Form builder to render modal containin
         success_message: "Object created.",
         error_message: "Object not created.",
         clear_on_submit: true,
-        behavior_on_submit: :modal
+        on_success: {
+            toggle_modal: { selector: "##{m.id}" }
+        }
     }) do |f| %>
         <%= m.body do %>
             <%= f.text_input_row :name %>

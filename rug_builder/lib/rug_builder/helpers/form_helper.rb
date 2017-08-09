@@ -19,12 +19,23 @@ module RugBuilder
 				# Builder
 				options[:builder] = RugBuilder::FormBuilder
 				
-				# Automatic URL
+				# Automatic URL - obsolete
 				if options[:create_url] || options[:update_url]
 					if options[:create_url] && object.new_record?
 						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:create_url])
 					elsif options[:update_url] && !object.new_record?
 						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:update_url], object)
+					else
+						raise "Unable to resolve form URL."
+					end
+				end
+
+				# Automatic URL
+				if options[:create_path] || options[:update_path]
+					if options[:create_path] && object.new_record?
+						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:create_path])
+					elsif options[:update_path] && !object.new_record?
+						options[:url] = RugSupport::PathResolver.new(self).resolve(options[:update_path], object)
 					else
 						raise "Unable to resolve form URL."
 					end
@@ -42,22 +53,25 @@ module RugBuilder
 				if options[:ajax] == true || options[:ajax].is_a?(Hash)
 					
 					# Options
-					js_options = "{"
+					js_options = "{\n"
 					if options[:ajax].is_a?(Hash)
-						js_options += "flashSelector: '#{options[:ajax][:flash_selector]}', " if options[:ajax][:flash_selector]
-						js_options += "modalSelector: '#{options[:ajax][:modal_selector]}', " if options[:ajax][:modal_selector]
-						js_options += "successMessage: '#{options[:ajax][:success_message]}', " if options[:ajax][:success_message]
-						js_options += "errorMessage: '#{options[:ajax][:error_message]}', " if options[:ajax][:error_message]
-						js_options += "clearOnSubmit: #{options[:ajax][:clear_on_submit] == true ? "true" : "false"}, " if !options[:ajax][:clear_on_submit].nil?
-						js_options += "behaviorOnSubmit: '#{options[:ajax][:behavior_on_submit]}', " if options[:ajax][:behavior_on_submit]
-						js_options += "hideTimeout: '#{options[:ajax][:hide_timeout]}', " if options[:ajax][:hide_timeout]
-						js_options += "copyToObject: '#{options[:ajax][:copy_to_object]}', " if options[:ajax][:copy_to_object]
-						js_options += "redirectUrl: '#{options[:ajax][:redirect_url]}', " if options[:ajax][:redirect_url]
-						js_options += "showUrl: '#{options[:ajax][:show_url]}', " if options[:ajax][:show_url]
-						js_options += "invisibleRecaptcha: #{options[:ajax][:invisible_recaptcha] == true ? "true" : "false"}, " if !options[:ajax][:invisible_recaptcha].nil?
-						js_options += "logCallback: #{options[:ajax][:log_callback] == true ? "true" : "false"}, " if !options[:ajax][:log_callback].nil?
+						rb_options = options[:ajax]
+						js_options += "flashSelector: '#{rb_options[:flash_selector]}',\n" if rb_options[:flash_selector]
+						js_options += "modalSelector: '#{rb_options[:modal_selector]}',\n" if rb_options[:modal_selector]
+						js_options += "successMessage: '#{rb_options[:success_message]}',\n" if rb_options[:success_message]
+						js_options += "errorMessage: '#{rb_options[:error_message]}',\n" if rb_options[:error_message]
+						js_options += "clearOnSubmit: #{rb_options[:clear_on_submit] == true ? "true" : "false"},\n" if !rb_options[:clear_on_submit].nil?
+						js_options += "log: #{rb_options[:log] == true ? "true" : "false"},\n" if !rb_options[:log].nil?
+						if rb_options[:on_success]
+							os_options = rb_options[:on_success]
+							js_options += "onSuccess: function(self, id) {\n"
+							js_options += "self.hideForm(#{os_options[:hide_form][:timeout] ? os_options[:hide_form][:timeout] : ""});\n" if os_options[:hide_form]
+							js_options += "self.toggleModal('#{os_options[:toggle_modal][:selector] ? os_options[:toggle_modal][:selector] : ""}');\n" if os_options[:toggle_modal]
+							js_options += "self.reloadObject('#{os_options[:reload_object][:name] ? os_options[:reload_object][:name] : ""}', id);\n" if os_options[:reload_object]
+							js_options += "},\n"
+						end
 					end
-					js_options += "}"
+					js_options += "}\n"
 
 					result += javascript_tag(%{
 						$(document).ready(function() {

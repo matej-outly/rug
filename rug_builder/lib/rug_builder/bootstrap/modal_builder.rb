@@ -17,11 +17,12 @@ module RugBuilder
 		class ModalBuilder
 			include RugBuilder::Concerns::Builders
 
-			#
-			# Constructor
-			#
 			def initialize(template)
 				@template = template
+			end
+
+			def id
+				@id
 			end
 
 			#

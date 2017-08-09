@@ -58,20 +58,17 @@ RugDropzoneMany.prototype = {
 			var responseId = parseInt(response);
 			if (!isNaN(responseId)) {
 				file.record_id = responseId;
-				if (_this.options.moveToObject) {
-					var showUrl = _this.options.showUrl.replace(':id', file.record_id);
-					$.get(showUrl, function(data) {
-						_this.dropzone.removeFile(file);
-						_this.options.moveToObject.forEach(function(item) {
-							eval('var moveToObject = ' + item + ';');
-							moveToObject.addItem(data);
-						});
-					}, 'json');
+				if (_this.options.reloadObjects) {
+					_this.dropzone.removeFile(file);
+					_this.options.reloadObjects.forEach(function(item) {
+						eval('var object = ' + item + ';');
+						object.reload(responseId);
+					});
 				}
 			} else { /* Error saving image */
 			}
 		});
-		if (!this.options.moveToObject) {
+		if (!this.options.reloadObjects) {
 			this.dropzone.on('removedfile', function(file) {
 				if (file.record_id) {
 					var destroyUrl = _this.options.destroyUrl.replace(':id', file.record_id);

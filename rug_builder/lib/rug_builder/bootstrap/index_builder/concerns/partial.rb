@@ -13,23 +13,20 @@ module RugBuilder
 #module Bootstrap
 	class IndexBuilder
 		module Concerns
-			module Additionals extend ActiveSupport::Concern
+			module Partial extend ActiveSupport::Concern
 
-				def pagination
-					if @objects.respond_to?(:total_pages)
-						return @template.paginate(@objects)
-					else
-						return ""
-					end
+				def clear_partial
+					@partial = nil
 				end
 
-				def summary
-					result = %{
-						<div class="summary">
-							#{I18n.t("general.shown").upcase_first}: #{@objects.length}#{(self.model_class.respond_to?(:count) ? ("/" + self.model_class.count.to_s) : "")}
-						</div>
-					}
-					return result.html_safe
+				def capture_partial(partial)
+					@partial = "" if @partial.nil?
+					@partial += partial
+					return partial
+				end
+
+				def render_partial
+					@partial.to_s.html_safe
 				end
 
 			end

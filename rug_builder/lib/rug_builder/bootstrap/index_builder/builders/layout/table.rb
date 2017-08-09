@@ -19,8 +19,7 @@ module RugBuilder
 					%{
 						<table 
 							id="#{self.id}" 
-							class="table #{self.css_class}-body #{@moving ? "moving" : ""} #{@options[:class].to_s}"
-							#{@moving ? self.moving_data : ""}
+							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@options[:class].to_s}"
 						>
 							#{render_table_head}
 							#{render_table_body}
@@ -29,7 +28,7 @@ module RugBuilder
 							container_selector: "table",
 							item_selector_path: "> tbody",
 							item_selector: "tr",
-							moving_placeholder: render_table_row_placeholder
+							move_placeholder: render_table_row_placeholder
 						))}
 					}
 				end
@@ -62,43 +61,48 @@ module RugBuilder
 					result = ""
 					result += %{<tbody>\n}
 					@objects.each do |object|
-						result += %{<tr 
-							data-id="#{object.id}" 
-							class="#{@destroyable ? "destroyable" : ""}"
-							#{@destroyable ? self.destroyable_data(object) : ""}
-						>}
-						self.verticals.chunk { |vertical| vertical[:type] }.each do |type, chunk|
-							if type == :column
-								chunk.each do |vertical|
-									column = vertical[:column]
-									result += %{<td>}
-									value = self.render_column_value(column, object).to_s
-									if self.shows[column]
-										result += self.render_link(self.shows[column].merge(
-											label: value,
-											fallback: value, 
-											default_label: "...",
-											object: object, 
-											disable_button: true, 
-										))
-									else
-										result += value
-									end
-									result += %{</td>}
-								end
-							elsif type == :action
-								result += %{<td class="actions">}
-								chunk.each do |vertical|
-									action = vertical[:action]
-									result += self.render_action_link(action, object: object, size: "xs", label: false) + " "
-								end
-								result += %{</td>}
-							end
-						end
-						result += %{</tr>\n}
+						result += self.capture_partial(render_table_row(object)) + "\n"
 					end
 					result += %{</tbody>\n}
 					return result
+				end
+
+				def render_table_row(object)
+					result = ""
+					result += %{<tr 
+						data-id="#{object.id}" 
+						class="#{@destroyable ? "destroyable" : ""}"
+						#{@destroyable ? self.destroyable_data(object) : ""}
+					>}
+					self.verticals.chunk { |vertical| vertical[:type] }.each do |type, chunk|
+						if type == :column
+							chunk.each do |vertical|
+								column = vertical[:column]
+								result += %{<td>}
+								value = self.render_column_value(column, object).to_s
+								if self.shows[column]
+									result += self.render_link(self.shows[column].merge(
+										label: value,
+										fallback: value, 
+										default_label: "...",
+										object: object, 
+										disable_button: true, 
+									))
+								else
+									result += value
+								end
+								result += %{</td>}
+							end
+						elsif type == :action
+							result += %{<td class="actions">}
+							chunk.each do |vertical|
+								action = vertical[:action]
+								result += self.render_action_link(action, object: object, size: "xs", label: false) + " "
+							end
+							result += %{</td>}
+						end
+					end
+					result += %{</tr>}
 				end
 
 				def render_table_row_placeholder

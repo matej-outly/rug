@@ -16,7 +16,7 @@ module RugBuilder
 			def crop_row(name, options = {})
 				result = ""
 
-				if !self.options[:update_url] || (object.new_record? && !self.options[:create_url])
+				if !self.options[:update_path] || (object.new_record? && !self.options[:create_path])
 					raise "Please define update and create URL."
 				end
 

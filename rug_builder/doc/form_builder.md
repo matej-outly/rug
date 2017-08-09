@@ -160,9 +160,9 @@ Available options:
 Available options:
 
 - `label`
-- `create_url`
-- `update_url`
-- `notify_to_object`
+- `create_path`
+- `update_path`
+- `reload_object`
 - `append_columns`
 
 ---
@@ -173,10 +173,9 @@ Available options:
 
 - `label`
 - `attachment_name`
-- `create_url`
-- `destroy_url`
-- `show_url`
-- `move_to_object`
+- `create_path`
+- `destroy_path`
+- `reload_object`
 - `append_columns`
 - `collection`
 - `collection_class`

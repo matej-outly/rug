@@ -19,12 +19,12 @@ module RugBuilder
 					if @model_class.nil?
 						if @options[:model_class]
 							@model_class = @options[:model_class].constantize
+						elsif @objects.is_a?(ActiveRecord::Relation)
+							@model_class = @objects.class.to_s.deconstantize.constantize
+						elsif @objects.is_a?(Array) && !@objects.empty?
+							@model_class = @objects.first.class
 						else
-							@model_class = @objects.class.to_s.deconstantize
-							@model_class = @model_class.constantize if !@model_class.blank?
-						end
-						if @model_class.blank?
-							raise "Please supply model class to options or use ActiveRecord::Relation as collection."
+							raise "Please supply model class option or use ActiveRecord::Relation, not empty Array or single ActiveRecord::Base object as collection."
 						end
 					end
 					return @model_class
@@ -38,7 +38,7 @@ module RugBuilder
 				end
 
 				def js_object
-					"rug_table_#{self.hash}"
+					"rug_index_#{self.hash}"
 				end
 
 				def css_class
@@ -46,7 +46,7 @@ module RugBuilder
 				end
 
 				def id
-					"index-table-#{self.hash}"
+					"index-#{self.hash}"
 				end
 
 			end

@@ -17,7 +17,6 @@ require "rug_builder/helpers/grid_helper"
 require "rug_builder/helpers/icon_helper"
 require "rug_builder/helpers/index_helper"
 require "rug_builder/helpers/label_helper"
-require "rug_builder/helpers/list_helper"
 require "rug_builder/helpers/map_helper"
 require "rug_builder/helpers/menu_helper"
 require "rug_builder/helpers/modal_helper"
@@ -40,7 +39,6 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::IconHelper
 			ActionView::Base.send :include, Helpers::IndexHelper
 			ActionView::Base.send :include, Helpers::LabelHelper
-			ActionView::Base.send :include, Helpers::ListHelper
 			ActionView::Base.send :include, Helpers::MapHelper
 			ActionView::Base.send :include, Helpers::MenuHelper
 			ActionView::Base.send :include, Helpers::ModalHelper
@@ -73,7 +71,6 @@ module RugBuilder
 			require "rug_builder/#{RugBuilder.icon_framework}/icon_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/index_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/label_builder"
-			require "rug_builder/#{RugBuilder.frontend_framework}/list_builder"
 			require "rug_builder/#{RugBuilder.map_framework}/map_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/modal_builder"

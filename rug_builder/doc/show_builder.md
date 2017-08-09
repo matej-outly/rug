@@ -46,7 +46,10 @@ Actions can be used for rendering modal dialogs. This functionality is available
     <%= rug_form_for(object, url: main_app.object_path, ajax: {
         success_message: "Object saved.",
         error_message: "Object not saves.",
-        clear_on_submit: false
+        clear_on_submit: false,
+        on_success: {
+            toggle_modal: { selector: "##{m.id}" }
+        }
     }) do |f| %>
         <%= m.body do %>
             <%= f.text_input_row :name %>
