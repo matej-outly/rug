@@ -30,6 +30,7 @@ module RugRecord
 			require "rug_record/concerns/hierarchical_ordering"if RugRecord.enable_hierarchical_ordering
 			require "rug_record/concerns/json"if RugRecord.enable_json
 			require "rug_record/concerns/localization"if RugRecord.enable_localization
+			require "rug_record/concerns/messages"if RugRecord.enable_messages
 			require "rug_record/concerns/ordering"if RugRecord.enable_ordering
 			require "rug_record/concerns/remote_model"if RugRecord.enable_remote_model
 			require "rug_record/concerns/sorting"if RugRecord.enable_sorting

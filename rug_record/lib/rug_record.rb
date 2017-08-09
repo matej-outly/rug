@@ -59,6 +59,12 @@ module RugRecord
 	@@enable_localization = true
 
 	#
+	# Enable messages
+	#
+	mattr_accessor :enable_messages
+	@@enable_messages = true
+	
+	#
 	# Enable ordering
 	#
 	# Use gem 'acts_as_list' if enabled
