@@ -9,6 +9,7 @@
 # *
 # *****************************************************************************
 
+require "rug_builder/helpers/accordion_helper"
 require "rug_builder/helpers/button_helper"
 require "rug_builder/helpers/chart_helper"
 require "rug_builder/helpers/form_helper"
@@ -31,6 +32,7 @@ module RugBuilder
 	class Railtie < Rails::Railtie
 		
 		initializer "rug_builder.helpers" do
+			ActionView::Base.send :include, Helpers::AccordionHelper
 			ActionView::Base.send :include, Helpers::ButtonHelper
 			ActionView::Base.send :include, Helpers::ChartHelper
 			ActionView::Base.send :include, Helpers::FormHelper
@@ -64,6 +66,7 @@ module RugBuilder
 			end
 
 			# Config dependent builders
+			require "rug_builder/#{RugBuilder.frontend_framework}/accordion_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/button_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/chart_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/form_builder"
