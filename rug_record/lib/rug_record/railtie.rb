@@ -28,6 +28,7 @@ module RugRecord
 			# Concerns
 			require "rug_record/concerns/config" if RugRecord.enable_config
 			require "rug_record/concerns/hierarchical_ordering"if RugRecord.enable_hierarchical_ordering
+			require "rug_record/concerns/id"if RugRecord.enable_id
 			require "rug_record/concerns/json"if RugRecord.enable_json
 			require "rug_record/concerns/localization"if RugRecord.enable_localization
 			require "rug_record/concerns/messages"if RugRecord.enable_messages

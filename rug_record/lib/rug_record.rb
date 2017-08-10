@@ -47,6 +47,12 @@ module RugRecord
 	@@enable_hierarchical_ordering = false
 
 	#
+	# Enable id
+	#
+	mattr_accessor :enable_id
+	@@enable_id = true
+
+	#
 	# Enable json
 	#
 	mattr_accessor :enable_json
