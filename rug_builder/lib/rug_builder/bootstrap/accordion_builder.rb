@@ -98,7 +98,7 @@ module RugBuilder
 
 			# Render HTML
 			result += %{
-				<div class="panel-group" id="accordion-#{@hash}" role="tablist" aria-multiselectable="true">
+				<div class="accordion panel-group" id="accordion-#{@hash}" role="tablist" aria-multiselectable="true">
 					#{tabs_html}
 				</div>
 			}

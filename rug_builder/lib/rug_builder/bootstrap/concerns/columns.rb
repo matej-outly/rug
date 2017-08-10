@@ -23,7 +23,8 @@ module RugBuilder
 				# Method for each available type
 				RugBuilder::Formatter.types.each do |type|
 					define_method(type) do |column, options = {}|
-						column_options = options[:type] ? options[:type] : {}
+						column_options = options
+						column_options[:type_options] = options[:type] ? options[:type] : {}
 						column_options[:type] = type
 						self.columns[column.to_sym] = column_options
 						self.add_column(column, options) if self.respond_to?(:add_column, true) 
@@ -34,16 +35,18 @@ module RugBuilder
 			end
 
 			def custom(column, options = {}, &block)
-				column_options = options[:type] ? options[:type] : {}
-				column_options[:block] = block
+				column_options = options
+				column_options[:type_options] = options[:type] ? options[:type] : {}
 				column_options[:type] = :block
+				column_options[:block] = block
 				self.columns[column.to_sym] = column_options
 				self.add_column(column, options) if self.respond_to?(:add_column, true) 
 				return ""
 			end
 
 			def store(column, options = {})
-				column_options = options[:type] ? options[:type] : {}
+				column_options = options
+				column_options[:type_options] = options[:type] ? options[:type] : {}
 				column_options[:type] = :store
 				self.columns[column.to_sym] = column_options
 				self.add_column(column, options) if self.respond_to?(:add_column, true) 
@@ -123,7 +126,7 @@ module RugBuilder
 					value = object.send(column.to_sym)
 					
 					# Set additional options necessary for formatter options
-					options = self.columns[column.to_sym].dup
+					options = self.columns[column.to_sym][:type_options].dup
 					options[:object] = object
 					options[:column] = column
 

@@ -68,6 +68,7 @@ module RugBuilder
 							js_options += "self.hideForm(#{os_options[:hide_form][:timeout] ? os_options[:hide_form][:timeout] : ""});\n" if os_options[:hide_form]
 							js_options += "self.toggleModal('#{os_options[:toggle_modal][:selector] ? os_options[:toggle_modal][:selector] : ""}');\n" if os_options[:toggle_modal]
 							js_options += "self.reloadObject('#{os_options[:reload_object][:name] ? os_options[:reload_object][:name] : ""}', id);\n" if os_options[:reload_object]
+							js_options += "self.reloadPage();\n" if os_options[:reload_page]
 							js_options += "},\n"
 						end
 					end

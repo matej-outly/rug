@@ -16,7 +16,12 @@ module RugBuilder
 			class Body
 
 				def render_as_table(objects)
-					%{
+
+					# Capture all columns and actions
+					unused = @template.capture(self, &@block) 
+
+					# Render
+					result = %{
 						<table 
 							id="#{self.id}" 
 							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@options[:class].to_s}"
@@ -31,6 +36,7 @@ module RugBuilder
 							move_placeholder: render_table_row_placeholder
 						))}
 					}
+					return result.html_safe
 				end
 
 				def render_table_head
@@ -54,7 +60,7 @@ module RugBuilder
 					end
 					result += %{</tr>}
 					result += %{</thead>}
-					return result
+					return result.html_safe
 				end
 
 				def render_table_body
@@ -64,7 +70,7 @@ module RugBuilder
 						result += self.capture_partial(render_table_row(object)) + "\n"
 					end
 					result += %{</tbody>\n}
-					return result
+					return result.html_safe
 				end
 
 				def render_table_row(object)
@@ -103,6 +109,7 @@ module RugBuilder
 						end
 					end
 					result += %{</tr>}
+					return result.html_safe
 				end
 
 				def render_table_row_placeholder

@@ -34,7 +34,12 @@ module RugBuilder
 				self.actions[action.to_sym] = options
 				self.add_action(action, options) if self.respond_to?(:add_action, true) 
 
-				return ""
+				# Either render in place or return empty string and hope that somebody calls render_action_link in the future
+				if @render_action_in_place == true
+					return render_action_link(action)
+				else
+					return ""
+				end
 			end
 
 		protected

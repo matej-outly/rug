@@ -38,7 +38,7 @@ Index builder can be used in the following way:
 
 Available options:
 
-- `layout` - Layout of rendered table. Possible values are `:table` (default, standard table) and `:thumbnails` (grid layout with thumbnails)
+- `layout` - Layout of rendered table. Possible values are `:table` (default, standard table), `:thumbnails` (grid layout with thumbnails) and `:list` (custom HTML markup)
 - `thumbnails_grid` (integer) - Number of columns in the grid (default 3). This option is valid only for `:thumbnails` layout.
 - `thumbnails_tiles` (boolean) - Whether to use tile resizer to scale rendered items. This option is valid only for `:thumbnails` layout.
 - `thumbnails_crop` (integer) - Crop thumbnails to fixed height. This option is valid only for `:thumbnails` layout.
@@ -46,6 +46,40 @@ Available options:
 - `partial` (boolean) - Render onlt partial HTML (see chapter below).
 
 As objects can be passed ActiveRecord::Relation, Array or single ActiveRecord::Base object (automaticaly converted to array).
+
+## List layout
+
+List layout provides a possibility to render each item in custom HTML markup. However, there are some specifics you must be aware. Here is an example rendering items as 3 column grid of (Bootstrap) panels:
+
+```erb
+<%= rug_index(objects,
+    layout: :list, 
+    list_class: "row", 
+    item_class: "col-sm-4"
+) do |t| %>
+    <%= t.header do |h| %>
+        <%= h.action :new, path: :new_sample_path %>
+    <% end %>
+    <%= t.body do |b, sample| %>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4><%= sample.name %></h4>
+                <div class="actions">
+                    <%= b.action :edit, object: sample, label: false, path: :edit_sample_path
+                    <%= b.action :destroy, object: sample, label: false, path: :sample_path %>
+                </div>
+            </div>
+            <div class="panel-body">
+                <%= sample.description %>
+            </div>
+        </div>
+    <% end %>
+<% end %>
+```
+
+Notice that you must provide valid `object` option to each call of `action` method. It is also possible to pass `label`, `style`, `size` and other options to modify action button appearence.
+
+In current version of `list` layout, items moving is not implemented.
 
 ## Modal actions
 
@@ -115,27 +149,11 @@ For thumbnails layout output looks like:
 
 ## AJAX reload
 
-Index builder can be used as core component for creating and updating records over AJAX (without visible HTTP request). Anyway the entire setup is more complicated. 
-
-### Model
-
-Let's say that we work with `index` action on `SamplesController` and `Sample` model. First, prepare your model to handle `only` scope:
-
-```ruby
-class Sample < ActiveRecord::Base
-    def self.only(id)
-        if id.nil?
-            all
-        else
-            where(id: id)
-        end
-    end
-end
-```
+Index builder can be used as core component for creating and updating records over AJAX (without visible HTTP request). Anyway the entire setup is more complicated. Let's say that we work with `index` action on `SamplesController` and `Sample` model.
 
 ### View
 
-Second, decompose your `index` view to `views/samples/index.html.erb` and `views/samples/_index.html.erb` and `views/samples/_form.html.erb` partials:
+First, decompose your `index` view to `views/samples/index.html.erb` and `views/samples/_index.html.erb` and `views/samples/_form.html.erb` partials:
 
 #### Main index view template
 
@@ -204,12 +222,12 @@ It is important to use index partial which contains only Index builder. It is us
 
 ### Controller
 
-Third, prepare your controller to understand provided reload path and connect it to prepared index partial:
+Second, prepare your controller to understand provided reload path and connect it to prepared index partial:
 
 ```ruby
 class SamplesController < ApplicationController
     def index
-        @samples = Sample.only(params[:id]).order(name: :asc).page(params[:page])
+        @samples = Sample.id(params[:id]).order(name: :asc).page(params[:page])
         respond_to do |format|
             format.html { render "index" }
             format.json do

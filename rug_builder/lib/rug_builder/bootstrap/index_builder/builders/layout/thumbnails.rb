@@ -16,7 +16,12 @@ module RugBuilder
 			class Body
 
 				def render_as_thumbnails(objects)
-					%{
+					
+					# Capture all columns and actions
+					unused = @template.capture(self, &@block) 
+
+					# Render
+					result = %{
 						<div 
 							id="#{self.id}" 
 							class="list #{self.css_class}-body row #{@movable ? "movable" : ""} #{@options[:class].to_s}"
@@ -29,6 +34,7 @@ module RugBuilder
 							move_placeholder: render_thumbnail_placeholder
 						))}
 					}
+					return result.html_safe
 				end
 
 				def render_thumbnails(objects)
@@ -36,7 +42,7 @@ module RugBuilder
 					objects.each do |object| 
 						result += self.capture_partial(render_thumbnail(object)) + "\n"
 					end
-					return result
+					return result.html_safe
 				end
 
 				def render_thumbnail(object)
@@ -107,7 +113,7 @@ module RugBuilder
 					result += %{</div>}
 					result += %{</div>}
 
-					return result
+					return result.html_safe
 				end
 
 				def render_thumbnail_placeholder

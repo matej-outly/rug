@@ -11,6 +11,7 @@
 
 require "rug_builder/bootstrap/index_builder/builders/layout/table"
 require "rug_builder/bootstrap/index_builder/builders/layout/thumbnails"
+require "rug_builder/bootstrap/index_builder/builders/layout/list"
 
 module RugBuilder
 #module Bootstrap
@@ -36,14 +37,12 @@ module RugBuilder
 					# Save
 					@objects = objects
 					@options = options
+					@block = block
 
 					# Clear
 					self.clear
 					self.clear_columns
 					self.clear_actions
-
-					# Capture all columns and actions
-					unused = @template.capture(self, &block) 
 
 					# Render entire body
 					result = ""
@@ -56,6 +55,8 @@ module RugBuilder
 					else
 						if @options[:layout] == :thumbnails
 							result += render_as_thumbnails(objects)
+						elsif @options[:layout] == :list
+							result += render_as_list(objects)
 						else
 							result += render_as_table(objects)
 						end
