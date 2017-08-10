@@ -58,10 +58,10 @@ module RugRecord
 			if options.is_a? Hash
 
 				# Convert keys to symbols
-				options = options.rug_deep_symbolize_keys
+				options = options.deep_symbolize_keys
 
 				# Merge with config options loaded earlier (with lower priority)
-				@table.rug_merge(options)
+				@table.merge!(options)
 
 			end
 		end
