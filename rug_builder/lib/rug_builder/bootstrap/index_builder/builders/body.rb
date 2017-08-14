@@ -46,20 +46,12 @@ module RugBuilder
 
 					# Render entire body
 					result = ""
-					if objects.empty?
-						result += %{
-							<div class="#{self.css_class}-body empty empty-message #{@options[:class].to_s}">
-								#{I18n.t("views.index_table.empty")}
-							</div>
-						}
+					if @options[:layout] == :thumbnails
+						result += render_as_thumbnails(objects)
+					elsif @options[:layout] == :list
+						result += render_as_list(objects)
 					else
-						if @options[:layout] == :thumbnails
-							result += render_as_thumbnails(objects)
-						elsif @options[:layout] == :list
-							result += render_as_list(objects)
-						else
-							result += render_as_table(objects)
-						end
+						result += render_as_table(objects)
 					end
 					result += render_actions_modals
 
@@ -189,7 +181,7 @@ module RugBuilder
 							path: self.actions[:move][:path] # Save mave path for JS handling
 						}
 						self.actions[:move][:path] = nil # Move handle has no URL
-						self.actions[:move][:class] = "move-handle" # Necessary nof JS to work
+						self.actions[:move][:class] = "move-handle" # Necessary for JS to work
 					end
 
 					# Destroyable

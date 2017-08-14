@@ -29,13 +29,16 @@ module RugBuilder
 							#{render_table_head}
 							#{render_table_body}
 						</table>
-						#{@template.javascript_tag(render_js(
-							container_selector: "table",
-							item_selector_path: "> tbody",
-							item_selector: "tr",
-							move_placeholder: render_table_row_placeholder
-						))}
 					}
+
+					# Render JS
+					result += @template.javascript_tag(render_js(
+						container_selector: "table",
+						item_selector_path: "> tbody",
+						item_selector: "tr",
+						move_placeholder: render_table_row_placeholder
+					))
+
 					return result.html_safe
 				end
 
@@ -66,6 +69,7 @@ module RugBuilder
 				def render_table_body
 					result = ""
 					result += %{<tbody>\n}
+					result += %{<tr class="empty-message"><td colspan="#{@verticals_count}">#{I18n.t("views.index.empty")}</td></tr>} if @objects.empty?
 					@objects.each do |object|
 						result += self.capture_partial(render_table_row(object)) + "\n"
 					end

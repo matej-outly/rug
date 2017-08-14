@@ -21,19 +21,24 @@ module RugBuilder
 					unused = @template.capture(self, &@block) 
 
 					# Render
+					empty_message = %{<div class="empty-message">#{I18n.t("views.index.empty")}</div>}
 					result = %{
 						<div 
 							id="#{self.id}" 
 							class="list #{self.css_class}-body row #{@movable ? "movable" : ""} #{@options[:class].to_s}"
 						>
+							#{objects.empty? ? empty_message : ""}
 							#{render_thumbnails(objects)}
 						</div>
-						#{@template.javascript_tag(render_js(
-							container_selector: ".list",
-							item_selector: ".item",
-							move_placeholder: render_thumbnail_placeholder
-						))}
 					}
+
+					# Render JS
+					result += @template.javascript_tag(render_js(
+						container_selector: ".list",
+						item_selector: ".item",
+						move_placeholder: render_thumbnail_placeholder
+					))
+
 					return result.html_safe
 				end
 
@@ -58,7 +63,7 @@ module RugBuilder
 					>}
 					
 					# Moving handle
-					result += self.render_action_link(:move, object: object, size: "sm", label: false) if @moving
+					result += self.render_action_link(:move, object: object, size: "sm", label: false) if @movable
 
 					result += %{<div class="thumbnail">}
 					

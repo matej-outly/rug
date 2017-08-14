@@ -21,7 +21,7 @@ module RugBuilder
 			@tabs << {
 				name: name.to_sym,
 				heading: heading.to_s,
-				options: options,
+				active: options[:active],
 				block: block,
 				index: @tabs.length
 			}
@@ -155,7 +155,7 @@ module RugBuilder
 		def self.active_tab_index(tabs = [])
 			result = nil
 			tabs.each_with_index do |tab, index|
-				result = index if tab[:options] && tab[:options][:active] == true
+				result = index if tab[:active] == true
 			end
 			result = 0 if result.nil?
 			return result

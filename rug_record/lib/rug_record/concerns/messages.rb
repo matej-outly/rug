@@ -25,6 +25,10 @@ module RugRecord
 					I18n.t("activerecord.errors.models.#{self.model_name.i18n_key}.#{action}")
 				end
 
+				def human_error_attribute_message(attribute, condition)
+					I18n.t("activerecord.errors.models.#{self.model_name.i18n_key}.#{attribute}.#{condition}")
+				end
+
 			end
 
 		end

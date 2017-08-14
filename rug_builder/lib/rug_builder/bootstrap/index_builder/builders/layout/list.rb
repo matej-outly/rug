@@ -21,18 +21,23 @@ module RugBuilder
 					@render_action_in_place = true
 
 					# Render
+					empty_message = %{<div class="empty-message">#{I18n.t("views.index.empty")}</div>}
 					result = %{
 						<div 
 							id="#{self.id}" 
 							class="list #{self.css_class}-body #{@options[:list_class].to_s}"
 						>
+							#{objects.empty? ? empty_message : ""}
 							#{render_items(objects)}
 						</div>
-						#{@template.javascript_tag(render_js(
-							container_selector: ".list",
-							item_selector: ".item",
-						))}
 					}
+
+					# Render JS
+					result += @template.javascript_tag(render_js(
+						container_selector: ".list",
+						item_selector: ".item",
+					))
+
 					return result.html_safe
 				end
 

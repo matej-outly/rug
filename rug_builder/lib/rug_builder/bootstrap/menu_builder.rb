@@ -70,7 +70,7 @@ module RugBuilder
 				icon = options.delete(:icon)
 				active = (options[:active] == true)
 				klass = options[:class] ? options[:class] : ""
-				rendered_label = @options[:labels] != false ? label : ""
+				rendered_label = @options.nil? || @options[:labels] != false ? label : ""
 
 				# Render
 				if @format == :btn
