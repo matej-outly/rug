@@ -107,6 +107,7 @@ module RugBuilder
 							date_range_picker_#{hash}_update_backend();
 						});
 						$('#date_range_picker_#{hash} .dates').on('change', date_range_picker_#{hash}_update_backend);
+						$('#date_range_picker_#{hash} .dates').on('apply.daterangepicker', date_range_picker_#{hash}_update_backend);
 						date_range_picker_#{hash}_update_frontend();
 					}
 					$(document).ready(date_range_picker_#{hash}_ready);
@@ -206,6 +207,7 @@ module RugBuilder
 						#{date_js("#datetime_picker_#{hash} .date")}
 						#{time_js("#datetime_picker_#{hash} .time")}
 						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_backend);
+						$('#datetime_picker_#{hash} .date').on('apply.daterangepicker', datetime_picker_#{hash}_update_backend);
 						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_backend);
 						datetime_picker_#{hash}_update_frontend();
 					}
@@ -224,15 +226,15 @@ module RugBuilder
 							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6">
 								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-									#{options[:addon] ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
+									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["date"]))}
-								#{options[:addon] ? "</div>" : ""}
+								#{options[:addon] != false ? "</div>" : ""}
 							</div>
 							<div class="col-sm-6">
 								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-									#{options[:addon] ? "<div class=\"input-group-addon\">" + label_time.upcase_first + "</div>" : ""}
+									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_time.upcase_first + "</div>" : ""}
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))}
-								#{options[:addon] ? "</div>" : ""}
+								#{options[:addon] != false ? "</div>" : ""}
 							</div>
 							#{errors(name, errors: options[:errors], class: "col-sm-12")}
 						</div>
@@ -303,9 +305,9 @@ module RugBuilder
 					result_date = %{
 						<div class="col-sm-#{column_width}">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-								#{options[:addon] ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
+								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][date]", value_date, class: klass.dup.concat(["date"]))}
-							#{options[:addon] ? "</div>" : ""}
+							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
 				else
@@ -318,9 +320,9 @@ module RugBuilder
 					result_from = %{
 						<div class="col-sm-#{column_width}">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-								#{options[:addon] ? "<div class=\"input-group-addon\">" + label_from.upcase_first + "</div>" : ""}
+								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_from.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][from]", value_from, class: klass.dup.concat(["from"]))}
-							#{options[:addon] ? "</div>" : ""}
+							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
 				else
@@ -333,9 +335,9 @@ module RugBuilder
 					result_to = %{
 						<div class="col-sm-#{column_width}">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-								#{options[:addon] ? "<div class=\"input-group-addon\">" + label_to.upcase_first + "</div>" : ""}
+								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_to.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][to]", value_to, class: klass.dup.concat(["to"]))}
-							#{options[:addon] ? "</div>" : ""}
+							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
 				else
