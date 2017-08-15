@@ -13,8 +13,12 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def picker_row(name, collection = nil, value_attr = :value, label_attr = :label, options = {})
+			def picker_row(name, collection = nil, options = {})
 				
+				# Attributes
+				label_attr = options[:label_attr] || :label
+				value_attr = options[:value_attr] || :value
+
 				# Collection
 				collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call if collection.nil?
 				

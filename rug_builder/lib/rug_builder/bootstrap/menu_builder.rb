@@ -72,11 +72,19 @@ module RugBuilder
 				klass = options[:class] ? options[:class] : ""
 				rendered_label = @options.nil? || @options[:labels] != false ? label : ""
 
+				# Modal
+				if !options[:modal].nil?
+					data = {} if data.nil?
+					data[:toggle] = "modal"
+					data[:target] = "#" + options[:modal].to_s.to_id
+					options[:data] = data
+				end
+
 				# Render
 				if @format == :btn
 					options[:style] = options[:style].nil? ? @options[:btn_style] : nil
 					options[:size] = options[:size].nil? ? @options[:btn_size] : nil
-					options[:tooltip] =  @options[:labels] == false ? label : nil
+					options[:tooltip] = @options[:labels] == false ? label : nil
 					result = @button_builder.button((@icon_builder.render(icon) + rendered_label).html_safe, path, options)
 				else
 					result = %{
@@ -258,6 +266,17 @@ module RugBuilder
 				options[:method] = :post
 
 				return self.item(label, path, options)
+			end
+
+			#
+			# Render separator
+			#
+			def separator
+				if @format == :btn
+					return ""
+				else
+					return "<li role=\"separator\" class=\"divider\"></li>".html_safe
+				end
 			end
 
 		protected

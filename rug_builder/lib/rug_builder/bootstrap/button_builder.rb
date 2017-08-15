@@ -64,7 +64,7 @@ module RugBuilder
 				if !label.blank?
 					if format == :a
 						return @template.link_to(label.html_safe, url, {
-							class: "btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} #{klass}",
+							class: "btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{klass.to_s}",
 							method: method,
 							data: data,
 							title: title
@@ -73,7 +73,7 @@ module RugBuilder
 						result = ""
 						result += "<button 
 							type=\"button\"
-							class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} #{klass}\" 
+							class=\"btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{klass.to_s}\" 
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
 						>" # method and data not working here, hence tooltip not working here
 						result += label
@@ -86,7 +86,7 @@ module RugBuilder
 			end
 
 			#
-			# Render dropdown button with some options # TODO maybe some combination with menu builder...???
+			# Render dropdown button with some options
 			#
 			def dropdown_button(label = nil, options = {}, &block)
 				options = options.nil? ? {} : options
@@ -98,18 +98,20 @@ module RugBuilder
 				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
 
 				result = ""
+				result += "<div class=\"dropdown\">" if options[:wrap] != false
 				result += "<button 
 					type=\"button\" 
-					class=\"btn btn-#{style} #{size ? "btn-" + size : ""} #{color ? "color-" + color : ""} #{active ? "active" : ""} dropdown-toggle #{klass}\" 
+					class=\"btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} dropdown-toggle #{klass.to_s}\" 
 					data-toggle=\"dropdown\" 
 					aria-haspopup=\"true\" 
 					aria-expanded=\"false\"
 				>"
 				result += label
 				result += "</button>"
-				result += "<ul class=\"dropdown-menu\">"
+				result += "<ul class=\"dropdown-menu\">" 
 				result += @template.capture(RugBuilder::MenuBuilder.new(@template), &block).to_s
 				result += "</ul>"
+				result += "</div>" if options[:wrap] != false
 
 				return result.html_safe
 			end

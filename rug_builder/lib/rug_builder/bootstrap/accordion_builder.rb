@@ -39,9 +39,9 @@ module RugBuilder
 			if @current_tab
 				result += %{
 					<div id="accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}" class="panel-collapse collapse #{@current_tab[:index] == self.active_tab_index ? "in" : ""}" role="tabpanel" aria-labelledby="accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}-heading">
-						<div class="panel-body">
+						#{options[:wrap] != false ? "<div class=\"panel-body\">" : ""}
 							#{@template.capture(&block).to_s}
-						</div>
+						#{options[:wrap] != false ? "</div>" : ""}
 					</div>
 				}
 			end
