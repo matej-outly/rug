@@ -27,7 +27,7 @@ module RugBuilder
 				end
 
 				def css_class
-					"show-table"
+					"show"
 				end
 
 			end
