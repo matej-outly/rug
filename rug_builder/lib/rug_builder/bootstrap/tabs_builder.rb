@@ -79,7 +79,7 @@ module RugBuilder
 
 			# Render
 			result = %{
-				<div role="tabpanel" class="tab-pane #{@active_tab_index == tab[:index] ? "active" : ""}" id="#{tab[:name].to_s.to_id}">"
+				<div role="tabpanel" class="tab-pane #{@active_tab_index == tab[:index] ? "active" : ""}" id="#{tab[:name].to_s.to_id}">
 					#{@template.capture(self, &block).to_s}
 				</div>
 			}
