@@ -58,10 +58,13 @@ module RugBuilder
 				# Label
 				label = !options[:label].nil? ? options[:label] : object.class.human_attribute_name(name)
 				
+				# ID (must be unique for each object of same type in case we render more edit forms on one page)
+				id = object_name.to_s + (object.id ? "_" + object.id.to_s : "") + "_" + name.to_s
+
 				# Field
 				result += "<div class=\"#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}\">"
-				result += label(name) do
-					check_box(name) + "<span></span>&nbsp;&nbsp;#{label}".html_safe
+				result += label(name, for: id) do
+					check_box(name, id: id) + "<span></span>&nbsp;&nbsp;#{label}".html_safe
 				end
 				result += "</div>"
 				
