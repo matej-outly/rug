@@ -34,7 +34,7 @@ RugFormDropzone.prototype = {
 		var _this = this;
 
 		// Dropzone	
-		this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
+		this.dropzone = new Dropzone('div#' + this.options.id, {
 			url: this.options.defaultUrl,
 			method: this.options.defaultMethod, /* method given by function not working, that's why we do it by changing static options in success event */
 			paramName: this.options.objectParamKey + '[' + this.options.name + ']',

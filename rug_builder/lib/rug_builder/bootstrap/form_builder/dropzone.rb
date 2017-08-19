@@ -47,6 +47,9 @@ module RugBuilder
 				else
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
 				end
+
+				# ID (must be unique for each object of same type in case we render more edit forms on one page)
+				id = object_name.to_s + (object.id ? "_" + object.id.to_s : "") + "_" + name.to_s
 				
 				# Append columns
 				append_columns_js = "{"
@@ -71,10 +74,9 @@ module RugBuilder
 					$(document).ready(function() {
 						rug_form_dropzone_#{hash} = new RugFormDropzone('#{hash}', {
 
-							// Columns names
+							// Column identification
+							id: '#{id}',
 							name: '#{name}',
-							
-							// Param keys
 							objectParamKey: '#{object.class.model_name.param_key}',
 
 							// URLs
@@ -102,7 +104,7 @@ module RugBuilder
 				result += %{
 					<div class="#{options[:form_group] != false ? "form-group" : ""}">
 						#{label_for(name, label: options[:label])}
-						<div id="#{object.class.model_name.param_key}_#{name.to_s}" class="dropzone">
+						<div id="#{id}" class="dropzone">
 							<div class="dz-message">#{I18n.t("general.drop_file_here")}</div>
 						</div>
 					</div>
@@ -170,6 +172,9 @@ module RugBuilder
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
 				end
 
+				# ID (must be unique for each object of same type in case we render more edit forms on one page)
+				id = object_name.to_s + (object.id ? "_" + object.id.to_s : "") + "_" + name.to_s
+
 				# Append columns
 				append_columns_js = "{"
 				if options[:append_columns]
@@ -204,7 +209,8 @@ module RugBuilder
 					$(document).ready(function() {
 						rug_dropzone_many_#{hash} = new RugDropzoneMany('#{hash}', {
 
-							// Columns names
+							// Column identification
+							id: '#{id}',
 							name: '#{name}',
 							attachmentName: '#{attachment_name}',
 							
@@ -238,7 +244,9 @@ module RugBuilder
 				result += %{
 					<div class="#{options[:form_group] != false ? "form-group" : ""}">
 						#{label_for(name, label: options[:label])}
-						<div id="#{object.class.model_name.param_key}_#{name.to_s}" class="dropzone"></div>
+						<div id="#{id}" class="dropzone">
+							<div class="dz-message">#{I18n.t("general.drop_file_here")}</div>
+						</div>
 					</div>
 				}
 

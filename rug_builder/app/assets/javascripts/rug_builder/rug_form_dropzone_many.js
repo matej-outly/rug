@@ -33,7 +33,7 @@ RugDropzoneMany.prototype = {
 		var _this = this;
 		
 		// Dropzone init
-		this.dropzone = new Dropzone('div#' + this.options.objectParamKey + '_' + this.options.name, {
+		this.dropzone = new Dropzone('div#' + this.options.id, {
 			url: this.options.createUrl,
 			method: 'post',
 			paramName: this.options.collectionParamKey + '[' + this.options.attachmentName + ']',
