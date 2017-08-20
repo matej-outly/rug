@@ -34,7 +34,7 @@ module RugBuilder
 					# Render JS
 					result += @template.javascript_tag(render_js(
 						container_selector: "table",
-						item_selector_path: "> tbody",
+						item_path: "> tbody",
 						item_selector: "tr",
 						move_placeholder: render_table_row_placeholder
 					))
