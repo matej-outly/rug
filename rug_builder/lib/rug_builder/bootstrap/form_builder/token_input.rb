@@ -23,6 +23,10 @@ module RugBuilder
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
 				end
 
+				# Label
+				label = options[:as] ? label_for(options[:as], label: options[:label]) : label_for(name, label: options[:label])
+				options[:label] = label
+
 				# Value
 				value = object.send(options[:as] ? options[:as] : name)
 				value = value.split(",") if value.is_a?(::String)

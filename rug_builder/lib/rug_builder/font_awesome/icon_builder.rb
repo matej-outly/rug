@@ -28,7 +28,7 @@ module RugBuilder
 					when :move then "arrows"
 					when :move_up then "long-arrow-up"
 					when :move_down then "long-arrow-down"
-					when :duplicate then "files-o"
+					when :duplicate then "clone"
 					when :profile then "user"
 					when :password then "lock"
 					when :recover then "life-ring"

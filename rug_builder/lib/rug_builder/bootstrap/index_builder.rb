@@ -52,7 +52,7 @@ module RugBuilder
 			
 			# Render entire index
 			result = %{
-				<div class="#{self.css_class}">
+				<div class="#{self.css_class} #{@options[:class].to_s}">
 					#{@template.capture(self, &block).to_s}
 				</div>
 			}
