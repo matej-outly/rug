@@ -41,7 +41,7 @@ module RugBuilder
 
 				# Render
 				result = %{
-					<div class="modal fade #{klass}" id="#{@id}" tabindex="-1" role="dialog" aria-labelledby="#{@id}-label">
+					<div class="modal fade #{@options[:show] == true ? "show-on-page-load" : ""} #{klass}" id="#{@id}" tabindex="-1" role="dialog" aria-labelledby="#{@id}-label">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								#{@template.capture(self, &block).to_s}
