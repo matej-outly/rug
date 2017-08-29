@@ -29,7 +29,7 @@ module RugRecord
 						validates_attachment_content_type new_column.to_sym, content_type: /\Aimage\/.*\Z/
 
 						# URL method
-						define_method("#{new_column.to_s}_url".to_sym) do
+						define_method("#{new_column}_url".to_sym) do
 							value = self.send(new_column.to_sym)
 							if value && value.present?
 								return self.send(new_column.to_sym).url
@@ -84,24 +84,24 @@ module RugRecord
 						validates_attachment_content_type new_column.to_sym, content_type: /\Aimage\/.*\Z/
 
 						# Cropped styles method
-						define_method("#{new_column.to_s}_cropped_style".to_sym) do
+						define_method("#{new_column}_cropped_style".to_sym) do
 							return cropped_style
 						end
 
 						# Croppable styles method
-						define_method("#{new_column.to_s}_croppable_style".to_sym) do
+						define_method("#{new_column}_croppable_style".to_sym) do
 							return croppable_style
 						end
 
 						# Geometry method
-						define_method("#{new_column.to_s}_geometry".to_sym) do |style = :original|
+						define_method("#{new_column}_geometry".to_sym) do |style = :original|
 							@paperclip_geometry ||= {}
 							@paperclip_geometry[new_column.to_sym] ||= {}
 							@paperclip_geometry[new_column.to_sym][style] ||= Paperclip::Geometry.from_file(self.send(new_column.to_sym).path(style))
 						end
 
 						# URL method
-						define_method("#{new_column.to_s}_url".to_sym) do
+						define_method("#{new_column}_url".to_sym) do
 							value = self.send(new_column.to_sym)
 							if value && value.present?
 								return self.send(new_column.to_sym).url
@@ -111,35 +111,43 @@ module RugRecord
 						end
 
 						# Reprocess method
-						define_method("#{new_column.to_s}_reprocess".to_sym) do
+						define_method("#{new_column}_reprocess".to_sym) do
 							self.send(new_column.to_sym).assign(self.send(new_column.to_sym))
 							self.send(new_column.to_sym).save
 						end
 
 						# Bind after update event
-						after_update("#{new_column.to_s}_reprocess".to_sym, :if => "#{new_column.to_s}_perform_cropping?".to_sym)
+						after_update("#{new_column}_reprocess".to_sym, :if => "#{new_column}_perform_cropping?".to_sym)
 
 						# Define virtual crop attributes if needed => specify crop dimensions
-						x_attribute = "#{new_column.to_s}_crop_x".to_sym
-						attr_accessor x_attribute if !column_names.include?(x_attribute.to_s)
-						y_attribute = "#{new_column.to_s}_crop_y".to_sym
-						attr_accessor y_attribute if !column_names.include?(y_attribute.to_s)
-						w_attribute = "#{new_column.to_s}_crop_w".to_sym
-						attr_accessor w_attribute if !column_names.include?(w_attribute.to_s)
-						h_attribute = "#{new_column.to_s}_crop_h".to_sym
-						attr_accessor h_attribute if !column_names.include?(h_attribute.to_s)
+						[:crop_x, :crop_y, :crop_w, :crop_h].each do |suffix|
+							attribute = "#{new_column}_#{suffix}".to_sym
+							if !column_names.include?(attribute.to_s)
+								attr_accessor attribute 
+								define_method("#{new_column}_#{suffix}=".to_sym) do |value|
+									self.instance_variable_set("@#{attribute}".to_sym, value.nil? ? nil : value.to_i) if value.nil? || value.is_numeric?
+								end
+							else
+								define_method("#{new_column}_#{suffix}=".to_sym) do |value|
+									super(value.nil? ? nil : value.to_i) if value.nil? || value.is_numeric?
+								end
+							end
+						end 
 
-						# Already cropped method
-						define_method("#{new_column.to_s}_already_cropped?".to_sym) do
-							return !self.send(x_attribute).blank? && !self.send(y_attribute).blank? && !self.send(w_attribute).blank? && !self.send(h_attribute).blank?
+						# Picture is already cropped if all crop attributes set to some value
+						define_method("#{new_column}_already_cropped?".to_sym) do
+							[:crop_x, :crop_y, :crop_w, :crop_h].each do |suffix|
+								return false if self.send("#{new_column}_#{suffix}".to_sym).blank?
+							end
+							return true
 						end
 
-						# Define virtual cropping attribute => specifi if cropping performed
-						perform_cropping_attribute = "#{new_column.to_s}_perform_cropping".to_sym
+						# Define virtual cropping attribute => specify if cropping should be performed
+						perform_cropping_attribute = "#{new_column}_perform_cropping".to_sym
 						attr_accessor perform_cropping_attribute
 
 						# Perform cropping method
-						define_method("#{new_column.to_s}_perform_cropping?".to_sym) do
+						define_method("#{new_column}_perform_cropping?".to_sym) do
 							return !self.send(perform_cropping_attribute).blank?
 						end
 
