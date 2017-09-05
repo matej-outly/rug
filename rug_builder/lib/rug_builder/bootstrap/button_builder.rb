@@ -31,6 +31,7 @@ module RugBuilder
 				klass = options[:class] ? options[:class] : ""
 				method = options[:method] ? options[:method] : nil
 				active = (options[:active] == true)
+				disabled = (options[:disabled] == true)
 				data = options[:data] ? options[:data] : nil
 				url = "#" if url.blank?
 				title = nil
@@ -64,7 +65,7 @@ module RugBuilder
 				if !label.blank?
 					if format == :a
 						return @template.link_to(label.html_safe, url, {
-							class: "btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{klass.to_s}",
+							class: "btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{disabled ? "disabled" : ""} #{klass.to_s}",
 							method: method,
 							data: data,
 							title: title
@@ -74,6 +75,7 @@ module RugBuilder
 						result += "<button 
 							type=\"button\"
 							class=\"btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{klass.to_s}\" 
+							#{disabled ? "disabled=\"disabled\"" : ""}
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
 						>" # method and data not working here, hence tooltip not working here
 						result += label

@@ -23,6 +23,7 @@ require "rug_builder/helpers/menu_helper"
 require "rug_builder/helpers/modal_helper"
 require "rug_builder/helpers/nested_helper"
 require "rug_builder/helpers/pagination_helper"
+require "rug_builder/helpers/progress_helper"
 require "rug_builder/helpers/show_helper"
 require "rug_builder/helpers/statistics_helper"
 require "rug_builder/helpers/tabs_helper"
@@ -46,6 +47,7 @@ module RugBuilder
 			ActionView::Base.send :include, Helpers::ModalHelper
 			ActionView::Base.send :include, Helpers::NestedHelper
 			ActionView::Base.send :include, Helpers::PaginationHelper
+			ActionView::Base.send :include, Helpers::ProgressHelper
 			ActionView::Base.send :include, Helpers::ShowHelper
 			ActionView::Base.send :include, Helpers::StatisticsHelper
 			ActionView::Base.send :include, Helpers::TabsHelper
@@ -77,6 +79,7 @@ module RugBuilder
 			require "rug_builder/#{RugBuilder.map_framework}/map_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/menu_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/modal_builder"
+			require "rug_builder/#{RugBuilder.frontend_framework}/progress_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/show_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/statistics_builder"
 			require "rug_builder/#{RugBuilder.frontend_framework}/tabs_builder"

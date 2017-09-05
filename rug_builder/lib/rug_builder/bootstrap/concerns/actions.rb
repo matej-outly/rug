@@ -27,7 +27,7 @@ module RugBuilder
 				options[:action] = action.to_sym
 
 				# Optional block
-				raise "Block must be defined if modal option enabled." if options[:modal] == true && block.nil?
+				raise "Block must be defined if modal option enabled." if (options[:modal] == true || options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)) && block.nil?
 				options[:block] = block
 				
 				# Add to internal structures
@@ -123,13 +123,17 @@ module RugBuilder
 					end
 				end
 
-				if options[:modal] == true
+				if options[:modal] == true || options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
 
 					# Unique modal ID
-					if object
-						modal_id = "#{self.id}-#{object.id}-#{options[:action]}-modal"
+					if options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
+						modal_id = options[:modal].to_s
 					else
-						modal_id = "#{self.id}-#{options[:action]}-modal"
+						if object
+							modal_id = "#{self.id}-#{object.id}-#{options[:action]}-modal"
+						else
+							modal_id = "#{self.id}-#{options[:action]}-modal"
+						end
 					end
 
 					# Empty URL

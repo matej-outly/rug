@@ -131,6 +131,8 @@ In the following example there is an edit form integrated into the actions modal
 <% end %>
 ```
 
+Optionally you can provide some string of symbol to `:modal` option instead of `true`. In this case passed value is used as modal ID.
+
 ## Partial rendering
 
 If option partial is set to `true`, builder renders only HTML highly coupled with given objects. Header, footer, JS and other wrapping HTMl is skipped. For table layout output looks like:
