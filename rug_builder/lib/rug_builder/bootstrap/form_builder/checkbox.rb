@@ -13,9 +13,17 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def checkboxes_row(name, collection = nil, value_attr = :value, label_attr = :label, options = {})
+			def checkboxes_row(name, options = {})
 				result = ""
 				
+				# Attributes
+				label_attr = options[:label_attr] || :label
+				value_attr = options[:value_attr] || :value
+
+				# Collection
+				collection = options[:collection] ?  options[:collection] : object.class.method("available_#{name.to_s.pluralize}".to_sym).call
+				
+
 				# Enable Bootstrap (Bootstrap is disabled by default)
 				enable_bootstrap = (options[:enable_bootstrap] == true)
 
@@ -31,7 +39,7 @@ module RugBuilder
 				result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
 					b_result = "<div class=\"#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}\">"
 					b_result += b.label do
-						b.check_box + "<span></span>&nbsp;&nbsp;#{b.text}".html_safe
+						b.check_box + "<span></span>#{b.text}".html_safe
 					end
 					b_result += "</div>"
 					b_result.html_safe
@@ -64,7 +72,7 @@ module RugBuilder
 				# Field
 				result += "<div class=\"#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}\">"
 				result += label(name, for: id) do
-					check_box(name, id: id) + "<span></span>&nbsp;&nbsp;#{label}".html_safe
+					check_box(name, id: id) + "<span></span>#{label}".html_safe
 				end
 				result += "</div>"
 				
