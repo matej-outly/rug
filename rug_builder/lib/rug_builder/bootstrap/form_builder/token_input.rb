@@ -24,8 +24,8 @@ module RugBuilder
 				end
 
 				# Label
-				label = options[:as] ? label_for(options[:as], label: options[:label]) : label_for(name, label: options[:label])
-				options[:label] = label
+				#label = options[:as] ? label_for(options[:as], label: options[:label]) : label_for(name, label: options[:label])
+				#options[:label] = label
 
 				# Value
 				value = object.send(options[:as] ? options[:as] : name)
