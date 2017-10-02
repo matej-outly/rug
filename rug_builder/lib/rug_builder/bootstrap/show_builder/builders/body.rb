@@ -9,6 +9,9 @@
 # *
 # *****************************************************************************
 
+require "rug_builder/bootstrap/show_builder/builders/layout/table"
+require "rug_builder/bootstrap/show_builder/builders/layout/list"
+
 module RugBuilder
 #module Bootstrap
 	class ShowBuilder
@@ -39,7 +42,12 @@ module RugBuilder
 					unused = @template.capture(self, &block)
 
 					# Render
-					result = render_table
+					result = ""
+					if @options[:layout] == :list
+						result = render_as_list
+					else
+						result = render_as_table
+					end
 					if @empty
 						result = %{
 							<div class="#{self.css_class}-body empty-message #{@options[:class].to_s}">
@@ -49,44 +57,6 @@ module RugBuilder
 					end
 
 					return result.html_safe
-				end
-
-				def render_table
-					%{
-						<table class="table #{self.css_class}-body #{@options[:class].to_s}">
-							<tbody>
-								#{render_rows}
-							</tbody>
-						</table>
-					}
-				end
-
-				def render_rows
-					result = ""
-					self.columns.keys.each do |column|
-						value = self.render_column_value(column, @object)
-						if value.is_a?(Array)
-							value.each do |item|
-								@empty = false
-								result += render_row(item[:label], item[:value], :store)
-							end
-						else
-							if @options[:blank_rows] == true || !value.blank?
-								@empty = false
-								result += render_row(render_column_label(column, self.model_class), value, self.columns[column][:type])
-							end
-						end
-					end
-					result
-				end
-
-				def render_row(label, value, type)
-					%{
-						<tr>
-							<td class="#{self.css_class}-label">#{label}</td>
-							<td class="#{self.css_class}-value">#{value}</td>
-						</tr>
-					}
 				end
 
 			end
