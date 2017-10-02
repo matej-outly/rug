@@ -42,8 +42,8 @@ module RugBuilder
 					result = render_table
 					if @empty
 						result = %{
-							<div class="#{self.css_class}-body empty #{@options[:class].to_s}">
-								#{I18n.t("views.show_table.empty")}
+							<div class="#{self.css_class}-body empty-message #{@options[:class].to_s}">
+								#{I18n.t("views.show.empty")}
 							</div>
 						}
 					end
