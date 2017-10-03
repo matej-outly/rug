@@ -29,6 +29,10 @@ module RugRecord
 					I18n.t("activerecord.errors.models.#{self.model_name.i18n_key}.attributes.#{attribute}.#{condition}")
 				end
 
+				def human_attribute_name(attribute)
+					I18n.t("activerecord.attributes.#{self.model_name.i18n_key}.#{attribute}")
+				end
+
 				def human_attribute_unit(attribute)
 					I18n.t("activerecord.attributes.#{self.model_name.i18n_key}.#{attribute}_unit")
 				end
