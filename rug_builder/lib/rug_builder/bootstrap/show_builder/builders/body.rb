@@ -20,6 +20,7 @@ module RugBuilder
 				include RugBuilder::ShowBuilder::Concerns::Utils
 				include RugBuilder::Concerns::Columns
 				include RugBuilder::Concerns::Builders
+				include RugBuilder::Concerns::Actions
 
 				def initialize(template)
 					@template = template
