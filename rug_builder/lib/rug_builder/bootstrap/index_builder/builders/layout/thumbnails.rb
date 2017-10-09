@@ -79,8 +79,8 @@ module RugBuilder
 								object: object, 
 								disable_button: true, 
 							))
-						elsif self.columns[column][:action]
-							result += self.render_link(self.columns[column][:action].merge(
+						elsif self.columns[first_column][:action]
+							result += self.render_link(self.columns[first_column][:action].merge(
 								label: value,
 								fallback: value, 
 								object: object, 
