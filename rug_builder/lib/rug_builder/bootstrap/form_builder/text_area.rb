@@ -19,13 +19,22 @@ module RugBuilder
 				field_options = {}
 				klass = []
 				klass << options[:class] if !options[:class].nil?
-				if options[:tinymce] == false
-					klass << "form-control"
-				elsif !options[:tinymce].nil?
-					klass << options[:tinymce]
+				
+				# Check plugin
+				if !options[:plugin].nil?
+					plugin = options[:plugin]
 				else
-					klass << "tinymce"
+					plugin = :tinymce
 				end
+				if ![false, :tinymce, :froala].include?(plugin)
+					raise "Unknown plugin #{plugin}."
+				end
+				if plugin == false
+					klass << "form-control"
+				else
+					klass << plugin.to_s
+				end
+
 				field_options[:class] = klass.join(" ")
 				field_options[:id] = options[:id] if !options[:id].nil?
 				field_options[:data] = options[:data] if !options[:data].nil?
