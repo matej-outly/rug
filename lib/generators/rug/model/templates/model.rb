@@ -23,9 +23,6 @@ class <%= model_path.to_camel.singularize %> < ActiveRecord::Base
 	# Scopes
 	# *************************************************************************
 
-	#
-	# Filter
-	#
 	def self.filter(params)
 		
 		# Preset
@@ -39,9 +36,6 @@ class <%= model_path.to_camel.singularize %> < ActiveRecord::Base
 		result
 	end
 
-	#
-	# Search
-	#
 	def self.search(query)
 		if query.blank?
 			all
@@ -53,33 +47,19 @@ class <%= model_path.to_camel.singularize %> < ActiveRecord::Base
 	end
 
 	# *************************************************************************
-	# Enums
-	# *************************************************************************
-
-	# *************************************************************************
-	# Virtual attributes
-	# *************************************************************************
-
-	# *************************************************************************
-	# Callbacks
-	# *************************************************************************
-	
-	# *************************************************************************
 	# Columns
 	# *************************************************************************
 	
-	#
-	# Get all columns permitted for editation
-	#
 	def self.permitted_columns
-		[]
+		[
+			:name
+		]
 	end
 
-	#
-	# Get all columns permitted for filtering
-	#
 	def self.filter_columns
-		[]
+		[
+			:name
+		]
 	end
 
 end
