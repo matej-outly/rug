@@ -385,7 +385,7 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function duration_#{hash}_days(date)
 					{
-						var date = new Date(date);
+						var date = moment(date, '#{ I18n.t("time.formats.moment") }').toDate();
 						var start = new Date(date.getFullYear(), 0, 1);
 						return Math.floor((date - start) / (1000 * 60 * 60 * 24));
 					}
@@ -400,8 +400,8 @@ module RugBuilder
 					{
 						var dateAndTime = $('#duration_#{hash} .datetime').val().split(' ').filter(function(item){ return item != '' });
 						if (dateAndTime.length >= 2) {
-							var days = duration_#{hash}_days(dateAndTime[0]);
-							var hoursAndMinutesAndSeconds = dateAndTime[1].split(':');
+							var hoursAndMinutesAndSeconds = dateAndTime.pop().split(':');
+							var days = duration_#{hash}_days(dateAndTime.join(' '));
 							$('#duration_#{hash} .days').val(days);
 							$('#duration_#{hash} .hours').val(hoursAndMinutesAndSeconds[0]);
 							$('#duration_#{hash} .minutes').val(hoursAndMinutesAndSeconds[1]);
