@@ -448,66 +448,77 @@ module RugRecord
 		# *************************************************************************
 
 		def xml_parse(data, options = {})
+			begin
 
-			# Normalize options
-			options[:split_by_elements] = {options[:split_by_element].to_s => :parse} if !options[:split_by_element].nil?
+				# Normalize options
+				options[:split_by_elements] = {options[:split_by_element].to_s => :parse} if !options[:split_by_element].nil?
 
-			if !options[:split_by_elements].nil?
-				element_names = options[:split_by_elements].keys
+				if !options[:split_by_elements].nil?
+					element_names = options[:split_by_elements].keys
 
-				# Prepare control structures
-				context = {}
+					# Prepare control structures
+					context = {}
 
-				Nokogiri::XML::Reader(data).each do |node|
-					
-					# Something interesting found
-					if element_names.include?(node.name) && node.node_type == Nokogiri::XML::Reader::TYPE_ELEMENT
+					Nokogiri::XML::Reader(data).each do |node|
 						
-						# Last element found => parse it and yield with context
-						if node.name == element_names.last
-							attribute = options[:split_by_elements][node.name]
-							if attribute === :parse
-								if (node.outer_xml.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
-									context[node.name] = Nokogiri::XML(node.outer_xml).first_element_child
-								else
-									raise "XML data too large."
-								end
-							else
-								context[node.name] = node.attribute(attribute)
-							end
-
-							# Params for yield
-							yield_params = []
-							element_names.each do |element|
-								yield_params << context[element]
-							end
+						# Something interesting found
+						if element_names.include?(node.name) && node.node_type == Nokogiri::XML::Reader::TYPE_ELEMENT
 							
-							# Yield
-							if yield_params.length == 1
-								yield yield_params.first
+							# Last element found => parse it and yield with context
+							if node.name == element_names.last
+								
+								# Safe parsing
+								outer_xml = node.outer_xml
+								if !outer_xml.nil?
+									attribute = options[:split_by_elements][node.name]
+									if attribute === :parse
+										if (outer_xml.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
+											context[node.name] = Nokogiri::XML(outer_xml).first_element_child
+										else
+											raise "XML data too large."
+										end
+									else
+										context[node.name] = node.attribute(attribute)
+									end
+
+									# Params for yield
+									yield_params = []
+									element_names.each do |element|
+										yield_params << context[element]
+									end
+									
+									# Yield
+									if yield_params.length == 1
+										yield yield_params.first
+									else
+										yield yield_params
+									end
+								else
+									#raise "XML not parsed."
+								end
+
+							# Do not parse, just save context
 							else
-								yield yield_params
+								attribute = options[:split_by_elements][node.name]
+								if attribute === :parse
+									raise "Cannot parse context element, please specify single atrribute to retrieve."
+								else
+									context[node.name] = node.attribute(attribute)
+								end
 							end
 
-						# Do not parse, just save context
-						else
-							attribute = options[:split_by_elements][node.name]
-							if attribute === :parse
-								raise "Cannot parse context element, please specify single atrribute to retrieve."
-							else
-								context[node.name] = node.attribute(attribute)
-							end
 						end
 
 					end
-
-				end
-			else
-				if (data.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
-					yield Nokogiri::XML(data)
 				else
-					raise "XML data too large."
+					if (data.length / 1048576) <= get_xml_size_limit # Size check (big XML data cannot be parsed to DOM)
+						yield Nokogiri::XML(data)
+					else
+						raise "XML data too large."
+					end
 				end
+			rescue Nokogiri::XML::SyntaxError
+				# XML with syntax error ... we must end processing
 			end
 		end
 
