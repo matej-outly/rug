@@ -146,7 +146,10 @@ RugTree.prototype = {
 			}
 			$destroyAction.click(function(e) {
 				e.preventDefault();
-				_this.removeNode(node.id);
+				alertify.confirm(_this.options.destroyConfirmMessage, '', function() { 
+					_this.removeNode(node.id);
+				}, function() { 
+				});
 			});
 		}
 
@@ -253,6 +256,9 @@ RugTree.prototype = {
 
 				// State
 				_this.saveState();
+
+				// Message
+				alertify.success(_this.options.createSuccessMessage); 
 			}
 		});
 	},
@@ -274,6 +280,9 @@ RugTree.prototype = {
 
 				// State
 				_this.saveState();
+
+				// Message
+				alertify.success(_this.options.destroySuccessMessage); 
 			}
 		});
 	},

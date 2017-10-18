@@ -110,6 +110,7 @@ module RugBuilder
 							createIcon: '#{@icon_builder.render(@options[:update_icon] ? @options[:update_icon] : "plus")}',
 							createLabel: '#{I18n.t("general.action.create_child").upcase_first}',
 							createActionCollapsed: #{@options[:create_action_collapsed] == true ? 'true' : 'false'}, 
+							createSuccessMessage: '#{I18n.t("general.action.messages.create.success")}',
 
 							// Update
 							update: #{check_update(@options) ? 'true' : 'false'}, 
@@ -117,6 +118,7 @@ module RugBuilder
 							updateIcon: '#{@icon_builder.render(@options[:update_icon] ? @options[:update_icon] : "pencil")}',
 							updateLabel: '#{I18n.t("general.action.update").upcase_first}',
 							updateActionCollapsed: #{@options[:update_action_collapsed] == true ? 'true' : 'false'}, 
+							updateSuccessMessage: '#{I18n.t("general.action.messages.create.success")}',
 
 							// Destroy
 							destroy: #{check_destroy(@options) ? 'true' : 'false'}, 
@@ -124,6 +126,8 @@ module RugBuilder
 							destroyIcon: '#{@icon_builder.render(@options[:update_icon] ? @options[:update_icon] : "trash")}',
 							destroyLabel: '#{I18n.t("general.action.destroy").upcase_first}',
 							destroyActionCollapsed: #{@options[:destroy_action_collapsed] == true ? 'true' : 'false'}, 
+							destroyConfirmMessage: '#{I18n.t("general.are_you_sure")}',
+							destroySuccessMessage: '#{I18n.t("general.action.messages.destroy.success")}',
 
 							// Moving
 							moving: #{check_moving(@options) ? 'true' : 'false'},
