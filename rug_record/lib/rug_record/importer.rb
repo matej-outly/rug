@@ -799,7 +799,7 @@ module RugRecord
 		# *************************************************************************
 
 		#
-		# To be overridden
+		# To be overridden, can be single instance or Array of instances
 		#
 		def subject
 			nil
@@ -807,39 +807,62 @@ module RugRecord
 
 		def init_subject
 			if self.subject
-				self.subject.last_import_at = Time.current
-				self.subject.last_import_state = "in_progress"
-				self.subject.save
+				if self.subject.is_a?(Array)
+					multiple_subjects = self.subject
+				else
+					multiple_subjects = [self.subject]
+				end
+				multiple_subjects.each do |single_subject|
+					single_subject.last_import_at = Time.current
+					single_subject.last_import_state = "in_progress"
+					single_subject.save
+				end
 			end
 		end
 
 		def finish_subject(error = false, error_message = nil)
 			if self.subject
-				if error
-					self.subject.last_import_state = "error"
-					self.subject.last_import_message = error_message
+				if self.subject.is_a?(Array)
+					multiple_subjects = self.subject
 				else
-					self.subject.last_import_state = "success"
-					self.subject.last_import_message = nil
+					multiple_subjects = [self.subject]
 				end
-				time_begin = self.subject.last_import_at
-				time_end = Time.current
-				if @prev_batch == true
-					self.subject.last_import_duration = self.subject.last_import_duration.to_i + (time_end - time_begin)
-				else
-					self.subject.last_import_duration = (time_end - time_begin)
+				multiple_subjects.each do |single_subject|
+					if error
+						single_subject.last_import_state = "error"
+						single_subject.last_import_message = error_message
+					else
+						single_subject.last_import_state = "success"
+						single_subject.last_import_message = nil
+					end
+					time_begin = single_subject.last_import_at
+					time_end = Time.current
+					if @prev_batch == true
+						single_subject.last_import_duration = single_subject.last_import_duration.to_i + (time_end - time_begin)
+					else
+						single_subject.last_import_duration = (time_end - time_begin)
+					end
+					single_subject.last_import_at = time_end
+					single_subject.save
 				end
-				self.subject.last_import_at = time_end
-				self.subject.save
 			end
 		end
 
 		def init_subject_batch
 			if self.subject
-				result = self.subject.last_import_batch_state.to_i
-				@prev_batch = (result != 0)
-				@next_batch = false
-				return result
+				if self.subject.is_a?(Array)
+					single_subject = self.subject.first
+				else
+					single_subject = self.subject
+				end
+				if single_subject
+					result = single_subject.last_import_batch_state.to_i
+					@prev_batch = (result != 0)
+					@next_batch = false
+					return result
+				else
+					return 0
+				end
 			else
 				return 0
 			end
@@ -847,8 +870,15 @@ module RugRecord
 
 		def finish_subject_batch(batch_state)
 			if self.subject
-				self.subject.last_import_batch_state = batch_state
-				self.subject.save
+				if self.subject.is_a?(Array)
+					multiple_subjects = self.subject
+				else
+					multiple_subjects = [self.subject]
+				end
+				multiple_subjects.each do |single_subject|
+					single_subject.last_import_batch_state = batch_state
+					single_subject.save
+				end
 			end
 		end
 
