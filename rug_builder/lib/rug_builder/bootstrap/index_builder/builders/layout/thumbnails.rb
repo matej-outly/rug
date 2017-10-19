@@ -63,7 +63,7 @@ module RugBuilder
 					>}
 					
 					# Moving handle
-					result += self.render_action_link(:move, object: object, size: "sm", label: false) if @movable
+					result += self.render_action_link(:move, object: object, size: "sm", default_label: false) if @movable
 
 					result += %{<div class="thumbnail">}
 					
@@ -118,7 +118,7 @@ module RugBuilder
 					# Actions
 					actions_html = ""
 					self.actions.keys.reject{ |action| action == :move }.each do |action|
-						actions_html += self.render_action_link(action, object: object, size: "sm", label: false) + " "
+						actions_html += self.render_action_link(action, object: object, size: "sm", default_label: false) + " "
 					end
 					result += %{<div class="actions">#{actions_html}</div>} if !actions_html.blank?
 					

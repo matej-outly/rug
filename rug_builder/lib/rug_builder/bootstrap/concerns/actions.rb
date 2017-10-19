@@ -181,7 +181,9 @@ module RugBuilder
 				label = ""
 				label += self.icon_builder.render(options[:icon]) if options[:icon]
 				if options[:label].nil? || options[:label] == ""
-					label += options[:default_label].to_s
+					if options[:default_label] != false
+						label += options[:default_label].to_s
+					end
 				else
 					if options[:label] != false
 						if options[:label].is_a?(Proc)

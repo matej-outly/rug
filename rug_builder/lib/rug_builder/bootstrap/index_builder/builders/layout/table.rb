@@ -115,7 +115,7 @@ module RugBuilder
 							result += %{<td class="actions">}
 							chunk.each do |vertical|
 								action = vertical[:action]
-								result += self.render_action_link(action, object: object, size: "xs", label: false) + " "
+								result += self.render_action_link(action, object: object, size: "xs", default_label: false) + " "
 							end
 							result += %{</td>}
 						end
