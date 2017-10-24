@@ -17,7 +17,11 @@ module RugBuilder
 		# *********************************************************************
 
 		def self.geolocation(value, options = {})
-			return value.to_s
+			if value && value[:latitude] && value[:longitude]
+				return value[:latitude].to_s.decimal_to_coordinate + "; " + value[:longitude].to_s.decimal_to_coordinate
+			else
+				return ""
+			end
 		end
 
 		# *********************************************************************
