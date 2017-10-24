@@ -194,6 +194,32 @@ class String
 		return result
 	end
 
+	# 
+	# Convert coordinate in decimal format to degree format
+	#
+	def decimal_to_coordinate
+		return nil if self.blank?
+		value = self.to_f
+
+		# Degrees
+		degrees = value.to_i
+		value = value - degrees # Remove integer part
+		
+		# Minutes
+		value = value * 60
+		minutes = value.to_i
+		value = value - minutes # Remove integer part
+
+		# Seconds
+		value = value * 60
+		seconds = value.round(2)
+		
+		result = "#{degrees.to_s}°"
+		result += " #{minutes.to_s}'"
+		result += " #{seconds.to_s}\""
+		return result
+	end
+
 end
 
 module RugSupport
