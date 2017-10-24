@@ -103,7 +103,7 @@ module RugBuilder
 			def index_item(label = nil, path = nil, options = {})
 				
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.index", default: I18n.t("general.action.index")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.index", default: I18n.t("general.action.index")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -117,7 +117,7 @@ module RugBuilder
 
 				# Options
 				options[:icon] = :index if options[:icon].nil?
-				options[:active] = (@template.action_name == "index") if options[:active].nil?
+				options[:active] = (actual_controller_name == intended_controller_name && actual_action_name == "index") if options[:active].nil?
 
 				return self.item(label, path, options)
 			end
@@ -132,7 +132,7 @@ module RugBuilder
 				end
 
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.show", default: I18n.t("general.action.show")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.show", default: I18n.t("general.action.show")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -146,7 +146,7 @@ module RugBuilder
 
 				# Options
 				options[:icon] = :show if options[:icon].nil?
-				options[:active] = (@template.action_name == "show") if options[:active].nil?
+				options[:active] = (actual_controller_name == intended_controller_name && actual_action_name == "show") if options[:active].nil?
 
 				return self.item(label, path, options)
 			end
@@ -157,7 +157,7 @@ module RugBuilder
 			def new_item(label = nil, path = nil, options = {})
 				
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.new", default: I18n.t("general.action.new")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.new", default: I18n.t("general.action.new")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -172,7 +172,7 @@ module RugBuilder
 
 				# Options
 				options[:icon] = :new if options[:icon].nil?
-				options[:active] = (@template.action_name == "new" || @template.action_name == "create") if options[:active].nil?
+				options[:active] = (actual_controller_name == intended_controller_name && (actual_action_name == "new" || actual_action_name == "create")) if options[:active].nil?
 				options["data-no-turbolink"] = true
 
 				return self.item(label, path, options)
@@ -188,7 +188,7 @@ module RugBuilder
 				end
 
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.edit", default: I18n.t("general.action.edit")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.edit", default: I18n.t("general.action.edit")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -203,7 +203,7 @@ module RugBuilder
 
 				# Options
 				options[:icon] = :edit if options[:icon].nil?
-				options[:active] = (@template.action_name == "edit" || @template.action_name == "update") if options[:active].nil?
+				options[:active] = (actual_controller_name == intended_controller_name && (actual_action_name == "edit" || actual_action_name == "update")) if options[:active].nil?
 				options["data-no-turbolink"] = true
 
 				return self.item(label, path, options)
@@ -219,7 +219,7 @@ module RugBuilder
 				end
 
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.destroy", default: I18n.t("general.action.destroy")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.destroy", default: I18n.t("general.action.destroy")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -249,7 +249,7 @@ module RugBuilder
 				end
 
 				# Label
-				label = I18n.t("headers.#{controller_path.gsub('/', '.')}.duplicate", default: I18n.t("general.action.duplicate")).upcase_first if label.nil?
+				label = I18n.t("headers.#{intended_controller_path.gsub('/', '.')}.duplicate", default: I18n.t("general.action.duplicate")).upcase_first if label.nil?
 				
 				# Path
 				if path.nil?
@@ -281,9 +281,33 @@ module RugBuilder
 
 		protected
 
-			def controller_path
-				return @template.controller.class.name.to_snake[0..-12]
+			def intended_controller_path
+				if @options[:controller_path]
+					return @options[:controller_path]
+				else
+					return @template.controller.class.name.to_snake[0..-12]
+				end
 			end
+
+			def intended_controller_name
+				if @options[:controller_name]
+					return @options[:controller_name]
+				elsif  @options[:controller_path]
+					return @options[:controller_path].split("/").last
+				else
+					return @template.controller_name
+				end
+			end
+
+			def actual_controller_name
+				return @template.controller_name
+			end
+
+			def actual_action_name
+				return @template.action_name
+			end
+
+
 
 		end
 #	end
