@@ -122,8 +122,8 @@ module RugBuilder
 
 			# Format
 			result = value.to_i.to_s
-			result += " " + options[:unit].to_s if options[:unit]
-			return result
+			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			return result.html_safe
 		end
 
 		# *********************************************************************
@@ -142,8 +142,8 @@ module RugBuilder
 
 			# Format
 			result = @template.number_with_delimiter(value.to_f, locale: locale) 
-			result += " " + options[:unit].to_s if options[:unit]
-			return result
+			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			return result.html_safe
 		end
 
 		# *********************************************************************
@@ -161,9 +161,9 @@ module RugBuilder
 			end
 
 			# Format
-			result = @template.number_with_delimiter(value.to_f, locale: locale) 
-			result += " " + options[:unit].to_s if options[:unit]
-			return result
+			result = @template.number_with_delimiter(value.to_f, locale: locale)
+			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			return result.html_safe
 		end
 
 		# *********************************************************************
