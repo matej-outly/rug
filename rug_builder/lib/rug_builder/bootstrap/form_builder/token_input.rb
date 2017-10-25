@@ -16,6 +16,9 @@ module RugBuilder
 			def token_input_row(name, url, options = {})
 				result = ""
 				
+				# Namespace
+				namespace = self.options[:namespace]
+				
 				# Unique hash
 				if options[:hash]
 					hash = options[:hash]
@@ -50,9 +53,9 @@ module RugBuilder
 
 				# Java Script
 				result += @template.javascript_tag(%{
-					function token_input_#{hash}_ready()
+					function #{namespace ? namespace + "_" : ""}token_input_#{hash}_ready()
 					{
-						$('#token_input_#{hash}').tokenInput('#{url}', {
+						$('##{namespace ? namespace + "_" : ""}token_input_#{hash}').tokenInput('#{url}', {
 							theme: 'facebook',
 							hintText: '#{I18n.t("views.autocomplete.hint")}',
 							noResultsText: '#{I18n.t("views.autocomplete.no_results")}',
@@ -66,7 +69,7 @@ module RugBuilder
 							#{value_as_json ? "prePopulate: " + value_as_json + "," : ""}
 						});
 					}
-					$(document).ready(token_input_#{hash}_ready);
+					$(document).ready(#{namespace ? namespace + "_" : ""}token_input_#{hash}_ready);
 				})
 				
 				# Options
@@ -81,6 +84,9 @@ module RugBuilder
 			def autocomplete_input_row(name, url, options = {})
 				result = ""
 				
+				# Namespace
+				namespace = self.options[:namespace]
+				
 				# Unique hash
 				if options[:hash]
 					hash = options[:hash]
@@ -90,16 +96,16 @@ module RugBuilder
 				
 				# Java Script
 				result += @template.javascript_tag(%{
-					function autocomplete_input_#{hash}_ready()
+					function #{namespace ? namespace + "_" : ""}autocomplete_input_#{hash}_ready()
 					{
-						$('#autocomplete_input_#{hash}').autoComplete({
+						$('##{namespace ? namespace + "_" : ""}autocomplete_input_#{hash}').autoComplete({
 							minChars: 3,
 							source: function(term, response){
 								$.getJSON('#{url}', { q: term }, function(data) { response(data); });
 							}
 						});
 					}
-					$(document).ready(autocomplete_input_#{hash}_ready);
+					$(document).ready(#{namespace ? namespace + "_" : ""}autocomplete_input_#{hash}_ready);
 				})
 
 				# Options
