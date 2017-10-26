@@ -12,14 +12,15 @@
 # Parts
 require "rug_builder/formatter/address"
 require "rug_builder/formatter/array"
-require "rug_builder/formatter/basic"
 require "rug_builder/formatter/datetime"
 require "rug_builder/formatter/enum"
 require "rug_builder/formatter/file"
 require "rug_builder/formatter/geo"
 require "rug_builder/formatter/name"
+require "rug_builder/formatter/number"
 require "rug_builder/formatter/range"
 require "rug_builder/formatter/relation"
+require "rug_builder/formatter/text"
 
 module RugBuilder
 	class Formatter
@@ -34,14 +35,6 @@ module RugBuilder
 				:string_array, 
 				:integer_array,
 				:enum_array,
-
-				:string, 
-				:text, 
-				:integer, 
-				:float,
-				:double,
-				:currency, 
-				:url, 
 				
 				:date, 
 				:time, 
@@ -61,6 +54,12 @@ module RugBuilder
 
 				:name, 
 
+				:integer, 
+				:float,
+				:double,
+				:currency, 
+				:rating, 
+				
 				:range, 
 				:string_range,
 				:integer_range, 
@@ -70,7 +69,11 @@ module RugBuilder
 				:date_range, 
 
 				:belongs_to, 
-				:has_many
+				:has_many,
+
+				:string, 
+				:text, 
+				:url, 
 			]
 		end
 

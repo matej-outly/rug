@@ -2,7 +2,7 @@
 # * Copyright (c) Clockstar s.r.o. All rights reserved.
 # *****************************************************************************
 # *
-# * Rug formatter - basic types
+# * Rug formatter - text types
 # *
 # * Author: Matěj Outlý
 # * Date  : 10. 4. 2015
@@ -111,78 +111,6 @@ module RugBuilder
 			end
 
 			return result.html_safe
-		end
-
-		# *********************************************************************
-		# Integer
-		# *********************************************************************
-
-		def self.integer(value, options = {})
-			return "" if value.blank?
-
-			# Format
-			result = value.to_i.to_s
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
-			return result.html_safe
-		end
-
-		# *********************************************************************
-		# Float
-		# *********************************************************************
-
-		def self.float(value, options = {})
-			return "" if value.blank?
-
-			# Locale
-			if options[:locale]
-				locale = options[:locale]
-			else
-				locale = :cs
-			end
-
-			# Format
-			result = @template.number_with_delimiter(value.to_f, locale: locale) 
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
-			return result.html_safe
-		end
-
-		# *********************************************************************
-		# Double
-		# *********************************************************************
-
-		def self.double(value, options = {})
-			return "" if value.blank?
-
-			# Locale
-			if options[:locale]
-				locale = options[:locale]
-			else
-				locale = :cs
-			end
-
-			# Format
-			result = @template.number_with_delimiter(value.to_f, locale: locale)
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
-			return result.html_safe
-		end
-
-		# *********************************************************************
-		# Currency
-		# *********************************************************************
-
-		def self.currency(value, options = {})
-			return "" if value.blank?
-
-			# Locale
-			if options[:locale]
-				locale = options[:locale]
-			elsif options[:object] && options[:object].respond_to?(:currency_as_locale)
-				locale = options[:object].currency_as_locale
-			else
-				locale = :cs
-			end
-
-			return @template.number_to_currency(value, locale: locale).to_s
 		end
 
 		# *********************************************************************

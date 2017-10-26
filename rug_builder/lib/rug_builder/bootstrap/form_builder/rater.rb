@@ -77,8 +77,8 @@ module RugBuilder
 					symbol_selected = options[:symbol_selected]
 				else
 					symbol_base = @template.rug_icon((options[:icon_base] ? options[:icon_base] : "star-o"), class: "symbol-base").trim
-					symbol_hover = @template.rug_icon((options[:icon_hover] ? options[:icon_hover] : "star-o"), class: "symbol-hover").trim
-					symbol_selected = @template.rug_icon((options[:icon_selected] ? options[:icon_selected] : "star-o"), class: "symbol-selected").trim
+					symbol_hover = @template.rug_icon((options[:icon_hover] ? options[:icon_hover] : "star"), class: "symbol-hover").trim
+					symbol_selected = @template.rug_icon((options[:icon_selected] ? options[:icon_selected] : "star"), class: "symbol-selected").trim
 				end
 
 				# Application JS code
