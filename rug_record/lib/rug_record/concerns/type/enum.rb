@@ -41,17 +41,14 @@ module RugRecord
 							end
 
 							# Identify special type
-							special_type = nil
-							if item[:value].is_a?(Integer)
-								special_type = "integer"
-							end
+							item[:special_type] = :integer if item[:value].is_a?(Integer)
 
 							# Retype to string
 							item[:value] = item[:value].to_s
 							
 							# Label
 							if !item[:label]
-								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{special_type ? special_type + "_" : ""}#{item[:value]}")
+								item[:label] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_values.#{item[:special_type] ? item[:special_type].to_s + "_" : ""}#{item[:value]}")
 							end
 
 							# Other attributes
@@ -70,7 +67,18 @@ module RugRecord
 						# Obj method
 						define_method((new_column.to_s + "_obj").to_sym) do
 							column = new_column
-							return self.class.enums[column][self.send(column).to_s]
+
+							# Get map Value => Object
+							enums = self.class.enums[column]
+
+							# Get possible special type
+							special_type = enums.values.first.special_type if enums.first && enums.values.first.special_type
+							
+							# Get value and modify it according to special type
+							value = self.send(column)
+							value = value.to_i if special_type == :integer
+							
+							return self.class.enums[column][value.to_s]
 						end
 
 						# All method

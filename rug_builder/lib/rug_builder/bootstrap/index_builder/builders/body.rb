@@ -88,8 +88,8 @@ module RugBuilder
 							destroyable: {
 								confirmTitle: '#{I18n.t("general.are_you_sure")}',
 								confirmMessage: '#{I18n.t("general.are_you_sure_explanation")}',
-								successMessage: '#{I18n.t("general.action.messages.destroy.success")}',
-								errorMessage: '#{I18n.t("general.action.messages.destroy.error")}',
+								successMessage: '#{I18n.t("general.messages.destroy.success")}',
+								errorMessage: '#{I18n.t("general.messages.destroy.error")}',
 							},
 						}
 					else
