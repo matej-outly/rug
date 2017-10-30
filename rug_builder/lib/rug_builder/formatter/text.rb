@@ -98,7 +98,7 @@ module RugBuilder
 			# Format
 			if format == :text_box
 				result = %{
-					<div class="text-box">
+					<div class="text-box #{options[:class].to_s}">
 						#{modified_value}
 						#{options[:more] == true ? more_modal : ""}
 					</div>
