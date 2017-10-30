@@ -22,58 +22,58 @@ module RugRecord
 				#
 				def localized_column(new_column)
 					
-					# Getter
+					# Column getter
 					define_method(new_column.to_sym) do
 						column = new_column
-						read_column = (column.to_s + "_" + language.to_s).to_sym
+						read_column = (column.to_s + "_" + self.locale.to_s).to_sym
 						return self.send(read_column)
 					end
 
-					# Setter
+					# Column setter
 					define_method((new_column.to_s + "=").to_sym) do |value|
 						column = new_column
-						written_column = (column.to_s + "_" + language.to_s + "=").to_sym
+						written_column = (column.to_s + "_" + self.locale.to_s + "=").to_sym
 						return self.send(written_column, value)
 					end
 
-				end
+					if true
 
-				#
-				# Get class-scope language
-				#
-				def language
-					return I18n.locale
-				end
+						# Class locale getter
+						define_singleton_method("locale") do 
+							if !@class_locale.nil?
+								return @class_locale
+							else
+								return I18n.locale
+							end
+						end
 
-			end
+						# Class locale setter
+						define_singleton_method("locale=") do |value| 
+							@class_locale = value
+						end
 
-			#
-			# Set instance-scope language
-			#
-			def language=(instance_language)
-				@instance_language = instance_language
-			end
+						# Instance locale getter
+						define_method("locale") do
+							if @instance_locale.nil?
+								if self.class.locale.nil?
+									raise "Locale must be defined."
+								else
+									return self.class.locale
+								end
+							else
+								return @instance_locale
+							end
+						end
 
-			#
-			# Get language
-			#
-			def language
-				if @instance_language.nil?
-					if self.class.language.nil?
-						raise "Language must be defined."
-					else
-						return self.class.language
+						# Instance locale getter
+						define_method("locale=") do |value|
+							@instance_locale = value
+						end
+
 					end
-				else
-					return @instance_language
+
 				end
-			end
-			
-			#
-			# Is model localized?
-			#
-			def localized?
-				return true
+
 			end
 			
 		end
