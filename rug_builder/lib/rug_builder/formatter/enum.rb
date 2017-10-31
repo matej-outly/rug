@@ -146,6 +146,7 @@ module RugBuilder
 				el_options[:tooltip] = label if options[:tooltip] == true
 				el_options[:format] = :button
 				el_options[:size] = options[:size] if options[:size]
+				el_options[:style] = options[:style] if options[:style]
 				el_label = ""
 				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
 				el_label += label if options[:tooltip] != true

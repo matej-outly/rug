@@ -36,6 +36,7 @@ module RugBuilder
 			# - clipboard_template (string) - template used for constructing clipboard value (user :attr for substitution)
 			# - clipboard_icon (string) - icon to be used for clipboard button
 			# - save_state (:none, :simple, :complex) - which method should be used for state saving
+			# - select_by_default (integer) - node ID which will be selected by default after init
 			# - parent (string) - name of JavaScript variable implementing reload function which is called when tree is initialized
 			#
 			def tree(data_path, options = {})
@@ -63,9 +64,11 @@ module RugBuilder
 					options[:actions].each do |key, action|
 						actions_js += %{
 							{
-								url: '#{@path_resolver.resolve(action[:path], ":id")}',
+								url: '#{action[:path] ? @path_resolver.resolve(action[:path], ":id") : ""}',
 								icon: '#{action[:icon]}',
 								label: '#{action[:label]}',
+								collapsed: #{action[:collapsed] == true ? "true" : "false"},
+								style: '#{action[:style] ? action[:style] : "default"}',
 							},
 						}
 					end
@@ -147,7 +150,10 @@ module RugBuilder
 							clipboardTemplate: "#{clipboard ? (@options[:clipboard_template] ? @options[:clipboard_template].gsub('"', "'") : ":" + @options[:clipboard_attrs].first) : ""}",
 							clipboardAttrs: #{clipboard_attrs_js},
 							clipboardActionCollapsed: #{@options[:clipboard_action_collapsed] == true ? 'true' : 'false'}, 
-						
+							
+							// Select
+							selectByDefault: #{@options[:select_by_default] ? @options[:select_by_default].to_i : "null"},
+
 							// Reload
 							reloadIcon: '#{@icon_builder.render(@options[:update_icon] ? @options[:update_icon] : "refresh")}',
 							reloadLabel: '#{I18n.t("general.action.reload").upcase_first}',

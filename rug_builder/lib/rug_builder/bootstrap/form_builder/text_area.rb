@@ -15,11 +15,6 @@ module RugBuilder
 
 			def text_area_row(name, options = {})
 				
-				# Field options
-				field_options = {}
-				klass = []
-				klass << options[:class] if !options[:class].nil?
-				
 				# Check plugin
 				if !options[:plugin].nil?
 					plugin = options[:plugin]
@@ -29,13 +24,12 @@ module RugBuilder
 				if ![false, :tinymce, :froala].include?(plugin)
 					raise "Unknown plugin #{plugin}."
 				end
-				if plugin == false
-					klass << "form-control"
-				else
-					klass << plugin.to_s
-				end
 
-				field_options[:class] = klass.join(" ")
+				# Field options
+				field_options = {}
+				field_options[:class] = []
+				field_options[:class] << options[:class] if !options[:class].nil?
+				field_options[:class] << (plugin == false ? "form-control" : plugin.to_s)
 				field_options[:id] = options[:id] if !options[:id].nil?
 				field_options[:data] = options[:data] if !options[:data].nil?
 				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?

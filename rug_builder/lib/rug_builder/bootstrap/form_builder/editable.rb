@@ -30,14 +30,15 @@ module RugBuilder
 				end
 				raise "Unknown sybtype #{subtype}." if ![:text, :string].include?(subtype)
 
-				# CSS class
-				klass = []
-				klass << options[:class] if !options[:class].nil?
-				klass << "editable"
-				klass << "editable-#{subtype.to_s}"
-
-				# ID
-				id = "#{object_name}[#{name.to_s}]"
+				# Field options
+				field_options = {}
+				field_options[:class] = []
+				field_options[:class] << options[:class] if !options[:class].nil?
+				field_options[:class] << "editable"
+				field_options[:class] << "editable-#{subtype.to_s}"
+				field_options[:id] = "#{object_name}[#{name.to_s}]" # This is necessary for TinyMCE inline editor
+				field_options[:name] = "#{object_name}[#{name.to_s}]"
+				field_options[:data] = options[:data] if !options[:data].nil?
 
 				# Value
 				value = object.send(name)
@@ -45,9 +46,7 @@ module RugBuilder
 				result = %{
 					#{options[:form_group] != false ? "<div class=\"form-group " + (has_error?(name, errors: options[:errors]) ? "has-error" : "") + "\">" : ""}
 						#{label_for(name, label: options[:label])}
-						<#{tag} class="#{klass.join(" ")}" id="#{id}">
-							#{value.to_s.html_safe}
-						</#{tag}>
+						#{@template.content_tag(tag, value.to_s.html_safe, field_options)}
 						#{errors(name, errors: options[:errors])}
 					#{options[:form_group] != false ? "</div>" : ""}
 				}

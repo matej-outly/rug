@@ -156,9 +156,19 @@ RugTree.prototype = {
 		// User defined actions
 		if (_this.options.actions && _this.options.actions.length > 0) {
 			_this.options.actions.forEach(function(action) {
-				var path = action.url.replace('%3Aid', node.id);
-				$dropdownActionsContainer.append('<li><a href="' + path + '">' + _this.options.actionsIconTemplate.replace(':icon', action.icon) + '&nbsp;&nbsp;' + action.label + '</a></li>');
-				dropdownActionsCount += 1;
+				var path = action.url ? action.url.replace('%3Aid', node.id) : '#';
+				var icon = action.icon ? _this.options.actionsIconTemplate.replace(':icon', action.icon) : '';
+				var iconAndLabel = icon;
+				if (icon && action.label) iconAndLabel += '&nbsp;&nbsp;';
+				iconAndLabel += action.label;
+				var style = action.style ? action.style : 'default';
+				if (action.collapsed == true) {
+					$dropdownActionsContainer.append('<li><a href="' + path + '">' + iconAndLabel + '</a></li>');
+					dropdownActionsCount += 1;
+				} else {
+					$actions.append('<a href="' + path + '" class="btn btn-' + style + ' btn-xs">' + iconAndLabel + '</a>');
+					actionsCount += 1;
+				}
 			});
 		}
 
@@ -185,7 +195,15 @@ RugTree.prototype = {
 
 		// Style
 		if (node['style']) {
-			$title.closest('.jqtree-element').addClass('jqtree-element-' + node['style']);
+			var styles = [];
+			if (node['style'].constructor === Array) {
+				styles = node['style'];
+			} else {
+				styles = [node['style']];
+			}
+			styles.forEach(function(style) {
+				$title.closest('.jqtree-element').addClass('jqtree-element-' + style);
+			});
 		}
 
 		// New record
@@ -286,6 +304,14 @@ RugTree.prototype = {
 			}
 		});
 	},
+	selectNode: function(nodeId)
+	{
+		var _this = this;
+		var node = _this.tree.tree('getNodeById', nodeId);
+		if (node) {
+			_this.tree.tree('selectNode', node);
+		}
+	},
 	ready: function()
 	{
 		var _this = this;
@@ -310,6 +336,11 @@ RugTree.prototype = {
 			if (_this.options.parent) {
 				eval('var parent = ' + _this.options.parent + ';');
 				parent.reload();
+			}
+
+			// Select
+			if (_this.options.selectByDefault) {
+				_this.selectNode(_this.options.selectByDefault);
 			}
 		});
 
