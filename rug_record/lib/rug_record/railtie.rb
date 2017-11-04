@@ -51,6 +51,7 @@ module RugRecord
 			require "rug_record/concerns/type/range" if RugRecord.enable_type_range
 			require "rug_record/concerns/type/state" if RugRecord.enable_type_state
 			require "rug_record/concerns/type/store" if RugRecord.enable_type_store
+			require "rug_record/concerns/type/temporal" if RugRecord.enable_type_temporal
 
 		end
 

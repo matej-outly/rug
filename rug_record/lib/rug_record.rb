@@ -185,4 +185,10 @@ module RugRecord
 	mattr_accessor :enable_type_store
 	@@enable_type_store = false
 
+	#
+	# Enable type temporal
+	#
+	mattr_accessor :enable_type_temporal
+	@@enable_type_temporal = true
+
 end
