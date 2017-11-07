@@ -124,7 +124,7 @@ module RugRecord
 							lastname = name_parts.pop
 							firstname = name_parts.join(" ")
 						end
-						return [title, firstname, lastname, title_after]	
+						return [title, firstname, lastname, title_after]
 					end
 
 				end
