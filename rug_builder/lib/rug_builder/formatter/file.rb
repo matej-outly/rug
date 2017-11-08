@@ -43,6 +43,7 @@ module RugBuilder
 					</#{ options[:download] == true ? "a" : "div"}>
 				}
 				
+				return result.html_safe
 			else
 				return ""
 			end

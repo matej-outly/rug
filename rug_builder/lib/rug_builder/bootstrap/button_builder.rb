@@ -95,12 +95,14 @@ module RugBuilder
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
+				horizontal = options[:horizontal] ? options[:horizontal].to_sym : :left
+				vertical = options[:vertical] ? options[:vertical].to_sym : :down
 				klass = options[:class] ? options[:class] : ""
 				active = (options[:active] == true)
 				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
 
 				result = ""
-				result += "<div class=\"dropdown\">" if options[:wrap] != false
+				result += "<div class=\"drop#{vertical.to_s}\">" if options[:wrap] != false
 				result += "<button 
 					type=\"button\" 
 					class=\"btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} dropdown-toggle #{klass.to_s}\" 
@@ -110,7 +112,7 @@ module RugBuilder
 				>"
 				result += label
 				result += "</button>"
-				result += "<ul class=\"dropdown-menu\">" 
+				result += "<ul class=\"dropdown-menu #{horizontal == :right ? "dropdown-menu-right" : ""}\">" 
 				result += @template.capture(RugBuilder::MenuBuilder.new(@template), &block).to_s
 				result += "</ul>"
 				result += "</div>" if options[:wrap] != false
