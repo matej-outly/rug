@@ -39,8 +39,15 @@ module RugBuilder
 				locale = :cs
 			end
 
+			# Precision
+			if options[:precision]
+				precision = options[:precision].to_i
+			else
+				precision = 1
+			end
+
 			# Format
-			result = @template.number_with_delimiter(value.to_f, locale: locale) 
+			result = @template.number_with_precision(value.to_f, locale: locale, precision: precision) 
 			result += (" " + options[:unit].to_s).html_safe if options[:unit]
 			return result.html_safe
 		end
@@ -59,8 +66,15 @@ module RugBuilder
 				locale = :cs
 			end
 
+			# Precision
+			if options[:precision]
+				precision = options[:precision].to_i
+			else
+				precision = 1
+			end
+
 			# Format
-			result = @template.number_with_delimiter(value.to_f, locale: locale)
+			result = @template.number_with_precision(value.to_f, locale: locale, precision: precision)
 			result += (" " + options[:unit].to_s).html_safe if options[:unit]
 			return result.html_safe
 		end
