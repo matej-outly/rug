@@ -46,8 +46,10 @@ module RugRecord
 							has_level = self.respond_to?("#{column.to_s}_level")
 
 							# Filter and symbolize keys
-							value = value.symbolize_keys.select { |key, value| [:longitude, :latitude, :address, :level].include?(key) } 
-							
+							if !value.blank?
+								value = value.symbolize_keys.select { |key, value| [:longitude, :latitude, :address, :level].include?(key) } 
+							end
+
 							# Store
 							if value.blank? || value[:latitude].blank? || value[:longitude].blank?
 								self.send("#{column.to_s}_latitude=", nil)

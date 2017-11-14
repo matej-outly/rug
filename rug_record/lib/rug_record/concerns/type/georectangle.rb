@@ -42,7 +42,9 @@ module RugRecord
 							end
 
 							# Filter and symbolize keys
-							value = value.symbolize_keys.select { |key, value| [:top, :bottom, :left, :right].include?(key) } 
+							if !value.blank?
+								value = value.symbolize_keys.select { |key, value| [:top, :bottom, :left, :right].include?(key) } 
+							end
 							
 							# Store
 							if value.blank? || value[:top].blank? || value[:bottom].blank? || value[:left].blank? || value[:right].blank?

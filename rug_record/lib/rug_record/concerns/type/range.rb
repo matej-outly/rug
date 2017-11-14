@@ -46,7 +46,9 @@ module RugRecord
 							end
 
 							# Filter and symbolize keys
-							value = value.symbolize_keys.select { |key, value| [min_column, max_column].include?(key) } 
+							if !value.blank?
+								value = value.symbolize_keys.select { |key, value| [min_column, max_column].include?(key) } 
+							end
 							
 							# Store
 							if value.blank?

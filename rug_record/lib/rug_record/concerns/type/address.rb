@@ -42,7 +42,9 @@ module RugRecord
 							end
 
 							# Filter
-							value = value.symbolize_keys.select { |key, value| [:street, :number, :postcode, :city].include?(key) } if !value.nil?
+							if !value.blank?
+								value = value.symbolize_keys.select { |key, value| [:street, :number, :postcode, :city].include?(key) } if !value.nil?
+							end
 							
 							# Store
 							if value.blank?

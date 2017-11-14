@@ -43,7 +43,9 @@ module RugRecord
 							end
 
 							# Filter
-							value = value.symbolize_keys.select { |key, value| [:title, :firstname, :lastname, :title_after].include?(key) } if !value.nil?
+							if !value.blank?
+								value = value.symbolize_keys.select { |key, value| [:title, :firstname, :lastname, :title_after].include?(key) } if !value.nil?
+							end
 							
 							# Store
 							if value.blank?
