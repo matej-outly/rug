@@ -121,7 +121,7 @@ module RugBuilder
 								containerSelector: '#{markup[:container_selector].to_s}',
 								itemPath:          '#{markup[:item_path].to_s}',
 								itemSelector:      '#{markup[:item_selector].to_s}',
-								addPosition:       '#{@options[:add_position] ? @options[:add_position].to_s : "prepend"}',
+								addPosition:       '#{@options[:add_position] ? @options[:add_position].to_s : "append"}',
 								#{reloadable_js}
 								#{movable_js}
 								#{destroyable_js}

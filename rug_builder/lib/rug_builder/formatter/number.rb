@@ -21,7 +21,7 @@ module RugBuilder
 
 			# Format
 			result = value.to_i.to_s
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			result += ("&nbsp;" + options[:unit].to_s).html_safe if options[:unit]
 			return result.html_safe
 		end
 
@@ -48,7 +48,7 @@ module RugBuilder
 
 			# Format
 			result = @template.number_with_precision(value.to_f, locale: locale, precision: precision) 
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			result += ("&nbsp;" + options[:unit].to_s).html_safe if options[:unit]
 			return result.html_safe
 		end
 
@@ -75,7 +75,7 @@ module RugBuilder
 
 			# Format
 			result = @template.number_with_precision(value.to_f, locale: locale, precision: precision)
-			result += (" " + options[:unit].to_s).html_safe if options[:unit]
+			result += ("&nbsp;" + options[:unit].to_s).html_safe if options[:unit]
 			return result.html_safe
 		end
 
