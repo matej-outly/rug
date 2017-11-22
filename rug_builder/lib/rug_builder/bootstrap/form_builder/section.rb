@@ -13,11 +13,15 @@ module RugBuilder
 #	module Bootstrap
 		class FormBuilder < ActionView::Helpers::FormBuilder
 
-			def conditional_section(section_name, condition_name, condition_rule, &block)
+			def conditional_section(section_name, condition_name, condition_rule, options = {}, &block)
 				result = ""
 				
 				# Unique hash
-				hash = Digest::SHA1.hexdigest(section_name.to_s)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{section_name.to_s}")
+				end
 
 				# Application JS
 				result += @template.javascript_tag(%{
@@ -25,7 +29,8 @@ module RugBuilder
 					$(document).ready(function() {
 						rug_form_conditional_section_#{hash} = new RugFormConditionalSection('#{hash}', {
 							conditionName: '#{object.class.model_name.param_key}[#{condition_name.to_s}]',
-							conditionRule: "#{condition_rule.to_s}" // " used before ' should be used inside condition rule to interpret string value
+							conditionRule: "#{condition_rule.to_s}", // Quotation mark (") used instead of apostrophe ('). Apostrophe should be used inside condition rule to interpret string value
+							formSelector: '##{self.options[:html][:id]}',
 						});
 						rug_form_conditional_section_#{hash}.ready();
 					});

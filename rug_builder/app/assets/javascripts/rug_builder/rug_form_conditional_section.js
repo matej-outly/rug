@@ -72,9 +72,12 @@ RugFormConditionalSection.prototype = {
 	{
 		var self = this;
 
+		// Get form
+		var $form = $(this.options.formSelector);
+				
 		// Get only those elements, which have "id" attribute. This will
 		// skip special Rails hidden inputs for checkboxes.
-		var $elements = $('[name="' + this.options.conditionName + '"][id!=""][id]');
+		var $elements = $form.find('[name="' + this.options.conditionName + '"][id!=""][id]');
 
 		// Initialize
 		this.conditionalSection.hide();
