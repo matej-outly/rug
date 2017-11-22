@@ -22,7 +22,6 @@ module RugBuilder
 
 				# Collection
 				collection = options[:collection] ?  options[:collection] : object.class.method("available_#{name.to_s.pluralize}".to_sym).call
-				
 
 				# Enable Bootstrap (Bootstrap is disabled by default)
 				enable_bootstrap = (options[:enable_bootstrap] == true)
@@ -66,8 +65,15 @@ module RugBuilder
 				# Label
 				label = !options[:label].nil? ? options[:label] : object.class.human_attribute_name(name)
 				
-				# ID (must be unique for each object of same type in case we render more edit forms on one page)
-				id = object_name.to_s + (object.id ? "_" + object.id.to_s : "") + "_" + name.to_s
+				# Unique hash (must be unique for each object of same type in case we render more edit forms on one page)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
+
+				# ID
+				id = "checkbox-#{hash}"
 
 				# Field
 				result += "<div class=\"#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}\">"
