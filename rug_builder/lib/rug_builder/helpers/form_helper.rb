@@ -60,6 +60,7 @@ module RugBuilder
 						js_options += "modalSelector: '#{rb_options[:modal_selector]}',\n" if rb_options[:modal_selector]
 						js_options += "successMessage: '#{rb_options[:success_message]}',\n" if rb_options[:success_message]
 						js_options += "errorMessage: '#{rb_options[:error_message]}',\n" if rb_options[:error_message]
+						js_options += "uploadFile: #{rb_options[:upload_file] == true ? "true" : "false"},\n" if !rb_options[:upload_file].nil?
 						js_options += "clearOnSubmit: #{rb_options[:clear_on_submit] == true ? "true" : "false"},\n" if !rb_options[:clear_on_submit].nil?
 						js_options += "log: #{rb_options[:log] == true ? "true" : "false"},\n" if !rb_options[:log].nil?
 						if rb_options[:on_success]
