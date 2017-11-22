@@ -61,7 +61,7 @@ module RugBuilder
 						end
 					end
 					
-					return result.trim
+					return result.trim.html_safe
 				end
 			else
 				return ""
