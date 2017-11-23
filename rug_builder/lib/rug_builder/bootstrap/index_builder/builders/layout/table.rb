@@ -69,7 +69,7 @@ module RugBuilder
 				def render_table_body
 					result = ""
 					result += %{<tbody>\n}
-					result += %{<tr class="empty-message"><td colspan="#{@verticals_count}">#{I18n.t("views.index.empty")}</td></tr>} if @objects.empty?
+					result += %{<tr class="empty-message"><td colspan="#{@verticals_count}">#{I18n.t("views.index.empty")}</td></tr>} if @options[:empty_message] != false && @objects.empty?
 					@objects.each do |object|
 						result += self.capture_partial(render_table_row(object)) + "\n"
 					end

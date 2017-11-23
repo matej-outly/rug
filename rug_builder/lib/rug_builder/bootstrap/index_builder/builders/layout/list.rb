@@ -27,7 +27,7 @@ module RugBuilder
 							id="#{self.id}" 
 							class="list #{self.css_class}-body #{@options[:list_class].to_s}"
 						>
-							#{objects.empty? ? empty_message : ""}
+							#{@options[:empty_message] != false && objects.empty? ? empty_message : ""}
 							#{render_items(objects)}
 						</div>
 					}
