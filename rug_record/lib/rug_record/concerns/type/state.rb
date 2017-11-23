@@ -89,7 +89,7 @@ module RugRecord
 
 						# Default value
 						if options[:default]
-							before_create do
+							before_validation do
 								column = new_column
 								default = options[:default]
 								if self.send(column).nil?

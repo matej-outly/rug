@@ -74,7 +74,7 @@ module RugBuilder
 			else
 				format = :label
 			end
-			if ![:label, :button].include?(format)
+			if ![:string, :label, :button].include?(format)
 				raise "Unknown format #{format}."
 			end
 
@@ -128,7 +128,19 @@ module RugBuilder
 				end
 			end
 
-			if format == :label
+			if format == :string
+				
+				el_label = ""
+				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += label if options[:tooltip] != true
+				
+				return %{
+					<span class="#{!color.blank? ? "color-" + color : ""}">
+						#{el_label}
+					</span>
+				}.html_safe
+
+			elsif format == :label
 				
 				el_options = {}
 				el_options[:color] = color if !color.blank? && options[:color] != false
