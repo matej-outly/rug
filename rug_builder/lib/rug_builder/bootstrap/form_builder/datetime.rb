@@ -113,15 +113,20 @@ module RugBuilder
 					$(document).ready(date_range_picker_#{hash}_ready);
 				})
 				
-				# Field options
+				# Class
 				klass = []
 				klass << "form-control"
 				klass << options[:class] if !options[:class].nil?
 
+				# Field options
+				field_options = {}
+				field_options[:class] = klass.dup.concat(["dates"])
+				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
+
 				result += %{
 					<div id="date_range_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
-						#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["dates"]))}
+						#{@template.text_field_tag(nil, nil, field_options)}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{min_column.to_s}]", value_min, class: min_column.to_s)}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{max_column.to_s}]", value_max, class: max_column.to_s)}
 						#{errors(name, errors: options[:errors])}
