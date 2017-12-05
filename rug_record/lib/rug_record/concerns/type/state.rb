@@ -78,13 +78,13 @@ module RugRecord
 						# All values method
 						define_singleton_method(("available_" + new_column.to_s + "_values").to_sym) do
 							column = new_column
-							return @enums[column].values.map{ |o| o.value.to_sym }
+							return @states[column].values.map{ |o| o.value.to_sym }
 						end
 
 						# Label method
 						define_singleton_method((new_column.to_s + "_label").to_sym) do |value|
 							column = new_column
-							return @enums[column].values.select{ |o| o.value.to_s == value.to_s }.map{ |o| o.label }.first
+							return @states[column].values.select{ |o| o.value.to_s == value.to_s }.map{ |o| o.label }.first
 						end
 
 						# Default value

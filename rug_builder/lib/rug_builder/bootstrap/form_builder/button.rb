@@ -28,6 +28,9 @@ module RugBuilder
 				# Field options
 				field_options = {}
 				field_options[:class] = klass.join(" ")
+				field_options[:name] = options[:name] if options[:name]
+				field_options[:value] = options[:value] if options[:value]
+				field_options[:type] = options[:type] if options[:type]
 
 				return self.method(method).call(options[:label], field_options)
 			end
@@ -47,6 +50,9 @@ module RugBuilder
 				# Field options
 				field_options = {}
 				field_options[:class] = klass.join(" ")
+				#field_options[:name] = options[:name] if options[:name]
+				#field_options[:value] = options[:value] if options[:value]
+				#field_options[:type] = options[:type] if options[:type]
 
 				return @template.link_to(label, url, field_options)
 
