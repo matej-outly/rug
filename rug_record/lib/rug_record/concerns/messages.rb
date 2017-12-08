@@ -18,23 +18,24 @@ module RugRecord
 			module ClassMethods
 				
 				def human_notice_message(action, params = {})
-					I18n.t("activerecord.notices.models.#{self.model_name.i18n_key}.#{action}", params)
+					I18n.t("#{ self < ActiveRecord::Base ? "activerecord" : "activemodel"}.notices.models.#{self.model_name.i18n_key}.#{action}", params)
 				end
 
 				def human_error_message(action, params = {})
-					I18n.t("activerecord.errors.models.#{self.model_name.i18n_key}.#{action}", params)
+					I18n.t("#{ self < ActiveRecord::Base ? "activerecord" : "activemodel"}.errors.models.#{self.model_name.i18n_key}.#{action}", params)
 				end
 
 				def human_error_attribute_message(attribute, condition, params = {})
-					I18n.t("activerecord.errors.models.#{self.model_name.i18n_key}.attributes.#{attribute}.#{condition}", params)
+					I18n.t("#{ self < ActiveRecord::Base ? "activerecord" : "activemodel"}.errors.models.#{self.model_name.i18n_key}.attributes.#{attribute}.#{condition}", params)
 				end
 
 				def human_attribute_name(attribute, params = {})
-					I18n.t("activerecord.attributes.#{self.model_name.i18n_key}.#{attribute}", params)
+
+					I18n.t("#{ self < ActiveRecord::Base ? "activerecord" : "activemodel"}.attributes.#{self.model_name.i18n_key}.#{attribute}", params)
 				end
 
 				def human_attribute_unit(attribute, params = {})
-					I18n.t("activerecord.attributes.#{self.model_name.i18n_key}.#{attribute}_unit", params)
+					I18n.t("#{ self < ActiveRecord::Base ? "activerecord" : "activemodel"}.attributes.#{self.model_name.i18n_key}.#{attribute}_unit", params)
 				end
 				
 			end
