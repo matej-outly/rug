@@ -16,8 +16,12 @@ module RugBuilder
 			module Additionals extend ActiveSupport::Concern
 
 				def pagination
-					if @objects.respond_to?(:total_pages)
-						return @template.paginate(@objects)
+					if @objects.respond_to?(:total_pages) # Pagination activated on collection
+						if @options[:paginate_path].nil?
+							return @template.paginate(@objects) # Standard pagination (kaminari pagination component)
+						else
+							return @template.rug_button(I18n.t("views.pagination.more"), false, class: "paginate-link") # Link for ajax pagination (implemented in RugIndex JavaScript object)
+						end
 					else
 						return ""
 					end

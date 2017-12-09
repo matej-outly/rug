@@ -14,6 +14,11 @@ function RugIndex(hash, options)
 	this.hash = hash;
 	this.$index = null;
 	this.options = (typeof options !== 'undefined' ? options : {});
+
+	// Pagination
+	this.page = 1;
+	this.isLastPage = false;
+	this.$paginateLink = null;
 }
 
 RugIndex.prototype = {
@@ -27,6 +32,28 @@ RugIndex.prototype = {
 			$.get(reloadUrl, function(data) {
 				if (parseInt(data[0]['id']) == parseInt(id)) {
 					_this.addItem(id, data[0]['html']);
+				}
+			}, 'json');	
+		}
+	},
+
+	paginate: function()
+	{
+		var _this = this;
+		if (this.options.paginateable && !this.isLastPage) {
+			_this.page += 1;
+			var paginateUrl = this.options.paginateable.url.replace(':page', _this.page);
+			$.get(paginateUrl, function(data) {
+				if (data.constructor == Array) {
+					data.forEach(function(item) {
+						_this.addItem(item['id'], item['html']);
+					});
+					if (data.length <= 0) {
+						_this.isLastPage = true;
+						if (_this.$paginateLink) {
+							_this.$paginateLink.hide();
+						}
+					}
 				}
 			}, 'json');	
 		}
@@ -83,6 +110,7 @@ RugIndex.prototype = {
 		this.readyMovable();
 		this.readyTilable();
 		this.readyDestroyable();
+		this.readyPaginateable();
 	},
 	
 	readyMovable: function()
@@ -133,6 +161,18 @@ RugIndex.prototype = {
 				confirmMessage: this.options.destroyable.confirmMessage,
 				successMessage: this.options.destroyable.successMessage,
 				errorMessage: this.options.destroyable.errorMessage,
+			});
+		}
+	},
+
+	readyPaginateable: function()
+	{
+		var _this = this;
+		if (this.options.paginateable) {
+			_this.$paginateLink = this.$index.parent().find(".paginate-link");
+			_this.$paginateLink.click(function(e) {
+				e.preventDefault();
+				_this.paginate();
 			});
 		}
 	}

@@ -46,9 +46,9 @@ module RugBuilder
 
 					# Render entire body
 					result = ""
-					if @options[:layout] == :thumbnails
+					if @options[:layout].to_s == "thumbnails"
 						result += render_as_thumbnails(objects)
-					elsif @options[:layout] == :list
+					elsif @options[:layout].to_s == "list"
 						result += render_as_list(objects)
 					else
 						result += render_as_table(objects)
@@ -106,6 +106,16 @@ module RugBuilder
 						reloadable_js = ""
 					end
 
+					if @options[:paginate_path]
+						paginateable_js = %{
+							paginateable: {
+								url: '#{self.path_resolver.resolve(@options[:paginate_path], page: ":page").gsub("%3A", ":")}',
+							},
+						}
+					else
+						paginateable_js = ""
+					end
+
 					if @options[:layout] == :thumbnails && @options[:thumbnails_tiles]
 						tilable_js = %{
 							tilable: true,
@@ -123,6 +133,7 @@ module RugBuilder
 								itemSelector:      '#{markup[:item_selector].to_s}',
 								addPosition:       '#{@options[:add_position] ? @options[:add_position].to_s : "append"}',
 								#{reloadable_js}
+								#{paginateable_js}
 								#{movable_js}
 								#{destroyable_js}
 								#{tilable_js}
