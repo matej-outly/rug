@@ -33,6 +33,7 @@ module RugBuilder
 				active = (options[:active] == true)
 				disabled = (options[:disabled] == true)
 				data = options[:data] ? options[:data] : nil
+				id = options[:id] ? options[:id].to_s.to_id : nil
 				url = "#" if url.blank?
 				title = nil
 
@@ -68,13 +69,15 @@ module RugBuilder
 							class: "btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{disabled ? "disabled" : ""} #{klass.to_s}",
 							method: method,
 							data: data,
-							title: title
+							title: title,
+							id: id
 						}) 
 					elsif format == :button
 						result = ""
 						result += "<button 
 							type=\"button\"
 							class=\"btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{klass.to_s}\" 
+							#{id ? "id=\"" + id + "\"" : ""}
 							#{disabled ? "disabled=\"disabled\"" : ""}
 							#{url != "#" ? "onclick=\"window.location='" + url + "'\"" : ""}
 						>" # method and data not working here, hence tooltip not working here
@@ -98,6 +101,7 @@ module RugBuilder
 				horizontal = options[:horizontal] ? options[:horizontal].to_sym : :left
 				vertical = options[:vertical] ? options[:vertical].to_sym : :down
 				klass = options[:class] ? options[:class] : ""
+				id = options[:id] ? options[:id].to_s.to_id : nil
 				active = (options[:active] == true)
 				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
 
@@ -109,6 +113,7 @@ module RugBuilder
 					data-toggle=\"dropdown\" 
 					aria-haspopup=\"true\" 
 					aria-expanded=\"false\"
+					#{id ? "id=\"" + id + "\"" : ""}
 				>"
 				result += label
 				result += "</button>"
