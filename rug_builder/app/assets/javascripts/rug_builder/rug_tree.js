@@ -319,6 +319,7 @@ RugTree.prototype = {
 
 		// Tree
 		_this.tree.tree({
+			keyboardSupport: false,
 			dragAndDrop: _this.options.moving,
 			saveState: (_this.options.saveState == 'simple' ? _this.storageKey + "_state" : null),
 			closedIcon: $(_this.options.closedIcon),
