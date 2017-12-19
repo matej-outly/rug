@@ -35,6 +35,9 @@ module RugBuilder
 
 				# File name
 				file_name = value.original_filename
+
+				# Truncate?
+				file_name = file_name.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if !options[:truncate].nil? && options[:truncate] != false
 				
 				result = %{
 					<#{ options[:download] == true ? "a href=\"" + value.url + "\"" : "div" } class="file-preview">
