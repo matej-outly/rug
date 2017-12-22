@@ -32,13 +32,23 @@ module RugBuilder
 				# Label
 				result += label_for(name, label: options[:label])
 
+				# Unique hash (must be unique for each object of same type in case we render more edit forms on one page)
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
+
+				# ID
+				id = "checkbox-#{hash}"
+
 				if collection.nil?
 					collection = object.class.method("available_#{name.to_s.pluralize}".to_sym).call
 				end
 				result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
 					b_result = "<div class=\"#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}\">"
-					b_result += b.label do
-						b.check_box + "<span></span>#{b.text}".html_safe
+					b_result += b.label(for: "#{id}-#{b.value}") do
+						b.check_box(id: "#{id}-#{b.value}") + "<span></span>#{b.text}".html_safe
 					end
 					b_result += "</div>"
 					b_result.html_safe
