@@ -90,7 +90,7 @@ RugMap.prototype = {
 		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);
 		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);
 		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);
-		var map_canvas = $('#map_' + this.hash + ' .mapbox').get(0);
+		var map_canvas = $('#map-' + this.hash + ' .mapbox').get(0);
 		var map_position = new google.maps.LatLng(latitude, longitude);
 		var map_options = {
 			center: map_position,

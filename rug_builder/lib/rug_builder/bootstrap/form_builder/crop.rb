@@ -77,7 +77,7 @@ module RugBuilder
 
 				# Container
 				result += %{
-					<div id="crop_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""}">
+					<div id="crop-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""}">
 						#{label_for(name, label: options[:label])}
 						#{crop_attributes}
 						#{hidden_field("#{name.to_s}_perform_cropping".to_sym, value: "1")}

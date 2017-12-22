@@ -32,7 +32,7 @@ module RugBuilder
 
 			# Wrapper
 			result = ""
-			result += "<div id=\"map_#{@hash}\" class=\"map\">"
+			result += "<div id=\"map-#{@hash}\" class=\"map\">"
 
 			# Mapbox (canvas)
 			result += "<div class=\"mapbox\"></div>"

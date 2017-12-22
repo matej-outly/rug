@@ -36,12 +36,12 @@ RugFormMapPolygon.prototype = {
 		} else {
 			value = '';
 		}
-		$('#map_polygon_' + this.hash + ' input').val(value);
+		$('#map-polygon-' + this.hash + ' input').val(value);
 		return true;
 	},
 	updateMap: function()
 	{
-		var value = $('#map_polygon_' + this.hash + ' input').val();
+		var value = $('#map-polygon-' + this.hash + ' input').val();
 		value = JSON.parse(value);
 		this.clearMarkers();
 		if (value instanceof Array) {
@@ -122,7 +122,7 @@ RugFormMapPolygon.prototype = {
 		var latitude = (this.options.latitude ? this.options.latitude : this.DEFAULT_LATITUDE);
 		var longitude = (this.options.longitude ? this.options.longitude : this.DEFAULT_LONGITUDE);
 		var zoom = (this.options.zoom ? this.options.zoom : this.DEFAULT_ZOOM);
-		var mapCanvas = $('#map_polygon_' + this.hash + ' .mapbox').get(0);
+		var mapCanvas = $('#map-polygon-' + this.hash + ' .mapbox').get(0);
 		var mapPosition = new google.maps.LatLng(latitude, longitude);
 		var mapOptions = {
 			center: mapPosition,

@@ -52,7 +52,7 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="map_location_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="map-location-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 						
@@ -108,7 +108,7 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="map_polygon_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="map-polygon-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value.to_json)}
@@ -154,7 +154,7 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="address_location_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="address-location-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][level]", value_level, class: "level")}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: "latitude")}

@@ -218,7 +218,7 @@ RugFormMapLocation.prototype = {
 		var latitude = (_this.options.latitude ? _this.options.latitude : _this.DEFAULT_LATITUDE);
 		var longitude = (_this.options.longitude ? _this.options.longitude : _this.DEFAULT_LONGITUDE);
 		var zoom = (_this.options.zoom ? _this.options.zoom : _this.DEFAULT_ZOOM);
-		var mapCanvas = $('#map_location_' + _this.hash + ' .mapbox').get(0);
+		var mapCanvas = $('#map-location-' + _this.hash + ' .mapbox').get(0);
 		var mapPosition = new google.maps.LatLng(latitude, longitude);
 		var mapOptions = {
 			center: mapPosition,
@@ -234,8 +234,8 @@ RugFormMapLocation.prototype = {
 		});
 
 		// Inputs
-		_this.$inputLat = $('#map_location_' + _this.hash + ' input.latitude');
-		_this.$inputLng = $('#map_location_' + _this.hash + ' input.longitude');
+		_this.$inputLat = $('#map-location-' + _this.hash + ' input.latitude');
+		_this.$inputLng = $('#map-location-' + _this.hash + ' input.longitude');
 		
 		// When input is changed => fix values and update marker on the map
 		_this.$inputLat.on('change', function() {
@@ -251,7 +251,7 @@ RugFormMapLocation.prototype = {
 		_this.updateMap();
 
 		// Exchange button
-		_this.$exchangeButton = $('#map_location_' + _this.hash + ' .exchange');
+		_this.$exchangeButton = $('#map-location-' + _this.hash + ' .exchange');
 		_this.$exchangeButton.on('click', function(e) { e.preventDefault(); _this.exchangeInputs(); });
 
 		// Repair map on tab change

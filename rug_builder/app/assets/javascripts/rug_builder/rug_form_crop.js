@@ -49,7 +49,7 @@ RugFormCrop.prototype = {
 
 		// New image and plugin reload
 		this.$cropBox.html('<img src="' + src + '" />');
-		this.$cropImg = $('#crop_' + this.hash + ' .cropbox img');
+		this.$cropImg = $('#crop-' + this.hash + ' .cropbox img');
 
 		var self = this;
 		this.$cropImg.load(function() {
@@ -63,12 +63,12 @@ RugFormCrop.prototype = {
 	//
 	ready: function()
 	{
-		this.$cropBox = $('#crop_' + this.hash + ' .cropbox');
-		this.$cropImg = $('#crop_' + this.hash + ' .cropbox img');
-		this.$cropX   = $('#crop_' + this.hash + ' .crop_x');
-		this.$cropY   = $('#crop_' + this.hash + ' .crop_y');
-		this.$cropW   = $('#crop_' + this.hash + ' .crop_w');
-		this.$cropH   = $('#crop_' + this.hash + ' .crop_h');
+		this.$cropBox = $('#crop-' + this.hash + ' .cropbox');
+		this.$cropImg = $('#crop-' + this.hash + ' .cropbox img');
+		this.$cropX   = $('#crop-' + this.hash + ' .crop_x');
+		this.$cropY   = $('#crop-' + this.hash + ' .crop_y');
+		this.$cropW   = $('#crop-' + this.hash + ' .crop_w');
+		this.$cropH   = $('#crop-' + this.hash + ' .crop_h');
 
 		this.$cropImg.croppable({
 			aspectRatio: this.options.aspectRatio,

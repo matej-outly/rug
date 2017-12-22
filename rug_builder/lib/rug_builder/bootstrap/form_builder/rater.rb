@@ -99,7 +99,7 @@ module RugBuilder
 				
 				# Form group
 				result += %{
-					<div id="rater_#{hash}" class="rater form-group #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="rater-#{hash}" class="rater form-group #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value)}
 						<div class="canvas"></div>
