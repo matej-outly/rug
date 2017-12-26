@@ -37,7 +37,7 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-				value = value.to_json if value
+				value = value.to_json if value && !value.is_a?(String)
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
@@ -106,7 +106,7 @@ module RugBuilder
 				
 				# Value
 				value = object.send(name)
-				value = value.to_json if value
+				value = value.to_json if value && !value.is_a?(String)
 				
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
@@ -190,7 +190,7 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-				value = value.to_json if value
+				value = value.to_json if value && !value.is_a?(String)
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)

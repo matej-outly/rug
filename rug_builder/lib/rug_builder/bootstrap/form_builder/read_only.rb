@@ -35,7 +35,12 @@ module RugBuilder
 				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 				result += label_for(name, label: options[:label])
 				if format == :input
+					options[:suffix] = options[:unit] if options[:unit]
+					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
+					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
 					result += "<input class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
+					result += "</div>" if options[:prefix] || options[:suffix]
 				elsif format == :textarea
 					result += "<textarea class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 				end

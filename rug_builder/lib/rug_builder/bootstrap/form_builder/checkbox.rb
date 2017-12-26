@@ -68,19 +68,46 @@ module RugBuilder
 				# ID
 				id = "checkboxes-#{hash}"
 
+				# Value
+				value = object.send(name)
+				if value && value.is_a?(String)
+					begin
+						value = JSON.parse(value)
+					rescue JSON::ParserError
+						value = nil
+					end
+				end
+
 				# Field
 				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
 				result += label_for(name, label: options[:label])
-				result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
+				collection.each do |item|
+					b_value = item.send(value_attr)
+					b_label = item.send(label_attr)
+					checked = value && value.is_a?(Array) ? value.include?(b_value.to_s) : false
 					b_result = %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
-					b_result += b.label(for: "#{id}-#{b.value}") do
-						b.check_box(id: "#{id}-#{b.value}") + "<span></span>#{b.text}".html_safe
+					b_result += @template.label_tag("", for: "#{id}-#{b_value}") do
+						@template.check_box_tag("#{object_name}[#{name.to_s}][]", b_value, checked, id: "#{id}-#{b_value}") + "<span></span>#{b_label}".html_safe
 					end
 					b_result += %{</div>}
-					b_result.html_safe
+					result += b_result
 				end
 				result += errors(name, errors: options[:errors])
 				result += %{</div>}
+
+				# Field
+#				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
+#				result += label_for(name, label: options[:label])
+#				result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
+#					b_result = %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
+#					b_result += b.label(for: "#{id}-#{b.value}") do
+#						b.check_box(id: "#{id}-#{b.value}") + "<span></span>#{b.text}".html_safe
+#					end
+#					b_result += %{</div>}
+#					b_result.html_safe
+#				end
+#				result += errors(name, errors: options[:errors])
+#				result += %{</div>}
 
 				return result.html_safe
 			end
@@ -110,7 +137,7 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
-				value = value.to_json if value
+				value = value.to_json if value && !value.is_a?(String)
 				
 				# Application JS code
 				result += @template.javascript_tag(%{
