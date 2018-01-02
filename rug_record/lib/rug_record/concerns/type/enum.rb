@@ -33,7 +33,11 @@ module RugRecord
 						spec.each do |item|
 							
 							# Value check
-							if !item.is_a? Hash
+							if item.is_a?(OpenStruct)
+								item = item.to_h
+							elsif item.is_a? Hash
+								# OK
+							else
 								item = { value: item }
 							end
 							if !item[:value]
