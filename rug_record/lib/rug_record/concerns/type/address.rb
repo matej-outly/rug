@@ -43,19 +43,19 @@ module RugRecord
 
 							# Filter
 							if !value.blank?
-								value = value.symbolize_keys.select { |key, value| [:street, :number, :postcode, :city].include?(key) } if !value.nil?
+								value = value.symbolize_keys.select { |key, value| [:street, :number, :zipcode, :city].include?(key) } if !value.nil?
 							end
 							
 							# Store
 							if value.blank?
 								self.send("#{column.to_s}_street=", nil)
 								self.send("#{column.to_s}_number=", nil)
-								self.send("#{column.to_s}_postcode=", nil)
+								self.send("#{column.to_s}_zipcode=", nil)
 								self.send("#{column.to_s}_city=", nil)
 							else
 								self.send("#{column.to_s}_street=", value[:street])
 								self.send("#{column.to_s}_number=", value[:number])
-								self.send("#{column.to_s}_postcode=", value[:postcode])
+								self.send("#{column.to_s}_zipcode=", value[:zipcode])
 								self.send("#{column.to_s}_city=", value[:city])
 							end
 						end
@@ -65,12 +65,12 @@ module RugRecord
 							column = new_column
 							value_street = self.send("#{column.to_s}_street")
 							value_number = self.send("#{column.to_s}_number")
-							value_postcode = self.send("#{column.to_s}_postcode")
+							value_zipcode = self.send("#{column.to_s}_zipcode")
 							value_city = self.send("#{column.to_s}_city")
-							if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
+							if value_street.blank? && value_number.blank? && value_zipcode.blank? && value_city.blank?
 								return nil
 							else
-								return { street: value_street, number: value_number, postcode: value_postcode, city: value_city }
+								return { street: value_street, number: value_number, zipcode: value_zipcode, city: value_city }
 							end
 						end
 
@@ -88,7 +88,7 @@ module RugRecord
 								street: parsed_value[3],
 								number: parsed_value[4],
 								city: parsed_value[2],
-								postcode: parsed_value[1],
+								zipcode: parsed_value[1],
 							})
 						end
 
@@ -110,18 +110,18 @@ module RugRecord
 						if address_parts.length >= 1
 							city = address_parts.pop
 							city_parts = []
-							postcode_parts = []
-							postcode_prefix = true
+							zipcode_parts = []
+							zipcode_prefix = true
 							city.split(" ").each do |part|
-								if postcode_prefix && /\A\d+\z/.match(part) # Is a positive number
-									postcode_parts << part
+								if zipcode_prefix && /\A\d+\z/.match(part) # Is a positive number
+									zipcode_parts << part
 								else
 									city_parts << part
-									postcode_prefix = false
+									zipcode_prefix = false
 								end
 							end
 							city = city_parts.join(" ")
-							postcode = postcode_parts.join(" ")
+							zipcode = zipcode_parts.join(" ")
 						end
 						if address_parts.length >= 1
 							street = address_parts.join(", ")
@@ -141,7 +141,7 @@ module RugRecord
 							end
 							street = street_parts.join(" ")
 						end
-						return [country, postcode, city, street, number]
+						return [country, zipcode, city, street, number]
 					end
 
 				end

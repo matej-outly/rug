@@ -71,14 +71,14 @@ module RugBuilder
 				label_street = (options[:label_street] ? options[:label_street] : I18n.t("general.attribute.address.street")) if options[:street] != false
 				label_number = (options[:label_number] ? options[:label_number] : I18n.t("general.attribute.address.number")) if options[:number] != false
 				label_city = (options[:label_city] ? options[:label_city] : I18n.t("general.attribute.address.city")) if options[:city] != false
-				label_postcode = (options[:label_postcode] ? options[:label_postcode] : I18n.t("general.attribute.address.postcode")) if options[:postcode] != false
+				label_zipcode = (options[:label_zipcode] ? options[:label_zipcode] : I18n.t("general.attribute.address.zipcode")) if options[:zipcode] != false
 				
 				# Part values
 				value = object.send(name)
 				value_street = value && value[:street] ? value[:street] : nil if options[:street] != false
 				value_number = value && value[:number] ? value[:number] : nil if options[:number] != false
 				value_city = value && value[:city] ? value[:city] : nil if options[:city] != false
-				value_postcode = value && value[:postcode] ? value[:postcode] : nil if options[:postcode] != false
+				value_zipcode = value && value[:zipcode] ? value[:zipcode] : nil if options[:zipcode] != false
 
 				# CSS class
 				klass = []
@@ -87,7 +87,7 @@ module RugBuilder
 				
 				if options[:street] != false
 					result_street = %{
-						<div class="col-sm-8">
+						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_street.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, class: klass)}
@@ -98,7 +98,7 @@ module RugBuilder
 
 				if options[:number] != false
 					result_number = %{
-						<div class="col-sm-4">
+						<div class="col-sm-4 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_number.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: klass)}
@@ -109,7 +109,7 @@ module RugBuilder
 
 				if options[:city] != false
 					result_city = %{
-						<div class="col-sm-8">
+						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_city.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, class: klass)}
@@ -118,12 +118,12 @@ module RugBuilder
 					}
 				end
 
-				if options[:postcode] != false
-					result_postcode = %{
-						<div class="col-sm-4">
+				if options[:zipcode] != false
+					result_zipcode = %{
+						<div class="col-sm-4 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
-								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_postcode.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][postcode]", value_postcode, class: klass)}
+								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_zipcode.upcase_first + "</div>" : ""}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][zipcode]", value_zipcode, class: klass)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -138,7 +138,7 @@ module RugBuilder
 						</div>
 						<div class="row">
 							#{options[:city] != false ? result_city : ""}
-							#{options[:postcode] != false ? result_postcode : ""}
+							#{options[:zipcode] != false ? result_zipcode : ""}
 						</div>
 						<div class="row">
 							#{errors(name, errors: options[:errors], class: "col-sm-12") }
@@ -211,7 +211,7 @@ module RugBuilder
 				# Inputs
 				if options[:title] == true
 					result_title = %{
-						<div class="col-sm-#{columns_layout[0]}">
+						<div class="col-sm-#{columns_layout[0]} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_title.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][title]", value_title, class: klass)}
@@ -222,7 +222,7 @@ module RugBuilder
 				
 				if options[:firstname] != false
 					result_firstname = %{
-						<div class="col-sm-#{columns_layout[1]}">
+						<div class="col-sm-#{columns_layout[1]} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_firstname.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][firstname]", value_firstname, class: klass)}
@@ -233,7 +233,7 @@ module RugBuilder
 
 				if options[:lastname] != false
 					result_lastname = %{
-						<div class="col-sm-#{columns_layout[2]}">
+						<div class="col-sm-#{columns_layout[2]} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_lastname.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][lastname]", value_lastname, class: klass)}
@@ -244,7 +244,7 @@ module RugBuilder
 
 				if options[:title_after] == true
 					result_title_after = %{
-						<div class="col-sm-#{columns_layout[3]}">
+						<div class="col-sm-#{columns_layout[3]} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_title_after.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][title_after]", value_title_after, class: klass)}
@@ -296,7 +296,7 @@ module RugBuilder
 
 				if options[:min] != false
 					result_min = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_min.upcase_first + "</div>" : ""}
 								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][#{min_column.to_s}]", value_min, class: klass.dup.concat([min_column.to_s]))}
@@ -307,7 +307,7 @@ module RugBuilder
 
 				if options[:max] != false
 					result_max = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_max.upcase_first + "</div>" : ""}
 								#{@template.method(method.to_s + "_tag").call("#{object_name}[#{name.to_s}][#{max_column.to_s}]", value_max, class: klass.dup.concat([max_column.to_s]))}
@@ -317,7 +317,7 @@ module RugBuilder
 				end
 
 				result = %{
-					<div id="duration_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="range_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{options[:min] != false ? result_min : ""}

@@ -229,13 +229,13 @@ module RugBuilder
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "datetime")}
-							<div class="col-sm-6">
+							<div class="col-sm-6 m-b-sm">
 								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["date"]))}
 								#{options[:addon] != false ? "</div>" : ""}
 							</div>
-							<div class="col-sm-6">
+							<div class="col-sm-6 m-b-sm">
 								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_time.upcase_first + "</div>" : ""}
 									#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["time"]))}
@@ -308,7 +308,7 @@ module RugBuilder
 				
 				if options[:date] != false
 					result_date = %{
-						<div class="col-sm-#{column_width}">
+						<div class="col-sm-#{column_width} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][date]", value_date, class: klass.dup.concat(["date"]))}
@@ -323,7 +323,7 @@ module RugBuilder
 
 				if options[:from] != false
 					result_from = %{
-						<div class="col-sm-#{column_width}">
+						<div class="col-sm-#{column_width} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_from.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][from]", value_from, class: klass.dup.concat(["from"]))}
@@ -338,7 +338,7 @@ module RugBuilder
 
 				if options[:to] != false
 					result_to = %{
-						<div class="col-sm-#{column_width}">
+						<div class="col-sm-#{column_width} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_to.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][to]", value_to, class: klass.dup.concat(["to"]))}
@@ -459,7 +459,7 @@ module RugBuilder
 
 				if options[:days] != false
 					result_days = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["days"]))}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_days.upcase_first + "</div>" : ""}
@@ -470,7 +470,7 @@ module RugBuilder
 
 				if options[:hours] != false
 					result_hours = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["hours"]))}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_hours.upcase_first + "</div>" : ""}
@@ -481,7 +481,7 @@ module RugBuilder
 
 				if options[:minutes] != false
 					result_minutes = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["minutes"]))}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_minutes.upcase_first + "</div>" : ""}
@@ -492,7 +492,7 @@ module RugBuilder
 
 				if options[:seconds] != false
 					result_seconds = %{
-						<div class="col-sm-#{12 / columns_count}">
+						<div class="col-sm-#{12 / columns_count} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{@template.text_field_tag(nil, nil, class: klass.dup.concat(["seconds"]))}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_seconds.upcase_first + "</div>" : ""}

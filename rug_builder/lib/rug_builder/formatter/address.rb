@@ -20,12 +20,12 @@ module RugBuilder
 			if !value.nil?
 				value_street = value[:street]
 				value_number = value[:number]
-				value_postcode = value[:postcode]
+				value_zipcode = value[:zipcode]
 				value_city = value[:city]
-				if value_street.blank? && value_number.blank? && value_postcode.blank? && value_city.blank?
+				if value_street.blank? && value_number.blank? && value_zipcode.blank? && value_city.blank?
 					return ""
 				else
-					return "#{value_street} #{value_number}, #{value_postcode} #{value_city}"
+					return "#{value_street} #{value_number}, #{value_zipcode} #{value_city}"
 				end
 			else
 				return ""
