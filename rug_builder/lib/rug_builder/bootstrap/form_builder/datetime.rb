@@ -34,7 +34,7 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function date_picker_#{hash}_ready()
 					{
-						#{date_js("#date_picker_#{hash}")}
+						#{date_js("#date_picker_#{hash}", options)}
 					}
 					$(document).ready(date_picker_#{hash}_ready);
 				})
@@ -101,7 +101,7 @@ module RugBuilder
 					}
 					function date_range_picker_#{hash}_ready()
 					{
-						#{date_range_js("#date_range_picker_#{hash} .dates")}
+						#{date_range_js("#date_range_picker_#{hash} .dates", options)}
 						$('#date_range_picker_#{hash} .dates').on('cancel.daterangepicker', function(ev, picker) {
 							$(this).val('');
 							date_range_picker_#{hash}_update_backend();
@@ -209,7 +209,7 @@ module RugBuilder
 					}
 					function datetime_picker_#{hash}_ready()
 					{
-						#{date_js("#datetime_picker_#{hash} .date")}
+						#{date_js("#datetime_picker_#{hash} .date", options)}
 						#{time_js("#datetime_picker_#{hash} .time")}
 						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_backend);
 						$('#datetime_picker_#{hash} .date').on('apply.daterangepicker', datetime_picker_#{hash}_update_backend);
@@ -286,7 +286,7 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function datetime_range_picker_#{hash}_ready()
 					{
-						#{date_js("#datetime_range_picker_#{hash} .date")}
+						#{date_js("#datetime_range_picker_#{hash} .date", options)}
 						#{time_js("#datetime_range_picker_#{hash} .from")}
 						#{time_js("#datetime_range_picker_#{hash} .to")}
 					}
@@ -520,13 +520,15 @@ module RugBuilder
 
 		protected
 
-			def date_js(selector)
+			def date_js(selector, options = {})
 				return %{
 					$('#{selector}').daterangepicker({ 
 						singleDatePicker: true,
 						showDropdowns: true,
 						autoApply: true,
 						autoUpdateInput: false,
+						#{options[:min_date] ? "minDate: '#{options[:min_date].strftime(I18n.t("date.formats.default"))}'," : ""}
+						#{options[:max_date] ? "maxDate: '#{options[:max_date].strftime(I18n.t("date.formats.default"))}'," : ""}
 						locale: {
 							format: '#{I18n.t("date.formats.moment")}',
 							applyLabel: '#{I18n.t("helpers.submit.ok")}',
@@ -566,9 +568,11 @@ module RugBuilder
 				}
 			end
 
-			def date_range_js(selector)
+			def date_range_js(selector, options = {})
 				return %{
 					$('#{selector}').daterangepicker({ 
+						#{options[:min_date] ? "minDate: '#{options[:min_date].strftime(I18n.t("date.formats.default"))}'," : ""}
+						#{options[:max_date] ? "maxDate: '#{options[:max_date].strftime(I18n.t("date.formats.default"))}'," : ""}
 						locale: {
 							format: '#{I18n.t("date.formats.moment")}',
 							applyLabel: '#{I18n.t("helpers.submit.ok")}',
