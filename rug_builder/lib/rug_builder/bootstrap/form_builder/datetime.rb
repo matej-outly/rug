@@ -49,6 +49,118 @@ module RugBuilder
 				return result.html_safe
 			end
 
+			def month_picker_row(name, options = {})
+				result = ""
+				
+				# Unique hash
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
+
+				# Value
+				value = object.send(name)
+				if !value.blank?
+					value = Date.parse(value) if !value.is_a?(Date) && !value.is_a?(DateTime) && !value.is_a?(Time)
+					value = value.strftime(I18n.t("date.formats.default"))
+				end
+
+				# Year
+				first_year = options[:first_year] ? options[:first_year] : Date.today.year
+				year_outlook = options[:year_outlook] ? options[:year_outlook] : 20
+
+				# Available months
+				months = [
+					[I18n.t("datetime.prompts.month"), ""],
+					[I18n.t("date.month_names")[1], 1],
+					[I18n.t("date.month_names")[2], 2],
+					[I18n.t("date.month_names")[3], 3],
+					[I18n.t("date.month_names")[4], 4],
+					[I18n.t("date.month_names")[5], 5],
+					[I18n.t("date.month_names")[6], 6],
+					[I18n.t("date.month_names")[7], 7],
+					[I18n.t("date.month_names")[8], 8],
+					[I18n.t("date.month_names")[9], 9],
+					[I18n.t("date.month_names")[10], 10],
+					[I18n.t("date.month_names")[11], 11],
+					[I18n.t("date.month_names")[12], 12],
+				]
+
+				# Available years
+				years = [ [I18n.t("datetime.prompts.year"), ""] ]
+				if year_outlook < 0
+					(first_year+year_outlook..first_year).reverse_each do |year|
+						years << [year, year]
+					end
+				else
+					(first_year..first_year+year_outlook).each do |year|
+						years << [year, year]
+					end
+				end
+				
+				# Java Script
+				result += @template.javascript_tag(%{
+					var rug_form_month_picker_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_month_picker_#{hash} = new RugFormMonthPicker('#{hash}', {
+						});
+						rug_form_month_picker_#{hash}.ready();
+					});
+				})
+				
+				result += %{
+					<div id="month-picker-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "backend")}
+						<div class="row">
+							<div class="col-sm-6 m-b-sm">
+								#{@template.select_tag(nil, @template.options_for_select(months), class: "frontend month form-control")}
+							</div>
+							<div class="col-sm-6 m-b-sm">
+								#{@template.select_tag(nil, @template.options_for_select(years), class: "frontend year form-control")}
+							</div>
+							#{errors(name, errors: options[:errors], class: "col-sm-12")}
+						</div>
+					</div>
+				}
+
+				return result.html_safe
+			end
+
+			def year_picker_row(name, options = {})
+				result = ""
+				
+				# Value
+				value = object.send(name)
+
+				# Year
+				first_year = options[:first_year] ? options[:first_year] : Date.today.year
+				year_outlook = options[:year_outlook] ? options[:year_outlook] : 20
+
+				# Available years
+				years = [ [I18n.t("datetime.prompts.year"), ""] ]
+				if year_outlook < 0
+					(first_year+year_outlook..first_year).reverse_each do |year|
+						years << [year, year]
+					end
+				else
+					(first_year..first_year+year_outlook).each do |year|
+						years << [year, year]
+					end
+				end
+				
+				result += %{
+					<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						#{@template.select_tag("#{object_name}[#{name.to_s}]", @template.options_for_select(years, value), class: "form-control")}
+						#{errors(name, errors: options[:errors])}
+					</div>
+				}
+
+				return result.html_safe
+			end
+
 			def date_range_picker_row(name, options = {})
 				result = ""
 				
@@ -78,39 +190,15 @@ module RugBuilder
 				
 				# Java Script
 				result += @template.javascript_tag(%{
-					function date_range_picker_#{hash}_update_backend()
-					{
-						var valueDates = $('#date_range_picker_#{hash} .dates').val().split(' - ');
-						if (valueDates.length >= 2) {
-							$('#date_range_picker_#{hash} .#{min_column.to_s}').val(valueDates[0]);
-							$('#date_range_picker_#{hash} .#{max_column.to_s}').val(valueDates[1]);
-						} else {
-							$('#date_range_picker_#{hash} .#{min_column.to_s}').val('');
-							$('#date_range_picker_#{hash} .#{max_column.to_s}').val('');
-						}
-					}
-					function date_range_picker_#{hash}_update_frontend()
-					{
-						var valueMin = $('#date_range_picker_#{hash} .#{min_column.to_s}').val();
-						var valueMax = $('#date_range_picker_#{hash} .#{max_column.to_s}').val();
-						if (valueMin && valueMax) {
-							$('#date_range_picker_#{hash} .dates').val(valueMin + ' - ' + valueMax);
-						} else {
-							$('#date_range_picker_#{hash} .dates').val('');
-						}
-					}
-					function date_range_picker_#{hash}_ready()
-					{
-						#{date_range_js("#date_range_picker_#{hash} .dates", options)}
-						$('#date_range_picker_#{hash} .dates').on('cancel.daterangepicker', function(ev, picker) {
-							$(this).val('');
-							date_range_picker_#{hash}_update_backend();
+					var rug_form_date_range_picker_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_date_range_picker_#{hash} = new RugFormDateRangePicker('#{hash}', {
+							minColumn: '#{min_column.to_s}',
+							maxColumn: '#{max_column.to_s}',
 						});
-						$('#date_range_picker_#{hash} .dates').on('change', date_range_picker_#{hash}_update_backend);
-						$('#date_range_picker_#{hash} .dates').on('apply.daterangepicker', date_range_picker_#{hash}_update_backend);
-						date_range_picker_#{hash}_update_frontend();
-					}
-					$(document).ready(date_range_picker_#{hash}_ready);
+						#{date_range_js("#date-range-picker-#{hash} .dates", options)}
+						rug_form_date_range_picker_#{hash}.ready();
+					});
 				})
 				
 				# Class
@@ -124,11 +212,11 @@ module RugBuilder
 				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
 
 				result += %{
-					<div id="date_range_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+					<div id="date-range-picker-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
-						#{@template.text_field_tag(nil, nil, field_options)}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{min_column.to_s}]", value_min, class: min_column.to_s)}
 						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][#{max_column.to_s}]", value_max, class: max_column.to_s)}
+						#{@template.text_field_tag(nil, nil, field_options)}
 						#{errors(name, errors: options[:errors])}
 					</div>
 				}
@@ -157,7 +245,7 @@ module RugBuilder
 				result += @template.javascript_tag(%{
 					function time_picker_#{hash}_ready()
 					{
-						#{time_js("#time_picker_#{hash}")}
+						#{time_js("#time_picker_#{hash}", options)}
 					}
 					$(document).ready(time_picker_#{hash}_ready);
 				})
@@ -210,7 +298,7 @@ module RugBuilder
 					function datetime_picker_#{hash}_ready()
 					{
 						#{date_js("#datetime_picker_#{hash} .date", options)}
-						#{time_js("#datetime_picker_#{hash} .time")}
+						#{time_js("#datetime_picker_#{hash} .time", options)}
 						$('#datetime_picker_#{hash} .date').on('change', datetime_picker_#{hash}_update_backend);
 						$('#datetime_picker_#{hash} .date').on('apply.daterangepicker', datetime_picker_#{hash}_update_backend);
 						$('#datetime_picker_#{hash} .time').on('change', datetime_picker_#{hash}_update_backend);
@@ -227,8 +315,8 @@ module RugBuilder
 				result += %{
 					<div id="datetime_picker_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
+						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "datetime")}
 						<div class="row">
-							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value, class: "datetime")}
 							<div class="col-sm-6 m-b-sm">
 								#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 									#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_date.upcase_first + "</div>" : ""}
@@ -287,8 +375,8 @@ module RugBuilder
 					function datetime_range_picker_#{hash}_ready()
 					{
 						#{date_js("#datetime_range_picker_#{hash} .date", options)}
-						#{time_js("#datetime_range_picker_#{hash} .from")}
-						#{time_js("#datetime_range_picker_#{hash} .to")}
+						#{time_js("#datetime_range_picker_#{hash} .from", options)}
+						#{time_js("#datetime_range_picker_#{hash} .to", options)}
 					}
 					$(document).ready(datetime_range_picker_#{hash}_ready);
 				})
@@ -504,8 +592,8 @@ module RugBuilder
 				result += %{
 					<div id="duration_#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
 						#{label_for(name, label: options[:label])}
+						#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 						<div class="row">
-							#{@template.hidden_field_tag("#{object.class.model_name.param_key}[#{name.to_s}]", value, class: "datetime")}
 							#{options[:days] != false ? result_days : ""}
 							#{options[:hours] != false ? result_hours : ""}
 							#{options[:minutes] != false ? result_minutes : ""}
@@ -609,7 +697,7 @@ module RugBuilder
 				}
 			end
 
-			def time_js(selector)
+			def time_js(selector, options = {})
 				return %{
 					$('#{selector}').clockpicker({
 						placement: 'bottom',
