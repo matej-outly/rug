@@ -19,8 +19,10 @@ module RugBuilder
 		def self.boolean(value, options = {})
 			if value == true
 				return I18n.t("general.attribute.boolean.bool_yes")
-			else
+			elsif value == false
 				return I18n.t("general.attribute.boolean.bool_no")
+			else
+				return options[:respect_null] == true ? "" : I18n.t("general.attribute.boolean.bool_no")
 			end
 		end
 

@@ -22,6 +22,7 @@ module RugBuilder
 				include RugBuilder::IndexBuilder::Concerns::Partial
 				include RugBuilder::Concerns::Columns
 				include RugBuilder::Concerns::Actions
+				include RugBuilder::Concerns::Brs
 				include RugBuilder::Concerns::Builders
 
 				def initialize(template)
@@ -159,8 +160,13 @@ module RugBuilder
 				end
 
 				def verticals
-					@verticals = [] if @verticals.nil?
+					@verticals = [[]] if @verticals.nil?
 					return @verticals
+				end
+
+				def current_vertical
+					@verticals = [[]] if @verticals.nil?
+					return @verticals.last
 				end
 
 				def sorts
@@ -174,7 +180,7 @@ module RugBuilder
 				end
 
 				def add_column(column, options)
-					self.verticals << { type: :column, column: column.to_sym }
+					self.current_vertical << { type: :column, column: column.to_sym }
 					if options[:sort]
 						self.sorts[column.to_sym] = true
 					end
@@ -184,7 +190,7 @@ module RugBuilder
 				end
 
 				def add_action(action, options)
-					self.verticals << { type: :action, action: action.to_sym }
+					self.current_vertical << { type: :action, action: action.to_sym }
 					
 					# Movable
 					if action.to_sym == :move
@@ -203,6 +209,14 @@ module RugBuilder
 						self.actions[:destroy][:path] = nil # Destroy handle has no URL
 						self.actions[:destroy][:data] = nil # Destroy handle has no data
 						self.actions[:destroy][:method] = nil # Destroy handle has no method
+					end
+				end
+
+				def add_br(options)
+					if @verticals.nil?
+						@verticals = [[]] 
+					else
+						@verticals << [] # Add new vertical
 					end
 				end
 

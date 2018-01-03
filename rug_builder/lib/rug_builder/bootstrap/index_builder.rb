@@ -11,6 +11,7 @@
 
 # Common concerns
 require "rug_builder/bootstrap/concerns/actions"
+require "rug_builder/bootstrap/concerns/brs"
 require "rug_builder/bootstrap/concerns/columns"
 require "rug_builder/bootstrap/concerns/builders"
 
