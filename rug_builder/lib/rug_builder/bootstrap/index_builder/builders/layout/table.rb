@@ -53,7 +53,7 @@ module RugBuilder
 							if type == :column
 								chunk.each do |vertical|
 									column = vertical[:column]
-									result += %{<th>}
+									result += %{<th class="#{self.columns[column][:nowrap] ? "text-nowrap" : ""}">}
 									result += self.render_column_label(column, self.model_class)
 									result += %{</th>}
 									verticals_counts[row_index] += 1
@@ -93,7 +93,7 @@ module RugBuilder
 							if type == :column
 								chunk.each do |vertical|
 									column = vertical[:column]
-									result += %{<td>}
+									result += %{<td class="#{self.columns[column][:nowrap] ? "text-nowrap" : ""}">}
 									value = self.render_column_value(column, object).to_s
 									if self.shows[column]
 										result += self.render_link(self.shows[column].merge(
@@ -123,8 +123,6 @@ module RugBuilder
 									result += self.render_action_link(action, object: object, size: "xs", default_label: false) + " "
 								end
 								result += %{</td>}
-							elsif type == :br
-								result += %{<td>|</td>}
 							end
 						end
 						result += %{</tr>}
