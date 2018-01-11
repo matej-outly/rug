@@ -97,6 +97,14 @@ module RugBuilder
 						destroyable_js = ""
 					end
 
+					if @sortable
+						sortable_js = %{
+							sortable: true,
+						}
+					else
+						sortable_js = ""
+					end
+
 					if @options[:reload_path]
 						reloadable_js = %{
 							reloadable: {
@@ -137,6 +145,7 @@ module RugBuilder
 								#{paginateable_js}
 								#{movable_js}
 								#{destroyable_js}
+								#{sortable_js}
 								#{tilable_js}
 							});
 							#{self.js_object}.ready();
@@ -155,8 +164,10 @@ module RugBuilder
 					@verticals = nil
 					@sorts = nil
 					@shows = nil
-					@move = nil
+					@movable = nil
 					@destroyable = nil
+					@sortable = nil
+					@showable = nil
 				end
 
 				def verticals
@@ -181,11 +192,13 @@ module RugBuilder
 
 				def add_column(column, options)
 					self.current_vertical << { type: :column, column: column.to_sym }
-					if options[:sort]
-						self.sorts[column.to_sym] = true
+					if options[:sort] && options[:sort] != false
+						self.sorts[column.to_sym] = options[:sort]
+						@sortable = true
 					end
-					if options[:show]
+					if options[:show] && options[:show] != false
 						self.shows[column.to_sym] = options[:show]
+						@showable = true
 					end
 				end
 

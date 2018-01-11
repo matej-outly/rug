@@ -111,6 +111,7 @@ RugIndex.prototype = {
 		this.readyTilable();
 		this.readyDestroyable();
 		this.readyPaginateable();
+		this.readySortable();
 	},
 	
 	readyMovable: function()
@@ -169,11 +170,20 @@ RugIndex.prototype = {
 	{
 		var _this = this;
 		if (this.options.paginateable) {
-			_this.$paginateLink = this.$index.parent().find(".paginate-link");
+			_this.$paginateLink = this.$index.parent().find('.paginate-link');
 			_this.$paginateLink.click(function(e) {
 				e.preventDefault();
 				_this.paginate();
 			});
 		}
+	},
+
+	readySortable: function()
+	{
+		if (this.options.sortable) {
+			console.log(document.getElementById('index-' + this.hash));
+			new Tablesort(document.getElementById('index-' + this.hash));
+		}
 	}
+
 }

@@ -24,7 +24,7 @@ module RugBuilder
 					result = %{
 						<table 
 							id="#{self.id}" 
-							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@options[:class].to_s}"
+							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@sortable ? "sortable" : ""} #{@options[:class].to_s}"
 						>
 							#{render_table_head}
 							#{render_table_body}
@@ -53,13 +53,39 @@ module RugBuilder
 							if type == :column
 								chunk.each do |vertical|
 									column = vertical[:column]
-									result += %{<th class="#{self.columns[column][:nowrap] ? "text-nowrap" : ""}">}
+									column_options = self.columns[column]
+
+									# Sortable
+									sortable_data = ""
+									sortable_class = ""
+									if @sortable
+										if self.sorts[column].nil?
+											sortable_data = "data-sort-method=\"none\"" # No sorting for this column
+											sortable_class = "no-sort"
+										elsif self.sorts[column].is_a?(Symbol) || self.sorts[column].is_a?(String)
+											sortable_data = "data-sort-method=\"#{self.sorts[column].to_s}\""
+										end
+									end
+
+									# Nowrap
+									nowrap_class = column_options[:nowrap] ? "text-nowrap" : ""
+
+									result += %{<th class="#{nowrap_class} #{sortable_class}" #{sortable_data}>}
 									result += self.render_column_label(column, self.model_class)
 									result += %{</th>}
 									verticals_counts[row_index] += 1
 								end
 							elsif type == :action
-								result += %{<th></th>}
+
+								# Sortable
+								sortable_data = ""
+								sortable_class = ""
+								if @sortable
+									sortable_data = "data-sort-method=\"none\"" # No sorting for this column
+									sortable_class = "no-sort"
+								end
+
+								result += %{<th class="#{sortable_class}" #{sortable_data}></th>}
 								verticals_counts[row_index] += 1
 							end
 						end
@@ -93,7 +119,19 @@ module RugBuilder
 							if type == :column
 								chunk.each do |vertical|
 									column = vertical[:column]
-									result += %{<td class="#{self.columns[column][:nowrap] ? "text-nowrap" : ""}">}
+									column_options = self.columns[column]
+
+									# Sortable
+									if @sortable && self.sorts[column].is_a?(Proc)
+										sortable_data = "data-sort=\"#{self.sorts[column].call(object)}\"" # Special sorting value
+									else
+										sortable_data = "" # No sorting at all or use data contained in td
+									end
+
+									# Nowrap
+									nowrap_class = column_options[:nowrap] ? "text-nowrap" : ""
+
+									result += %{<td class="#{nowrap_class}" #{sortable_data}>}
 									value = self.render_column_value(column, object).to_s
 									if self.shows[column]
 										result += self.render_link(self.shows[column].merge(
@@ -103,8 +141,8 @@ module RugBuilder
 											object: object, 
 											disable_button: true, 
 										))
-									elsif self.columns[column][:action]
-										result += self.render_link(self.columns[column][:action].merge(
+									elsif column_options[:action]
+										result += self.render_link(column_options[:action].merge(
 											label: value,
 											fallback: value, 
 											default_label: "...",
