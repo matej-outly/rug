@@ -2,9 +2,9 @@
 /* Copyright (c) Clockstar s.r.o. All rights reserved.                       */
 /*****************************************************************************/
 /*                                                                           */
-/* Rug Form Date Range Picker                                                */
+/* Rug Form Month Picker                                                     */
 /*                                                                           */
-/* Author:                                                                   */
+/* Author: Matěj Outlý                                                       */
 /* Date  : 3. 1. 2018                                                        */
 /*                                                                           */
 /*****************************************************************************/
