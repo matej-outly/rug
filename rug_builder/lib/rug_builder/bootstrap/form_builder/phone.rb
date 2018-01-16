@@ -26,8 +26,15 @@ module RugBuilder
 				# ID
 				id = "phone-#{hash}"
 
-				# Part values
+				# Value
 				value = object.send(name).to_s.gsub(" ", "")
+				if !value.blank?
+					if value.starts_with?("+")
+						value = "+" + value[1..-1].scan(/.{3}/).join(" ")
+					else
+						value = value.scan(/.{3}/).join(" ")
+					end
+				end
 				
 				# Application JS code
 				result += @template.javascript_tag(%{
