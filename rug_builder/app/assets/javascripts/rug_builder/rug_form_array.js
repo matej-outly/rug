@@ -42,7 +42,7 @@ RugFormArray.prototype = {
 			var item = {};
 			var simple = false;
 			var empty = true
-			$(this).find('input.value, select.value').each(function() {
+			$(this).find('input.value, select.value, textarea.value').each(function() {
 				var value = $(this).val();
 				var attr = $(this).data('attr');
 				if (value) {
@@ -67,7 +67,7 @@ RugFormArray.prototype = {
 		var $item = $('<div class="item">' + _this.$array.find('.template').html() + '</div>');
 		
 		// Input / select
-		$item.find('input.value, select.value').each(function() {
+		$item.find('input.value, select.value, textarea.value').each(function() {
 			var attr = $(this).data('attr');
 			if (attr) {
 				$(this).val(value[attr]);
@@ -75,7 +75,7 @@ RugFormArray.prototype = {
 				$(this).val(value);
 			}
 		});
-		$item.find('input.value, select.value').on('change', function(e) {
+		$item.find('input.value, select.value, textarea.value').on('change', function(e) {
 			_this.updateBackend();
 		});
 
