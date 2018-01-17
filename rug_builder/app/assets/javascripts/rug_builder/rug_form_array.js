@@ -38,10 +38,25 @@ RugFormArray.prototype = {
 	{
 		var _this = this;
 		var values = [];
-		_this.$frontend.find('.item ' + _this.frontendElement).each(function() {
-			var value = $(this).val();
-			if (value) {
-				values.push(value);
+		_this.$frontend.find('.item').each(function() {
+			var item = {};
+			var simple = false;
+			var empty = true
+			$(this).find('input.value, select.value').each(function() {
+				var value = $(this).val();
+				var attr = $(this).data('attr');
+				if (value) {
+					empty = false;
+					if (attr) {
+						item[attr] = value
+					} else {
+						item = value;
+						simple = true;
+					}
+				}
+			});
+			if (!empty) {
+				values.push(item);
 			}
 		});
 		_this.$backendInput.val(JSON.stringify(values));
@@ -52,8 +67,15 @@ RugFormArray.prototype = {
 		var $item = $('<div class="item">' + _this.$array.find('.template').html() + '</div>');
 		
 		// Input / select
-		$item.find(_this.frontendElement).val(value);
-		$item.find(_this.frontendElement).on('change', function(e) {
+		$item.find('input.value, select.value').each(function() {
+			var attr = $(this).data('attr');
+			if (attr) {
+				$(this).val(value[attr]);
+			} else {
+				$(this).val(value);
+			}
+		});
+		$item.find('input.value, select.value').on('change', function(e) {
 			_this.updateBackend();
 		});
 
@@ -74,8 +96,7 @@ RugFormArray.prototype = {
 		_this.$array = $('#array-' + _this.hash);
 		_this.$backendInput = _this.$array.find('.backend input');
 		_this.$frontend = _this.$array.find('.frontend');
-		_this.frontendElement = _this.options['frontendElement'] ? _this.options['frontendElement'] : 'input';
-
+		
 		// Input / select
 		_this.$frontend.find('.item ' + _this.frontendElement).on('change', function(e) {
 			_this.updateBackend();

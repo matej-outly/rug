@@ -26,15 +26,6 @@ module RugBuilder
 				# ID
 				id = "array-#{hash}"
 
-				# CSS class
-				klass = []
-				klass << "form-control"
-				klass << options[:class] if !options[:class].nil?
-
-				# Front field options
-				field_options = {}
-				field_options[:class] = klass.join(" ")
-
 				# Value
 				value = object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
@@ -48,7 +39,6 @@ module RugBuilder
 					var rug_form_array_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_array_#{hash} = new RugFormArray('#{hash}', {
-							frontendElement: 'input'
 						});
 						rug_form_array_#{hash}.ready();
 					});
@@ -64,7 +54,7 @@ module RugBuilder
 						<div class="template" style="display: none;">
 							<div class="row">
 								<div class="col-sm-10">
-									#{@template.method("#{method.to_s}_tag").call("", "", field_options)}
+									#{@template.method("#{method.to_s}_tag").call("", "", class: "form-control value")}
 								</div>
 								<div class="col-sm-2 text-right">
 									#{button_builder.button(icon_builder.render("close"), "#", style: "danger", class: "remove")}
@@ -95,15 +85,6 @@ module RugBuilder
 				# ID
 				id = "array-#{hash}"
 				
-				# CSS class
-				klass = []
-				klass << "form-control"
-				klass << options[:class] if !options[:class].nil?
-
-				# Front field options
-				field_options = {}
-				field_options[:class] = klass.join(" ")
-				
 				# Value
 				value = object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
@@ -130,7 +111,6 @@ module RugBuilder
 					var rug_form_array_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_array_#{hash} = new RugFormArray('#{hash}', {
-							frontendElement: 'select'
 						});
 						rug_form_array_#{hash}.ready();
 					});
@@ -146,12 +126,64 @@ module RugBuilder
 						<div class="template" style="display: none;">
 							<div class="row">
 								<div class="col-sm-10">
-									#{@template.select_tag("", @template.options_from_collection_for_select(collection, value_attr, label_attr), field_options)}
+									#{@template.select_tag("", @template.options_from_collection_for_select(collection, value_attr, label_attr), class: "form-control value")}
 								</div>
 								<div class="col-sm-2 text-right">
 									#{button_builder.button(icon_builder.render("close"), "#", style: "danger", class: "remove")}
 								</div>
 							</div>
+						</div>
+						<div class="frontend"></div>
+						<div class="controls text-right">
+							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
+						</div>
+						#{errors(name, errors: options[:errors])}
+					</div>
+				}
+
+				return result.html_safe
+			end
+
+			def hash_array_row(name, options = {}, &block)
+				result = ""
+				
+				# Unique hash
+				if options[:hash]
+					hash = options[:hash]
+				else
+					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
+				end
+
+				# ID
+				id = "array-#{hash}"
+
+				# Value
+				value = object.send(name)
+				value = value.to_json if value && !value.is_a?(String)
+
+				# Builders
+				button_builder = RugBuilder::ButtonBuilder.new(@template)
+				icon_builder = RugBuilder::IconBuilder
+
+				# Application JS code
+				result += @template.javascript_tag(%{
+					var rug_form_array_#{hash} = null;
+					$(document).ready(function() {
+						rug_form_array_#{hash} = new RugFormArray('#{hash}', {
+						});
+						rug_form_array_#{hash}.ready();
+					});
+				})
+
+				# Field
+				result += %{
+					<div id="#{id}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
+						#{label_for(name, label: options[:label])}
+						<div class="backend" style="display: none;">
+							#{@template.hidden_field_tag("#{object_name}[#{name.to_s}]", value)}
+						</div>
+						<div class="template" style="display: none;">
+							#{@template.capture(button_builder, icon_builder, &block).to_s}
 						</div>
 						<div class="frontend"></div>
 						<div class="controls text-right">

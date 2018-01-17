@@ -40,6 +40,13 @@ module RugRecord
 							if !value.nil? && !value.is_a?(::Array)
 								raise "Wrong value format, expecting Array or nil."
 							end
+
+							# Optional value filter
+							if options[:filter]
+								if !value.nil?
+									value = value.map{ |item| options[:filter].call(item) }.compact
+								end
+							end
 							
 							# Store
 							if value.blank?
@@ -98,7 +105,7 @@ module RugRecord
 					end
 
 					#
-					# Add new valued enum array column
+					# Add new parametrized enum array column
 					#
 					def parametrized_enum_array_column(new_column, spec, options = {})
 						
@@ -167,6 +174,28 @@ module RugRecord
 							end
 						end
 
+					end
+
+					#
+					# Add new hash array column
+					#
+					def hash_array_column(new_column, attributes, options = {})
+						raise "Wrong attributes format, expecting Array." if !attributes.is_a?(::Array)
+						attributes = attributes.map { |attribute| attribute.to_s }
+						
+						# Filter only hash with valid attributes
+						options[:filter] = lambda do |item| 
+							if item.is_a?(Hash) 
+								result = item.stringify_keys.select { |key, value| attributes.include?(key) }
+								result = nil if result.empty?
+							else
+								result = nil
+							end
+							result
+						end
+
+						# Define with standard array column
+						array_column(new_column, options)
 					end
 
 				end
