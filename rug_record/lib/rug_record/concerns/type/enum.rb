@@ -60,7 +60,9 @@ module RugRecord
 								options[:attributes].each do |attribute|
 									singular_attribute_name = attribute.to_s.singularize
 									plural_attribute_name = attribute.to_s.pluralize
-									item[singular_attribute_name.to_sym] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_#{plural_attribute_name}.#{item[:special_type] ? item[:special_type].to_s + "_" : ""}#{item[:value]}")
+									if item[singular_attribute_name.to_sym].nil?
+										item[singular_attribute_name.to_sym] = I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{new_column.to_s}_#{plural_attribute_name}.#{item[:special_type] ? item[:special_type].to_s + "_" : ""}#{item[:value]}")
+									end
 								end
 							end
 
