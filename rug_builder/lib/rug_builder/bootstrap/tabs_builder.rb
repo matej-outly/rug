@@ -94,7 +94,7 @@ module RugBuilder
 			@tabs = []
 			
 			# Options
-			@options = options
+			@options = options ? options : {}
 
 			# Call nested block to capture tabs and its options
 			unused = @template.capture(self, &block).to_s
