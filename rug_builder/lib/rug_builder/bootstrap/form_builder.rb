@@ -12,6 +12,7 @@
 require "action_view"
 
 # Parts
+require "rug_builder/bootstrap/form_builder/address"
 require "rug_builder/bootstrap/form_builder/button"
 require "rug_builder/bootstrap/form_builder/checkbox"
 require "rug_builder/bootstrap/form_builder/crop"

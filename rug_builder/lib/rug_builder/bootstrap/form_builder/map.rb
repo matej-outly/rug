@@ -121,52 +121,6 @@ module RugBuilder
 				return result.html_safe
 			end
 
-			def address_location_row(name, options = {})
-				result = ""
-				
-				# Unique hash
-				if options[:hash]
-					hash = options[:hash]
-				else
-					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{name.to_s}")
-				end
-
-				# Part values
-				value = object.send(name)
-				value_latitude = value && value[:latitude] ? value[:latitude] : nil
-				value_longitude = value && value[:longitude] ? value[:longitude] : nil
-				value_level = value && value[:level] ? value[:level] : nil
-				value_address = value && value[:address] ? value[:address] : nil
-				
-				# Address field options
-				field_options = {}
-				klass = []
-				klass << "form-control address"
-				klass << options[:class] if !options[:class].nil?
-				field_options[:class] = klass.join(" ")
-				
-				# Java Script
-				#js = ""
-				
-				# TODO sofar must be done in application JS
-
-				#result += @template.javascript_tag(js)
-				
-				# Form group
-				result += %{
-					<div id="address-location-#{hash}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
-						#{label_for(name, label: options[:label])}
-						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][level]", value_level, class: "level")}
-						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][latitude]", value_latitude, class: "latitude")}
-						#{@template.hidden_field_tag("#{object_name}[#{name.to_s}][longitude]", value_longitude, class: "longitude")}
-						#{@template.text_field_tag("#{object_name}[#{name.to_s}][address]", value_address, field_options)}
-						#{errors(name, errors: options[:errors])}
-					</div>
-				}
-
-				return result.html_safe
-			end
-
 		end
 #	end
 end
