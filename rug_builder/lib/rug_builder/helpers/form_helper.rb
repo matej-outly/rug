@@ -82,6 +82,26 @@ module RugBuilder
 							$("##{options[:html][:id]}").ajaxForm(#{js_options});
 						});
 					})
+
+				# Step form
+				elsif options[:step] == true || options[:step].is_a?(Hash)
+					
+					# Options
+					js_options = "{\n"
+					if options[:step].is_a?(Hash)
+						rb_options = options[:step]
+						js_options += "validateUrl: '#{rb_options[:validate_url]}',\n" if rb_options[:validate_url]
+						js_options += "checkStatus: #{rb_options[:check_status] == true ? "true" : "false"},\n" if !rb_options[:check_status].nil?
+						js_options += "log: #{rb_options[:log] == true ? "true" : "false"},\n" if !rb_options[:log].nil?
+					end
+					js_options += "}\n"
+
+					result += javascript_tag(%{
+						$(document).ready(function() {
+							$("##{options[:html][:id]}").stepForm(#{js_options});
+						});
+					})
+					
 				end
 
 				return result.html_safe
