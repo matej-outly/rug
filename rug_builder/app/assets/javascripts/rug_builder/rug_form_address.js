@@ -45,7 +45,6 @@ RugFormAddress.prototype = {
 				for (i = 0; i < results.length; i++) { 
 					if (results[i].partial_match != true) {
 						completeResults.push(results[i]);
-						console.log(results[i]);
 					}
 				}
 			}
