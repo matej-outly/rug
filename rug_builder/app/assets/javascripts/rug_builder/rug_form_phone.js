@@ -28,7 +28,7 @@ RugFormPhone.prototype = {
 		var _this = this;
 		var value = _this.$backend.val()
 		if (value) {
-			if (value.startsWith('+')) {
+			if (value.indexOf('+') === 0) { // value.startsWith('+') does not work in IE
 				valuePrefix = value.substr(0, 4);
 				valueSuffix = value.substr(4);
 			} else {
