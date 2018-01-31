@@ -28,17 +28,19 @@ module RugBuilder
 				icon = "file-video-o" if content_type.starts_with?("video/")
 				icon = "file-audio-o" if content_type.starts_with?("audio/")
 				icon = "file-pdf-o" if ["application/pdf"].include?(content_type)
-				icon = "file-word-o" if ["application/msword"].include?(content_type)
+				icon = "file-word-o" if ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].include?(content_type)
 				icon = "file-excel-o" if ["application/excel", "application/x-excel", "application/x-msexcel", "application/vnd.ms-excel"].include?(content_type)
 				icon = "file-powerpoint-o" if ["application/vnd.ms-powerpoint"].include?(content_type)
 				icon = "file-archive-o" if ["application/x-bzip", "application/x-bzip2", "application/x-gzip", "multipart/x-gzip", "application/x-compress", "application/x-compressed", "application/x-zip-compressed", "application/zip", "multipart/x-zip"].include?(content_type)
 
-				# File name
-				file_name = value.original_filename
+				# File name / truncate
+				if options[:file_name] != false
+					file_name = value.original_filename
+					file_name = file_name.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if !options[:truncate].nil? && options[:truncate] != false
+				else
+					file_name = ""
+				end
 
-				# Truncate?
-				file_name = file_name.to_s.truncate(options[:truncate].is_a?(Hash) ? options[:truncate] : {}) if !options[:truncate].nil? && options[:truncate] != false
-				
 				result = %{
 					<#{ options[:download] == true ? "a href=\"" + value.url + "\"" : "div" } class="file-preview">
 						#{ options[:picture] != false && content_type.starts_with?("image/") ? picture(value, options) : ""}
