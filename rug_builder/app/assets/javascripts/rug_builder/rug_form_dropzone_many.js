@@ -58,7 +58,7 @@ RugDropzoneMany.prototype = {
 			var responseId = parseInt(response);
 			if (!isNaN(responseId)) {
 				file.record_id = responseId;
-				if (_this.options.reloadObjects) {
+				if (_this.options.reloadObjects && _this.options.reloadObjects.length > 0) {
 					_this.dropzone.removeFile(file);
 					_this.options.reloadObjects.forEach(function(item) {
 						eval('var object = ' + item + ';');
@@ -68,7 +68,7 @@ RugDropzoneMany.prototype = {
 			} else { /* Error saving image */
 			}
 		});
-		if (!this.options.reloadObjects) {
+		if (!this.options.reloadObjects || this.options.reloadObjects.length == 0) {
 			this.dropzone.on('removedfile', function(file) {
 				if (file.record_id) {
 					var destroyUrl = _this.options.destroyUrl.replace(':id', file.record_id);
