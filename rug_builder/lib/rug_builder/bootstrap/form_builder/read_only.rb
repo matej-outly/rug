@@ -31,6 +31,9 @@ module RugBuilder
 				klass << options[:class] if !options[:class].nil?
 				klass << "form-control"
 				
+				# ID
+				id = options[:id] ? options[:id] : "#{object_name}_#{name.to_s}"
+
 				# Form group
 				result += "<div class=\"#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}\">"
 				result += label_for(name, label: options[:label])
@@ -38,11 +41,11 @@ module RugBuilder
 					options[:suffix] = options[:unit] if options[:unit]
 					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
 					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
-					result += "<input class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+					result += "<input id=\"#{id}\" class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
 					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
 					result += "</div>" if options[:prefix] || options[:suffix]
 				elsif format == :textarea
-					result += "<textarea class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
+					result += "<textarea id=\"#{id}\" class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 				end
 				result += errors(name, errors: options[:errors])
 				result += "</div>"
