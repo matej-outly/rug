@@ -72,21 +72,29 @@ module RugBuilder
 				klass = options[:class] ? options[:class] : ""
 				rendered_label = @options.nil? || @options[:labels] != false ? label : ""
 
-				# Modal
-				if !options[:modal].nil?
-					data = {} if data.nil?
-					data[:toggle] = "modal"
-					data[:target] = "#" + options[:modal].to_s.to_id
-					options[:data] = data
-				end
-
 				# Render
 				if @format == :btn
-					options[:style] = options[:style].nil? ? @options[:btn_style] : nil
-					options[:size] = options[:size].nil? ? @options[:btn_size] : nil
+
+					# Modal for button is handeled inside button builder
+					
+					# Special options for button
+					options[:style] = @options[:btn_style] if @options[:btn_style]
+					options[:size] = @options[:btn_size] if @options[:btn_size]
 					options[:tooltip] = @options[:labels] == false ? label : nil
+					
+					# Render button
 					result = @button_builder.button((@icon_builder.render(icon) + rendered_label).html_safe, path, options)
 				else
+					
+					# Modal for link
+					if !options[:modal].nil?
+						data = {} if data.nil?
+						data[:toggle] = "modal"
+						data[:target] = "#" + options[:modal].to_s.to_id
+						options[:data] = data
+					end
+
+					# Render link
 					result = %{
 						<li class="#{active == true ? "active" : ""} #{klass}">
 							#{@template.link_to((@icon_builder.render(icon) + rendered_label).html_safe, path, options)}

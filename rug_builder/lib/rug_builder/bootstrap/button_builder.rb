@@ -24,35 +24,18 @@ module RugBuilder
 			# Render button 
 			#
 			def button(label, url = nil, options = {})
+				
+				# Common attributes
 				options = options.nil? ? {} : options
 				style = options[:style] ? options[:style] : "default"
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""
-				method = options[:method] ? options[:method] : nil
 				active = (options[:active] == true)
 				disabled = (options[:disabled] == true)
-				data = options[:data] ? options[:data] : nil
 				id = options[:id] ? options[:id].to_s.to_id : nil
 				url = "#" if url.blank?
-				title = nil
-
-				# Tooltip
-				if !options[:tooltip].nil?
-					data = {} if data.nil?
-					data[:toggle] = "tooltip"
-					data[:placement] = "top"
-					data[:container] = "body"
-					title = options[:tooltip]
-				end
-
-				# Modal
-				if !options[:modal].nil?
-					data = {} if data.nil?
-					data[:toggle] = "modal"
-					data[:target] = "#" + options[:modal].to_s.to_id
-				end
-
+				
 				# Check format
 				if options[:format]
 					format = options[:format]
@@ -65,14 +48,55 @@ module RugBuilder
 
 				if !label.blank?
 					if format == :a
+						
+						# Attributes working for A format
+						title = nil
+						data = options[:data] ? options[:data] : nil
+						method = options[:method] ? options[:method] : nil
+
+						# Modal
+						if !options[:modal].nil?
+							data = {} if data.nil?
+							data[:toggle] = "modal"
+							data[:target] = "#" + options[:modal].to_s.to_id
+						end
+
+						# Tooltip
+						if !options[:tooltip].nil?
+							if !options[:modal].nil?
+
+								# Tooltip defined but modal also defined -> we must create fake element inside A element with tooltip definition
+								label = @template.content_tag(:span, label, class: "btn-inner", data: {
+									toggle: "tooltip",
+									placement: "top",
+									container: "body"
+								}, title: options[:tooltip])
+								klass += " btn-with-inner"
+
+							else 
+
+								# Tooltip defined and modal not defined -> everything is ok, we can place data attribute
+								data = {} if data.nil?
+								data[:toggle] = "tooltip"
+								data[:placement] = "top"
+								data[:container] = "body"
+								title = options[:tooltip]
+
+							end
+						end
+
+						# Render
 						return @template.link_to(label.html_safe, url, {
 							class: "btn btn-#{style.to_s} #{size ? "btn-" + size.to_s : ""} #{color ? "color-" + color.to_s : ""} #{active ? "active" : ""} #{disabled ? "disabled" : ""} #{klass.to_s}",
 							method: method,
 							data: data,
 							title: title,
 							id: id
-						}) 
+						})
+
 					elsif format == :button
+
+						# Render
 						result = ""
 						result += "<button 
 							type=\"button\"
@@ -84,6 +108,7 @@ module RugBuilder
 						result += label
 						result += "</button>"
 						return result.html_safe
+
 					end
 				else
 					return ""
