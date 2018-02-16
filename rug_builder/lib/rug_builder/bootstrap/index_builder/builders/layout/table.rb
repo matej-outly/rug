@@ -20,11 +20,14 @@ module RugBuilder
 					# Capture all columns and actions
 					unused = @template.capture(self, &@block) 
 
+					# Class
+					klass = @options[:class].to_s
+
 					# Render
 					result = %{
 						<table 
 							id="#{self.id}" 
-							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@sortable ? "sortable" : ""} #{@options[:class].to_s}"
+							class="table #{self.css_class}-body #{@movable ? "movable" : ""} #{@sortable ? "sortable" : ""} #{klass}"
 						>
 							#{render_table_head}
 							#{render_table_body}
@@ -107,12 +110,40 @@ module RugBuilder
 					return result.html_safe
 				end
 
-				def render_table_row(object, index)
+				def render_table_row(object, object_index)
 					result = ""
-					self.verticals.each do |vertical_row|
+					self.verticals.each_with_index do |vertical_row, vertical_index|
+						
+						# Stripes class
+						striped_class = @options[:striped] == true ? self.css_class + (object_index % 2 == 0 ? "-row-even" : "-row-odd") : ""
+						
+						# Multiline class
+						if self.verticals.length > 1
+							if vertical_index == 0
+								multiline_class = self.css_class + "-row-top"
+							elsif vertical_index == self.verticals.length - 1
+								multiline_class = self.css_class + "-row-bottom"
+							else
+								multiline_class = self.css_class + "-row-middle"
+							end
+						else
+							multiline_class = ""
+						end
+
+						# Class
+						if @options[:row_class]
+							if @options[:row_class].is_a?(Proc)
+								klass = @options[:row_class].call(object).to_s
+							else
+								klass = @options[:row_class].to_s
+							end
+						else
+							klass = ""
+						end
+							
 						result += %{<tr 
 							data-id="#{object.id}" 
-							class="#{@options[:striped] == true ? self.css_class + (index % 2 == 0 ? "-even" : "-odd") : ""} #{@destroyable ? "destroyable" : ""}"
+							class="#{striped_class} #{multiline_class} #{klass} #{@destroyable ? "destroyable" : ""}"
 							#{@destroyable ? self.destroyable_data(object) : ""}
 						>}
 						vertical_row.chunk { |vertical| vertical[:type] }.each do |type, chunk|
@@ -131,7 +162,10 @@ module RugBuilder
 									# Nowrap
 									nowrap_class = column_options[:nowrap] ? "text-nowrap" : ""
 
-									result += %{<td class="#{nowrap_class}" #{sortable_data}>}
+									# Strong
+									strong_class = column_options[:strong] ? "font-weight-bold" : ""
+
+									result += %{<td class="#{nowrap_class} #{strong_class}" #{sortable_data}>}
 									value = self.render_column_value(column, object).to_s
 									if self.shows[column]
 										result += self.render_link(self.shows[column].merge(
