@@ -36,7 +36,12 @@ module RugBuilder
 			end
 
 			if options[:path]
-				return "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options[:path], value)}\">#{label}</a>"
+				path = RugSupport::PathResolver.new(@template).resolve(options[:path], value)
+				if path
+					return "<a href=\"#{path}\">#{label}</a>"
+				else
+					return label
+				end
 			else
 				return label
 			end
@@ -95,7 +100,12 @@ module RugBuilder
 					end
 
 					if options[:path]
-						arr << "<a href=\"#{RugSupport::PathResolver.new(@template).resolve(options[:path], item)}\">#{label}</a>"
+						path = RugSupport::PathResolver.new(@template).resolve(options[:path], item)
+						if path
+							arr << "<a href=\"#{path}\">#{label}</a>"
+						else
+							arr << label
+						end
 					else
 						arr << label
 					end
