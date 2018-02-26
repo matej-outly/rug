@@ -31,6 +31,7 @@ module RugBuilder
 				size = options[:size] ? options[:size] : nil
 				color = options[:color] ? options[:color] : nil
 				klass = options[:class] ? options[:class] : ""
+				target = options[:target] ? options[:target] : nil
 				active = (options[:active] == true)
 				disabled = (options[:disabled] == true)
 				id = options[:id] ? options[:id].to_s.to_id : nil
@@ -91,6 +92,7 @@ module RugBuilder
 							method: method,
 							data: data,
 							title: title,
+							target: target,
 							id: id
 						})
 

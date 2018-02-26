@@ -73,7 +73,10 @@ module RugBuilder
 									# Nowrap
 									nowrap_class = column_options[:nowrap] ? "text-nowrap" : ""
 
-									result += %{<th class="#{nowrap_class} #{sortable_class}" #{sortable_data}>}
+									# Align
+									align_class = column_options[:align] ? "text-#{column_options[:align]}" : ""
+
+									result += %{<th class="#{nowrap_class} #{sortable_class} #{align_class}" #{sortable_data}>}
 									result += self.render_column_label(column, self.model_class)
 									result += %{</th>}
 									verticals_counts[row_index] += 1
@@ -165,7 +168,10 @@ module RugBuilder
 									# Strong
 									strong_class = column_options[:strong] ? "font-weight-bold" : ""
 
-									result += %{<td class="#{nowrap_class} #{strong_class}" #{sortable_data}>}
+									# Align
+									align_class = column_options[:align] ? "text-#{column_options[:align]}" : ""
+
+									result += %{<td class="#{nowrap_class} #{strong_class} #{align_class}" #{sortable_data}>}
 									value = self.render_column_value(column, object).to_s
 									if self.shows[column]
 										result += self.render_link(self.shows[column].merge(

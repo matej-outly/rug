@@ -50,8 +50,12 @@ module RugBuilder
 			# Render grid column
 			#
 			def col(width, options = {}, &block)
+
+				# Offset
+				offset_class = options[:offset] ? "col-md-offset-#{options[:offset]}" : ""
+
 				result = %{
-					<div class="col-md-#{width} #{options[:class]}">
+					<div class="col-md-#{width} #{offset_class} #{options[:class]}">
 						#{@template.capture(self, &block).to_s}
 					</div>
 				}
