@@ -28,9 +28,19 @@ module RugBuilder
 				end
 
 				def summary
+
+					# Get total and count
+					if @objects.respond_to?(:total_count)
+						total = @objects.total_count
+					else
+						total = @objects.length
+						#total = self.model_class.respond_to?(:count) ? self.model_class.count : nil
+					end
+					count = @objects.length
+
 					result = %{
 						<div class="summary">
-							#{I18n.t("general.shown").upcase_first}: #{@objects.length}#{(self.model_class.respond_to?(:count) ? ("/" + self.model_class.count.to_s) : "")}
+							#{I18n.t("general.shown").upcase_first}: #{count}#{count != total ? ("/" + total.to_s) : ""}
 						</div>
 					}
 					return result.html_safe
