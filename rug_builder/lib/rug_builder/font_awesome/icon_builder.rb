@@ -21,21 +21,22 @@ module RugBuilder
 					when :ok then "check"
 					when :cancel then "times"
 					when :index then "list"
-					when :show then "search"
+					when :show then "clipboard"
 					when :edit then "edit"
 					when :new then "plus"
 					when :destroy then "trash"
-					when :move then "arrows"
-					when :move_up then "long-arrow-up"
-					when :move_down then "long-arrow-down"
+					when :move then "arrows-alt"
+					when :move_up then "long-arrow-alt-up"
+					when :move_down then "long-arrow-alt-down"
 					when :duplicate then "clone"
 					when :profile then "user"
 					when :password then "lock"
 					when :recover then "life-ring"
-					when :sign_in then "sign-in"
-					when :sign_out then "sign-out"
+					when :sign_in then "sign-in-alt"
+					when :sign_out then "sign-out-alt"
 					when :sign_up then "user-plus"
 					when :close then "times"
+					when :reload then "sync-alt"
 					else nil
 				end
 			end
@@ -44,10 +45,11 @@ module RugBuilder
 			# Render icon 
 			#
 			def self.render(icon, options = {})
+				style = options[:style] ? options[:style] : :solid
 				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
 				if !icon.blank?
-					return "<i class=\"fa fa-#{icon} #{klass}\"></i> ".html_safe
+					return "<i class=\"fa#{style.to_s[0]} fa-#{icon} #{klass}\"></i> ".html_safe
 				else
 					return ""
 				end
