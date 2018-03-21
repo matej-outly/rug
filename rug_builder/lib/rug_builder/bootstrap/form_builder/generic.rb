@@ -18,7 +18,7 @@ module RugBuilder
 				# Special null cases
 				if options[:enable_null] == true
 					result = case type.to_sym
-						when :boolean then "radios_row(:#{name}, [OpenStruct.new(value: false, label: I18n.t(\"general.attribute.boolean.bool_no\")), OpenStruct.new(value: true, label: I18n.t(\"general.attribute.boolean.bool_yes\"))], :value, :label, enable_null: true)"
+						when :boolean then "radios_row(:#{name}, collection: [OpenStruct.new(value: false, label: I18n.t(\"general.attribute.boolean.bool_no\")), OpenStruct.new(value: true, label: I18n.t(\"general.attribute.boolean.bool_yes\"))], value_attr: :value, label_attr: :label, enable_null: true)"
 						else nil
 					end
 				end
@@ -36,7 +36,7 @@ module RugBuilder
 						when :file then "dropzone_row(:#{name}, #{options.inspect})"
 						when :picture then "dropzone_row(:#{name}, #{options.inspect})" 
 						when :enum then "picker_row(:#{name}, #{options.inspect})" 
-						when :belongs_to then "picker_row(:#{name}, #{!options[:collection].blank? ? options[:collection] : "nil"}, #{!options[:value_attr].blank? ? options[:value_attr] : ":value"}, #{!options[:label_attr].blank? ? options[:label_attr] : ":label"})"
+						when :belongs_to then "picker_row(:#{name}, collection: #{!options[:collection].blank? ? options[:collection] : "nil"}, value_attr: #{!options[:value_attr].blank? ? options[:value_attr] : ":value"}, label_attr: #{!options[:label_attr].blank? ? options[:label_attr] : ":label"})"
 						when :has_many then "token_input_row(:#{name}, #{!options[:url].blank? ? '"' + options[:url] + '"' : "nil"}#{!options[:as].blank? ? ", as: " + options[:as] : ""}#{!options[:value_attr].blank? ? ", value_attr: " + options[:value_attr] : ""}#{!options[:label_attr].blank? ? ", label_attr: " + options[:label_attr] : ""})"
 						when :address then "address_row(:#{name}, #{options.inspect})"
 						when :name then "name_row(:#{name}, #{options.inspect})"
@@ -51,6 +51,7 @@ module RugBuilder
 			end
 
 			def generic_row(name, type, options = {})
+				p self.class.row_from_type(object, name, type, options)
 				return eval("self." + self.class.row_from_type(object, name, type, options))
 			end
 
