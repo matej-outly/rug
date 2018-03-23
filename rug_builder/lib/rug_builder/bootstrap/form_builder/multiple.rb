@@ -57,13 +57,13 @@ module RugBuilder
 									#{@template.method("#{method.to_s}_tag").call("", "", class: "form-control value")}
 								</div>
 								<div class="col-sm-2 text-right">
-									#{button_builder.button(icon_builder.render("close"), "#", style: "danger", class: "remove")}
+									#{button_builder.button(icon_builder.render(:close), "#", style: "danger", class: "remove")}
 								</div>
 							</div>
 						</div>
 						<div class="frontend"></div>
 						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
+							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -129,13 +129,13 @@ module RugBuilder
 									#{@template.select_tag("", @template.options_from_collection_for_select(collection, value_attr, label_attr), class: "form-control value")}
 								</div>
 								<div class="col-sm-2 text-right">
-									#{button_builder.button(icon_builder.render("close"), "#", style: "danger", class: "remove")}
+									#{button_builder.button(icon_builder.render(:close), "#", style: "danger", class: "remove")}
 								</div>
 							</div>
 						</div>
 						<div class="frontend"></div>
 						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
+							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -187,7 +187,7 @@ module RugBuilder
 						</div>
 						<div class="frontend"></div>
 						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
+							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -254,13 +254,13 @@ module RugBuilder
 									#{@template.method("#{method.to_s}_tag").call("", "", value_field_options)}
 								</div>
 								<div class="col-sm-2 text-right">
-									#{button_builder.button(icon_builder.render("close"), "#", style: "danger", class: "remove")}
+									#{button_builder.button(icon_builder.render(:close), "#", style: "danger", class: "remove")}
 								</div>
 							</div>
 						</div>
 						<div class="frontend"></div>
 						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render("plus"), "#", style: "primary", class: "add")}
+							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>

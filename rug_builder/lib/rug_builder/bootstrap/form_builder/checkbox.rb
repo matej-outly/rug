@@ -38,7 +38,7 @@ module RugBuilder
 				# Field
 				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
 				result += %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
-				checked = value && value == true
+				checked = value && (value == true || value == "1")
 				result += @template.label_tag("", for: id) do
 					b_result = @template.hidden_field_tag("#{object_name}[#{name.to_s}]", "0", id: "")
 					b_result += @template.check_box_tag("#{object_name}[#{name.to_s}]", "1", checked, id: id) + "<span></span>#{label}".html_safe
@@ -100,20 +100,6 @@ module RugBuilder
 				end
 				result += errors(name, errors: options[:errors])
 				result += %{</div>}
-
-				# Field
-#				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
-#				result += label_for(name, label: options[:label])
-#				result += collection_check_boxes(name, collection, value_attr, label_attr) do |b|
-#					b_result = %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
-#					b_result += b.label(for: "#{id}-#{b.value}") do
-#						b.check_box(id: "#{id}-#{b.value}") + "<span></span>#{b.text}".html_safe
-#					end
-#					b_result += %{</div>}
-#					b_result.html_safe
-#				end
-#				result += errors(name, errors: options[:errors])
-#				result += %{</div>}
 
 				return result.html_safe
 			end
