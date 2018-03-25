@@ -57,7 +57,7 @@ class Integer
 			return nil # Only support range from -999999999 to 999999999
 		end
 
-		# Dixctionaries
+		# Dictionaries
 		dictionary_1 = [" ", "jedna", "dvě", "tři", "čtyři", "pět", "šest", "sedm", "osm", "devět"]
 		dictionary_2 = [" ", "deset", "dvacet", "třicet", "čtyřicet", "padesát", "šedesát", "sedmdesát", "osmdesát", "devadesát"]
 		dictionary_3 = [" ", "sto", "stě", "sta", "sta", "set", "set", "set", "set", "set"]
@@ -129,6 +129,7 @@ class Integer
 			["jedna tisíc", "jeden tisíc"],
 			["dvě tisíce", "dva tisíce"],
 			["jedna milión", "jeden milión"],
+			["dvě milióny", "dva milión"],
 			["milión tisíc", "milión"],
 			["milióny tisíc", "milióny"],
 			["miliónů tisíc", "miliónů"]

@@ -133,19 +133,21 @@ module RugBuilder
 			}
 
 			# Render JavaScript
-			result += @template.javascript_tag(%{
-				function tabs_#{@hash}_ready()
-				{
-					$('#tabs-#{@hash} a[data-toggle="tab"]').on('shown.bs.tab', function() {
-						localStorage.setItem('tabs_#{@hash}_active', $(this).attr('href'));
-					});
-					var activeTab = localStorage.getItem('tabs_#{@hash}_active');
-					if (activeTab) {
-						$('#tabs-#{@hash} a[href="' + activeTab + '"]').tab('show');
+			if @options[:javascript] != false
+				result += @template.javascript_tag(%{
+					function tabs_#{@hash}_ready()
+					{
+						$('#tabs-#{@hash} a[data-toggle="tab"]').on('shown.bs.tab', function() {
+							localStorage.setItem('tabs_#{@hash}_active', $(this).attr('href'));
+						});
+						var activeTab = localStorage.getItem('tabs_#{@hash}_active');
+						if (activeTab) {
+							$('#tabs-#{@hash} a[href="' + activeTab + '"]').tab('show');
+						}
 					}
-				}
-				$(document).ready(tabs_#{@hash}_ready);
-			})
+					$(document).ready(tabs_#{@hash}_ready);
+				})
+			end
 
 			return result.html_safe
 		end

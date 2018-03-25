@@ -47,6 +47,9 @@ module RugBuilder
 			end
 			column = options[:column]
 
+			# Label attr
+			label_attr = options[:label_attr] ? options[:label_attr] : :label
+
 			# Normalize value
 			value = value.to_s
 
@@ -58,7 +61,7 @@ module RugBuilder
 			end
 
 			if value_obj
-				return value_obj.label
+				return value_obj.send(label_attr)
 			else
 				return ""
 			end
