@@ -69,7 +69,11 @@ module RugBuilder
 				elsif value_min.blank?
 					return self.integer(value_max)
 				elsif value_max.blank?
-					return self.integer(value_min)
+					if !options[:infinity].nil?
+						return "#{self.integer(value_min)} - #{options[:infinity] == true ? "&infin;" : options[:infinity].to_s}"
+					else
+						return self.integer(value_min)
+					end
 				elsif value_min == value_max
 					return self.integer(value_min)
 				else
@@ -93,7 +97,11 @@ module RugBuilder
 				elsif value_min.blank?
 					return self.float(value_max)
 				elsif value_max.blank?
-					return self.float(value_min)
+					if !options[:infinity].nil?
+						return "#{self.float(value_min)} - #{options[:infinity] == true ? "&infin;" : options[:infinity].to_s}"
+					else
+						return self.float(value_min)
+					end
 				elsif value_min == value_max
 					return self.float(value_min)
 				else
@@ -117,7 +125,11 @@ module RugBuilder
 				elsif value_min.blank?
 					return self.double(value_max)
 				elsif value_max.blank?
-					return self.double(value_min)
+					if !options[:infinity].nil?
+						return "#{self.double(value_min)} - #{options[:infinity] == true ? "&infin;" : options[:infinity].to_s}"
+					else
+						return self.double(value_min)
+					end
 				elsif value_min == value_max
 					return self.double(value_min)
 				else
@@ -141,7 +153,11 @@ module RugBuilder
 				elsif value_min.blank?
 					return self.currency(value_max)
 				elsif value_max.blank?
-					return self.currency(value_min)
+					if !options[:infinity].nil?
+						return "#{self.currency(value_min)} - #{options[:infinity] == true ? "&infin;" : options[:infinity].to_s}"
+					else
+						return self.currency(value_min)
+					end
 				elsif value_min == value_max
 					return self.currency(value_min)
 				else
@@ -165,7 +181,11 @@ module RugBuilder
 				elsif value_min.blank?
 					return self.date(value_max)
 				elsif value_max.blank?
-					return self.date(value_min)
+					if !options[:infinity].nil?
+						return "#{self.date(value_min)} - #{options[:infinity] == true ? "&infin;" : options[:infinity].to_s}"
+					else
+						return self.date(value_min)
+					end
 				elsif value_min == value_max
 					return self.date(value_min)
 				else
