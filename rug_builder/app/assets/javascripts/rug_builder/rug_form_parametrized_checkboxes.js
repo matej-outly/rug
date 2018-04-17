@@ -23,6 +23,7 @@ RugFormParametrizedCheckboxes.prototype = {
 	updateFrontend: function()
 	{
 		var _this = this;
+		var parametersNumber = _this.options.parameters ? parseInt(_this.options.parameters) : 1;
 		var value = _this.$backendInput.val();
 		var values = null;
 		if (value) {
@@ -31,22 +32,29 @@ RugFormParametrizedCheckboxes.prototype = {
 
 		// Uncheck all checkboxes and erase parameter inputs
 		_this.$frontend.find('.item :checkbox').prop('checked', false);
-		_this.$frontend.find('.item input.parameter').val('');
+		_this.$frontend.find('.item .parameter').val('');
 
 		// Check only correct checkboxes and fill parameter
 		if (values instanceof Array) {
 			for (var idx = 0; idx < values.length; ++idx) {
 				if (values[idx] instanceof Array) {
+					
+					// Checkbox
 					var value = values[idx][0]
-					var parameter = values[idx][1]
-
-					// Find checkbox and parameter input
 					var $checkbox = _this.$frontend.find('.item :checkbox[value=' + value + ']');
-					var $parameterInput = $checkbox.closest('.item').find('input.parameter');
-
-					// Check and fill parameter value
 					$checkbox.prop('checked', true);
-					$parameterInput.val(parameter);
+
+					// Parameters
+					for (var jdx = 1; jdx <= parametersNumber; ++jdx) {
+						var $parameterInput = null;
+						if (jdx == 1) {
+							$parameterInput = $checkbox.closest('.item').find('.parameter');
+						} else {
+							$parameterInput = $checkbox.closest('.item').find('.parameter-' + jdx);
+						}
+						$parameterInput.val(values[idx][jdx]);
+					}
+					
 				}
 			}
 		}
@@ -54,31 +62,86 @@ RugFormParametrizedCheckboxes.prototype = {
 	updateBackend: function()
 	{
 		var _this = this;
+		var parametersNumber = _this.options.parameters ? parseInt(_this.options.parameters) : 1;
 		var values = [];
 		_this.$frontend.find('.item :checkbox').each(function() {
 			var $this = $(this);
 			if ($this.is(':checked')) {
-				var $parameterInput = $this.closest('.item').find('input.parameter');
-				values.push([$this.val(), $parameterInput.val()]);
+				var value = [$this.val()];
+				for (var jdx = 1; jdx <= parametersNumber; ++jdx) {
+					var $parameterInput = null;
+					if (jdx == 1) {
+						$parameterInput = $this.closest('.item').find('.parameter');
+					} else {
+						$parameterInput = $this.closest('.item').find('.parameter-' + jdx);
+					}
+					value.push($parameterInput.val());
+				}
+				values.push(value);
 			}
 		});
 		_this.$backendInput.val(JSON.stringify(values));
 	},
-	showOrHideParameter: function($checkbox)
+	processParameter: function($checkbox)
 	{
-		var $parameterWrapper = $checkbox.closest('.item').find('.parameter-wrapper');
-		if ($checkbox.is(':checked')) {
-			$parameterWrapper.show();
-		} else {
-			$parameterWrapper.hide();
+		var _this = this;
+		var parametersNumber = _this.options.parameters ? parseInt(_this.options.parameters) : 1;
+		if (_this.options.processParameter.hide) {
+			var $parameterWrapper = $checkbox.closest('.item').find('.parameter-wrapper');
+			if ($checkbox.is(':checked')) {
+				$parameterWrapper.show();
+			} else {
+				$parameterWrapper.hide();
+			}
+		}
+		for (var jdx = 1; jdx <= parametersNumber; ++jdx) {
+			var $parameterInput = null;
+			if (jdx == 1) {
+				$parameterInput = $checkbox.closest('.item').find('.parameter');
+			} else {
+				$parameterInput = $checkbox.closest('.item').find('.parameter-' + jdx);
+			}
+			if (_this.options.processParameter.disable) {
+				if ($checkbox.is(':checked')) {
+					$parameterInput.prop('disabled', false);
+				} else {
+					$parameterInput.prop('disabled', true);
+				}
+			}
+			if (_this.options.processParameter.clear) {
+				if (!$checkbox.is(':checked')) {
+					$parameterInput.val('');
+				}
+			}
 		}
 	},
-	showOrHideParameters: function()
+	processParameters: function()
 	{
 		var _this = this;
 		_this.$frontend.find('.item :checkbox').each(function() {
-			_this.showOrHideParameter($(this));
+			_this.processParameter($(this));
 		});
+	},
+	computeTotal: function()
+	{
+		var _this = this;
+		var total = 0;
+		_this.$frontend.find('.item :checkbox').each(function() {
+			$checkbox = $(this);
+			if ($checkbox.is(':checked')) {
+				var $parameter = $checkbox.closest('.item').find('.parameter');
+				var value = parseInt($parameter.val());
+				if (value) {
+					total += value;
+				}
+			}
+		});
+		var $total = _this.$frontend.find('.total input');
+		if (total > 0) {
+			$total.val(total);
+		} else {
+			$total.val('');
+		}
 	},
 	ready: function()
 	{
@@ -89,17 +152,26 @@ RugFormParametrizedCheckboxes.prototype = {
 		_this.$frontend = _this.$parametrizedCheckboxes.find('.frontend');
 		
 		// Checkboxes and inputs
-		_this.$frontend.find('.item input').on('change', function(e) {
+		_this.$frontend.find('.item input, .item select').on('change', function(e) {
 			_this.updateBackend();
+			if (_this.options.computeTotal) {
+				_this.computeTotal();
+			}
 		});
 
-		// Showing / hiding
+		// Process param
 		_this.$frontend.find('.item :checkbox').on('change', function(e) {
-			_this.showOrHideParameter($(this));
+			_this.processParameter($(this));
+			if (_this.options.computeTotal) {
+				_this.computeTotal();
+			}
 		});
 		
 		// Initial value
 		_this.updateFrontend();
-		_this.showOrHideParameters();
+		_this.processParameters();
+		if (_this.options.computeTotal) {
+			_this.computeTotal();
+		}
 	}
 }

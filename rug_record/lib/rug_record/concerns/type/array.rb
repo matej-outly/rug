@@ -116,6 +116,7 @@ module RugRecord
 						# Objs method
 						define_method((new_column.to_s + "_objs").to_sym) do
 							column = new_column
+							parameters = options[:parameters] ? options[:parameters] : 1 # Number of parameters
 							values = self.send(column)
 							if values
 								result = []
@@ -123,7 +124,13 @@ module RugRecord
 									obj = self.class.enums[column][value.first.to_s]
 									if obj
 										duplicate = obj.dup
-										duplicate.parameter = value.last
+										(1..parameters).each do |parameter_index|
+											if parameter_index == 1
+												duplicate.parameter = value[parameter_index]
+											else
+												duplicate.send("parameter_#{parameter_index}=", value[parameter_index])
+											end
+										end
 										result << duplicate
 									end
 								end
@@ -140,6 +147,7 @@ module RugRecord
 						# Set method
 						define_method((new_column.to_s + "=").to_sym) do |value|
 							column = new_column
+							parameters = options[:parameters] ? options[:parameters] : 1 # Number of parameters
 							
 							# Convert string to Array 
 							if value.is_a?(::String)
@@ -164,8 +172,8 @@ module RugRecord
 								new_value = []
 								value.each do |item|
 									item = [item.to_s] if !item.is_a?(::Array)
-									item = item[0..1] # Cut to max 2 items
-									item << nil while item.length < 2 # Ensure length == 2
+									item = item[0..parameters] # Cut to max (number of parameters + 1) items
+									item << nil while item.length < (parameters + 1) # Ensure length == number of parameters + 1
 									new_value << item
 								end
 								value = new_value

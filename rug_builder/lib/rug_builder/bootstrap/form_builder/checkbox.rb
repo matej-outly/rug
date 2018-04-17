@@ -36,7 +36,7 @@ module RugBuilder
 				value = object.send(name)
 
 				# Field
-				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
+				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{options[:group_class] ? options[:group_class] : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
 				result += %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
 				checked = value && (value == true || value == "1")
 				result += @template.label_tag("", for: id) do
@@ -45,6 +45,7 @@ module RugBuilder
 					b_result
 				end
 				result += %{</div>}
+				result += help_for(name, help: options[:help])
 				result += errors(name, errors: options[:errors])
 				result += %{</div>}
 
@@ -85,7 +86,7 @@ module RugBuilder
 				end
 
 				# Field
-				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
+				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{options[:group_class] ? options[:group_class] : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
 				result += label_for(name, label: options[:label])
 				collection.each do |item|
 					b_value = item.send(value_attr)
@@ -136,6 +137,9 @@ module RugBuilder
 					var rug_form_parametrized_checkboxes_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_parametrized_checkboxes_#{hash} = new RugFormParametrizedCheckboxes('#{hash}', {
+							processParameter: {
+								hide: true
+							}
 						});
 						rug_form_parametrized_checkboxes_#{hash}.ready();
 					});
@@ -145,7 +149,7 @@ module RugBuilder
 				options[:parameter][:suffix] = options[:parameter][:unit] if options[:parameter] && options[:parameter][:unit]
 
 				# Field
-				result += %{<div id="#{id}" class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
+				result += %{<div id="#{id}" class="#{options[:form_group] != false ? "form-group" : ""} #{options[:group_class] ? options[:group_class] : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
 				result += label_for(name, label: options[:label])
 				result += %{<div class="backend" style="display: none;">}
 				result += @template.hidden_field_tag("#{object_name}[#{name.to_s}]", value)

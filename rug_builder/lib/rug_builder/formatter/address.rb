@@ -20,6 +20,7 @@ module RugBuilder
 			if !value.nil?
 				value_street = value[:street]
 				value_number = value[:number]
+				value_number_kind = value[:number_kind]
 				value_zipcode = value[:zipcode]
 				value_city = value[:city]
 				if value_street.blank? && value_number.blank? && value_zipcode.blank? && value_city.blank?
@@ -34,6 +35,9 @@ module RugBuilder
 					
 					# Number
 					if !value_number.blank? && !result.blank?
+						if !value_number_kind.blank? && value_number_kind == "evidence_number"
+							result += " č.e. "
+						end
 						result += " "
 						result += value_number
 					end

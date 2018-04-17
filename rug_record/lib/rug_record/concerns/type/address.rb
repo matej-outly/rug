@@ -43,18 +43,20 @@ module RugRecord
 
 							# Filter
 							if !value.blank?
-								value = value.symbolize_keys.select { |key, value| [:street, :number, :zipcode, :city].include?(key) } if !value.nil?
+								value = value.symbolize_keys.select { |key, value| [:street, :number, :number_kind, :zipcode, :city].include?(key) } if !value.nil?
 							end
 							
 							# Store
 							if value.blank?
 								self.send("#{column.to_s}_street=", nil)
 								self.send("#{column.to_s}_number=", nil)
+								self.send("#{column.to_s}_number_kind=", nil)
 								self.send("#{column.to_s}_zipcode=", nil)
 								self.send("#{column.to_s}_city=", nil)
 							else
 								self.send("#{column.to_s}_street=", value[:street])
 								self.send("#{column.to_s}_number=", value[:number])
+								self.send("#{column.to_s}_number_kind=", value[:number_kind])
 								self.send("#{column.to_s}_zipcode=", value[:zipcode])
 								self.send("#{column.to_s}_city=", value[:city])
 							end
@@ -65,12 +67,19 @@ module RugRecord
 							column = new_column
 							value_street = self.send("#{column.to_s}_street")
 							value_number = self.send("#{column.to_s}_number")
+							value_number_kind = self.send("#{column.to_s}_number_kind")
 							value_zipcode = self.send("#{column.to_s}_zipcode")
 							value_city = self.send("#{column.to_s}_city")
 							if value_street.blank? && value_number.blank? && value_zipcode.blank? && value_city.blank?
 								return nil
 							else
-								return { street: value_street, number: value_number, zipcode: value_zipcode, city: value_city }
+								return { 
+									street: value_street, 
+									number: value_number, 
+									number_kind: value_number_kind, 
+									zipcode: value_zipcode, 
+									city: value_city 
+								}
 							end
 						end
 

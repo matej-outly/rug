@@ -55,7 +55,10 @@ module RugBuilder
 				
 				# Input group
 				result += "</div>" if options[:prefix] || options[:suffix]
-			
+				
+				# Help
+				result += help_for(name, help: options[:help])
+
 				# Errors
 				result += errors(name, errors: options[:errors])
 				

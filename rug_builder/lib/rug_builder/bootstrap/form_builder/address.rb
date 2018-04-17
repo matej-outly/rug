@@ -25,6 +25,7 @@ module RugBuilder
 				value = object.send(name)
 				value_street = value && value[:street] ? value[:street] : nil if options[:street] != false
 				value_number = value && value[:number] ? value[:number] : nil if options[:number] != false
+				value_number_kind = value && value[:number_kind] ? value[:number_kind] : nil if options[:number_kind] != false
 				value_city = value && value[:city] ? value[:city] : nil if options[:city] != false
 				value_zipcode = value && value[:zipcode] ? value[:zipcode] : nil if options[:zipcode] != false
 				
@@ -39,9 +40,21 @@ module RugBuilder
 					}
 				end
 
+				if options[:number_kind] != false
+					number_kinds = [
+						OpenStruct.new(value: "descriptive_number", label: "č.p."),
+						OpenStruct.new(value: "evidence_number", label: "č.e.")
+					]
+					result_number_kind = %{
+						<div class="col-sm-2 m-b-sm">
+							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), class: "form-control")}
+						</div>
+					}
+				end
+
 				if options[:number] != false
 					result_number = %{
-						<div class="col-sm-4 m-b-sm">
+						<div class="col-sm-#{options[:number_kind] != false ? 2 : 4} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_number.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: "form-control number", placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil))}
@@ -77,6 +90,7 @@ module RugBuilder
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{options[:street] != false ? result_street : ""}
+							#{options[:number_kind] != false ? result_number_kind : ""}
 							#{options[:number] != false ? result_number : ""}
 						</div>
 						<div class="row">
@@ -122,6 +136,7 @@ module RugBuilder
 				value = object.send(name)
 				value_street = value && value[:street] ? value[:street] : nil if options[:street] != false
 				value_number = value && value[:number] ? value[:number] : nil if options[:number] != false
+				value_number_kind = value && value[:number_kind] ? value[:number_kind] : nil if options[:number_kind] != false
 				value_city = value && value[:city] ? value[:city] : nil if options[:city] != false
 				value_zipcode = value && value[:zipcode] ? value[:zipcode] : nil if options[:zipcode] != false
 
@@ -136,9 +151,21 @@ module RugBuilder
 					}
 				end
 
+				if options[:number_kind] != false
+					number_kinds = [
+						OpenStruct.new(value: "descriptive_number", label: "č.p."),
+						OpenStruct.new(value: "evidence_number", label: "č.e.")
+					]
+					result_number_kind = %{
+						<div class="col-sm-2 m-b-sm">
+							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), class: "form-control")}
+						</div>
+					}
+				end
+
 				if options[:number] != false
 					result_number = %{
-						<div class="col-sm-4 m-b-sm">
+						<div class="col-sm-#{options[:number_kind] != false ? 2 : 4} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_number.upcase_first + "</div>" : ""}
 								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: "form-control number", placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil))}
@@ -174,6 +201,7 @@ module RugBuilder
 						#{label_for(name, label: options[:label])}
 						<div class="row">
 							#{options[:street] != false ? result_street : ""}
+							#{options[:number_kind] != false ? result_number_kind : ""}
 							#{options[:number] != false ? result_number : ""}
 						</div>
 						<div class="row">
