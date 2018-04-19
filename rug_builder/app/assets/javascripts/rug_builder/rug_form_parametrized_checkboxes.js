@@ -27,7 +27,11 @@ RugFormParametrizedCheckboxes.prototype = {
 		var value = _this.$backendInput.val();
 		var values = null;
 		if (value) {
-			values = JSON.parse(_this.$backendInput.val());
+			try {
+				values = JSON.parse(_this.$backendInput.val());
+			} catch(e) {
+				console.log('Invalid JSON data.');
+			}
 		}
 
 		// Uncheck all checkboxes and erase parameter inputs

@@ -26,7 +26,11 @@ RugFormArray.prototype = {
 		var value = _this.$backendInput.val();
 		var values = null;
 		if (value) {
-			values = JSON.parse(_this.$backendInput.val());
+			try {
+				values = JSON.parse(_this.$backendInput.val());
+			} catch(e) {
+				console.log('Invalid JSON data.');
+			}
 		}
 		if (values instanceof Array) {
 			for (var idx = 0; idx < values.length; ++idx) {
