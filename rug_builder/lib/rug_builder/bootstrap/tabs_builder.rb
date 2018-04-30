@@ -22,6 +22,8 @@ module RugBuilder
 				name: name.to_sym,
 				heading: heading.to_s,
 				active: options[:active],
+				data: options[:data],
+				class: options[:class],
 				block: block,
 				index: @tabs.length
 			}
@@ -52,6 +54,7 @@ module RugBuilder
 				# Attributes
 				name = tab[:name] ? tab[:name].to_s : ""
 				heading = tab[:heading] ? tab[:heading].to_s : ""
+				klass = tab[:class] ? tab[:class].to_s : ""
 				if tab[:path]
 					path = tab[:path].to_s
 					data_toggle = ""
@@ -60,9 +63,20 @@ module RugBuilder
 					data_toggle = "data-toggle=\"tab\""
 				end
 
+				# Data
+				if tab[:data]
+					data = []
+					tab[:data].each do |key, value|
+						data << "data-#{key}=\"#{value}\""
+					end
+					data = data.join(" ")
+				else
+					data = ""
+				end
+
 				result += %{
-					<li role="presentation" class="#{active_tab_index == index ? "active" : ""}">
-						<a href="#{path}" aria-controls="#{name.to_s.to_id}" role="tab" #{data_toggle}>#{heading}</a>
+					<li role="presentation" class="#{active_tab_index == index ? "active" : ""} #{klass}">
+						<a href="#{path}" aria-controls="#{name.to_s.to_id}" role="tab" #{data_toggle} #{data}>#{heading}</a>
 					</li>
 				}
 			end

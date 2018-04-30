@@ -70,7 +70,8 @@ module RugBuilder
 			# Render back link button
 			#
 			def back_link_button_row(options = {})
-				return self.link_button_row(I18n.t("general.back").upcase_first, :back)
+				label = options[:label] ? options[:label] : I18n.t("general.back").upcase_first
+				return self.link_button_row(label, :back, options)
 			end
 
 		end
