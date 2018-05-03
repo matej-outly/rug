@@ -23,12 +23,19 @@ module RugBuilder
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{section_name.to_s}")
 				end
 
+				split = condition_name.to_s.split("[")
+				if split.length > 1
+					condition_name = "#{object.class.model_name.param_key}[#{split[0]}][#{split[1].rtrim("]")}]"
+				else
+					condition_name = "#{object.class.model_name.param_key}[#{condition_name.to_s}]"
+				end
+
 				# Application JS
 				result += @template.javascript_tag(%{
 					var rug_form_conditional_section_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_conditional_section_#{hash} = new RugFormConditionalSection('#{hash}', {
-							conditionName: '#{object.class.model_name.param_key}[#{condition_name.to_s}]',
+							conditionName: '#{condition_name}',
 							conditionRule: "#{condition_rule.to_s}", // Quotation mark (") used instead of apostrophe ('). Apostrophe should be used inside condition rule to interpret string value
 							formSelector: '##{self.options[:html][:id]}',
 						});
@@ -52,12 +59,19 @@ module RugBuilder
 					hash = Digest::SHA1.hexdigest("#{object.class.to_s}_#{object.id.to_s}_#{label_name.to_s}")
 				end
 
+				split = condition_name.to_s.split("[")
+				if split.length > 1
+					condition_name = "#{object.class.model_name.param_key}[#{split[0]}][#{split[1].rtrim("]")}]"
+				else
+					condition_name = "#{object.class.model_name.param_key}[#{condition_name.to_s}]"
+				end
+
 				# Application JS
 				result += @template.javascript_tag(%{
 					var rug_form_conditional_label_#{hash} = null;
 					$(document).ready(function() {
 						rug_form_conditional_label_#{hash} = new RugFormConditionalLabel('#{hash}', {
-							conditionName: '#{object.class.model_name.param_key}[#{condition_name.to_s}]',
+							conditionName: '#{condition_name}',
 							conditionRule: "#{condition_rule.to_s}", // Quotation mark (") used instead of apostrophe ('). Apostrophe should be used inside condition rule to interpret string value
 							conditionEffect: {
 								#{options[:show] ? "show: '" + options[:show] + "'," : ""}
