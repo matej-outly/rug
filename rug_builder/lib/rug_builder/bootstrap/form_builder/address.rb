@@ -34,7 +34,11 @@ module RugBuilder
 						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_street.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, class: "form-control street", placeholder: (options[:placeholder] == true ? label_street.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, 
+									class: "form-control street", 
+									placeholder: (options[:placeholder] == true ? label_street.upcase_first : nil),
+									data: options[:data_street]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -47,7 +51,10 @@ module RugBuilder
 					]
 					result_number_kind = %{
 						<div class="col-sm-2 m-b-sm">
-							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), class: "form-control")}
+							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), 
+								class: "form-control",
+								data: options[:data_number_kind]
+							)}
 						</div>
 					}
 				end
@@ -57,7 +64,11 @@ module RugBuilder
 						<div class="col-sm-#{options[:number_kind] != false ? 2 : 4} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_number.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: "form-control number", placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, 
+									class: "form-control number", 
+									placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil),
+									data: options[:data_number]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -68,7 +79,11 @@ module RugBuilder
 						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_city.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, class: "form-control city", placeholder: (options[:placeholder] == true ? label_city.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, 
+									class: "form-control city", 
+									placeholder: (options[:placeholder] == true ? label_city.upcase_first : nil),
+									data: options[:data_city]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -79,7 +94,11 @@ module RugBuilder
 						<div class="col-sm-4 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_zipcode.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][zipcode]", value_zipcode, class: "form-control zipcode", placeholder: (options[:placeholder] == true ? label_zipcode.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][zipcode]", value_zipcode, 
+									class: "form-control zipcode", 
+									placeholder: (options[:placeholder] == true ? label_zipcode.upcase_first : nil),
+									data: options[:data_zipcode]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -145,7 +164,11 @@ module RugBuilder
 						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_street.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, class: "form-control street", placeholder: (options[:placeholder] == true ? label_street.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][street]", value_street, 
+									class: "form-control street", 
+									placeholder: (options[:placeholder] == true ? label_street.upcase_first : nil),
+									data: options[:data_street]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -158,7 +181,10 @@ module RugBuilder
 					]
 					result_number_kind = %{
 						<div class="col-sm-2 m-b-sm">
-							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), class: "form-control")}
+							#{@template.select_tag("#{object_name}[#{name.to_s}][number_kind]", @template.options_from_collection_for_select(number_kinds, :value, :label, value_number_kind), 
+								class: "form-control",
+								data: options[:data_number_kind]
+							)}
 						</div>
 					}
 				end
@@ -168,7 +194,11 @@ module RugBuilder
 						<div class="col-sm-#{options[:number_kind] != false ? 2 : 4} m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_number.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, class: "form-control number", placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][number]", value_number, 
+									class: "form-control number", 
+									placeholder: (options[:placeholder] == true ? label_number.upcase_first : nil),
+									data: options[:data_number]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -179,7 +209,11 @@ module RugBuilder
 						<div class="col-sm-8 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_city.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, class: "form-control city", placeholder: (options[:placeholder] == true ? label_city.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][city]", value_city, 
+									class: "form-control city", 
+									placeholder: (options[:placeholder] == true ? label_city.upcase_first : nil),
+									data: options[:data_zity]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
@@ -190,7 +224,11 @@ module RugBuilder
 						<div class="col-sm-4 m-b-sm">
 							#{options[:addon] != false ? "<div class=\"input-group\">" : ""}
 								#{options[:addon] != false ? "<div class=\"input-group-addon\">" + label_zipcode.upcase_first + "</div>" : ""}
-								#{@template.text_field_tag("#{object_name}[#{name.to_s}][zipcode]", value_zipcode, class: "form-control zipcode", placeholder: (options[:placeholder] == true ? label_zipcode.upcase_first : nil))}
+								#{@template.text_field_tag("#{object_name}[#{name.to_s}][zipcode]", value_zipcode, 
+									class: "form-control zipcode", 
+									placeholder: (options[:placeholder] == true ? label_zipcode.upcase_first : nil),
+									data: options[:data_zipcode]
+								)}
 							#{options[:addon] != false ? "</div>" : ""}
 						</div>
 					}
