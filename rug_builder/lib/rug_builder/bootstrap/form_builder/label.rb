@@ -19,12 +19,12 @@ module RugBuilder
 			def label_for(name, options = {})
 				if !options[:label].nil?
 					if options[:label] != false
-						return label(name, options[:label], class: "control-label")
+						return label(name, options[:label], class: "control-label", data: options[:data])
 					else
 						return ""
 					end
 				else
-					return label(name, class: "control-label")
+					return label(name, class: "control-label", data: options[:data])
 				end
 			end
 
