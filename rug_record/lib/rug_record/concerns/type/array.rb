@@ -30,7 +30,7 @@ module RugRecord
 							# Convert string to Array 
 							if value.is_a?(::String)
 								if !value.blank?
-									value = JSON.parse(value)
+									value = JSON.parse(value) rescue nil
 								else
 									value = nil
 								end
@@ -152,7 +152,7 @@ module RugRecord
 							# Convert string to Array 
 							if value.is_a?(::String)
 								if !value.blank?
-									value = JSON.parse(value)
+									value = JSON.parse(value) rescue nil
 								else
 									value = nil
 								end
@@ -174,6 +174,7 @@ module RugRecord
 									item = [item.to_s] if !item.is_a?(::Array)
 									item = item[0..parameters] # Cut to max (number of parameters + 1) items
 									item << nil while item.length < (parameters + 1) # Ensure length == number of parameters + 1
+									item = item.map{ |value| value.nil? ? "" : value }
 									new_value << item
 								end
 								value = new_value
