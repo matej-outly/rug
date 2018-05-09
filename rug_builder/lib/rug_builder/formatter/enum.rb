@@ -107,10 +107,22 @@ module RugBuilder
 				end
 				return "" if value_obj.blank?
 				value = value_obj.value
-				label = value_obj.label ? value_obj.label : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.#{value}", default: "")
-				color = value_obj.color ? value_obj.color : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
-				icon = value_obj.icon ? value_obj.icon : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
-			
+				if options[:label] && options[:label].is_a?(Proc)
+					label = options[:label].call(object)
+				else
+					label = value_obj.label ? value_obj.label : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_values.#{value}", default: "")
+				end
+				if options[:color] && options[:color].is_a?(Proc)
+					color = options[:color].call(object)
+				else
+					color = value_obj.color ? value_obj.color : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_colors.#{value}", default: "")
+				end
+				if options[:icon] && options[:icon].is_a?(Proc)
+					icon = options[:icon].call(object)
+				else
+					icon = value_obj.icon ? value_obj.icon : I18n.t("activerecord.attributes.#{object.class.model_name.i18n_key}.#{column.to_s}_icons.#{value}", default: "")
+				end
+				
 			else # Bool or different data type => act as bool
 				value = object.send(column.to_sym)
 				if value == true # Special value TRUE
