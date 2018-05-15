@@ -107,4 +107,11 @@ class Array
 		return array_1
 	end
 
+	#
+	# Convert all values in array into integer
+	#
+	def integerize
+		return self.map{ |v| v.to_i } 
+	end
+
 end
