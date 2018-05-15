@@ -47,6 +47,7 @@ module RugBuilder
 				elsif format == :textarea
 					result += "<textarea id=\"#{id}\" class=\"#{klass.join(" ")}\" disabled=\"disabled\">" + content + "</textarea>"
 				end
+				result += help_for(name, help: options[:help])
 				result += errors(name, errors: options[:errors])
 				result += "</div>"
 
