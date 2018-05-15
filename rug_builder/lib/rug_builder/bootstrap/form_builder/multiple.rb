@@ -27,12 +27,15 @@ module RugBuilder
 				id = "array-#{hash}"
 
 				# Value
-				value = object.send(name)
+				value = options[:value] ? options[:value] : object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
 				icon_builder = RugBuilder::IconBuilder
+
+				# Label add
+				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
 
 				# Application JS code
 				result += @template.javascript_tag(%{
@@ -62,8 +65,8 @@ module RugBuilder
 							</div>
 						</div>
 						<div class="frontend"></div>
-						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
+						<div class="panel panel-concept controls">
+							#{button_builder.button(icon_builder.render(:new) + label_add, "#", style: "default", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -86,12 +89,15 @@ module RugBuilder
 				id = "array-#{hash}"
 				
 				# Value
-				value = object.send(name)
+				value = options[:value] ? options[:value] : object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
 				
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
 				icon_builder = RugBuilder::IconBuilder
+
+				# Label add
+				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
 
 				# Attributes
 				label_attr = options[:label_attr] || :label
@@ -134,8 +140,8 @@ module RugBuilder
 							</div>
 						</div>
 						<div class="frontend"></div>
-						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
+						<div class="panel panel-concept controls">
+							#{button_builder.button(icon_builder.render(:new) + label_add, "#", style: "default", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -158,12 +164,15 @@ module RugBuilder
 				id = "array-#{hash}"
 
 				# Value
-				value = object.send(name)
+				value = options[:value] ? options[:value] : object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
 				icon_builder = RugBuilder::IconBuilder
+
+				# Label add
+				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
 
 				# Application JS code
 				result += @template.javascript_tag(%{
@@ -186,8 +195,8 @@ module RugBuilder
 							#{@template.capture(button_builder, icon_builder, &block).to_s}
 						</div>
 						<div class="frontend"></div>
-						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
+						<div class="panel panel-concept controls">
+							#{button_builder.button(icon_builder.render(:new) + label_add, "#", style: "default", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
@@ -221,12 +230,15 @@ module RugBuilder
 				value_field_options[:class] = klass.join(" ") + " value"
 
 				# Value
-				value = object.send(name)
+				value = options[:value] ? options[:value] : object.send(name)
 				value = value.to_json if value && !value.is_a?(String)
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
 				icon_builder = RugBuilder::IconBuilder
+
+				# Label add
+				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
 
 				# Application JS code
 				result += @template.javascript_tag(%{
@@ -259,8 +271,8 @@ module RugBuilder
 							</div>
 						</div>
 						<div class="frontend"></div>
-						<div class="controls text-right">
-							#{button_builder.button(icon_builder.render(:new), "#", style: "primary", class: "add")}
+						<div class="panel panel-concept controls">
+							#{button_builder.button(icon_builder.render(:new) + label_add, "#", style: "default", class: "add")}
 						</div>
 						#{errors(name, errors: options[:errors])}
 					</div>
