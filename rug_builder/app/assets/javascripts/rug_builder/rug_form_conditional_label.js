@@ -65,6 +65,14 @@ RugFormConditionalLabel.prototype = {
 				$(this).attr('placeholder', text);
 			}
 		});
+
+		// Select options
+		self.$form.find('option').each(function() {
+			var text = $(this).data('conditional' + self.toCamelCase(label));
+			if (text) {
+				$(this).text(text);
+			}
+		});		
 	},
 
 	hideLabel: function(label) {
