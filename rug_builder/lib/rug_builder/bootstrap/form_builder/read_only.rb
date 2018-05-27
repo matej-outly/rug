@@ -41,7 +41,7 @@ module RugBuilder
 					options[:suffix] = options[:unit] if options[:unit]
 					result += "<div class=\"input-group\">" if options[:prefix] || options[:suffix]
 					result += "<span class=\"input-group-addon\">#{options[:prefix]}</span>" if options[:prefix]
-					result += "<input id=\"#{id}\" class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\"/>"
+					result += "<input id=\"#{id}\" class=\"#{klass.join(" ")}\" type=\"text\" disabled=\"disabled\" value=\"#{content}\" #{options[:placeholder] ? "placeholder=\"" + options[:placeholder].to_s + "\"" : ""}/>"
 					result += "<span class=\"input-group-addon\">#{options[:suffix]}</span>" if options[:suffix]
 					result += "</div>" if options[:prefix] || options[:suffix]
 				elsif format == :textarea
