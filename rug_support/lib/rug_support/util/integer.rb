@@ -129,7 +129,7 @@ class Integer
 			["jedna tisíc", "jeden tisíc"],
 			["dvě tisíce", "dva tisíce"],
 			["jedna milión", "jeden milión"],
-			["dvě milióny", "dva milión"],
+			["dvě milióny", "dva milióny"],
 			["milión tisíc", "milión"],
 			["milióny tisíc", "milióny"],
 			["miliónů tisíc", "miliónů"]
