@@ -20,7 +20,7 @@ module RugBuilder
 				@template = template
 				@path_resolver = RugSupport::PathResolver.new(@template)
 				@button_builder = RugBuilder::ButtonBuilder.new(@template)
-				@icon_builder = RugBuilder::IconBuilder
+				@icon_builder = RugBuilder::IconBuilder.new(@template)
 			end
 
 			#

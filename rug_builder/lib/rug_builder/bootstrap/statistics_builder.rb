@@ -16,7 +16,7 @@ module RugBuilder
 			def initialize(template)
 				@template = template
 				@path_resolver = RugSupport::PathResolver.new(@template)
-				@icon_builder = RugBuilder::IconBuilder
+				@icon_builder = RugBuilder::IconBuilder.new(@template)
 				@options = {}
 				@parts = []
 			end

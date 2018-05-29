@@ -20,7 +20,7 @@ module RugBuilder
 			end
 
 			def icon_builder
-				@icon_builder = RugBuilder::IconBuilder if @icon_builder.nil?
+				@icon_builder = RugBuilder::IconBuilder.new(@template) if @icon_builder.nil?
 				return @icon_builder
 			end
 

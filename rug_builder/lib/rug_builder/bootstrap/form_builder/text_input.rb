@@ -31,6 +31,7 @@ module RugBuilder
 				field_options[:min] = options[:min] if !options[:min].nil?
 				field_options[:max] = options[:max] if !options[:max].nil?
 				field_options[:step] = options[:step] if !options[:step].nil?
+				field_options[:autocomplete] = options[:autocomplete] if !options[:autocomplete].nil?
 				
 				# Unit => suffix
 				options[:suffix] = options[:unit] if options[:unit]

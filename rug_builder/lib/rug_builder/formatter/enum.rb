@@ -148,7 +148,7 @@ module RugBuilder
 			if format == :string
 				
 				el_label = ""
-				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += RugBuilder::IconBuilder.new(@template).render(icon) if !icon.blank? && options[:icon] != false
 				el_label += label if options[:tooltip] != true
 				
 				return %{
@@ -163,7 +163,7 @@ module RugBuilder
 				el_options[:color] = color if !color.blank? && options[:color] != false
 				el_options[:tooltip] = label if options[:tooltip] == true
 				el_label = ""
-				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += RugBuilder::IconBuilder.new(@template).render(icon) if !icon.blank? && options[:icon] != false
 				el_label += label if options[:tooltip] != true
 				
 				return RugBuilder::LabelBuilder.render(el_label, el_options)
@@ -177,7 +177,7 @@ module RugBuilder
 				el_options[:size] = options[:size] if options[:size]
 				el_options[:style] = options[:style] if options[:style]
 				el_label = ""
-				el_label += RugBuilder::IconBuilder.render(icon) if !icon.blank? && options[:icon] != false
+				el_label += RugBuilder::IconBuilder.new(@template).render(icon) if !icon.blank? && options[:icon] != false
 				el_label += label if options[:tooltip] != true
 				
 				builder = RugBuilder::ButtonBuilder.new(@template)

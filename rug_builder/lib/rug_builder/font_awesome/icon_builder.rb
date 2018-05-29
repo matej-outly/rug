@@ -14,9 +14,16 @@ module RugBuilder
 		class IconBuilder
 
 			#
+			# Constructor
+			#
+			def initialize(template)
+				@template = template
+			end
+			
+			#
 			# Translate standard icon to this framework
 			#
-			def self.standard_icon(standard_icon)
+			def standard_icon(standard_icon)
 				return case standard_icon
 					when :ok then "check"
 					when :cancel then "times"
@@ -44,12 +51,26 @@ module RugBuilder
 			#
 			# Render icon 
 			#
-			def self.render(icon, options = {})
+			def render(icon, options = {})
 				style = options[:style] ? options[:style] : :solid
 				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
+				
+				# Tooltip
+				if !options[:tooltip].nil?
+					data = {} if data.nil?
+					data[:toggle] = "tooltip"
+					data[:placement] = "top"
+					data[:container] = "body"
+					title = options[:tooltip]
+				end
+
 				if !icon.blank?
-					return "<i class=\"fa#{style.to_s[0]} fa-#{icon} #{klass}\"></i> ".html_safe
+					return @template.content_tag(:i, "", 
+						class: "fa#{style.to_s[0]} fa-#{icon} #{klass}", 
+						data: data,
+						title: title
+					).html_safe
 				else
 					return ""
 				end

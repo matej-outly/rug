@@ -130,7 +130,7 @@ module RugBuilder
 				klass = options[:class] ? options[:class] : ""
 				id = options[:id] ? options[:id].to_s.to_id : nil
 				active = (options[:active] == true)
-				label = RugBuilder::IconBuilder.render("caret-down") if label.blank?
+				label = RugBuilder::IconBuilder.new(@template).render("caret-down") if label.blank?
 
 				result = ""
 				result += "<div class=\"drop#{vertical.to_s}\">" if options[:wrap] != false

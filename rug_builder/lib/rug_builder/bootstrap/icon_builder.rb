@@ -14,9 +14,16 @@ module RugBuilder
 		class IconBuilder
 
 			#
+			# Constructor
+			#
+			def initialize(template)
+				@template = template
+			end
+
+			#
 			# Translate standard icon to this framework
 			#
-			def self.standard_icon(standard_icon)
+			def standard_icon(standard_icon)
 				return case standard_icon
 					when :ok then "ok"
 					when :cancel then "remove"
@@ -43,12 +50,27 @@ module RugBuilder
 			#
 			# Render icon 
 			#
-			def self.render(icon, options = {})
+			def render(icon, options = {})
 				options = options.nil? ? {} : options
 				klass = options[:class] ? options[:class] : ""
 				icon = self.standard_icon(icon) if !icon.is_a?(String)
+
+				# Tooltip
+				if !options[:tooltip].nil?
+					data = {} if data.nil?
+					data[:toggle] = "tooltip"
+					data[:placement] = "top"
+					data[:container] = "body"
+					title = options[:tooltip]
+				end
+
 				if !icon.blank?
-					return "<span class=\"glyphicon glyphicon-#{icon} #{klass}\" aria-hidden=\"true\"></span> ".html_safe
+					return @template.content_tag(:span, "", 
+						class: "glyphicon glyphicon-#{icon} #{klass}", 
+						data: data,
+						title: title,
+						"aria-hidden" => "true"
+					).html_safe
 				else
 					return ""
 				end

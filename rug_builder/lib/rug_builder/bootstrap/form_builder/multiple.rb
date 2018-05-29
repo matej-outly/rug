@@ -32,7 +32,7 @@ module RugBuilder
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
-				icon_builder = RugBuilder::IconBuilder
+				icon_builder = RugBuilder::IconBuilder.new(@template)
 
 				# Label add
 				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
@@ -94,7 +94,7 @@ module RugBuilder
 				
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
-				icon_builder = RugBuilder::IconBuilder
+				icon_builder = RugBuilder::IconBuilder.new(@template)
 
 				# Label add
 				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
@@ -169,7 +169,7 @@ module RugBuilder
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
-				icon_builder = RugBuilder::IconBuilder
+				icon_builder = RugBuilder::IconBuilder.new(@template)
 
 				# Label add
 				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
@@ -235,7 +235,7 @@ module RugBuilder
 
 				# Builders
 				button_builder = RugBuilder::ButtonBuilder.new(@template)
-				icon_builder = RugBuilder::IconBuilder
+				icon_builder = RugBuilder::IconBuilder.new(@template)
 
 				# Label add
 				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first

@@ -42,6 +42,7 @@ module RugBuilder
 				# Options
 				options[:id] = "date_picker_#{hash}"
 				options[:value] = value
+				options[:autocomplete] = "off"
 
 				# Field
 				result += text_input_row(name, :text_field, options)
@@ -617,6 +618,8 @@ module RugBuilder
 						autoUpdateInput: false,
 						#{options[:min_date] ? "minDate: '#{options[:min_date].strftime(I18n.t("date.formats.default"))}'," : ""}
 						#{options[:max_date] ? "maxDate: '#{options[:max_date].strftime(I18n.t("date.formats.default"))}'," : ""}
+						#{options[:min_year] ? "minYear: #{options[:min_year].to_i}," : ""}
+						#{options[:max_year] ? "maxYear: #{options[:max_year].to_i}," : ""}
 						locale: {
 							format: '#{I18n.t("date.formats.moment")}',
 							applyLabel: '#{I18n.t("helpers.submit.ok")}',
@@ -661,6 +664,8 @@ module RugBuilder
 					$('#{selector}').daterangepicker({ 
 						#{options[:min_date] ? "minDate: '#{options[:min_date].strftime(I18n.t("date.formats.default"))}'," : ""}
 						#{options[:max_date] ? "maxDate: '#{options[:max_date].strftime(I18n.t("date.formats.default"))}'," : ""}
+						#{options[:min_year] ? "minYear: #{options[:min_year].to_i}," : ""}
+						#{options[:max_year] ? "maxYear: #{options[:max_year].to_i}," : ""}
 						locale: {
 							format: '#{I18n.t("date.formats.moment")}',
 							applyLabel: '#{I18n.t("helpers.submit.ok")}',

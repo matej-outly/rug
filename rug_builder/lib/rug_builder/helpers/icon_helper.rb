@@ -14,7 +14,7 @@ module RugBuilder
 		module IconHelper
 
 			def rug_icon(icon, options = {})
-				RugBuilder::IconBuilder.render(icon, options)
+				RugBuilder::IconBuilder.new(self).render(icon, options)
 			end
 
 		end
