@@ -65,12 +65,12 @@ module RugBuilder
 				end
 
 				if !icon.blank?
-					return @template.content_tag(:span, "", 
+					return (@template.content_tag(:span, "", 
 						class: "glyphicon glyphicon-#{icon} #{klass}", 
 						data: data,
 						title: title,
 						"aria-hidden" => "true"
-					).html_safe
+					) + " ").html_safe
 				else
 					return ""
 				end

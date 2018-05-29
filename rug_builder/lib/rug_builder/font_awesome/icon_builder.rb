@@ -66,11 +66,11 @@ module RugBuilder
 				end
 
 				if !icon.blank?
-					return @template.content_tag(:i, "", 
+					return (@template.content_tag(:i, "", 
 						class: "fa#{style.to_s[0]} fa-#{icon} #{klass}", 
 						data: data,
 						title: title
-					).html_safe
+					) + " ").html_safe
 				else
 					return ""
 				end
