@@ -115,16 +115,21 @@ RugFormAddress.prototype = {
 						if (results[i].address_components[j].types.includes('street_number')) orientation_number = results[i].address_components[j].long_name;
 						if (results[i].address_components[j].types.includes('premise')) descriptive_number = results[i].address_components[j].long_name;
 						if (results[i].address_components[j].types.includes('route')) street = results[i].address_components[j].long_name;
-						if (results[i].address_components[j].types.includes('administrative_area_level_2')) city = results[i].address_components[j].long_name;
+						if (results[i].address_components[j].types.includes('locality')) city = results[i].address_components[j].long_name;
 						if (results[i].address_components[j].types.includes('postal_code')) zipcode = results[i].address_components[j].long_name;
 					}
+
+					// Fix number
 					number = []
 					if (descriptive_number) number.push(descriptive_number);
 					if (orientation_number) number.push(orientation_number)
 					number = number.join('/');
 
+					// Fix street
+					if (street.length == 0) street = city
+
 					// Create element
-					var $suggestion = $('<div class="suggestion alert alert-info" data-id="' + i + '" data-street="' + street + '" data-number="' + number + '" data-city="' + city + '" data-zipcode="' + zipcode + '">' + results[i].formatted_address + '</div>');
+					var $suggestion = $('<div class="suggestion alert alert-info m-b-sm m-t-sm" data-id="' + i + '" data-street="' + street + '" data-number="' + number + '" data-city="' + city + '" data-zipcode="' + zipcode + '">' + results[i].formatted_address + '</div>');
 					$suggestion.click(function() {
 						_this.selectSuggestion($(this).data('id'));
 					});
