@@ -95,7 +95,10 @@ module RugBuilder
 				locale = :cs
 			end
 
-			return @template.number_to_currency(value, locale: locale).to_s
+			# Precision
+			precision = options[:precision] ? options[:precision] : 2
+
+			return @template.number_to_currency(value, locale: locale, precision: precision).to_s
 		end
 
 		# *********************************************************************
