@@ -165,8 +165,8 @@ module RugBuilder
 					else
 						url = self.path_resolver.resolve(options[:path])
 					end
-					url = "#" if url.blank?
-
+					url = "#" if url.blank? && url != false
+					
 				end
 
 				# Common link tag options
@@ -199,7 +199,11 @@ module RugBuilder
 				end
 				
 				# Render link
-				return @template.link_to(label.html_safe, url, link_tag_options)
+				if url == false
+					return label.html_safe
+				else
+					return @template.link_to(label.html_safe, url, link_tag_options)
+				end
 			end
 
 			def render_actions_modals
