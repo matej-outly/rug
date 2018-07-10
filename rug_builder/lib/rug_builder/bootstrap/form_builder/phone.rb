@@ -48,7 +48,7 @@ module RugBuilder
 				# Inputs
 				result_prefix = %{
 					<div class="col-sm-4 m-b-sm">
-						#{@template.select_tag("", @template.options_for_select(phone_prefixes), class: "form-control prefix")}
+						#{@template.select_tag("", @template.options_for_select(options[:phone_prefixes] ? options[:phone_prefixes] : phone_prefixes), class: "form-control prefix")}
 					</div>
 				}
 				result_suffix = %{
@@ -80,6 +80,15 @@ module RugBuilder
 				{
 					"(+420) Česká republika" => "+420",
 					"(+421) Slovensko" => "+421",
+					"(+491) Německo" => "+491",
+					"(+492) Německo" => "+492",
+					"(+493) Německo" => "+493",
+					"(+494) Německo" => "+494",
+					"(+495) Německo" => "+495",
+					"(+496) Německo" => "+496",
+					"(+497) Německo" => "+497",
+					"(+498) Německo" => "+498",
+					"(+499) Německo" => "+499",
 				}
 			end
 
