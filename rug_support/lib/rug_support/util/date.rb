@@ -18,4 +18,15 @@ class Date
 		return (self.to_date - Date.new(self.year, 1, 1)).to_i
 	end
 
+	#
+	# Get first bussiness day after this date
+	#
+	def first_business_day_after
+		date = self.dup
+		while !date.workday? && Holidays.on(date, :cz).empty? # Is workday and not holiday
+			date = date + 1.day	
+		end
+		return date
+	end
+
 end
