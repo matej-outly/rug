@@ -45,7 +45,7 @@ module RugBuilder
 					result = ""
 					result += %{<div class="actions">}
 					self.actions.keys.each do |action|
-						result += self.render_action_link(action, size: "sm") + " "
+						result += self.render_action_link(action) + " "
 					end
 					result += %{</div>}
 					result += self.render_actions_modals
