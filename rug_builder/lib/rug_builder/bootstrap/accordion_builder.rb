@@ -125,7 +125,7 @@ module RugBuilder
 	protected
 
 		def active_tab_index
-			if @active_tab_index.nil?
+			if @active_tab_index.nil? && @options[:active] != false
 				@tabs.each_with_index do |tab, index|
 					@active_tab_index = index if tab[:options] && tab[:options][:active] == true
 				end
