@@ -21,8 +21,8 @@ module RugBuilder
 			result = ""
 			if @current_tab
 				result += %{
-					<div class="panel-heading" role="tab" id="accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}-heading">
-						<h4 class="panel-title">
+					<div class="panel-heading" role="tab" id="accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}-heading" class=" #{options[:class]}">
+						<h4 class="panel-title #{options[:title_class]}">
 							<a role="button" data-toggle="collapse" data-parent="#accordion-#{@hash}" href="#accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}" aria-expanded="true" aria-controls="accordion-#{@hash}-#{@current_tab[:name].to_s.to_id}">
 								#{label}
 							</a>
@@ -105,15 +105,28 @@ module RugBuilder
 
 			# Render JavaScript
 			result += @template.javascript_tag(%{
+				function accordion_#{@hash}_store()
+				{
+					if ($('#accordion-#{@hash} .collapse.in').length > 0) {
+						localStorage.setItem('accordion_#{@hash}_active', $('#accordion-#{@hash} .collapse.in').attr('id'));
+					} else {
+						localStorage.setItem('accordion_#{@hash}_active', 'none');
+					}
+				}
 				function accordion_#{@hash}_ready()
 				{
 					$('#accordion-#{@hash} .collapse').on('shown.bs.collapse', function() {
-						localStorage.setItem('accordion_#{@hash}_active', $(this).attr('id'));
+						accordion_#{@hash}_store();
+					});
+					$('#accordion-#{@hash} .collapse').on('hidden.bs.collapse', function() {
+						accordion_#{@hash}_store();
 					});
 					var activeTab = localStorage.getItem('accordion_#{@hash}_active');
 					if (activeTab) {
 						$('#accordion-#{@hash} .collapse').removeClass('in');
-						$('#' + activeTab).addClass('in');
+						if (activeTab != 'none') {
+							$('#' + activeTab).addClass('in');
+						}
 					}
 				}
 				$(document).ready(accordion_#{@hash}_ready);
