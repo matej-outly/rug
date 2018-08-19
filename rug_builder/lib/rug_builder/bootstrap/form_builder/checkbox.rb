@@ -40,7 +40,7 @@ module RugBuilder
 				result += %{<div class="#{enable_bootstrap ? "checkbox" : "checkbox-no-bootstrap"}">}
 				checked = value && value == true
 				result += @template.label_tag("", for: id) do
-					b_result = @template.hidden_field_tag("#{object_name}[#{name.to_s}]", "0", id: "")
+					b_result = @template.hidden_field_tag("#{object_name}[#{name.to_s}]", "0", id: nil)
 					b_result += @template.check_box_tag("#{object_name}[#{name.to_s}]", "1", checked, id: id) + "<span></span>#{label}".html_safe
 					b_result
 				end
