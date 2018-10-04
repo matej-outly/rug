@@ -37,6 +37,9 @@ module RugBuilder
 				# Label add
 				label_add = options[:label_add] ? options[:label_add] : I18n.t("general.action.new").mb_upcase_first
 
+				# Placeholder
+				placeholder = options[:placeholder] ? options[:placeholder] : nil
+
 				# Application JS code
 				result += @template.javascript_tag(%{
 					var rug_form_array_#{hash} = null;
@@ -57,7 +60,7 @@ module RugBuilder
 						<div class="template" style="display: none;">
 							<div class="row">
 								<div class="col-sm-10">
-									#{@template.method("#{method.to_s}_tag").call("", "", class: "form-control value")}
+									#{@template.method("#{method.to_s}_tag").call("", "", class: "form-control value", placeholder: placeholder)}
 								</div>
 								<div class="col-sm-2 text-right">
 									#{button_builder.button(icon_builder.render(:close), "#", style: "danger", class: "remove")}
