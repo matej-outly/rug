@@ -20,15 +20,18 @@ module RugBuilder
 					# Actions will be rendered in its actual place
 					@render_action_in_place = true
 
+					# Must be rendered beforehead because of mode action
+					content = render_items(objects)
+
 					# Render
 					empty_message = %{<div class="empty-message">#{I18n.t("views.index.empty")}</div>}
 					result = %{
 						<div 
 							id="#{self.id}" 
-							class="list #{self.css_class}-body #{@options[:list_class].to_s}"
+							class="list #{self.css_class}-body #{@options[:list_class].to_s} #{@movable ? "movable" : ""}"
 						>
 							#{@options[:empty_message] != false && objects.empty? ? empty_message : ""}
-							#{render_items(objects)}
+							#{content}
 						</div>
 					}
 
@@ -36,6 +39,7 @@ module RugBuilder
 					result += @template.javascript_tag(render_js(
 						container_selector: ".list",
 						item_selector: ".item",
+						move_placeholder: render_item_placeholder,
 					))
 
 					return result.html_safe
@@ -65,6 +69,10 @@ module RugBuilder
 						</div>
 					}
 					return result.html_safe
+				end
+
+				def render_item_placeholder
+					%{<div class="placeholder #{@options[:item_class].to_s}"></div>}
 				end
 
 			end
