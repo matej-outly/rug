@@ -36,12 +36,21 @@ RugChart.prototype = {
 	},
 	readyDatePicker: function($datePicker)
 	{
-		$datePicker.pikaday({ 
-			firstDay: 1,
-			format: 'YYYY-MM-DD',
-			i18n: this.options.i18n,
+		var self = this;
+		$datePicker.daterangepicker({ 
+			singleDatePicker: true,
+			showDropdowns: true,
+			autoApply: true,
+			autoUpdateInput: false,
+			locale: this.options.locale
 		});
-		$datePicker.on('change', this.reload.bind(this));
+		$datePicker.on('apply.daterangepicker', function(ev, picker) {
+			$(this).val(picker.startDate.format(self.options.locale.format));
+			self.reload();
+		});
+		$datePicker.on('cancel.daterangepicker', function(ev, picker) {
+			$(this).val('');
+		});
 	},
 	ready: function()
 	{
