@@ -28,6 +28,13 @@ module RugBuilder
 			end
 
 			#
+			# Time flexible column chart
+			#
+			def time_flexible_column_chart(path, options = {})
+				return time_flexible_chart(:column, path, options)
+			end
+
+			#
 			# Time flexible area chart
 			#
 			def time_flexible_area_chart(path, options = {})

@@ -17,6 +17,10 @@ module RugBuilder
 				RugBuilder::ChartBuilder.new(self).time_flexible_line_chart(path, options)
 			end
 
+			def rug_time_flexible_column_chart(path, options = {})
+				RugBuilder::ChartBuilder.new(self).time_flexible_column_chart(path, options)
+			end
+
 			def rug_time_flexible_area_chart(path, options = {})
 				RugBuilder::ChartBuilder.new(self).time_flexible_area_chart(path, options)
 			end
