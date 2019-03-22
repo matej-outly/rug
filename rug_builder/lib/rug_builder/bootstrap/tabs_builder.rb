@@ -24,6 +24,7 @@ module RugBuilder
 				active: options[:active],
 				data: options[:data],
 				class: options[:class],
+				path: options[:path],
 				block: block,
 				index: @tabs.length
 			}
