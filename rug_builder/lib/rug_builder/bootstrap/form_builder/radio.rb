@@ -21,8 +21,15 @@ module RugBuilder
 				value_attr = options[:value_attr] || :value
 
 				# Collection
-				collection = options[:collection] ? options[:collection] : object.class.method("available_#{name.to_s.pluralize}".to_sym).call
-				
+				if options[:boolean] == true
+					collection = [
+						OpenStruct.new({label_attr => I18n.t("general.attribute.boolean.bool_yes"), value_attr => "1"}), 
+						OpenStruct.new({label_attr => I18n.t("general.attribute.boolean.bool_no"), value_attr => "0"})
+					]
+				else
+					collection = options[:collection] ? options[:collection] : object.class.method("available_#{name.to_s.pluralize}".to_sym).call
+				end
+
 				# Enable null option
 				if options[:enable_null] == true || options[:enable_null].is_a?(String)
 					null_label = options[:enable_null].is_a?(String) ? options[:enable_null] : I18n.t("general.null_option") 
@@ -44,6 +51,9 @@ module RugBuilder
 
 				# Value
 				value = object.send(name)
+				if options[:boolean] == true
+					value = value ? "1" : "0" if !value.nil?
+				end
 				
 				# Field
 				result += %{<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">}
