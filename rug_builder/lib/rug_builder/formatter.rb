@@ -45,6 +45,7 @@ module RugBuilder
 				:boolean, 
 				:state, 
 				
+				:filesize,
 				:file, 
 				:picture, 
 				
