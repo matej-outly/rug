@@ -51,7 +51,7 @@ module RugBuilder
 				end
 
 				result = %{
-					<#{ options[:download] == true ? "a href=\"" + value.url + "\"" : "div" } #{ options[:target] ? "target=\"" + options[:target] + "\"" : "" } class="file-preview">
+					<#{ options[:download] == true ? "a href=\"" + value.url + "\"" : "div" } #{ options[:target] ? "target=\"" + options[:target] + "\"" : "" } class="#{ options[:class] ? options[:class] : "file-preview"}">
 						#{ options[:picture] != false && content_type.starts_with?("image/") ? picture(value, options) : ""}
 						<span class="inner-box">#{RugBuilder::IconBuilder.new(@template).render(icon)}#{file_name}</span>
 					</#{ options[:download] == true ? "a" : "div"}>
