@@ -26,9 +26,76 @@ class Object
 		end
 	end
 
+	#
+	# Deep integerize keys
+	#
+	def deep_integerize_keys
+		if self.is_a? Hash
+			return self.inject({}) { |memo,(k,v)| memo[k.to_i] =  v.deep_integerize_keys; memo } 
+		elsif self.is_a? Array
+			return self.inject([]) { |memo,v    | memo         << v.deep_integerize_keys; memo } 
+		else
+			return self
+		end
+	end
+
+	#
+	# Deep snake case keys
+	#
+	def deep_snake_keys
+		if self.is_a? Hash
+			return self.inject({}) { |memo,(k,v)| memo[k.to_s.to_snake] =  v.deep_snake_keys; memo } 
+		elsif self.is_a? Array
+			return self.inject([]) { |memo,v    | memo                  << v.deep_snake_keys; memo } 
+		else
+			return self
+		end
+	end
+
+	#
+	# Deep calel case keys
+	#
+	def deep_camel_keys
+		if self.is_a? Hash
+			return self.inject({}) { |memo,(k,v)| memo[k.to_s.to_camel] =  v.deep_camel_keys; memo } 
+		elsif self.is_a? Array
+			return self.inject([]) { |memo,v    | memo                  << v.deep_camel_keys; memo } 
+		else
+			return self
+		end
+	end
+
 end
 
 class Hash
+
+	#
+	# Convert all keys in hash into symbols
+	#
+	def symbolize_keys
+		return self.inject({}) { |memo,(k,v)| memo[k.to_sym] = v; memo } 
+	end
+
+	#
+	# Convert all keys in hash into integers
+	#
+	def integerize_keys
+		return self.inject({}) { |memo,(k,v)| memo[k.to_i] = v; memo } 
+	end
+
+	#
+	# Convert all keys in hash into snake case
+	#
+	def snake_keys
+		return self.inject({}) { |memo,(k,v)| memo[k.to_s.to_snake] = v; memo } 
+	end
+
+	#
+	# Convert all keys in hash into camel case
+	#
+	def camel_keys
+		return self.inject({}) { |memo,(k,v)| memo[k.to_s.to_camel] = v; memo } 
+	end
 
 	#
 	# Deep merging of hashes
@@ -41,11 +108,10 @@ class Hash
 	end
 
 	#
-	# Convert all keys in hash into integers
+	# Convert to object recursively
 	#
-	def integerize_keys
-		return self.inject({}) { |memo,(k,v)| memo[k.to_i] =  v; memo } 
+	def to_o
+		JSON.parse(self.to_json, object_class: OpenStruct)
 	end
-
 
 end
