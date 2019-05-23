@@ -33,6 +33,8 @@ module RugBuilder
 				field_options[:id] = options[:id] if !options[:id].nil?
 				field_options[:data] = options[:data] if !options[:data].nil?
 				field_options[:placeholder] = options[:placeholder] if !options[:placeholder].nil?
+				field_options[:rows] = options[:rows] if !options[:rows].nil?
+				field_options[:cols] = options[:cols] if !options[:cols].nil?
 
 				result = %{
 					<div class="#{options[:form_group] != false ? "form-group" : ""} #{(has_error?(name, errors: options[:errors]) ? "has-error" : "")}">
