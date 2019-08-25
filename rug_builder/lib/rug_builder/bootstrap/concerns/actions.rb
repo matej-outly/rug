@@ -123,50 +123,61 @@ module RugBuilder
 					end
 				end
 
-				if options[:modal] == true || options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
-
-					# Unique modal ID
-					if options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
-						modal_id = options[:modal].to_s
-					else
-						if object
-							modal_id = "#{self.id}-#{object.id}-#{options[:action]}-modal"
-						else
-							modal_id = "#{self.id}-#{options[:action]}-modal"
-						end
-					end
-
-					# Empty URL
-					url = "#"
-
-					# Data for modal opening
-					options[:data] = { 
-						target: "##{modal_id.to_id}",
-						toggle: "modal"
-					}
-
-					# Block
-					block = options[:block]
-
-					# Render modal
-					self.actions_modals << self.modal_builder.render(modal_id) do |modal|
-						if object
-							@template.capture(modal, object, &block)
-						else
-							@template.capture(modal, &block)
-						end
-					end
-
+				# Disabled?
+				if !options[:disabled].nil? && options[:disabled].call(object) == true
+					disabled = true
 				else
-					
-					# Resolve URL
-					if object
-						url = self.path_resolver.resolve(options[:path], object)
+					disabled = false
+				end
+
+				if disabled
+					url = "#"
+				else
+					if options[:modal] == true || options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
+
+						# Unique modal ID
+						if options[:modal].is_a?(String) || options[:modal].is_a?(Symbol)
+							modal_id = options[:modal].to_s
+						else
+							if object
+								modal_id = "#{self.id}-#{object.id}-#{options[:action]}-modal"
+							else
+								modal_id = "#{self.id}-#{options[:action]}-modal"
+							end
+						end
+
+						# Empty URL
+						url = "#"
+
+						# Data for modal opening
+						options[:data] = { 
+							target: "##{modal_id.to_id}",
+							toggle: "modal"
+						}
+
+						# Block
+						block = options[:block]
+
+						# Render modal
+						self.actions_modals << self.modal_builder.render(modal_id) do |modal|
+							if object
+								@template.capture(modal, object, &block)
+							else
+								@template.capture(modal, &block)
+							end
+						end
+
 					else
-						url = self.path_resolver.resolve(options[:path])
+						
+						# Resolve URL
+						if object
+							url = self.path_resolver.resolve(options[:path], object)
+						else
+							url = self.path_resolver.resolve(options[:path])
+						end
+						url = "#" if url.blank? && url != false
+						
 					end
-					url = "#" if url.blank? && url != false
-					
 				end
 
 				# Common link tag options
@@ -174,8 +185,9 @@ module RugBuilder
 				link_tag_options[:class] = ""
 				link_tag_options[:class] += "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"} " if options[:disable_button] != true
 				link_tag_options[:class] += options[:class] if options[:class]
-				link_tag_options[:method] = options[:method] if options[:method]
+				link_tag_options[:method] = options[:method] if options[:method] && !disabled
 				link_tag_options[:data] = options[:data] if options[:data]
+				link_tag_options[:disabled] = "disabled" if disabled
 
 				# Label
 				label = ""

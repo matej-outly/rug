@@ -169,6 +169,28 @@ module RugRecord
 				return self.class.hierarchically_ordered?
 			end
 
+			#
+			# Has left sibling?
+			#
+			def has_left_sibling?
+				if self.parent
+					return (self.parent.lft + 1) < self.lft
+				else
+					return self.lft > 1
+				end
+			end
+
+			#
+			# Has right sibling?
+			#
+			def has_right_sibling?
+				if self.parent
+					return (self.parent.rgt - 1) > self.rgt
+				else
+					return self.rgt < (self.class.all.count * 2)
+				end
+			end
+
 		end
 	end
 end
