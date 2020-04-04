@@ -53,12 +53,15 @@ module RugBuilder
 			#
 			# Options:
 			# - label
+			# - ref
 			#
 			def total(options = {}, &block)
-				@options[:total] = {
+				ref = options[:ref] ? options[:ref] : :default
+				@options[:totals] = {} if @options[:totals].nil?
+				@options[:totals][ref] = {
 					block: block
 				}.merge(options)
-				@parts << :total
+				@parts << :totals unless @parts.include?(:totals)
 			end
 
 			# *****************************************************************
@@ -186,24 +189,33 @@ module RugBuilder
 				}
 			end
 
-			def render_total
+			def render_totals
+				result = ""
+				@options[:totals].each do |ref, unused|
+					result += render_total(ref)
+				end
+				return result
+			end
+
+			def render_total(ref)
 				return %{
 					<tr>
-						#{@parts.include?(:y_axis) ? render_total_label : ""}
-						#{@options[:global][:x_axis].map{ |x_value| render_total_cell(x_value) }.join}
+						#{@parts.include?(:y_axis) ? render_total_label(ref) : ""}
+						#{@options[:global][:x_axis].map{ |x_value| render_total_cell(ref, x_value) }.join}
 					</tr>
 				}
 			end
 
-			def render_total_label
+			def render_total_label(ref)
 				return %{
-					<td class="statistics-header">#{@options[:total][:label].to_s}</td>
+					<td class="statistics-header">#{@options[:totals][ref][:label].to_s}</td>
 				}
 			end
 
-			def render_total_cell(x_value)
+			def render_total_cell(ref, x_value)
+				value = @options[:totals][ref][:block].call(x_value)
 				return %{
-					<td class="statistics-total">#{@options[:total][:block].call(x_value)} #{@options[:total][:unit].to_s}</td>
+					<td class="statistics-total">#{value} #{!value.blank? ? @options[:totals][ref][:unit].to_s : ""}</td>
 				}
 			end
 
