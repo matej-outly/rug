@@ -147,6 +147,7 @@ module RugBuilder
 					link_tag_options = {}
 					link_tag_options[:class] = "btn btn-#{options[:size] ? options[:size] : "xs"} btn-#{options[:style] ? options[:style] : "default"}"
 					link_tag_options[:method] = options[:method] if options[:method]
+					link_tag_options[:target] = options[:target] if options[:target]
 					return @template.link_to(@icon_builder.render(options[:icon]) + label, url, link_tag_options) + " "
 				else
 					return ""
