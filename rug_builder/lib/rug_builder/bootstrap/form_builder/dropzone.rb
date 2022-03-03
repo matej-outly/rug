@@ -30,6 +30,7 @@ module RugBuilder
 				# URLs
 				update_path = self.options[:update_path] || options[:update_path]
 				create_path = self.options[:create_path] || options[:create_path]
+				remove_path = self.options[:remove_path] || options[:remove_path]
 				if !update_path || (object.new_record? && !create_path)
 					raise "Please define update and create URL in form or row options."
 				end
@@ -78,11 +79,13 @@ module RugBuilder
 							id: '#{id}',
 							name: '#{name}',
 							objectParamKey: '#{object.class.model_name.param_key}',
+							objectId: #{object.id ? object.id : "null"},
 
 							// URLs
 							defaultUrl: '#{default_url}',
 							defaultMethod: '#{default_method}',
 							updateUrl: '#{RugSupport::PathResolver.new(@template).resolve(update_path, ":id")}',
+							removeUrl: '#{remove_path ? RugSupport::PathResolver.new(@template).resolve(remove_path, ":id") : ""}',
 							
 							// Form
 							formSelector: '##{self.options[:html][:id]}',
@@ -90,6 +93,9 @@ module RugBuilder
 
 							// Messages
 							defaultMessage: '#{I18n.t("general.drop_file_here")}',
+							removeFileMessage: '#{I18n.t("general.remove_file")}',
+							cancelUploadMessage: '#{I18n.t("general.cancel_upload")}',
+							cancelUploadConfirmationMessage: '#{I18n.t("general.are_you_sure")}',
 
 							// Options
 							appendColumns: #{append_columns_js},

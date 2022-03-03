@@ -40,6 +40,10 @@ RugFormDropzone.prototype = {
 			paramName: this.options.objectParamKey + '[' + this.options.name + ']',
 			maxFiles: 1,
 			dictDefaultMessage: this.options.defaultMessage,
+			dictRemoveFile: this.options.removeFileMessage,
+			dictCancelUpload: this.options.cancelUploadMessage,
+			dictCancelUploadConfirmation: this.options.cancelUploadConfirmationMessage,
+			addRemoveLinks: (this.options.removeUrl ? true : false),
 		});
 
 		// Events
@@ -58,10 +62,10 @@ RugFormDropzone.prototype = {
 			this.addFile(file);
 		});
 		this.dropzone.on('success', function(file, response) {
-			var responseId = parseInt(response);
-			if (!isNaN(responseId)) {
+			_this.options.objectId = parseInt(response);
+			if (!isNaN(_this.options.objectId)) {
 				var form = $(_this.options.formSelector);
-				var updateUrl = _this.options.updateUrl.replace(':id', responseId);
+				var updateUrl = _this.options.updateUrl.replace(':id', _this.options.objectId);
 				if (form.attr('action') != updateUrl) {
 					form.attr('action', updateUrl); /* Form */
 					form.prepend('<input type="hidden" name="_method" value="patch" />');
@@ -81,6 +85,15 @@ RugFormDropzone.prototype = {
 			} else { /* Error saving image */ 
 			}
 		});
-
+		this.dropzone.on('removedfile', function(file) {
+			var removeUrl = _this.options.removeUrl.replace(':id', _this.options.objectId);
+			if (removeUrl) {
+				$.ajax({
+					url: removeUrl,
+					dataType: 'json',
+					type: 'put'
+				});
+			}
+		});
 	}
 }
