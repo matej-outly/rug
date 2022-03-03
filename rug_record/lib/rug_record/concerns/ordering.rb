@@ -17,12 +17,12 @@ module RugRecord
 		module Ordering extend ActiveSupport::Concern
 
 			module ClassMethods
-				
+
 				#
 				# Define ordering
 				#
 				def enable_ordering
-					
+
 					# Column
 					column = :position
 
@@ -31,7 +31,7 @@ module RugRecord
 
 					# Mark as ordered
 					@ordered = true
-					
+
 					#
 					# Move object to relation with other object
 					#
@@ -43,6 +43,26 @@ module RugRecord
 								return moved_object.insert_at(destination_object.position + 1)
 							elsif relation.to_sym == :left
 								return moved_object.insert_at(destination_object.position)
+							else
+								return false
+							end
+						else
+							return false
+						end
+					end
+
+					#
+					# Move object to relation with other object
+					#
+					define_singleton_method(:move_2) do |moved_id, prev_id, next_id|
+						moved_object = find_by_id(moved_id)
+						prev_object = find_by_id(prev_id)
+						next_object = find_by_id(next_id)
+						if moved_object
+							if prev_object && moved_object.position < prev_object.position
+								return moved_object.insert_at(prev_object.position)
+							elsif next_object && moved_object.position > next_object.position
+								return moved_object.insert_at(next_object.position)
 							else
 								return false
 							end
@@ -70,7 +90,7 @@ module RugRecord
 						end
 						move_to_position(position)
 					end
-					
+
 					#
 					# Move before some other node
 					#

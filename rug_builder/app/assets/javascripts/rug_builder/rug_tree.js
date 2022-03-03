@@ -56,7 +56,7 @@ RugTree.prototype = {
 		if (_this.options.typeIconAttr && _this.options.typeIconAttr.length > 0) {
 			var typeIcon = node[_this.options.typeIconAttr];
 			if (!typeIcon) {
-				typeIcon = 'file-o';
+				typeIcon = 'file';
 			}
 			var type_icon_html = _this.options.typeIconTemplate.replace(':icon', typeIcon);
 			$li.find('.jqtree-title').before(type_icon_html);

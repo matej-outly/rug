@@ -131,13 +131,7 @@ RugIndex.prototype = {
 					var prevId = $item.prev().data('id') ? $item.prev().data('id') : undefined;
 					var nextId = $item.next().data('id') ? $item.next().data('id') : undefined;
 					if (prevId || nextId) {
-						var destinationId = prevId;
-						var relation = 'right';
-						if (!destinationId) {
-							destinationId = nextId;
-							relation = 'left';
-						}
-						var moveUrl = _this.options.movable.url.replace(':id', id).replace(':relation', relation).replace(':destination_id', destinationId);
+						var moveUrl = _this.options.movable.url.replace(':id', id).replace(':prev_id', prevId).replace(':next_id', nextId);
 						$.ajax({url: moveUrl, method: 'PUT', dataType: 'json'});
 					}
 				}

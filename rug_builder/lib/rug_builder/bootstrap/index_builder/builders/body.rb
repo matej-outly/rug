@@ -77,7 +77,7 @@ module RugBuilder
 						movable_js = %{
 							movable: {
 								placeholder: '#{markup[:move_placeholder].to_s}',
-								url: '#{self.path_resolver.resolve(@movable[:path], ":id", ":relation", ":destination_id")}',
+								url: '#{self.path_resolver.resolve(@movable[:path], ":id", ":prev_id", ":next_id")}',
 							},
 						}
 					else
